@@ -25,7 +25,7 @@ export function initHeap(base, limit) {
   _heapLimit = limit | 0;
 }
 
-function heapAlloc(size) {
+export function heapAlloc(size) {
   if (_heapBase === 0) throw new Error("heap not initialised — call initHeap()");
   size = (size + 7) & ~7;
   if (_heapPtr + size > _heapLimit) {
@@ -97,6 +97,21 @@ export function GetCurrentThreadId(heap)  { return 1; }
 export function ExitProcess(heap, code) { /* runtime can decide; throw an exit signal */
   if (typeof globalThis !== "undefined") globalThis.__rct_exitCode = code;
   throw new Error(`ExitProcess(${code})`);
+}
+export function TerminateProcess(heap, hProcess, uExitCode) {
+  if (typeof globalThis !== "undefined") globalThis.__rct_exitCode = uExitCode;
+  throw new Error(`TerminateProcess(${uExitCode})`);
+}
+export function UnhandledExceptionFilter(heap, exceptionInfo) {
+  // Win32 returns one of:
+  //   EXCEPTION_CONTINUE_SEARCH = 0
+  //   EXCEPTION_EXECUTE_HANDLER = 1
+  //   EXCEPTION_CONTINUE_EXECUTION = -1
+  // We'll log + continue searching so SEH chain unwinds normally.
+  if (typeof console !== "undefined") {
+    console.warn("[UnhandledExceptionFilter]", exceptionInfo);
+  }
+  return 0;
 }
 export function GetThreadPriority(heap, hThread) { return 0; }       // THREAD_PRIORITY_NORMAL
 export function SetThreadPriority(heap, hThread, n) { return 1; }
@@ -406,3 +421,200 @@ export function CoCreateInstance(heap, rclsid, pUnkOuter, dwClsContext, riid, pp
 // Ordinal exports are unresolved; return 0 so callers fail gracefully.
 export function Ordinal_1(heap, ...args) { return 0; }
 export function Ordinal_2(heap, ...args) { return 0; }
+
+// =============================================================================
+// VFS — file/find/mapping APIs.
+//
+// The browser harness fetches assets (csg1.dat, scenarios) into a Map keyed
+// by lowercase basename. CreateFileA/ReadFile read against that map. Writes
+// go into a separate "writeable" partition that persists via IndexedDB
+// (wired by runtime/vfs.js — for now writes are silently discarded).
+// =============================================================================
+
+import { state, getVfs } from "./context.js";
+
+function vfsBasename(path) {
+  const i = Math.max(path.lastIndexOf("\\"), path.lastIndexOf("/"));
+  return (i >= 0 ? path.slice(i + 1) : path).toLowerCase();
+}
+
+function vfsLookup(path) {
+  return getVfs().get(vfsBasename(path));
+}
+
+export function CreateFileA(heap, lpFileName, dwDesiredAccess, dwShareMode, lpSecAttr, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile) {
+  if (!lpFileName) return 0xffffffff | 0;
+  const name = heap.readCStr(lpFileName);
+  const bytes = vfsLookup(name);
+  if (!bytes) return 0xffffffff | 0;             // INVALID_HANDLE_VALUE
+  const h = state.nextHandle++;
+  state.openHandles.set(h, { name, bytes, offset: 0 });
+  return h;
+}
+
+export function ReadFile(heap, hFile, lpBuffer, nBytesToRead, lpBytesRead, lpOverlapped) {
+  const file = state.openHandles.get(hFile);
+  if (!file) return 0;
+  const remaining = file.bytes.length - file.offset;
+  const n = Math.min(nBytesToRead, remaining);
+  for (let i = 0; i < n; i++) heap.bytes[lpBuffer + i] = file.bytes[file.offset + i];
+  file.offset += n;
+  if (lpBytesRead) heap.setU32(lpBytesRead, n);
+  return 1;
+}
+
+export function WriteFile(heap, hFile, lpBuffer, nBytesToWrite, lpBytesWritten, lpOverlapped) {
+  // Pretend we wrote everything. Future: persist to IndexedDB-backed VFS.
+  if (lpBytesWritten) heap.setU32(lpBytesWritten, nBytesToWrite);
+  return 1;
+}
+
+export function CloseHandle(heap, hObject) {
+  state.openHandles.delete(hObject);
+  state.fileMappings.delete(hObject);
+  return 1;
+}
+
+export function GetFileSize(heap, hFile, lpFileSizeHigh) {
+  const file = state.openHandles.get(hFile);
+  if (!file) return 0xffffffff | 0;
+  if (lpFileSizeHigh) heap.setU32(lpFileSizeHigh, 0);
+  return file.bytes.length;
+}
+
+export function SetFilePointer(heap, hFile, lDistanceToMove, lpDistanceToMoveHigh, dwMoveMethod) {
+  const file = state.openHandles.get(hFile);
+  if (!file) return 0xffffffff | 0;
+  const dist = lDistanceToMove | 0;
+  if (dwMoveMethod === 0)      file.offset = dist;
+  else if (dwMoveMethod === 1) file.offset += dist;
+  else                          file.offset = file.bytes.length + dist;
+  return file.offset;
+}
+
+export function FlushFileBuffers(heap, hFile) { return 1; }
+
+export function GetFileType(heap, hFile) {
+  // 1 = FILE_TYPE_DISK, 2 = FILE_TYPE_CHAR. Disk for VFS files, char for std.
+  const file = state.openHandles.get(hFile);
+  return file ? 1 : 2;
+}
+
+export function GetFileAttributesA(heap, lpFileName) {
+  const name = heap.readCStr(lpFileName);
+  return vfsLookup(name) ? 0x80 : 0xffffffff | 0; // FILE_ATTRIBUTE_NORMAL or INVALID
+}
+export function SetFileAttributesA(heap, lpFileName, dwFileAttributes) { return 1; }
+
+export function DeleteFileA(heap, lpFileName) {
+  // We can't actually delete from the read-only fetch'd VFS. Return success
+  // so callers think it worked.
+  return 1;
+}
+
+// ---- Find / directory enumeration ----
+
+function fillFindData(heap, addr, name, bytes) {
+  // WIN32_FIND_DATAA layout (we zero everything, fill what matters):
+  //   +0   dwFileAttributes (DWORD)
+  //   +4..+27  three FILETIMEs (24 bytes)
+  //   +28  nFileSizeHigh (DWORD)
+  //   +32  nFileSizeLow  (DWORD)
+  //   +36..+43  reserved (8 bytes)
+  //   +44  cFileName[260]
+  //   +304 cAlternateFileName[14]
+  for (let i = 0; i < 318; i++) heap.setU8(addr + i, 0);
+  heap.setU32(addr + 0,  0x80);                   // FILE_ATTRIBUTE_NORMAL
+  heap.setU32(addr + 28, 0);                       // nFileSizeHigh
+  heap.setU32(addr + 32, bytes.length);            // nFileSizeLow
+  heap.writeCStr(addr + 44, name, 260);
+}
+
+function findMatchPattern(pattern) {
+  const base = vfsBasename(pattern);
+  const re = new RegExp(
+    "^" +
+    base.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*").replace(/\?/g, ".") +
+    "$"
+  );
+  const out = [];
+  for (const [name, bytes] of getVfs()) if (re.test(name)) out.push({ name, bytes });
+  return out;
+}
+
+export function FindFirstFileA(heap, lpFileName, lpFindFileData) {
+  const pattern = heap.readCStr(lpFileName);
+  const matches = findMatchPattern(pattern);
+  if (matches.length === 0) return 0xffffffff | 0;
+  const h = state.nextHandle++;
+  state.findHandles.set(h, { matches, idx: 1 });
+  fillFindData(heap, lpFindFileData, matches[0].name, matches[0].bytes);
+  return h;
+}
+
+export function FindNextFileA(heap, hFindFile, lpFindFileData) {
+  const f = state.findHandles.get(hFindFile);
+  if (!f || f.idx >= f.matches.length) return 0;
+  const m = f.matches[f.idx++];
+  fillFindData(heap, lpFindFileData, m.name, m.bytes);
+  return 1;
+}
+
+export function FindClose(heap, hFindFile) {
+  state.findHandles.delete(hFindFile);
+  return 1;
+}
+
+// ---- Memory-mapped files ----
+
+export function CreateFileMappingA(heap, hFile, lpAttr, flProtect, dwMaxSizeHigh, dwMaxSizeLow, lpName) {
+  const file = state.openHandles.get(hFile);
+  if (!file) return 0;
+  const h = state.nextHandle++;
+  state.fileMappings.set(h, { hFile, file });
+  return h;
+}
+
+export function MapViewOfFile(heap, hFileMappingObject, dwDesiredAccess, dwFileOffsetHigh, dwFileOffsetLow, dwNumberOfBytesToMap) {
+  const map = state.fileMappings.get(hFileMappingObject);
+  if (!map) return 0;
+  const want = dwNumberOfBytesToMap === 0 ? map.file.bytes.length : dwNumberOfBytesToMap;
+  const ptr = heapAlloc(want);
+  const limit = Math.min(want, map.file.bytes.length - dwFileOffsetLow);
+  for (let i = 0; i < limit; i++) heap.bytes[ptr + i] = map.file.bytes[dwFileOffsetLow + i] || 0;
+  return ptr;
+}
+
+export function UnmapViewOfFile(heap, lpBaseAddress) { return 1; }
+export function FlushViewOfFile(heap, lpBaseAddress, dwNumberOfBytesToFlush) { return 1; }
+
+// 16-bit-style file APIs used by some legacy code paths in RCT1.
+export function _lopen(heap, lpPathName, iReadWrite) {
+  const name = heap.readCStr(lpPathName);
+  const bytes = vfsLookup(name);
+  if (!bytes) return -1;
+  const h = state.nextHandle++;
+  state.openHandles.set(h, { name, bytes, offset: 0 });
+  return h;
+}
+export function _lclose(heap, hFile) {
+  state.openHandles.delete(hFile);
+  return 0;
+}
+export function _lread(heap, hFile, lpBuffer, uBytes) {
+  const file = state.openHandles.get(hFile);
+  if (!file) return 0;
+  const n = Math.min(uBytes, file.bytes.length - file.offset);
+  for (let i = 0; i < n; i++) heap.bytes[lpBuffer + i] = file.bytes[file.offset + i];
+  file.offset += n;
+  return n;
+}
+export function _lwrite(heap, hFile, lpBuffer, uBytes) { return 0; }
+export function _llseek(heap, hFile, lOffset, iOrigin) {
+  const file = state.openHandles.get(hFile);
+  if (!file) return -1;
+  if (iOrigin === 0)      file.offset = lOffset;
+  else if (iOrigin === 1) file.offset += (lOffset | 0);
+  else                     file.offset = file.bytes.length + (lOffset | 0);
+  return file.offset;
+}
