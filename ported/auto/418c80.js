@@ -1,0 +1,24 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/418c80.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../runtime/heap.js").Heap} Heap */
+
+import { FUN_00417140 } from "./417140.js";
+export function FUN_00418c80(heap, param_1, param_2) {
+  if (param_1 == 0) {
+    if ((heap.u32(param_2 + (3) * 4) & 0x1000) != 0) {
+      FUN_00417140(heap, param_2);
+    }
+  } else {
+    if ((heap.u32(param_2 + (3) * 4) & 0x1000) != 0) {
+    FUN_00417140(heap, param_2);
+    heap.u32(param_2 + (6) * 4) = 0;
+    heap.u32(param_2 + (3) * 4) = heap.u32(param_2 + (3) * 4) & 0xffffeeff;
+    heap.u32(param_2) = 0;
+    heap.u32(param_2 + (2) * 4) = 0;
+    return;
+  }
+  }
+  return;
+}

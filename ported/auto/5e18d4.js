@@ -1,0 +1,14 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/5e18d4.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../runtime/heap.js").Heap} Heap */
+
+export function FUN_005e18d4(heap) {
+  let unaff_ESI = 0;
+  if (heap.u32((unaff_ESI + 8)) != 0) {
+    (heap.u32(heap.u32((0x005e18ec) + (heap.u32(0x00991f88)) * 4)))();
+    return;
+  }
+  return;
+}

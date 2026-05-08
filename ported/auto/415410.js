@@ -1,0 +1,71 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/415410.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../runtime/heap.js").Heap} Heap */
+
+import { HeapAlloc, HeapFree, VirtualAlloc, VirtualFree } from "../runtime/win32.js";
+export function FUN_00415410(heap) {
+  let bVar1 = 0;
+  let pvVar2 = 0;
+  let iVar3 = 0;
+  if (heap.u32(0x005ec510) == -1) {
+    lpMem = 0x005ec500;
+  } else {
+    lpMem = HeapAlloc(heap, heap.u32(0x005f3e44), 0, 0x2020);
+    if (lpMem == 0x0) {
+      return 0x0;
+    }
+  }
+  lpAddress = VirtualAlloc(heap, 0x0, 0x400000, 0x2000, 4);
+  if (lpAddress != 0x0) {
+    pvVar2 = VirtualAlloc(heap, lpAddress, 0x10000, 0x1000, 4);
+    if (pvVar2 != 0x0) {
+      if (lpMem == 0x005ec500) {
+        if (heap.u32(0x005ec500) == 0x0) {
+          PTR_LOOP_005ec500 = 0x005ec500;
+        }
+        if (heap.u32(0x005ec504) == 0x0) {
+          PTR_LOOP_005ec504 = 0x005ec500;
+        }
+      } else {
+        heap.u32(lpMem) = 0x005ec500;
+        heap.u32(lpMem + (1) * 4) = heap.u32(0x005ec504);
+        PTR_LOOP_005ec504 = lpMem;
+        heap.u32(heap.u32(lpMem + (1) * 4)) = lpMem;
+      }
+      heap.u32(lpMem + (5) * 4) = (lpAddress + 0x100000);
+      heap.u32(lpMem + (4) * 4) = lpAddress;
+      heap.u32(lpMem + (2) * 4) = (lpMem + 6);
+      heap.u32(lpMem + (3) * 4) = (lpMem + 0x26);
+      iVar3 = 0;
+      ppuVar4 = lpMem + 6;
+      do {
+        bVar1 = 0xf < iVar3;
+        iVar3 = iVar3 + 1;
+        heap.u32(ppuVar4) = ((bVar1 - 1 & 0xf1) - 1);
+        heap.u32(ppuVar4 + (1) * 4) = 0xf1;
+        ppuVar4 = ppuVar4 + 2;
+      } while (iVar3 < 0x400);
+      puVar5 = lpAddress;
+      for (iVar3 = 0x4000; iVar3 != 0; iVar3 = iVar3 + -1) {
+        heap.u32(puVar5) = 0;
+        puVar5 = puVar5 + 1;
+      }
+      if (lpAddress < heap.u32(lpMem + (4) * 4) + 0x10000) {
+        do {
+          heap.u32(lpAddress + (1) * 4) = 0xf0;
+          heap.u32(lpAddress) = lpAddress + 2;
+          heap.u32((lpAddress + 0x3e)) = 0xff;
+          lpAddress = lpAddress + 0x400;
+        } while (lpAddress < heap.u32(lpMem + (4) * 4) + 0x10000);
+      }
+      return lpMem;
+    }
+    VirtualFree(heap, lpAddress, 0, 0x8000);
+  }
+  if (lpMem != 0x005ec500) {
+    HeapFree(heap, heap.u32(0x005f3e44), 0, lpMem);
+  }
+  return 0x0;
+}

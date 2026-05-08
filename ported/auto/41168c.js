@@ -1,0 +1,12 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/41168c.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../runtime/heap.js").Heap} Heap */
+
+export function FUN_0041168c(heap) {
+  let MVar1 = 0;
+  MVar1 = mciSendStringA(0x005ec208, 0x0, 0, heap.u32(0x005e916c));
+  heap.setU32(0x005ec1c8, ((uint)(MVar1 == 0)) >>> 0);
+  return MVar1 == 0;
+}

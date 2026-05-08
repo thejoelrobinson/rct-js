@@ -1,0 +1,74 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/420d9c.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../runtime/heap.js").Heap} Heap */
+
+import { CONCAT11 } from "../runtime/win32.js";
+import { FUN_00433b76 } from "./433b76.js";
+export function FUN_00420d9c(heap) {
+  let bVar1 = 0;
+  let bVar3 = 0;
+  let in_CL = 0;
+  let bVar5 = 0;
+  let bVar6 = 0;
+  let in_DL = 0;
+  let uVar7 = 0;
+  let uVar8 = 0;
+  let unaff_EBX = 0;
+  let uVar9 = 0;
+  let uVar11 = 0;
+  let cVar2 = 0;
+  let cVar4 = 0;
+  uVar9 = heap.u32(0x00991f74) + heap.u32((0x005f4686 + heap.u32(0x00991f88) * 4));
+  if (((ushort)(heap.u32(0x00991f70) + heap.u32((0x005f4684 + heap.u32(0x00991f88) * 4))) < 0x1000) && (uVar9 < 0x1000)) {
+    uVar9 = uVar9 * 0x80 | uVar9 >>> 9 | heap.u32(0x00991f70) + heap.u32((0x005f4684 + heap.u32(0x00991f88) * 4));
+    pbVar10 = heap.u32((0x00971ef4) + ((ushort)(uVar9 >>> 5 | uVar9 << 0xb)) * 4);
+    bVar1 = heap.u32(pbVar10);
+    while ((bVar1 & 0x3c) != 0) {
+      pbVar10 = pbVar10 + 8;
+      bVar1 = heap.u32(pbVar10);
+    }
+    uVar9 = (heap.u32(pbVar10 + (4) * 4) & 0xf) << (in_CL & 0x1f);
+    uVar7 = CONCAT11(heap, heap.u32(pbVar10 + (2) * 4) >>> 2, in_DL);
+    uVar11 = heap.u32(pbVar10 + (4) * 4) & 0x10 | (ushort)(uVar9 >>> 4 | uVar9) & 0xf;
+  } else {
+    uVar11 = 0;
+    uVar7 = CONCAT11(heap, 1, in_DL);
+  }
+  cVar2 = uVar7;
+  bVar1 = cVar2 + heap.u32((0x005f46c4) + (unaff_EBX) * 4);
+  bVar5 = cVar2 + heap.u32((0x005f46e4) + (unaff_EBX) * 4);
+  cVar4 = (uVar7 >>> 8);
+  bVar3 = cVar4 + heap.u32((0x005f46a4) + (uVar11) * 4);
+  bVar6 = cVar4 + heap.u32((0x005f4704) + (uVar11) * 4);
+  if ((bVar3 < bVar1) || (bVar6 < bVar5)) {
+    if ((heap.u32(0x00991f8c) & 1) == 0) {
+      FUN_00433b76(heap, uVar7);
+      return;
+    }
+    heap.setU32(0x005f4724, (heap.u32(0x005f4770) + 5) >>> 0);
+    uVar8 = CONCAT11(heap, bVar6, cVar2);
+    uVar11 = uVar8;
+    if (bVar6 != bVar3) {
+      if (bVar3 <= bVar6) {
+        uVar8 = CONCAT11(heap, bVar3, cVar2);
+      }
+      bVar3 = (byte)(uVar8 >>> 8);
+      uVar11 = uVar8;
+      if ((bVar3 != bVar1) && (bVar3 != bVar5)) {
+        (heap.u32(heap.u32((0x00431bb8) + (heap.u32(0x00991f88)) * 4)))();
+        uVar8 = CONCAT11(heap, bVar3 + 1, uVar8);
+        uVar11 = uVar8;
+      }
+    }
+    while (bVar3 = (byte)(uVar8 >>> 8), bVar3 < bVar1 && (bVar3 < bVar5)) {
+      (heap.u32(heap.u32((0x00431bb8) + (heap.u32(0x00991f88)) * 4)))();
+      uVar8 = (uint)(byte)(bVar3 + 1) << 8;
+    }
+    if ((bVar3 < bVar1) || (bVar3 < bVar5)) {
+      (heap.u32(heap.u32((0x00431bb8) + (heap.u32(0x00991f88)) * 4)))(uVar11, unaff_EBX);
+    }
+  }
+  return;
+}

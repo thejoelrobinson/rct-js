@@ -1,0 +1,530 @@
+{
+  "total": 1214,
+  "ok": 1028,
+  "failed": 186,
+  "successRate": "84.7%",
+  "errorBuckets": [
+    {
+      "count": 13,
+      "msg": "field expression not yet supported: DAT_00971e86._0_2_"
+    },
+    {
+      "count": 11,
+      "msg": "field expression not yet supported: DAT_00991f78._0_1_"
+    },
+    {
+      "count": 9,
+      "msg": "& of non-DAT identifier not yet supported: &local_18"
+    },
+    {
+      "count": 8,
+      "msg": "& of non-DAT identifier not yet supported: &local_c"
+    },
+    {
+      "count": 8,
+      "msg": "& of non-DAT identifier not yet supported: &local_8"
+    },
+    {
+      "count": 8,
+      "msg": "& of non-DAT identifier not yet supported: &stack0x00000000"
+    },
+    {
+      "count": 7,
+      "msg": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "count": 6,
+      "msg": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "count": 5,
+      "msg": "& of non-DAT identifier not yet supported: &local_14"
+    },
+    {
+      "count": 5,
+      "msg": "& of non-DAT identifier not yet supported: &local_10"
+    },
+    {
+      "count": 4,
+      "msg": "& of non-DAT identifier not yet supported: &local_bc"
+    },
+    {
+      "count": 4,
+      "msg": "& of non-DAT identifier not yet supported: &local_80"
+    },
+    {
+      "count": 3,
+      "msg": "field expression not yet supported: local_5c.cbSize"
+    },
+    {
+      "count": 3,
+      "msg": "& of non-DAT identifier not yet supported: &local_1c"
+    },
+    {
+      "count": 3,
+      "msg": "field expression not yet supported: param_3->dwDataOffset"
+    },
+    {
+      "count": 3,
+      "msg": "field expression not yet supported: param_1._0_2_"
+    },
+    {
+      "count": 3,
+      "msg": "& of non-DAT identifier not yet supported: &param_2"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &LAB_00413268"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: local_14.left"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: param_1->left"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_54"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_28"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_30"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_470"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_34"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_20"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_44"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &local_70"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: DAT_00999f9a._2_2_"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: DAT_00999fdc._2_2_"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: DAT_00991f88._0_1_"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &stack0xfffffffc"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: DAT_0099a02c._0_2_"
+    },
+    {
+      "count": 2,
+      "msg": "unsupported expr: ERROR"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &stack0xffffffe0"
+    },
+    {
+      "count": 2,
+      "msg": "& of non-DAT identifier not yet supported: &uStack_4"
+    },
+    {
+      "count": 2,
+      "msg": "field expression not yet supported: DAT_00971e8a._2_2_"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_50"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: local_120.rdh.dwSize"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_b8"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_2c"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: local_a0.dwOSVersionInfoSize"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: s_SOFTWARE_CLASSES__005ebd10._0_4_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: s_SOFTWARE_CLASSES__005ebd4c._0_4_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: local_30.style"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_40"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_267"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_74"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_3->palPalEntry[local_8].peRed"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_103"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_78"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_4->ckid"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_5c"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_5->fccType"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_2->ckid"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_6->pchEndWrite"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_4->dwFlags"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: local_1c.ckid"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &LAB_004130a0"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_4"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &LAB_00416820"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_514"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_1a8"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &param_1"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: local_21c._1_3_"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &stack0x0000000c"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_2"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &local_410"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: param_3._1_3_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: uStack_a._0_2_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_0087cba5._0_1_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: s__Scenarios___SC4_005f90b4._12_4_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_005f8d36._0_1_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_00999f9a._0_1_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_006293c4._0_1_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_006293c4._2_2_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_0062d2de._2_2_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_005f8d62._0_1_"
+    },
+    {
+      "count": 1,
+      "msg": "field expression not yet supported: DAT_00971e86._2_2_"
+    },
+    {
+      "count": 1,
+      "msg": "& of non-DAT identifier not yet supported: &uStack_6"
+    }
+  ],
+  "failedSamples": [
+    {
+      "file": "401000.c",
+      "error": "& of non-DAT identifier not yet supported: &local_50"
+    },
+    {
+      "file": "401120.c",
+      "error": "field expression not yet supported: local_120.rdh.dwSize"
+    },
+    {
+      "file": "401972.c",
+      "error": "& of non-DAT identifier not yet supported: &local_bc"
+    },
+    {
+      "file": "4019f9.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "file": "401b34.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "file": "401c9b.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "file": "401e20.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "file": "402027.c",
+      "error": "& of non-DAT identifier not yet supported: &local_b8"
+    },
+    {
+      "file": "402144.c",
+      "error": "& of non-DAT identifier not yet supported: &local_bc"
+    },
+    {
+      "file": "4023b2.c",
+      "error": "& of non-DAT identifier not yet supported: &local_bc"
+    },
+    {
+      "file": "4026ec.c",
+      "error": "& of non-DAT identifier not yet supported: &local_bc"
+    },
+    {
+      "file": "40276c.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "file": "4028a0.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c8"
+    },
+    {
+      "file": "402e3d.c",
+      "error": "& of non-DAT identifier not yet supported: &local_2c"
+    },
+    {
+      "file": "402e9b.c",
+      "error": "& of non-DAT identifier not yet supported: &LAB_00413268"
+    },
+    {
+      "file": "403337.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c"
+    },
+    {
+      "file": "403370.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c"
+    },
+    {
+      "file": "4033af.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c"
+    },
+    {
+      "file": "403b60.c",
+      "error": "& of non-DAT identifier not yet supported: &local_18"
+    },
+    {
+      "file": "403c2a.c",
+      "error": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "file": "403cd4.c",
+      "error": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "file": "403d79.c",
+      "error": "& of non-DAT identifier not yet supported: &local_14"
+    },
+    {
+      "file": "4046bc.c",
+      "error": "& of non-DAT identifier not yet supported: &local_14"
+    },
+    {
+      "file": "4046fc.c",
+      "error": "& of non-DAT identifier not yet supported: &local_14"
+    },
+    {
+      "file": "404752.c",
+      "error": "field expression not yet supported: local_a0.dwOSVersionInfoSize"
+    },
+    {
+      "file": "404972.c",
+      "error": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "file": "404992.c",
+      "error": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "file": "4049b2.c",
+      "error": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "file": "4049d2.c",
+      "error": "& of non-DAT identifier not yet supported: &local_24"
+    },
+    {
+      "file": "404cf0.c",
+      "error": "field expression not yet supported: local_5c.cbSize"
+    },
+    {
+      "file": "404d67.c",
+      "error": "field expression not yet supported: local_5c.cbSize"
+    },
+    {
+      "file": "404de6.c",
+      "error": "field expression not yet supported: local_5c.cbSize"
+    },
+    {
+      "file": "404e34.c",
+      "error": "& of non-DAT identifier not yet supported: &local_18"
+    },
+    {
+      "file": "405051.c",
+      "error": "field expression not yet supported: s_SOFTWARE_CLASSES__005ebd10._0_4_"
+    },
+    {
+      "file": "40537a.c",
+      "error": "field expression not yet supported: s_SOFTWARE_CLASSES__005ebd4c._0_4_"
+    },
+    {
+      "file": "4054e3.c",
+      "error": "& of non-DAT identifier not yet supported: &local_8"
+    },
+    {
+      "file": "405653.c",
+      "error": "& of non-DAT identifier not yet supported: &local_10"
+    },
+    {
+      "file": "4058f8.c",
+      "error": "& of non-DAT identifier not yet supported: &local_10"
+    },
+    {
+      "file": "405f2c.c",
+      "error": "field expression not yet supported: local_30.style"
+    },
+    {
+      "file": "40651a.c",
+      "error": "field expression not yet supported: local_14.left"
+    },
+    {
+      "file": "40657c.c",
+      "error": "& of non-DAT identifier not yet supported: &local_40"
+    },
+    {
+      "file": "4066a9.c",
+      "error": "field expression not yet supported: local_14.left"
+    },
+    {
+      "file": "40674f.c",
+      "error": "field expression not yet supported: param_1->left"
+    },
+    {
+      "file": "4067b4.c",
+      "error": "field expression not yet supported: param_1->left"
+    },
+    {
+      "file": "406d10.c",
+      "error": "& of non-DAT identifier not yet supported: &local_10"
+    },
+    {
+      "file": "4070f8.c",
+      "error": "& of non-DAT identifier not yet supported: &local_18"
+    },
+    {
+      "file": "4072f0.c",
+      "error": "& of non-DAT identifier not yet supported: &local_1c"
+    },
+    {
+      "file": "4077b3.c",
+      "error": "& of non-DAT identifier not yet supported: &local_c"
+    },
+    {
+      "file": "407e92.c",
+      "error": "& of non-DAT identifier not yet supported: &local_18"
+    },
+    {
+      "file": "408276.c",
+      "error": "& of non-DAT identifier not yet supported: &local_8"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/44a4e8.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../runtime/heap.js").Heap} Heap */
+
+import { FUN_0044b9db } from "./44b9db.js";
+import { FUN_0044ba3c } from "./44ba3c.js";
+import { FUN_0044c464 } from "./44c464.js";
+import { FUN_005e412c } from "./5e412c.js";
+import { FUN_005e43de } from "./5e43de.js";
+import { FUN_005e5fcb } from "./5e5fcb.js";
+export function FUN_0044a4e8(heap) {
+  let in_ZF = 0;
+  FUN_005e5fcb(heap);
+  if (in_ZF) {
+    FUN_0044b9db(heap);
+    heap.u32(unaff_ESI + (0x57) * 4) = 0xffffffff;
+  }
+  heap.u32((unaff_ESI + 0x59)) = 0;
+  heap.u32((unaff_ESI + 9)) = 0x100;
+  heap.u32((unaff_ESI + 0x26)) = 0xc6;
+  FUN_005e43de(heap);
+  heap.u32(unaff_ESI + (7) * 4) = heap.u32(0x00631bcc);
+  heap.u32(unaff_ESI + (3) * 4) = heap.u32(0x00631c2c);
+  heap.u32(unaff_ESI + (6) * 4) = heap.u32(0x00631c4c);
+  heap.u32(unaff_ESI) = heap.u32(0x00631bec);
+  heap.u32(unaff_ESI + (1) * 4) = heap.u32(0x00631c0c);
+  heap.u32(unaff_ESI + (5) * 4) = 0;
+  FUN_0044ba3c(heap);
+  FUN_005e412c(heap);
+  heap.u32((unaff_ESI + 0x15a)) = 0;
+  FUN_0044c464(heap);
+  return;
+}
