@@ -2,10 +2,9 @@
 // Source: decompiled/c/5dd34b.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CARRY2, CONCAT11, CONCAT31, LOCK } from "../runtime/ghidra-builtins.js";
+import { CARRY2, CONCAT11, CONCAT31, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_00444927 } from "./444927.js";
 import { FUN_00444bd4 } from "./444bd4.js";
 import { FUN_00444c74 } from "./444c74.js";
@@ -268,7 +267,7 @@ export function FUN_005dd34b(heap) {
             heap.u32((__addr_DAT_00743bd6 + heap.u32(0x0065dc4e) * 0x100)) = heap.u32((pbVar17 + 10));
           }
           LOCK();
-          UNLOCK(heap);
+          UNLOCK();
           if (heap.u32(0x0065dc4e) == 0xffff) {
             heap.setU32(0x0065dc3c, (pbVar17) >>> 0);
           }

@@ -2,7 +2,7 @@
 // Source: decompiled/c/443e98.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { FUN_00443e92 } from "./443e92.js";
 import { FUN_00443ef0 } from "./443ef0.js";

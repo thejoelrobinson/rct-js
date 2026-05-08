@@ -2,9 +2,9 @@
 // Source: decompiled/c/40f07a.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { StretchDIBits } from "../runtime/win32.js";
+import { StretchDIBits } from "../../runtime/win32.js";
 import { FUN_00404b57 } from "./404b57.js";
 import { FUN_00414210 } from "./414210.js";
 export function FUN_0040f07a(heap, param_1, param_2, param_3) {

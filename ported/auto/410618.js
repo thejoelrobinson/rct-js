@@ -2,9 +2,9 @@
 // Source: decompiled/c/410618.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { BitBlt } from "../runtime/win32.js";
+import { BitBlt } from "../../runtime/win32.js";
 export function FUN_00410618(heap, param_1, param_2, param_3) {
   let bVar1 = 0;
   bVar1 = heap.u32(0x005ec0e4) != 0x0;

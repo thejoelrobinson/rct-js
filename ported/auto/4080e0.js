@@ -2,9 +2,9 @@
 // Source: decompiled/c/4080e0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CloseHandle, CreateFileA, CreateFileMappingA, MapViewOfFile } from "../runtime/win32.js";
+import { CloseHandle, CreateFileA, CreateFileMappingA, MapViewOfFile } from "../../runtime/win32.js";
 export function FUN_004080e0(heap, param_1, param_2, param_3) {
   let hFile = 0;
   let hFileMappingObject = 0;

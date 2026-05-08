@@ -2,9 +2,9 @@
 // Source: decompiled/c/40864b.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetDlgItem, GetParent, ShowWindow } from "../runtime/win32.js";
+import { GetDlgItem, GetParent, ShowWindow } from "../../runtime/win32.js";
 export function FUN_0040864b(heap, param_1, param_2, param_3, param_4) {
   let pHVar1 = 0;
   if (param_2 == 0x4e) {

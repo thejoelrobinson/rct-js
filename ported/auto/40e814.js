@@ -2,9 +2,9 @@
 // Source: decompiled/c/40e814.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CreateCompatibleDC, CreateDIBSection, DeleteDC, SelectPalette } from "../runtime/win32.js";
+import { CreateCompatibleDC, CreateDIBSection, DeleteDC, SelectPalette } from "../../runtime/win32.js";
 import { FUN_004133c0 } from "./4133c0.js";
 export function FUN_0040e814(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(12);

@@ -2,9 +2,9 @@
 // Source: decompiled/c/418b60.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FlushFileBuffers, GetLastError } from "../runtime/win32.js";
+import { FlushFileBuffers, GetLastError } from "../../runtime/win32.js";
 import { FUN_00418ea0 } from "./418ea0.js";
 export function FUN_00418b60(heap, param_1) {
   const __sp = heap.allocFrame(4);

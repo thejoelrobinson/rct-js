@@ -2,10 +2,9 @@
 // Source: decompiled/c/441dc1.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT22, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT22, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_0043fdfb } from "./43fdfb.js";
 import { FUN_00441ffd } from "./441ffd.js";
 export function FUN_00441dc1(heap) {
@@ -97,20 +96,20 @@ export function FUN_00441dc1(heap) {
               LOCK();
               uVar2 = heap.u32((__addr_DAT_00629c7e) + (uVar15) * 4);
               heap.u32((__addr_DAT_00629c7e) + (uVar15) * 4) = uVar10;
-              UNLOCK(heap);
+              UNLOCK();
               LOCK();
               uVar3 = heap.u32((__addr_DAT_006294fe + uVar15 * 8));
               heap.u32((__addr_DAT_006294fe + uVar15 * 8)) = uVar7;
-              UNLOCK(heap);
+              UNLOCK();
               LOCK();
               uVar4 = heap.u32((__addr_DAT_00629502 + uVar15 * 8));
               heap.u32((__addr_DAT_00629502 + uVar15 * 8)) = uVar8;
-              UNLOCK(heap);
+              UNLOCK();
               LOCK();
               bVar1 = heap.u32((__addr_DAT_0062940e) + (uVar15) * 4);
               heap.u32((__addr_DAT_0062940e) + (uVar15) * 4) = uVar9;
               uVar9 = bVar1;
-              UNLOCK(heap);
+              UNLOCK();
               uVar15 = uVar15 + 1;
               uVar7 = uVar3;
               uVar8 = uVar4;

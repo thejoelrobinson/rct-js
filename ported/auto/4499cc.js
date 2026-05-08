@@ -2,10 +2,9 @@
 // Source: decompiled/c/4499cc.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CARRY1, CONCAT11, LOCK } from "../runtime/ghidra-builtins.js";
+import { CARRY1, CONCAT11, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_0044a2a8 } from "./44a2a8.js";
 import { FUN_004516de } from "./4516de.js";
 import { FUN_0045174b } from "./45174b.js";
@@ -191,43 +190,43 @@ export function FUN_004499cc(heap) {
         pbVar15 = pbVar14 + 0xd0;
         heap.u32(pbVar15 + (0) * 4) = 0;
         heap.u32(pbVar15 + (1) * 4) = 0;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar2 = heap.u32((pbVar14 + 0xd4));
         heap.u32((pbVar14 + 0xd4)) = heap.u32(pbVar15);
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar3 = heap.u32((pbVar14 + 0xd6));
         heap.u32((pbVar14 + 0xd6)) = uVar2;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar2 = heap.u32((pbVar14 + 0xd8));
         heap.u32((pbVar14 + 0xd8)) = uVar3;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar3 = heap.u32((pbVar14 + 0xda));
         heap.u32((pbVar14 + 0xda)) = uVar2;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar2 = heap.u32((pbVar14 + 0xdc));
         heap.u32((pbVar14 + 0xdc)) = uVar3;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar3 = heap.u32((pbVar14 + 0xde));
         heap.u32((pbVar14 + 0xde)) = uVar2;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar2 = heap.u32((pbVar14 + 0xe0));
         heap.u32((pbVar14 + 0xe0)) = uVar3;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar3 = heap.u32((pbVar14 + 0xe2));
         heap.u32((pbVar14 + 0xe2)) = uVar2;
-        UNLOCK(heap);
+        UNLOCK();
         LOCK();
         uVar2 = heap.u32((pbVar14 + 0xe4));
         heap.u32((pbVar14 + 0xe4)) = uVar3;
-        UNLOCK(heap);
+        UNLOCK();
         heap.u32((pbVar14 + 0xe6)) = uVar2;
         heap.u32(pbVar14 + (0xfd) * 4) = heap.u32(pbVar14 + (0xfd) * 4) | 1;
         uVar12 = heap.u32((pbVar14 + 0xe8));
@@ -282,31 +281,31 @@ export function FUN_004499cc(heap) {
           LOCK();
           bVar5 = heap.u32(pbVar14 + (0x14c) * 4);
           heap.u32(pbVar14 + (0x14c) * 4) = 0;
-          UNLOCK(heap);
+          UNLOCK();
           LOCK();
           bVar11 = heap.u32(pbVar14 + (0x14d) * 4);
           heap.u32(pbVar14 + (0x14d) * 4) = bVar5;
-          UNLOCK(heap);
+          UNLOCK();
           LOCK();
           bVar5 = heap.u32(pbVar14 + (0x14e) * 4);
           heap.u32(pbVar14 + (0x14e) * 4) = bVar11;
-          UNLOCK(heap);
+          UNLOCK();
           LOCK();
           bVar11 = heap.u32(pbVar14 + (0x14f) * 4);
           heap.u32(pbVar14 + (0x14f) * 4) = bVar5;
-          UNLOCK(heap);
+          UNLOCK();
           LOCK();
           bVar5 = heap.u32(pbVar14 + (0x150) * 4);
           heap.u32(pbVar14 + (0x150) * 4) = bVar11;
-          UNLOCK(heap);
+          UNLOCK();
           LOCK();
           bVar11 = heap.u32(pbVar14 + (0x151) * 4);
           heap.u32(pbVar14 + (0x151) * 4) = bVar5;
-          UNLOCK(heap);
+          UNLOCK();
           LOCK();
           bVar5 = heap.u32(pbVar14 + (0x152) * 4);
           heap.u32(pbVar14 + (0x152) * 4) = bVar11;
-          UNLOCK(heap);
+          UNLOCK();
           heap.u32(pbVar14 + (0x153) * 4) = bVar5;
           heap.u32(pbVar14 + (0xfd) * 4) = heap.u32(pbVar14 + (0xfd) * 4) | 0x10;
         }

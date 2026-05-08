@@ -2,9 +2,9 @@
 // Source: decompiled/c/415190.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { HeapCreate, HeapDestroy } from "../runtime/win32.js";
+import { HeapCreate, HeapDestroy } from "../../runtime/win32.js";
 import { FUN_00415410 } from "./415410.js";
 export function FUN_00415190(heap) {
   let iVar1 = 0;

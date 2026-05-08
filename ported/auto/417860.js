@@ -2,9 +2,9 @@
 // Source: decompiled/c/417860.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetStringTypeA, GetStringTypeW, MultiByteToWideChar } from "../runtime/win32.js";
+import { GetStringTypeA, GetStringTypeW, MultiByteToWideChar } from "../../runtime/win32.js";
 import { FUN_00413470 } from "./413470.js";
 import { FUN_00413830 } from "./413830.js";
 export function FUN_00417860(heap, param_1, param_2, param_3, param_4, param_5, param_6, param_7) {

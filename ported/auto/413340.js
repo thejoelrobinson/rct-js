@@ -2,7 +2,7 @@
 // Source: decompiled/c/0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function _strlen(heap, _Str) {
   let uVar1 = 0;

@@ -2,9 +2,9 @@
 // Source: decompiled/c/40fe8d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteDC, ReleaseDC, SelectObject, SelectPalette, SetBkColor, SetBkMode, SetTextColor } from "../runtime/win32.js";
+import { DeleteDC, ReleaseDC, SelectObject, SelectPalette, SetBkColor, SetBkMode, SetTextColor } from "../../runtime/win32.js";
 export function FUN_0040fe8d(heap, param_1, param_2) {
   if (heap.u32((param_1 + 0xc)) != 0) {
     heap.u32((param_1 + 0xc)) = 0;

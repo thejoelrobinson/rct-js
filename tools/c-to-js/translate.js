@@ -47,7 +47,8 @@ const GHIDRA_BUILTINS = new Set([
   "CARRY1", "CARRY2", "CARRY4",
   "SBORROW2", "SBORROW4",
   "SCARRY2", "SCARRY4",
-  "LOCK", "RtlUnwind", "Arguments", "ExceptionList",
+  "SUB41", "SUB42", "SUB44", "SUB81", "SUB82", "SUB84",
+  "LOCK", "UNLOCK", "RtlUnwind", "Arguments", "ExceptionList",
 ]);
 
 // Tree-sitter-c is a context-free parser, so it can't distinguish typedef'd
@@ -218,13 +219,13 @@ function renderHeader(ctx) {
   lines.push(`// Source: decompiled/c/${(ctx.funcAddr || 0).toString(16)}.c`);
   lines.push(`// Edit by hand only after diff-test passes — re-running the translator will overwrite.`);
   lines.push("");
-  lines.push(`/** @typedef {import("../runtime/heap.js").Heap} Heap */`);
+  lines.push(`/** @typedef {import("../../runtime/heap.js").Heap} Heap */`);
   lines.push("");
   if (ctx.imports.size > 0) {
-    lines.push(`import { ${[...ctx.imports].sort().join(", ")} } from "../runtime/win32.js";`);
+    lines.push(`import { ${[...ctx.imports].sort().join(", ")} } from "../../runtime/win32.js";`);
   }
   if (ctx.builtins.size > 0) {
-    lines.push(`import { ${[...ctx.builtins].sort().join(", ")} } from "../runtime/ghidra-builtins.js";`);
+    lines.push(`import { ${[...ctx.builtins].sort().join(", ")} } from "../../runtime/ghidra-builtins.js";`);
   }
   if (ctx.callsFun.size > 0) {
     const calls = [...ctx.callsFun].sort();

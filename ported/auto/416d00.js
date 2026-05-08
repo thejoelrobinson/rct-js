@@ -2,9 +2,9 @@
 // Source: decompiled/c/416d00.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { LCMapStringA, LCMapStringW, MultiByteToWideChar, WideCharToMultiByte } from "../runtime/win32.js";
+import { LCMapStringA, LCMapStringW, MultiByteToWideChar, WideCharToMultiByte } from "../../runtime/win32.js";
 import { FUN_004133c0 } from "./4133c0.js";
 import { FUN_00413470 } from "./413470.js";
 import { FUN_00416f30 } from "./416f30.js";

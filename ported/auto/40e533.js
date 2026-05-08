@@ -2,9 +2,9 @@
 // Source: decompiled/c/40e533.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CreateCompatibleDC, GetBkColor, GetBkMode, GetDC, GetTextColor, RealizePalette, SelectObject, SelectPalette, SetDIBColorTable } from "../runtime/win32.js";
+import { CreateCompatibleDC, GetBkColor, GetBkMode, GetDC, GetTextColor, RealizePalette, SelectObject, SelectPalette, SetDIBColorTable } from "../../runtime/win32.js";
 export function FUN_0040e533(heap, param_1) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_005eee98 = __sp + 0;

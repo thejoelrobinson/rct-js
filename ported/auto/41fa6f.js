@@ -2,7 +2,7 @@
 // Source: decompiled/c/41fa6f.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0041fa6f(heap) {
   let unaff_EDI = 0;

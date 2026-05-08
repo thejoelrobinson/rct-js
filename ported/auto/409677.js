@@ -2,9 +2,9 @@
 // Source: decompiled/c/409677.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { ClientToScreen, GetClientRect, SetViewportOrgEx } from "../runtime/win32.js";
+import { ClientToScreen, GetClientRect, SetViewportOrgEx } from "../../runtime/win32.js";
 export function FUN_00409677(heap, param_1) {
   const __sp = heap.allocFrame(132);
   const __addr_local_8 = __sp + 0;

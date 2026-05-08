@@ -2,9 +2,9 @@
 // Source: decompiled/c/40ae98.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetDC, GetSystemPaletteEntries, ReleaseDC } from "../runtime/win32.js";
+import { GetDC, GetSystemPaletteEntries, ReleaseDC } from "../../runtime/win32.js";
 import { FUN_00405b05 } from "./405b05.js";
 import { FUN_00408d5d } from "./408d5d.js";
 import { FUN_0040ab29 } from "./40ab29.js";

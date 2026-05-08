@@ -2,10 +2,9 @@
 // Source: decompiled/c/42f77c.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { LOCK } from "../runtime/ghidra-builtins.js";
+import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_0042f6df } from "./42f6df.js";
 export function FUN_0042f77c(heap) {
   const __sp = heap.allocFrame(4);
@@ -36,7 +35,7 @@ export function FUN_0042f77c(heap) {
     }
     FUN_0042f6df(heap);
     LOCK();
-    UNLOCK(heap);
+    UNLOCK();
     heap.setU32(0x005f8cb4, (in_AL) >>> 0);
     FUN_0042f6df(heap);
     heap.setU32(0x005f88ae, (1) >>> 0);

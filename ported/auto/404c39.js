@@ -2,9 +2,9 @@
 // Source: decompiled/c/404c39.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { LoadImageA } from "../runtime/win32.js";
+import { LoadImageA } from "../../runtime/win32.js";
 export function FUN_00404c39(heap, param_1) {
   LoadImageA(heap, 0x0, param_1, 1, 0, 0, 0x10);
   return;

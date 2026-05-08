@@ -2,7 +2,7 @@
 // Source: decompiled/c/41091d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0041091d(heap) {
   if (heap.u32(0x005ec12c) == 0) {

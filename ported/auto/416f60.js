@@ -2,10 +2,9 @@
 // Source: decompiled/c/416f60.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { SUB41 } from "../runtime/win32.js";
-import { CONCAT11 } from "../runtime/ghidra-builtins.js";
+import { CONCAT11, SUB41 } from "../../runtime/ghidra-builtins.js";
 import { FUN_00417860 } from "./417860.js";
 export function FUN_00416f60(heap, param_1, param_2) {
   const __sp = heap.allocFrame(8);
@@ -24,7 +23,7 @@ export function FUN_00416f60(heap, param_1, param_2) {
     uVar1 = 1;
   } else {
     (heap.u32(__addr_param_1) & 0xffff) = CONCAT11(heap.u32(__addr_param_1), (heap.u32(__addr_param_1) >>> 8));
-    (((heap.u32(__addr_param_1)) >>> 24) & 0xff) = SUB41(heap, iVar2, 3);
+    (((heap.u32(__addr_param_1)) >>> 24) & 0xff) = SUB41(iVar2, 3);
     (heap.u32(__addr_param_1) & 0xffffffff) = heap.u32(__addr_param_1);
     uVar1 = 2;
   }

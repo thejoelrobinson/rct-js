@@ -2,10 +2,9 @@
 // Source: decompiled/c/5e5c36.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { LOCK } from "../runtime/ghidra-builtins.js";
+import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_005e43de } from "./5e43de.js";
 export function FUN_005e5c36(heap) {
   let uVar3 = 0;
@@ -22,7 +21,7 @@ export function FUN_005e5c36(heap) {
         LOCK();
         uVar3 = heap.u32(unaff_ESI + (0xbc) * 4);
         heap.u32(unaff_ESI + (0xbc) * 4) = heap.u32(unaff_ESI);
-        UNLOCK(heap);
+        UNLOCK();
         heap.u32(unaff_ESI) = uVar3;
         unaff_ESI = unaff_ESI + 1;
       } while (unaff_ESI != puVar6);

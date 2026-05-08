@@ -2,9 +2,9 @@
 // Source: decompiled/c/402e3d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetSystemInfo } from "../runtime/win32.js";
+import { GetSystemInfo } from "../../runtime/win32.js";
 export function FUN_00402e3d(heap) {
   const __sp = heap.allocFrame(128);
   const __addr_local_2c = __sp + 0;

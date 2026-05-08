@@ -2,9 +2,9 @@
 // Source: decompiled/c/408a4d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetProcAddress, LoadLibraryA } from "../runtime/win32.js";
+import { GetProcAddress, LoadLibraryA } from "../../runtime/win32.js";
 import { FUN_00408a26 } from "./408a26.js";
 import { FUN_00408b0b } from "./408b0b.js";
 export function FUN_00408a4d(heap) {

@@ -2,9 +2,9 @@
 // Source: decompiled/c/40840d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteFileA } from "../runtime/win32.js";
+import { DeleteFileA } from "../../runtime/win32.js";
 export function FUN_0040840d(heap, param_1) {
   let BVar1 = 0;
   let uVar2 = 0;

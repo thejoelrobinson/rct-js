@@ -2,9 +2,9 @@
 // Source: decompiled/c/40f2f4.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CreatePalette, GetDC, GetDeviceCaps, GetSystemPaletteEntries, GetSystemPaletteUse, ReleaseDC } from "../runtime/win32.js";
+import { CreatePalette, GetDC, GetDeviceCaps, GetSystemPaletteEntries, GetSystemPaletteUse, ReleaseDC } from "../../runtime/win32.js";
 export function FUN_0040f2f4(heap, param_1, param_2, param_3) {
   let hdc = 0;
   let UVar1 = 0;

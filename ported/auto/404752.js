@@ -2,9 +2,9 @@
 // Source: decompiled/c/404752.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetComputerNameA, GetDC, GetDeviceCaps, GetSystemInfo, GetSystemMetrics, GetUserNameA, GetVersionExA, GlobalMemoryStatus, ReleaseDC } from "../runtime/win32.js";
+import { GetComputerNameA, GetDC, GetDeviceCaps, GetSystemInfo, GetSystemMetrics, GetUserNameA, GetVersionExA, GlobalMemoryStatus, ReleaseDC } from "../../runtime/win32.js";
 import { FUN_00402e3d } from "./402e3d.js";
 export function FUN_00404752(heap) {
   const __sp = heap.allocFrame(276);

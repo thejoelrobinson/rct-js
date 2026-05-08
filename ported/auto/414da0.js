@@ -2,9 +2,9 @@
 // Source: decompiled/c/414da0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetCPInfo } from "../runtime/win32.js";
+import { GetCPInfo } from "../../runtime/win32.js";
 import { FUN_00416d00 } from "./416d00.js";
 import { FUN_00417860 } from "./417860.js";
 export function FUN_00414da0(heap) {

@@ -2,7 +2,7 @@
 // Source: decompiled/c/408c1c.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00408c1c(heap, param_1) {
   puVar1 = (heap.u32(0x005f0954) * 0x12 + heap.u32(0x005ebe38));

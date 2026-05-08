@@ -2,9 +2,9 @@
 // Source: decompiled/c/439822.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CARRY1 } from "../runtime/ghidra-builtins.js";
+import { CARRY1 } from "../../runtime/ghidra-builtins.js";
 export function FUN_00439822(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_PTR_LAB_0062d4ac = __sp + 0;

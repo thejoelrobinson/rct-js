@@ -2,9 +2,9 @@
 // Source: decompiled/c/415580.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { HeapFree, VirtualFree } from "../runtime/win32.js";
+import { HeapFree, VirtualFree } from "../../runtime/win32.js";
 export function FUN_00415580(heap, param_1) {
   const __sp = heap.allocFrame(4);
   const __addr_PTR_LOOP_005ec500 = __sp + 0;

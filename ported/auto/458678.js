@@ -2,10 +2,9 @@
 // Source: decompiled/c/458678.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { SUB42 } from "../runtime/win32.js";
-import { CONCAT22 } from "../runtime/ghidra-builtins.js";
+import { CONCAT22, SUB42 } from "../../runtime/ghidra-builtins.js";
 import { FUN_0045897e } from "./45897e.js";
 import { FUN_00458a7c } from "./458a7c.js";
 import { FUN_00458bcf } from "./458bcf.js";
@@ -36,7 +35,7 @@ export function FUN_00458678(heap) {
   in_DX = in_DX - sVar4;
   pbVar2 = __addr_DAT_0099a888;
   do {
-    uVar5 = SUB42(heap, pbVar2, 0);
+    uVar5 = SUB42(pbVar2, 0);
     uStack_8 = (undefined2)(pbVar2 >>> 0x10);
     FUN_00458a7c(heap, uVar5, in_CX, uVar5, in_DX);
     FUN_009ba943(heap);

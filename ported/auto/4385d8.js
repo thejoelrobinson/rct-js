@@ -2,10 +2,10 @@
 // Source: decompiled/c/4385d8.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetNextWindow } from "../runtime/win32.js";
-import { CONCAT22 } from "../runtime/ghidra-builtins.js";
+import { GetNextWindow } from "../../runtime/win32.js";
+import { CONCAT22 } from "../../runtime/ghidra-builtins.js";
 import { FUN_004039ff } from "./4039ff.js";
 import { FUN_00403abb } from "./403abb.js";
 import { FUN_004046fc } from "./4046fc.js";

@@ -2,9 +2,9 @@
 // Source: decompiled/c/414cb0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetACP, GetOEMCP } from "../runtime/win32.js";
+import { GetACP, GetOEMCP } from "../../runtime/win32.js";
 export function FUN_00414cb0(heap, param_1) {
   let iVar1 = 0;
   let bVar2 = 0;

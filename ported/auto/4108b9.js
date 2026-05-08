@@ -2,9 +2,9 @@
 // Source: decompiled/c/4108b9.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { Ordinal_2 } from "../runtime/win32.js";
+import { Ordinal_2 } from "../../runtime/win32.js";
 import { FUN_00410810 } from "./410810.js";
 export function FUN_004108b9(heap) {
   let iVar1 = 0;

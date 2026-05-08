@@ -2,9 +2,9 @@
 // Source: decompiled/c/4429db.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { SBORROW4 } from "../runtime/ghidra-builtins.js";
+import { SBORROW4 } from "../../runtime/ghidra-builtins.js";
 import { FUN_004447f6 } from "./4447f6.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_004429db(heap) {

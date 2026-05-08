@@ -2,9 +2,9 @@
 // Source: decompiled/c/408b0b.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FreeLibrary } from "../runtime/win32.js";
+import { FreeLibrary } from "../../runtime/win32.js";
 export function FUN_00408b0b(heap) {
   if (heap.u32(0x005ebf2c) != 0x0) {
     FreeLibrary(heap, heap.u32(0x005ebf2c));

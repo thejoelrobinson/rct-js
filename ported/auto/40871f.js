@@ -2,9 +2,9 @@
 // Source: decompiled/c/40871f.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetOpenFileNameA, GetSaveFileNameA } from "../runtime/win32.js";
+import { GetOpenFileNameA, GetSaveFileNameA } from "../../runtime/win32.js";
 import { FUN_0040ba8c } from "./40ba8c.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_0040871f(heap, param_1, param_2, param_3, param_4, param_5) {

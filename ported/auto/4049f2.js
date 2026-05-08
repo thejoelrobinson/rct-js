@@ -2,9 +2,9 @@
 // Source: decompiled/c/4049f2.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetDC, GetDeviceCaps, GetSystemMetrics, ReleaseDC } from "../runtime/win32.js";
+import { GetDC, GetDeviceCaps, GetSystemMetrics, ReleaseDC } from "../../runtime/win32.js";
 export function FUN_004049f2(heap, param_1) {
   let iVar1 = 0;
   let hdc = 0;

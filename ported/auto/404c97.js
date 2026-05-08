@@ -2,9 +2,9 @@
 // Source: decompiled/c/404c97.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { LoadIconA } from "../runtime/win32.js";
+import { LoadIconA } from "../../runtime/win32.js";
 export function FUN_00404c97(heap, param_1) {
   LoadIconA(heap, heap.u32(0x005f1398), param_1);
   return;

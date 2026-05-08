@@ -2,9 +2,9 @@
 // Source: decompiled/c/413c90.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetModuleFileNameA } from "../runtime/win32.js";
+import { GetModuleFileNameA } from "../../runtime/win32.js";
 import { FUN_004170f0 } from "./4170f0.js";
 import { FUN_00417240 } from "./417240.js";
 import { FUN_00417280 } from "./417280.js";

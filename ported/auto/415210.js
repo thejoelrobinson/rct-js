@@ -2,9 +2,9 @@
 // Source: decompiled/c/415210.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetModuleFileNameA, GetStdHandle, WriteFile } from "../runtime/win32.js";
+import { GetModuleFileNameA, GetStdHandle, WriteFile } from "../../runtime/win32.js";
 import { FUN_004175f0 } from "./4175f0.js";
 export function FUN_00415210(heap, param_1) {
   const __sp = heap.allocFrame(432);

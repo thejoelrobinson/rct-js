@@ -2,7 +2,7 @@
 // Source: decompiled/c/413180.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00413180(heap, param_1, param_2) {
   let bVar1 = 0;

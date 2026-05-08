@@ -2,10 +2,9 @@
 // Source: decompiled/c/0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT22, CONCAT31, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT22, CONCAT31, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_00424db7 } from "./424db7.js";
 import { FUN_00424de2 } from "./424de2.js";
 import { FUN_0042547b } from "./42547b.js";
@@ -81,7 +80,7 @@ export function thunk_FUN_0045534a(heap) {
           LOCK();
           puVar2 = heap.u32(unaff_ESI + (2) * 4);
           heap.u32(unaff_ESI + (2) * 4) = 0;
-          UNLOCK(heap);
+          UNLOCK();
           if (puVar2 != 0x0) {
             heap.u32(puVar2) = 0;
           }
@@ -116,7 +115,7 @@ export function thunk_FUN_0045534a(heap) {
         LOCK();
         puVar2 = heap.u32(unaff_ESI + (2) * 4);
         heap.u32(unaff_ESI + (2) * 4) = 0;
-        UNLOCK(heap);
+        UNLOCK();
         if (puVar2 != 0x0) {
           heap.u32(puVar2) = 0;
         }

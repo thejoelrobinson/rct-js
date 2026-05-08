@@ -2,9 +2,9 @@
 // Source: decompiled/c/405f2c.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetStockObject, LoadCursorA, LoadIconA, RegisterClassA } from "../runtime/win32.js";
+import { GetStockObject, LoadCursorA, LoadIconA, RegisterClassA } from "../../runtime/win32.js";
 import { FUN_00403d79 } from "./403d79.js";
 export function FUN_00405f2c(heap) {
   const __sp = heap.allocFrame(128);

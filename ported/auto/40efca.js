@@ -2,9 +2,9 @@
 // Source: decompiled/c/40efca.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { StretchDIBits } from "../runtime/win32.js";
+import { StretchDIBits } from "../../runtime/win32.js";
 export function FUN_0040efca(heap, param_1, param_2) {
   let bVar1 = 0;
   bVar1 = heap.u32(0x005ec080) != 0x0;

@@ -2,9 +2,9 @@
 // Source: decompiled/c/40857b.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetCurrentDirectoryA, GetLogicalDriveStringsA } from "../runtime/win32.js";
+import { GetCurrentDirectoryA, GetLogicalDriveStringsA } from "../../runtime/win32.js";
 import { FUN_00413700 } from "./413700.js";
 export function FUN_0040857b(heap, param_1, param_2) {
   const __sp = heap.allocFrame(280);

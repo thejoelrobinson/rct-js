@@ -2,9 +2,9 @@
 // Source: decompiled/c/4072f0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DirectSoundCreate } from "../runtime/win32.js";
+import { DirectSoundCreate } from "../../runtime/win32.js";
 import { FUN_00407f70 } from "./407f70.js";
 import { FUN_00407faf } from "./407faf.js";
 export function FUN_004072f0(heap, param_1, param_2, param_3, param_4, param_5) {

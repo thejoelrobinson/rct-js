@@ -2,9 +2,9 @@
 // Source: decompiled/c/403c2a.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DispatchMessageA, IsDialogMessageA, IsWindow, PeekMessageA, TranslateMessage } from "../runtime/win32.js";
+import { DispatchMessageA, IsDialogMessageA, IsWindow, PeekMessageA, TranslateMessage } from "../../runtime/win32.js";
 import { FUN_004070e3 } from "./4070e3.js";
 export function FUN_00403c2a(heap) {
   const __sp = heap.allocFrame(128);

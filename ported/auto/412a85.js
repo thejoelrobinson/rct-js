@@ -2,9 +2,9 @@
 // Source: decompiled/c/412a85.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GlobalAlloc, GlobalFree, GlobalHandle, GlobalLock, GlobalUnlock } from "../runtime/win32.js";
+import { GlobalAlloc, GlobalFree, GlobalHandle, GlobalLock, GlobalUnlock } from "../../runtime/win32.js";
 export function FUN_00412a85(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(128);
   const __addr_local_1c = __sp + 0;

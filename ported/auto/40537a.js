@@ -2,9 +2,9 @@
 // Source: decompiled/c/40537a.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { RegCloseKey, RegDeleteKeyA, RegFlushKey, RegOpenKeyExA, RegQueryValueExA } from "../runtime/win32.js";
+import { RegCloseKey, RegDeleteKeyA, RegFlushKey, RegOpenKeyExA, RegQueryValueExA } from "../../runtime/win32.js";
 import { FUN_00413170 } from "./413170.js";
 import { FUN_00413180 } from "./413180.js";
 export function FUN_0040537a(heap, param_1) {

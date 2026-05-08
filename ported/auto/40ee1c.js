@@ -2,9 +2,9 @@
 // Source: decompiled/c/40ee1c.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetDC, RealizePalette, ReleaseDC, SelectPalette } from "../runtime/win32.js";
+import { GetDC, RealizePalette, ReleaseDC, SelectPalette } from "../../runtime/win32.js";
 export function FUN_0040ee1c(heap) {
   let hdc = 0;
   let hPal = 0;

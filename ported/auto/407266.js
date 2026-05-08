@@ -2,9 +2,9 @@
 // Source: decompiled/c/407266.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetCursorPos } from "../runtime/win32.js";
+import { GetCursorPos } from "../../runtime/win32.js";
 import { FUN_00406fca } from "./406fca.js";
 import { FUN_004070f8 } from "./4070f8.js";
 export function FUN_00407266(heap) {

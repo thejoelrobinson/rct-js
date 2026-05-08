@@ -2,10 +2,9 @@
 // Source: decompiled/c/9b4911.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT22, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT22, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 export function FUN_009b4911(heap) {
   const __sp = heap.allocFrame(12);
   const __addr_PTR_DAT_009b5864 = __sp + 0;
@@ -47,7 +46,7 @@ export function FUN_009b4911(heap) {
           sVar8 = sVar7 - heap.u32(0x009a2028);
           if ((sVar8 == 0 || sVar7 < heap.u32(0x009a2028)) || (uVar6 = (sVar3 - sVar8), (sVar3 - sVar8) != 0 && sVar8 <= sVar3)) {
             LOCK();
-            UNLOCK(heap);
+            UNLOCK();
             heap.setU32(0x009a200c, (puVar10) >>> 0);
             uVar1 = (heap.u32(heap.u32((__addr_PTR_DAT_009b5864) + (uVar6) * 4)))();
             return uVar1;
@@ -78,7 +77,7 @@ export function FUN_009b4911(heap) {
         sVar8 = sVar7 - heap.u32(0x009a2028);
         if ((sVar8 == 0 || sVar7 < heap.u32(0x009a2028)) || (uVar6 = (sVar3 - sVar8), (sVar3 - sVar8) != 0 && sVar8 <= sVar3)) {
           LOCK();
-          UNLOCK(heap);
+          UNLOCK();
           heap.setU32(0x009a200c, (puVar10) >>> 0);
           uVar1 = (heap.u32(heap.u32((__addr_PTR_DAT_009b4a2c) + (uVar6) * 4)))();
           return uVar1;
@@ -110,7 +109,7 @@ export function FUN_009b4911(heap) {
         sVar8 = sVar7 - heap.u32(0x009a2028);
         if ((sVar8 == 0 || sVar7 < heap.u32(0x009a2028)) || (uVar6 = (sVar3 - sVar8), (sVar3 - sVar8) != 0 && sVar8 <= sVar3)) {
           LOCK();
-          UNLOCK(heap);
+          UNLOCK();
           heap.setU32(0x009a200c, (puVar10) >>> 0);
           uVar1 = (heap.u32(heap.u32((__addr_PTR_DAT_009b5148) + (uVar6) * 4)))();
           return uVar1;

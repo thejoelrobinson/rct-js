@@ -2,9 +2,9 @@
 // Source: decompiled/c/411e74.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetPixel, SetPixel } from "../runtime/win32.js";
+import { GetPixel, SetPixel } from "../../runtime/win32.js";
 export function FUN_00411e74(heap, param_1, param_2) {
   const __sp = heap.allocFrame(16);
   const __addr_local_78 = __sp + 0;

@@ -2,10 +2,9 @@
 // Source: decompiled/c/42913a.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { LOCK } from "../runtime/ghidra-builtins.js";
+import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_00428ec0 } from "./428ec0.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_0042913a(heap) {
@@ -40,7 +39,7 @@ export function FUN_0042913a(heap) {
     bVar1 = heap.u32((__addr_DAT_0087cc8a) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087cc8a) + (uVar8) * 4) = uVar5;
     uVar5 = bVar1;
-    UNLOCK(heap);
+    UNLOCK();
     uVar8 = uVar8 + 1;
   } while (uVar8 < 0x20);
   FUN_005e5301(heap);
@@ -55,7 +54,7 @@ export function FUN_0042913a(heap) {
     bVar1 = heap.u32((__addr_DAT_0087ccaa) + (uVar9) * 4);
     heap.u32((__addr_DAT_0087ccaa) + (uVar9) * 4) = uVar8;
     uVar8 = bVar1;
-    UNLOCK(heap);
+    UNLOCK();
     uVar9 = uVar9 + 1;
   } while (uVar9 < 0x20);
   FUN_005e5301(heap);
@@ -65,7 +64,7 @@ export function FUN_0042913a(heap) {
     LOCK();
     iVar2 = heap.u32((__addr_DAT_0087d104) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087d104) + (uVar8) * 4) = iVar6;
-    UNLOCK(heap);
+    UNLOCK();
     uVar8 = uVar8 + 1;
     iVar6 = iVar2;
   } while (uVar8 < 0x80);
@@ -78,7 +77,7 @@ export function FUN_0042913a(heap) {
     LOCK();
     iVar6 = heap.u32((__addr_DAT_0087d314) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087d314) + (uVar8) * 4) = heap.u32(0x0087d30c);
-    UNLOCK(heap);
+    UNLOCK();
     uVar8 = uVar8 + 1;
     heap.setU32(0x0087d30c, (iVar6) >>> 0);
   } while (uVar8 < 0x80);
@@ -91,7 +90,7 @@ export function FUN_0042913a(heap) {
     LOCK();
     uVar3 = heap.u32((__addr_DAT_0087d518) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087d518) + (uVar8) * 4) = uVar7;
-    UNLOCK(heap);
+    UNLOCK();
     uVar8 = uVar8 + 1;
     uVar7 = uVar3;
   } while (uVar8 < 0x80);

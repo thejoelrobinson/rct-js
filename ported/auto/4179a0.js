@@ -2,9 +2,9 @@
 // Source: decompiled/c/4179a0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetLastError, SetFilePointer } from "../runtime/win32.js";
+import { GetLastError, SetFilePointer } from "../../runtime/win32.js";
 import { FUN_00418d90 } from "./418d90.js";
 import { FUN_00418ea0 } from "./418ea0.js";
 export function FUN_004179a0(heap, param_1, param_2, param_3) {

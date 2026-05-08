@@ -2,7 +2,7 @@
 // Source: decompiled/c/40904c.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0040904c(heap, param_1) {
   if ((heap.u32((param_1 + 3)) != 0) && (heap.u32(param_1 + (0x20) * 4) != 0)) {

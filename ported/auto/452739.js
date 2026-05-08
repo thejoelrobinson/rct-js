@@ -2,7 +2,7 @@
 // Source: decompiled/c/452739.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { FUN_004072f0 } from "./4072f0.js";
 import { FUN_00407696 } from "./407696.js";

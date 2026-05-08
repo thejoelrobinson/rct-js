@@ -2,9 +2,9 @@
 // Source: decompiled/c/401120.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CreateRectRgn, GetRegionData, GetUpdateRgn } from "../runtime/win32.js";
+import { CreateRectRgn, GetRegionData, GetUpdateRgn } from "../../runtime/win32.js";
 import { FUN_004015f0 } from "./4015f0.js";
 import { FUN_0040179d } from "./40179d.js";
 export function FUN_00401120(heap, param_1) {

@@ -2,7 +2,7 @@
 // Source: decompiled/c/4310fa.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_004310fa(heap) {
   let unaff_ESI = 0;

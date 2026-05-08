@@ -2,9 +2,9 @@
 // Source: decompiled/c/4037cf.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DestroyWindow, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA } from "../runtime/win32.js";
+import { DestroyWindow, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA } from "../../runtime/win32.js";
 import { FUN_00401120 } from "./401120.js";
 export function FUN_004037cf(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(8);

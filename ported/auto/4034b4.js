@@ -2,9 +2,9 @@
 // Source: decompiled/c/4034b4.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { SetWindowTextA } from "../runtime/win32.js";
+import { SetWindowTextA } from "../../runtime/win32.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_004034b4(heap, param_1) {
   const __sp = heap.allocFrame(4);

@@ -2,9 +2,9 @@
 // Source: decompiled/c/4062cb.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetDC, GetDeviceCaps, ReleaseDC } from "../runtime/win32.js";
+import { GetDC, GetDeviceCaps, ReleaseDC } from "../../runtime/win32.js";
 import { FUN_004049f2 } from "./4049f2.js";
 import { FUN_00408bba } from "./408bba.js";
 import { FUN_00408d19 } from "./408d19.js";

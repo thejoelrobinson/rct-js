@@ -2,9 +2,9 @@
 // Source: decompiled/c/5dbad0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CARRY2, CONCAT11, CONCAT22, CONCAT31 } from "../runtime/ghidra-builtins.js";
+import { CARRY2, CONCAT11, CONCAT22, CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { FUN_00444927 } from "./444927.js";
 import { FUN_005d849e } from "./5d849e.js";
 import { FUN_005db615 } from "./5db615.js";

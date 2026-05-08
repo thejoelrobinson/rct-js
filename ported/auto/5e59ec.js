@@ -2,7 +2,7 @@
 // Source: decompiled/c/5e59ec.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_005e59ec(heap) {
   const __sp = heap.allocFrame(4);

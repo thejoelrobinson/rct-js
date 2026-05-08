@@ -2,10 +2,9 @@
 // Source: decompiled/c/5d3b48.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT11, CONCAT44, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT11, CONCAT44, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_00431b6f } from "./431b6f.js";
 import { FUN_00433bae } from "./433bae.js";
 import { FUN_00433e1c } from "./433e1c.js";
@@ -83,28 +82,28 @@ export function FUN_005d3b48(heap) {
     LOCK();
     heap.setU32(0x00656af0, (heap.u32((__addr_DAT_00971ef4) + ((uVar7 >>> 5 | uVar7 << 0xb)) * 4)) >>> 0);
     heap.u32((__addr_DAT_00971ef4) + ((uVar7 >>> 5 | uVar7 << 0xb)) * 4) = __addr_DAT_00656ae0;
-    UNLOCK(heap);
+    UNLOCK();
     uVar7 = sVar3 + local_6 + 0x20U & 0xfe0;
     LOCK();
     heap.setU32(0x00656af4, (heap.u32((__addr_DAT_00971ef4) + (((uVar5 * 0x80 | uVar5 >>> 9 | uVar7) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4)) >>> 0);
     heap.u32((__addr_DAT_00971ef4) + (((uVar5 * 0x80 | uVar5 >>> 9 | uVar7) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4) = __addr_DAT_00656ae8;
-    UNLOCK(heap);
+    UNLOCK();
     uVar7 = uVar7 - 0x40 & 0xfe0;
     LOCK();
     heap.setU32(0x00656af8, (heap.u32((__addr_DAT_00971ef4) + (((uVar5 * 0x80 | uVar5 >>> 9 | uVar7) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4)) >>> 0);
     heap.u32((__addr_DAT_00971ef4) + (((uVar5 * 0x80 | uVar5 >>> 9 | uVar7) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4) = __addr_DAT_00656ae8;
-    UNLOCK(heap);
+    UNLOCK();
     uVar7 = uVar7 + 0x20 & 0xfe0;
     uVar9 = uVar5 + 0x20 & 0xfe0;
     LOCK();
     heap.setU32(0x00656afc, (heap.u32((__addr_DAT_00971ef4) + (((uVar9 << 7 | uVar7) >>> 5 | (uVar9 >>> 9) << 0xb)) * 4)) >>> 0);
     heap.u32((__addr_DAT_00971ef4) + (((uVar9 << 7 | uVar7) >>> 5 | (uVar9 >>> 9) << 0xb)) * 4) = __addr_DAT_00656ae8;
-    UNLOCK(heap);
+    UNLOCK();
     uVar5 = uVar5 - 0x20 & 0xfe0;
     LOCK();
     heap.setU32(0x00656b00, (heap.u32((__addr_DAT_00971ef4) + (((uVar5 << 7 | uVar7) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4)) >>> 0);
     heap.u32((__addr_DAT_00971ef4) + (((uVar5 << 7 | uVar7) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4) = __addr_DAT_00656ae8;
-    UNLOCK(heap);
+    UNLOCK();
     heap.setU32(0x00656ae1, (bVar6 & 0xf | 0x80) >>> 0);
     heap.setU32(0x00656ae0, (bVar14 | 8) >>> 0);
     if ((in_EDX & 0x10000) != 0) {

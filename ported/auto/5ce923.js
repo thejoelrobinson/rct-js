@@ -2,10 +2,9 @@
 // Source: decompiled/c/5ce923.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT11, CONCAT31, CONCAT44, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT11, CONCAT31, CONCAT44, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_005e56d3 } from "./5e56d3.js";
 export function FUN_005ce923(heap) {
   const __sp = heap.allocFrame(28);
@@ -186,7 +185,7 @@ export function FUN_005ce923(heap) {
     bVar3 = heap.u32(0x0065246e);
     LOCK();
     heap.setU32(0x0065246e, (0) >>> 0);
-    UNLOCK(heap);
+    UNLOCK();
     if (bVar3 == 0) {
       bVar3 = heap.u32(0x0065246f);
     }

@@ -2,7 +2,7 @@
 // Source: decompiled/c/4390dc.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_004390dc(heap) {
   heap.setU32(0x0062d2fe, (0) >>> 0);

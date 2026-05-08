@@ -2,10 +2,10 @@
 // Source: decompiled/c/404b57.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FormatMessageA, GetLastError, MessageBoxA } from "../runtime/win32.js";
-import { Arguments } from "../runtime/ghidra-builtins.js";
+import { FormatMessageA, GetLastError, MessageBoxA } from "../../runtime/win32.js";
+import { Arguments } from "../../runtime/ghidra-builtins.js";
 export function FUN_00404b57(heap, param_1) {
   const __sp = heap.allocFrame(260);
   const __addr_local_108 = __sp + 0;

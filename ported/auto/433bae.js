@@ -2,10 +2,9 @@
 // Source: decompiled/c/433bae.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT22, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT22, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 export function FUN_00433bae(heap) {
   const __sp = heap.allocFrame(8);
   const __addr_DAT_006284ec = __sp + 0;
@@ -83,7 +82,7 @@ export function FUN_00433bae(heap) {
             LOCK();
             iVar10 = heap.u32((heap.u32(0x006288f8) + 0x20));
             heap.u32((heap.u32(0x006288f8) + 0x20)) = iVar9;
-            UNLOCK(heap);
+            UNLOCK();
             heap.u32((iVar9 + 0x20)) = iVar10;
             iVar10 = iVar11;
           }
@@ -135,7 +134,7 @@ export function FUN_00433bae(heap) {
               LOCK();
               iVar9 = heap.u32((heap.u32(0x006288f8) + 0x20));
               heap.u32((heap.u32(0x006288f8) + 0x20)) = iVar10;
-              UNLOCK(heap);
+              UNLOCK();
               heap.u32((iVar10 + 0x20)) = iVar9;
               iVar9 = iVar11;
             }

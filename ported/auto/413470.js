@@ -2,9 +2,9 @@
 // Source: decompiled/c/413470.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { HeapFree } from "../runtime/win32.js";
+import { HeapFree } from "../../runtime/win32.js";
 import { FUN_004156b0 } from "./4156b0.js";
 import { FUN_00415710 } from "./415710.js";
 export function FUN_00413470(heap, param_1) {

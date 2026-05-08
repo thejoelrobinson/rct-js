@@ -2,9 +2,9 @@
 // Source: decompiled/c/406d10.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DirectInputCreateA, GetKeyboardType, GetSystemMetrics, SystemParametersInfoA } from "../runtime/win32.js";
+import { DirectInputCreateA, GetKeyboardType, GetSystemMetrics, SystemParametersInfoA } from "../../runtime/win32.js";
 import { FUN_00406fca } from "./406fca.js";
 import { FUN_0040704d } from "./40704d.js";
 export function FUN_00406d10(heap) {

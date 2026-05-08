@@ -2,9 +2,9 @@
 // Source: decompiled/c/402b77.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetCurrentProcess, GetCurrentThread, SetPriorityClass, SetThreadPriority } from "../runtime/win32.js";
+import { GetCurrentProcess, GetCurrentThread, SetPriorityClass, SetThreadPriority } from "../../runtime/win32.js";
 export function FUN_00402b77(heap) {
   let pvVar1 = 0;
   let dwPriorityClass = 0;

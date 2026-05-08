@@ -2,9 +2,9 @@
 // Source: decompiled/c/5e1f70.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetNextWindow } from "../runtime/win32.js";
+import { GetNextWindow } from "../../runtime/win32.js";
 import { FUN_0042d60a } from "./42d60a.js";
 import { FUN_0042d637 } from "./42d637.js";
 export function FUN_005e1f70(heap) {

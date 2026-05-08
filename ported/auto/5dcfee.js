@@ -2,9 +2,9 @@
 // Source: decompiled/c/5dcfee.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44, SBORROW2 } from "../runtime/ghidra-builtins.js";
+import { CONCAT44, SBORROW2 } from "../../runtime/ghidra-builtins.js";
 export function FUN_005dcfee(heap) {
   const __sp = heap.allocFrame(52);
   const __addr_DAT_006567f4 = __sp + 0;

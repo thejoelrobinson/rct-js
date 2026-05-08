@@ -2,9 +2,9 @@
 // Source: decompiled/c/405949.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CloseHandle, CreateMutexA, OpenMutexA } from "../runtime/win32.js";
+import { CloseHandle, CreateMutexA, OpenMutexA } from "../../runtime/win32.js";
 import { FUN_00413170 } from "./413170.js";
 import { FUN_00413180 } from "./413180.js";
 export function FUN_00405949(heap, param_1) {

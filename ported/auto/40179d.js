@@ -2,9 +2,9 @@
 // Source: decompiled/c/40179d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GdiFlush } from "../runtime/win32.js";
+import { GdiFlush } from "../../runtime/win32.js";
 import { FUN_004018ec } from "./4018ec.js";
 import { FUN_00401f79 } from "./401f79.js";
 import { FUN_0040264b } from "./40264b.js";

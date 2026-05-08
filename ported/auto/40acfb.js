@@ -2,9 +2,9 @@
 // Source: decompiled/c/40acfb.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DestroyWindow, GetDC, ReleaseDC, SetSystemPaletteUse } from "../runtime/win32.js";
+import { DestroyWindow, GetDC, ReleaseDC, SetSystemPaletteUse } from "../../runtime/win32.js";
 import { FUN_00413470 } from "./413470.js";
 export function FUN_0040acfb(heap) {
   let hdc = 0;

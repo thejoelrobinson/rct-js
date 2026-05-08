@@ -2,9 +2,9 @@
 // Source: decompiled/c/401000.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { RegCloseKey, RegOpenKeyA, RegQueryValueExA } from "../runtime/win32.js";
+import { RegCloseKey, RegOpenKeyA, RegQueryValueExA } from "../../runtime/win32.js";
 import { FUN_00401120 } from "./401120.js";
 import { FUN_0040179d } from "./40179d.js";
 import { FUN_00402bd5 } from "./402bd5.js";

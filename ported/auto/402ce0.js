@@ -2,9 +2,9 @@
 // Source: decompiled/c/402ce0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { MessageBoxA } from "../runtime/win32.js";
+import { MessageBoxA } from "../../runtime/win32.js";
 export function FUN_00402ce0(heap) {
   const __sp = heap.allocFrame(8);
   const __addr_DAT_005f1a20 = __sp + 0;

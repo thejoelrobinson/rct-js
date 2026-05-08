@@ -2,10 +2,9 @@
 // Source: decompiled/c/5d3e56.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT11, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT11, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_0042635e } from "./42635e.js";
 import { FUN_00427108 } from "./427108.js";
 import { FUN_005cfe66 } from "./5cfe66.js";
@@ -80,7 +79,7 @@ export function FUN_005d3e56(heap) {
           heap.setU32(0x00991f30, (heap.u32(0x00991f30) | 0x40) >>> 0);
           LOCK();
           heap.setU32(0x00652288, ('\x05') >>> 0);
-          UNLOCK(heap);
+          UNLOCK();
           if (cVar3 != '\x05') {
             heap.setU32(0x006522a3, (cVar3) >>> 0);
           }

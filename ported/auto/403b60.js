@@ -2,9 +2,9 @@
 // Source: decompiled/c/403b60.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetWindowRect, SetCursorPos } from "../runtime/win32.js";
+import { GetWindowRect, SetCursorPos } from "../../runtime/win32.js";
 export function FUN_00403b60(heap) {
   const __sp = heap.allocFrame(128);
   const __addr_local_18 = __sp + 0;

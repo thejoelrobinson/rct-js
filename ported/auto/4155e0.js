@@ -2,9 +2,9 @@
 // Source: decompiled/c/4155e0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { VirtualFree } from "../runtime/win32.js";
+import { VirtualFree } from "../../runtime/win32.js";
 import { FUN_00415580 } from "./415580.js";
 export function FUN_004155e0(heap, param_1) {
   let BVar1 = 0;

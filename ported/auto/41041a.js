@@ -2,9 +2,9 @@
 // Source: decompiled/c/41041a.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CreateCompatibleDC, GetDC, RealizePalette, ReleaseDC, SelectObject, SelectPalette, SetDIBColorTable } from "../runtime/win32.js";
+import { CreateCompatibleDC, GetDC, RealizePalette, ReleaseDC, SelectObject, SelectPalette, SetDIBColorTable } from "../../runtime/win32.js";
 export function FUN_0041041a(heap, param_1, param_2) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_005ef6a8 = __sp + 0;

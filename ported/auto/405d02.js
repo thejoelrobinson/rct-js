@@ -2,7 +2,7 @@
 // Source: decompiled/c/405d02.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00405d02(heap, param_1) {
   (heap.u32(heap.u32(0x005ebe78)))(param_1);

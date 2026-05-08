@@ -2,9 +2,9 @@
 // Source: decompiled/c/404972.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GlobalMemoryStatus } from "../runtime/win32.js";
+import { GlobalMemoryStatus } from "../../runtime/win32.js";
 export function FUN_00404972(heap) {
   const __sp = heap.allocFrame(128);
   const __addr_local_24 = __sp + 0;

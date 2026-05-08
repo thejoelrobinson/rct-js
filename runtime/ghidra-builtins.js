@@ -105,8 +105,19 @@ export const SCARRY4 = (a, b) => scarryN(a >>> 0, b >>> 0, 0x80000000, 0xfffffff
 
 // ---- One-off operators / placeholders ----
 
-// LOCK is the x86 lock prefix marker. We're single-threaded; no-op.
+// LOCK / UNLOCK are x86 lock-prefix markers. Single-threaded; no-ops.
 export const LOCK = () => {};
+export const UNLOCK = () => {};
+
+// SUB<H><L>(value, offset) — extract L bytes starting at byte `offset` of an
+// H-byte value. e.g. SUB41(x, 3) is "byte 3 of a 32-bit x" = (x >>> 24) & 0xff.
+// (Decompiler/source/decompile/cpp/funcdata.cc.)
+export const SUB41 = (v, off) => ((v >>> (off * 8)) & 0xff) >>> 0;
+export const SUB42 = (v, off) => ((v >>> (off * 8)) & 0xffff) >>> 0;
+export const SUB44 = (v, off) => (v >>> (off * 8)) >>> 0;
+export const SUB81 = (v, off) => Number(BigInt.asUintN(64, BigInt(v) >> BigInt(off * 8)) & 0xffn);
+export const SUB82 = (v, off) => Number(BigInt.asUintN(64, BigInt(v) >> BigInt(off * 8)) & 0xffffn);
+export const SUB84 = (v, off) => Number(BigInt.asUintN(64, BigInt(v) >> BigInt(off * 8)) & 0xffffffffn);
 
 // RtlUnwind is the SEH unwind primitive. Real implementation requires
 // stack-frame walking — for now a no-op. Will need attention if the binary

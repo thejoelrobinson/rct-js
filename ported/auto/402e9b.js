@@ -2,10 +2,10 @@
 // Source: decompiled/c/402e9b.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject, LoadCursorA, SetErrorMode } from "../runtime/win32.js";
-import { ExceptionList } from "../runtime/ghidra-builtins.js";
+import { DeleteObject, LoadCursorA, SetErrorMode } from "../../runtime/win32.js";
+import { ExceptionList } from "../../runtime/ghidra-builtins.js";
 import { FUN_00401000 } from "./401000.js";
 import { FUN_00402ce0 } from "./402ce0.js";
 import { FUN_00404752 } from "./404752.js";

@@ -2,7 +2,7 @@
 // Source: decompiled/c/5e3874.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_005e3874(heap) {
   (heap.u32(heap.u32(unaff_ESI)))();

@@ -2,9 +2,9 @@
 // Source: decompiled/c/405fe2.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetSystemMetrics } from "../runtime/win32.js";
+import { GetSystemMetrics } from "../../runtime/win32.js";
 import { FUN_00405a70 } from "./405a70.js";
 import { FUN_0040b8fc } from "./40b8fc.js";
 import { FUN_0040e0d4 } from "./40e0d4.js";

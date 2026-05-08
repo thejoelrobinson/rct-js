@@ -44,6 +44,29 @@ export class Heap {
   setU32(a, v) { this.view.setUint32(a, v >>> 0, true); }
   setI32(a, v) { this.view.setInt32 (a, v | 0, true); }
 
+  // Read a NUL-terminated C string starting at `addr`. Returns a JS string.
+  // Stops at NUL or when `maxLen` bytes have been read (default 4096).
+  readCStr(addr, maxLen = 4096) {
+    if (!addr) return "";
+    let s = "";
+    for (let i = 0; i < maxLen; i++) {
+      const b = this.bytes[addr + i];
+      if (b === undefined || b === 0) break;
+      s += String.fromCharCode(b);
+    }
+    return s;
+  }
+
+  // Write a JS string as a NUL-terminated C string at `addr`. Writes at most
+  // `maxLen` bytes including the NUL terminator. Returns bytes written
+  // (excluding the NUL).
+  writeCStr(addr, str, maxLen = 4096) {
+    const limit = Math.min(str.length, maxLen - 1);
+    for (let i = 0; i < limit; i++) this.bytes[addr + i] = str.charCodeAt(i) & 0xff;
+    this.bytes[addr + limit] = 0;
+    return limit;
+  }
+
   // Stack frame — allocate `n` bytes (rounded to 4) below the current SP and
   // return the new SP (the address of the lowest byte of the frame). The
   // returned region is zeroed, matching C local-variable semantics.

@@ -2,9 +2,9 @@
 // Source: decompiled/c/403625.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { EndDialog, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA } from "../runtime/win32.js";
+import { EndDialog, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA } from "../../runtime/win32.js";
 export function FUN_00403625(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(8);
   const __addr_DAT_005e91f0 = __sp + 0;

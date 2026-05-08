@@ -2,9 +2,9 @@
 // Source: decompiled/c/411b58.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FindResourceA, LoadResource, LockResource } from "../runtime/win32.js";
+import { FindResourceA, LoadResource, LockResource } from "../../runtime/win32.js";
 export function FUN_00411b58(heap, param_1, param_2) {
   const __sp = heap.allocFrame(1048);
   const __addr_local_14 = __sp + 0;

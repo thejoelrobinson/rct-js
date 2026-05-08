@@ -2,10 +2,9 @@
 // Source: decompiled/c/5d13e2.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT11, CONCAT44, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT11, CONCAT44, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_0043642b } from "./43642b.js";
 import { FUN_005cfe66 } from "./5cfe66.js";
 import { FUN_005d298a } from "./5d298a.js";
@@ -263,21 +262,21 @@ export function FUN_005d13e2(heap) {
   if ((heap.u32((__addr_DAT_0087c41c) + (uVar20) * 4) >>> 0x1c & 1) != 0) {
     if ((heap.u32(0x0065229a) == '\x04') || (sVar7 = heap.u32(0x00651e72), sVar9 = heap.u32(0x00651e74), sVar16 = heap.u32(0x00651e82), sVar2 = heap.u32(0x00651e84), sVar17 = heap.u32(0x00651e92), sVar4 = heap.u32(0x00651e94), sVar5 = heap.u32(0x00651ea2), sVar6 = heap.u32(0x00651ea4), heap.u32(0x0065229a) == '\n')) {
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
-      UNLOCK(heap);
+      UNLOCK();
       heap.setU32(0x00651e7a, (0x5ea0) >>> 0);
       heap.setU32(0x00651e7e, (0x3af) >>> 0);
       sVar7 = heap.u32(0x00651eb2);
@@ -310,29 +309,29 @@ export function FUN_005d13e2(heap) {
     if ((heap.u32(0x0065229a) == '\b') || (heap.u32(0x0065229a) == '\x12')) {
       LOCK();
       heap.setU32(0x00651ea2, (heap.u32(0x00651eb2)) >>> 0);
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
       heap.setU32(0x00651e92, (sVar5) >>> 0);
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
       heap.setU32(0x00651e82, (sVar17) >>> 0);
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
       heap.setU32(0x00651e72, (sVar16) >>> 0);
-      UNLOCK(heap);
+      UNLOCK();
       heap.setU32(0x00651eb2, (sVar7) >>> 0);
       LOCK();
       (heap.u32(0x00651ea4) & 0xffff) = heap.u32(0x00651eb4);
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
       (heap.u32(0x00651e94) & 0xffff) = sVar6;
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
       (heap.u32(0x00651e84) & 0xffff) = sVar4;
-      UNLOCK(heap);
+      UNLOCK();
       LOCK();
       (heap.u32(0x00651e74) & 0xffff) = sVar2;
-      UNLOCK(heap);
+      UNLOCK();
       (heap.u32(0x00651eb4) & 0xffff) = sVar9;
       heap.setU32(0x00651eba, (0x5ea1) >>> 0);
       heap.setU32(0x00651ebe, (0x3a9) >>> 0);

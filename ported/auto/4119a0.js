@@ -2,9 +2,9 @@
 // Source: decompiled/c/4119a0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject, GetModuleHandleA, LoadImageA } from "../runtime/win32.js";
+import { DeleteObject, GetModuleHandleA, LoadImageA } from "../../runtime/win32.js";
 import { FUN_00411a34 } from "./411a34.js";
 export function FUN_004119a0(heap, param_1, param_2) {
   let hInst = 0;

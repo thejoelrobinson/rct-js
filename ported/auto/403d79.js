@@ -2,9 +2,9 @@
 // Source: decompiled/c/403d79.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DefWindowProcA, DragQueryFileA, FlashWindow, GetDC, GetDeviceCaps, GetUpdateRect, ReleaseCapture, ReleaseDC, SetCapture, SetCursor, ValidateRect } from "../runtime/win32.js";
+import { DefWindowProcA, DragQueryFileA, FlashWindow, GetDC, GetDeviceCaps, GetUpdateRect, ReleaseCapture, ReleaseDC, SetCapture, SetCursor, ValidateRect } from "../../runtime/win32.js";
 import { FUN_00401120 } from "./401120.js";
 import { FUN_00401200 } from "./401200.js";
 import { FUN_004015f0 } from "./4015f0.js";

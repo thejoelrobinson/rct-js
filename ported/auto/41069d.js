@@ -2,9 +2,9 @@
 // Source: decompiled/c/41069d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject, DestroyWindow } from "../runtime/win32.js";
+import { DeleteObject, DestroyWindow } from "../../runtime/win32.js";
 import { FUN_0040f8ba } from "./40f8ba.js";
 import { FUN_00413470 } from "./413470.js";
 import { FUN_00413c90 } from "./413c90.js";

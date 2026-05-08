@@ -2,9 +2,9 @@
 // Source: decompiled/c/40a006.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { ClientToScreen, GetClientRect } from "../runtime/win32.js";
+import { ClientToScreen, GetClientRect } from "../../runtime/win32.js";
 import { FUN_00408d5d } from "./408d5d.js";
 export function FUN_0040a006(heap, param_1, param_2, param_3, param_4, param_5) {
   const __sp = heap.allocFrame(132);

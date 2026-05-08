@@ -2,9 +2,9 @@
 // Source: decompiled/c/40da11.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DirectSoundEnumerateA } from "../runtime/win32.js";
+import { DirectSoundEnumerateA } from "../../runtime/win32.js";
 import { FUN_0040d9f4 } from "./40d9f4.js";
 export function FUN_0040da11(heap) {
   let iVar1 = 0;

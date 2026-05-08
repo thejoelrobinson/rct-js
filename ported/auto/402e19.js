@@ -2,9 +2,9 @@
 // Source: decompiled/c/402e19.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UnhandledExceptionFilter } from "../runtime/win32.js";
+import { UnhandledExceptionFilter } from "../../runtime/win32.js";
 import { FUN_00402ce0 } from "./402ce0.js";
 import { FUN_004061b9 } from "./4061b9.js";
 export function FUN_00402e19(heap, param_1) {

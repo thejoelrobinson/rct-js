@@ -2,9 +2,9 @@
 // Source: decompiled/c/44f44e.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44 } from "../runtime/ghidra-builtins.js";
+import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_0044f44e(heap) {
   const __sp = heap.allocFrame(8);

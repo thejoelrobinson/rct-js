@@ -2,9 +2,9 @@
 // Source: decompiled/c/40657c.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CreateFontIndirectA } from "../runtime/win32.js";
+import { CreateFontIndirectA } from "../../runtime/win32.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_0040657c(heap, param_1, param_2, param_3, param_4, param_5) {
   const __sp = heap.allocFrame(128);

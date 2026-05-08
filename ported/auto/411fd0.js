@@ -2,9 +2,9 @@
 // Source: decompiled/c/411fd0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GlobalAlloc, GlobalFree } from "../runtime/win32.js";
+import { GlobalAlloc, GlobalFree } from "../../runtime/win32.js";
 import { FUN_004138d0 } from "./4138d0.js";
 export function FUN_00411fd0(heap, param_1, param_2, param_3, param_4) {
   const __sp = heap.allocFrame(136);

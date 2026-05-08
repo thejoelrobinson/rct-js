@@ -2,9 +2,9 @@
 // Source: decompiled/c/4064dd.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { TextOutA } from "../runtime/win32.js";
+import { TextOutA } from "../../runtime/win32.js";
 export function FUN_004064dd(heap, param_1, param_2, param_3) {
   let c = 0;
   if (heap.u32(0x005ebe44) != 0) {

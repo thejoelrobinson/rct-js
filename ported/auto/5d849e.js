@@ -2,10 +2,9 @@
 // Source: decompiled/c/5d849e.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT11, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT11, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_0042ddb9 } from "./42ddb9.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 export function FUN_005d849e(heap) {
@@ -24,7 +23,7 @@ export function FUN_005d849e(heap) {
       LOCK();
       bVar2 = heap.u32((unaff_ESI + 0xc5));
       heap.u32((unaff_ESI + 0xc5)) = bVar4;
-      UNLOCK(heap);
+      UNLOCK();
       uVar5 = CONCAT11(bVar3, bVar2) & 0x202;
       if (uVar5 != (uVar5 >>> 8)) {
         FUN_0042ddb9(heap);

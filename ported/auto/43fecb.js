@@ -2,10 +2,9 @@
 // Source: decompiled/c/43fecb.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { UNLOCK } from "../runtime/win32.js";
-import { CONCAT21, CONCAT22, LOCK } from "../runtime/ghidra-builtins.js";
+import { CONCAT21, CONCAT22, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_00423677 } from "./423677.js";
 import { FUN_0044002c } from "./44002c.js";
 import { FUN_005e43de } from "./5e43de.js";
@@ -66,7 +65,7 @@ export function FUN_0043fecb(heap) {
     LOCK();
     puVar1 = heap.u32((unaff_ESI + 8));
     heap.u32((unaff_ESI + 8)) = 0;
-    UNLOCK(heap);
+    UNLOCK();
     heap.u32(puVar1) = 0;
     uVar3 = FUN_005e6a83(heap);
     iVar7 = extraout_ECX;

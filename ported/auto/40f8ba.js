@@ -2,9 +2,9 @@
 // Source: decompiled/c/40f8ba.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject } from "../runtime/win32.js";
+import { DeleteObject } from "../../runtime/win32.js";
 import { FUN_00413470 } from "./413470.js";
 export function FUN_0040f8ba(heap, param_1) {
   if (heap.u32((param_1 + 0x90)) == 0) {

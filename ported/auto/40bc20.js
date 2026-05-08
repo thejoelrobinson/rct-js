@@ -2,9 +2,9 @@
 // Source: decompiled/c/40bc20.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { OutputDebugStringA } from "../runtime/win32.js";
+import { OutputDebugStringA } from "../../runtime/win32.js";
 import { FUN_0040c93f } from "./40c93f.js";
 import { FUN_004122a3 } from "./4122a3.js";
 import { FUN_004123ff } from "./4123ff.js";

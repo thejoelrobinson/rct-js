@@ -2,9 +2,9 @@
 // Source: decompiled/c/417d10.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { WideCharToMultiByte } from "../runtime/win32.js";
+import { WideCharToMultiByte } from "../../runtime/win32.js";
 export function FUN_00417d10(heap, param_1, param_2) {
   const __sp = heap.allocFrame(8);
   const __addr_param_2 = __sp + 0;

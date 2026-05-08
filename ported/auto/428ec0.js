@@ -2,9 +2,9 @@
 // Source: decompiled/c/428ec0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, CONCAT44 } from "../runtime/ghidra-builtins.js";
+import { CONCAT22, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 export function FUN_00428ec0(heap) {
   const __sp = heap.allocFrame(36);
   const __addr_DAT_00743b98 = __sp + 0;

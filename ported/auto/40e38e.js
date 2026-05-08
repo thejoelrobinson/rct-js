@@ -2,9 +2,9 @@
 // Source: decompiled/c/40e38e.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { AnimatePalette, GetDC, ReleaseDC, SelectPalette } from "../runtime/win32.js";
+import { AnimatePalette, GetDC, ReleaseDC, SelectPalette } from "../../runtime/win32.js";
 export function FUN_0040e38e(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(24);
   const __addr_DAT_005eee9a = __sp + 0;

@@ -2,9 +2,9 @@
 // Source: decompiled/c/410d3d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetTickCount } from "../runtime/win32.js";
+import { GetTickCount } from "../../runtime/win32.js";
 import { FUN_004110f6 } from "./4110f6.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_00410d3d(heap, param_1) {

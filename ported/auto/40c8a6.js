@@ -2,9 +2,9 @@
 // Source: decompiled/c/40c8a6.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { InterlockedExchange } from "../runtime/win32.js";
+import { InterlockedExchange } from "../../runtime/win32.js";
 import { FUN_0040bc20 } from "./40bc20.js";
 export function FUN_0040c8a6(heap, param_1, param_2, param_3, param_4, param_5) {
   const __sp = heap.allocFrame(8);

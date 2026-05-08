@@ -2,9 +2,9 @@
 // Source: decompiled/c/412bbd.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GlobalAlloc, GlobalFree } from "../runtime/win32.js";
+import { GlobalAlloc, GlobalFree } from "../../runtime/win32.js";
 import { FUN_00411fd0 } from "./411fd0.js";
 import { FUN_00412224 } from "./412224.js";
 import { FUN_004122a3 } from "./4122a3.js";

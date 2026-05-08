@@ -2,9 +2,9 @@
 // Source: decompiled/c/404cf0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { Shell_NotifyIconA } from "../runtime/win32.js";
+import { Shell_NotifyIconA } from "../../runtime/win32.js";
 export function FUN_00404cf0(heap, param_1, param_2) {
   const __sp = heap.allocFrame(128);
   const __addr_local_5c = __sp + 0;

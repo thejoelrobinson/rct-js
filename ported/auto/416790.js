@@ -2,9 +2,9 @@
 // Source: decompiled/c/416790.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetModuleHandleA, GetProcAddress } from "../runtime/win32.js";
+import { GetModuleHandleA, GetProcAddress } from "../../runtime/win32.js";
 import { FUN_00416740 } from "./416740.js";
 export function FUN_00416790(heap) {
   let hModule = 0;

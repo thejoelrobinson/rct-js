@@ -2,9 +2,9 @@
 // Source: decompiled/c/4054e3.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CoCreateInstance, CoInitialize, MultiByteToWideChar } from "../runtime/win32.js";
+import { CoCreateInstance, CoInitialize, MultiByteToWideChar } from "../../runtime/win32.js";
 export function FUN_004054e3(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(280);
   const __addr_DAT_005e78b0 = __sp + 0;

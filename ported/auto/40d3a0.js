@@ -2,9 +2,9 @@
 // Source: decompiled/c/40d3a0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { InterlockedExchange, Sleep } from "../runtime/win32.js";
+import { InterlockedExchange, Sleep } from "../../runtime/win32.js";
 import { FUN_0040d575 } from "./40d575.js";
 export function FUN_0040d3a0(heap) {
   const __sp = heap.allocFrame(4);

@@ -2,7 +2,7 @@
 // Source: decompiled/c/5df1ff.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
-/** @typedef {import("../runtime/heap.js").Heap} Heap */
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_005df1ff(heap) {
   let unaff_ESI = 0;
