@@ -56,14 +56,14 @@ export function FUN_004531f6(heap) {
             uVar12 = 0x40;
           }
           heap.setU32(0x006326c4, (uVar4) >>> 0);
-          heap.u32(heap.u32(0x00632408) + (1) * 4) = (((uint)(ushort)((((sVar10 >>> 1) - heap.u32((heap.u32(0x006323fc) + 8))) >>> (heap.u32((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + heap.u32((heap.u32(0x006323fc) + 4))) << 0x10) / uVar12 + -0x8000 >>> 4);
+          heap.u32(heap.u32(0x00632408) + (1) * 4) = ((((((sVar10 >>> 1) - heap.u32((heap.u32(0x006323fc) + 8))) >>> (heap.u32((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + heap.u32((heap.u32(0x006323fc) + 4))) << 0x10) / uVar12 + -0x8000 >>> 4);
           uVar12 = heap.u32(0x00971ed8);
           if (uVar12 < 0x40) {
             uVar12 = 0x40;
           }
-          heap.u32(puVar7 + (2) * 4) = (((uint)(ushort)(((((heap.u32(0x006326c2) + heap.u32(0x006326c6)) >>> 1) - heap.u32((iVar6 + 10))) >>> (heap.u32((iVar6 + 0x10)) & 0x1f)) + heap.u32((iVar6 + 6))) << 0x10) / uVar12 + -0x8000 >>> 4);
+          heap.u32(puVar7 + (2) * 4) = (((((((heap.u32(0x006326c2) + heap.u32(0x006326c6)) >>> 1) - heap.u32((iVar6 + 10))) >>> (heap.u32((iVar6 + 0x10)) & 0x1f)) + heap.u32((iVar6 + 6))) << 0x10) / uVar12 + -0x8000 >>> 4);
           uVar12 = heap.u32((unaff_ESI + 0x28));
-          if ((heap.u32((__addr_DAT_005f72ef) + ((uint) * (unaff_ESI + 0x31) * 4) * 4) & 1) != 0) {
+          if ((heap.u32((__addr_DAT_005f72ef) + (heap.u32((unaff_ESI + 0x31)) * 4) * 4) & 1) != 0) {
             uVar12 = uVar12 << 1;
           }
           if (uVar12 < 0) {
@@ -75,13 +75,13 @@ export function FUN_004531f6(heap) {
           heap.u32((puVar7 + 4)) = 0;
           if (heap.u32((unaff_ESI + 0xe)) != 0x8000) {
             uVar14 = heap.u32((unaff_ESI + 0x10)) >>> 9;
-            pbVar13 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((heap.u32((unaff_ESI + 0x10)) & 0xffe0) << 7 | uVar14 | heap.u32((unaff_ESI + 0xe)) & 0xffe0) >>> 5 | uVar14 << 0xb)) * 4);
+            pbVar13 = heap.u32((__addr_DAT_00971ef4) + ((((heap.u32((unaff_ESI + 0x10)) & 0xffe0) << 7 | uVar14 | heap.u32((unaff_ESI + 0xe)) & 0xffe0) >>> 5 | uVar14 << 0xb)) * 4);
             bVar1 = heap.u32(pbVar13);
             while ((bVar1 & 0x3c) != 0) {
               pbVar13 = pbVar13 + 8;
               bVar1 = heap.u32(pbVar13);
             }
-            if (heap.u32((unaff_ESI + 0x12)) < (ushort)(heap.u32(pbVar13 + (2) * 4) * 4)) {
+            if (heap.u32((unaff_ESI + 0x12)) < (heap.u32(pbVar13 + (2) * 4) * 4)) {
               heap.u32((puVar7 + 4)) = 0x30;
             }
           }

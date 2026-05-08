@@ -15,7 +15,7 @@ export function FUN_004312bf(heap) {
   
   }
   while (heap.u32((piVar2 + 5)) != -2) {
-    pbVar1 = (__addr_DAT_005f96bc + ((ushort) * (piVar2 + 9) >>> 3));
+    pbVar1 = (__addr_DAT_005f96bc + (heap.u32((piVar2 + 9)) >>> 3));
     heap.u32(pbVar1) = heap.u32(pbVar1) | '\x01' << (heap.u32((piVar2 + 9)) & 7);
     piVar2 = (piVar2 + 5);
   }

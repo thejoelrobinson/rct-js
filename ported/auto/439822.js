@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CARRY1 } from "../runtime/win32.js";
+import { CARRY1 } from "../runtime/ghidra-builtins.js";
 export function FUN_00439822(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_PTR_LAB_0062d4ac = __sp + 0;
@@ -75,7 +75,7 @@ export function FUN_00439822(heap) {
   pbVar1 = (unaff_ESI + 0x73);
   bVar3 = heap.u32(pbVar1);
   heap.u32(pbVar1) = heap.u32(pbVar1) + bVar5;
-  if (!CARRY1(heap, bVar3, bVar5)) {
+  if (!CARRY1(bVar3, bVar5)) {
     return;
   }
   (heap.u32(heap.u32((__addr_PTR_LAB_0062d4ac) + (heap.u32((unaff_ESI + 0x2b))) * 4)))();

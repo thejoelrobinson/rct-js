@@ -10,7 +10,7 @@ export function FUN_0043fe80(heap) {
   let uVar1 = 0;
   let unaff_ESI = 0;
   let bVar2 = 0;
-  bVar2 = 0xff8bc46b < (uint) * (unaff_ESI + 0x30) << 8;
+  bVar2 = 0xff8bc46b < heap.u32((unaff_ESI + 0x30)) << 8;
   uVar1 = FUN_0043feb6(heap);
   if (bVar2) {
     uVar1 = uVar1 | 0x10000;

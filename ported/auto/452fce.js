@@ -23,7 +23,7 @@ export function FUN_00452fce(heap) {
   if ((heap.u32(0x006326bd) & 1) != 0) {
     heap.setU32(0x00632405, (0) >>> 0);
     if (unaff_EBX == 0x8001) {
-      pbVar3 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((in_DX & 0xffe0) << 7 | in_DX >>> 9 | in_CX & 0xffe0) >>> 5 | (in_DX >>> 9) << 0xb)) * 4);
+      pbVar3 = heap.u32((__addr_DAT_00971ef4) + ((((in_DX & 0xffe0) << 7 | in_DX >>> 9 | in_CX & 0xffe0) >>> 5 | (in_DX >>> 9) << 0xb)) * 4);
       bVar1 = heap.u32(pbVar3);
       while ((bVar1 & 0x3c) != 0) {
         pbVar3 = pbVar3 + 8;

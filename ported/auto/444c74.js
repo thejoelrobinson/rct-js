@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { LOCK } from "../runtime/ghidra-builtins.js";
 export function FUN_00444c74(heap) {
   const __sp = heap.allocFrame(16);
   const __addr_DAT_0087c394 = __sp + 0;
@@ -31,7 +32,7 @@ export function FUN_00444c74(heap) {
     }
     heap.u32((unaff_ESI + 6)) = 0xffff;
     heap.u32((unaff_ESI + 8)) = in_ECX;
-    LOCK(heap);
+    LOCK();
     uVar3 = heap.u32((__addr_DAT_0087c394 + in_ECX));
     heap.u32((__addr_DAT_0087c394 + in_ECX)) = heap.u32((unaff_ESI + 10));
     UNLOCK(heap);

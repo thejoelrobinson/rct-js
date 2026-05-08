@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11 } from "../runtime/win32.js";
+import { CONCAT11 } from "../runtime/ghidra-builtins.js";
 import { FUN_0044189c } from "./44189c.js";
 export function FUN_0044189c(heap) {
   const __sp = heap.allocFrame(16);
@@ -53,7 +53,7 @@ export function FUN_0044189c(heap) {
     return;
   }
   uVar7 = in_CX * 0x80 | in_CX >>> 9 | in_AX;
-  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar7 >>> 5 | uVar7 << 0xb)) * 4);
+  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((uVar7 >>> 5 | uVar7 << 0xb)) * 4);
   do {
     if ((heap.u32(pbVar9) & 0x3c) == 4) {
       if (((heap.u32(pbVar9 + (4) * 4) & 4) == 0) || ((heap.u32(pbVar9 + (4) * 4) & 3) == unaff_EBP)) {
@@ -74,8 +74,8 @@ export function FUN_0044189c(heap) {
       return;
     }
   } while (true);
-  in_DX = CONCAT11(heap, bVar3, heap.u32(pbVar9 + (2) * 4));
-  uVar6 = (uint)(heap.u32(pbVar9 + (6) * 4) & heap.u32((__addr_DAT_00630e58) + (heap.u32(pbVar9 + (6) * 4)) * 4)) & ~(1 << ((unaff_EBP ^ 2) & 0x1f));
+  in_DX = CONCAT11(bVar3, heap.u32(pbVar9 + (2) * 4));
+  uVar6 = (heap.u32(pbVar9 + (6) * 4) & heap.u32((__addr_DAT_00630e58) + (heap.u32(pbVar9 + (6) * 4)) * 4)) & ~(1 << ((unaff_EBP ^ 2) & 0x1f));
   unaff_EBP = 0;
   if (uVar6 != 0) {
     for (; (uVar6 >>> unaff_EBP & 1) == 0; unaff_EBP = unaff_EBP + 1) {
@@ -110,7 +110,7 @@ export function FUN_0044189c(heap) {
     return;
   }
   if (((heap.u32(pbVar9 + (4) * 4) & 4) != 0) && ((heap.u32(pbVar9 + (4) * 4) & 3) == unaff_EBP)) {
-    in_DX = CONCAT11(heap, bVar3, heap.u32(pbVar9 + (2) * 4) + 4);
+    in_DX = CONCAT11(bVar3, heap.u32(pbVar9 + (2) * 4) + 4);
   }
   heap.u16(0x6293c6) = heap.u16(0x6293c6) + 1;
   /* goto code_r0x0044189c */ throw new Error("goto code_r0x0044189c not supported");

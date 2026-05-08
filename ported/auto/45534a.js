@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, CONCAT31, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT22, CONCAT31, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_00424db7 } from "./424db7.js";
 import { FUN_00424de2 } from "./424de2.js";
 import { FUN_0042547b } from "./42547b.js";
@@ -75,9 +76,9 @@ export function FUN_0045534a(heap) {
     if (unaff_BP == 1) {
       if (uVar7 == 2) {
         if (unaff_ESI != 0x0) {
-          (heap.u32(heap.u32(unaff_ESI + (1) * 4)))(CONCAT22(heap, CONCAT31(heap, (int3)(in_ECX >>> 8), heap.u32((unaff_ESI + 0x5d))), heap.u32((unaff_ESI + 0xc))));
+          (heap.u32(heap.u32(unaff_ESI + (1) * 4)))(CONCAT22(CONCAT31((int3)(in_ECX >>> 8), heap.u32((unaff_ESI + 0x5d))), heap.u32((unaff_ESI + 0xc))));
           FUN_005e3b2b(heap);
-          LOCK(heap);
+          LOCK();
           puVar2 = heap.u32(unaff_ESI + (2) * 4);
           heap.u32(unaff_ESI + (2) * 4) = 0;
           UNLOCK(heap);
@@ -87,7 +88,7 @@ export function FUN_0045534a(heap) {
           FUN_005e43de(heap);
           heap.setU32(0x009a1164, (heap.u32(0x009a1164) + -0x178) >>> 0);
           if (heap.u32(0x009a1164) - unaff_ESI != 0 && unaff_ESI <= heap.u32(0x009a1164)) {
-            uVar6 = (uint)(heap.u32(0x009a1164) - unaff_ESI) >>> 1;
+            uVar6 = (heap.u32(0x009a1164) - unaff_ESI) >>> 1;
             puVar9 = unaff_ESI + 0x5e;
             for (; uVar6 != 0; uVar6 = uVar6 - 1) {
               heap.u32(unaff_ESI) = heap.u32(puVar9);
@@ -109,10 +110,10 @@ export function FUN_0045534a(heap) {
           heap.setU32(0x00632f03, ('\x01') >>> 0);
         }
         sVar4 = in_EDX + -4;
-        iVar8 = CONCAT22(heap, (in_EDX >>> 0x10), sVar4);
+        iVar8 = CONCAT22((in_EDX >>> 0x10), sVar4);
         heap.u32((unaff_ESI + 0x59)) = sVar4;
         heap.u32((unaff_ESI + 0x5a)) = 0;
-        LOCK(heap);
+        LOCK();
         puVar2 = heap.u32(unaff_ESI + (2) * 4);
         heap.u32(unaff_ESI + (2) * 4) = 0;
         UNLOCK(heap);
@@ -135,7 +136,7 @@ export function FUN_0045534a(heap) {
           puVar1 = (heap.u32(unaff_ESI + (2) * 4) + 0x12);
           heap.u32(puVar1) = heap.u32(puVar1) | 0x800;
         }
-        if ((heap.u32((unaff_ESI + 0x59)) == 0) && (heap.u32((__addr_DAT_00743bbf) + ((uint) * (unaff_ESI + 0xc) * 0x100) * 4) == '\t')) {
+        if ((heap.u32((unaff_ESI + 0x59)) == 0) && (heap.u32((__addr_DAT_00743bbf) + (heap.u32((unaff_ESI + 0xc)) * 0x100) * 4) == '\t')) {
           (heap.u32(heap.u32(unaff_ESI + (1) * 4)))();
         }
         return;
@@ -226,8 +227,8 @@ export function FUN_0045534a(heap) {
           if (0x2f < heap.u32((unaff_ESI + 0x5b))) {
             heap.u32((unaff_ESI + 0x5b)) = 0;
           }
-          iVar8 = (uint) * (unaff_ESI + 0xc) * 0x100;
-          heap.setU32(0x00991f64, (heap.u32((heap.u32((__addr_PTR_DAT_0062d640) + (heap.u32((uint)(byte)(__addr_DAT_00743bc1) + (iVar8) * 4) * 2) * 4) + 0x58)) + (uint)(heap.u32((unaff_ESI + 0x5b)) >>> 2) | heap.u32((uint)(byte)(__addr_DAT_00743bc4) + (iVar8) * 4) << 0x11 | heap.u32((uint)(byte)(__addr_DAT_00743bc5) + (iVar8) * 4) << 0x18 | 0xa0000000) >>> 0);
+          iVar8 = heap.u32((unaff_ESI + 0xc)) * 0x100;
+          heap.setU32(0x00991f64, (heap.u32((heap.u32((__addr_PTR_DAT_0062d640) + (heap.u32((byte)(__addr_DAT_00743bc1) + (iVar8) * 4) * 2) * 4) + 0x58)) + (heap.u32((unaff_ESI + 0x5b)) >>> 2) | heap.u32((byte)(__addr_DAT_00743bc4) + (iVar8) * 4) << 0x11 | heap.u32((byte)(__addr_DAT_00743bc5) + (iVar8) * 4) << 0x18 | 0xa0000000) >>> 0);
           return;
         }
       } else {
@@ -243,7 +244,7 @@ export function FUN_0045534a(heap) {
               bVar10 = 0xfd < (byte)(extraout_EDX_00 >>> 2);
               FUN_00436fae(heap, extraout_EDX_00, sVar5, sVar4);
               if (((!bVar10) || (heap.u32(0x00991efc) == 0x3b7)) || (heap.u32(0x00991efc) == 0x4db)) {
-                iVar8 = (uint) * (unaff_ESI + 0xc) * 0x100;
+                iVar8 = heap.u32((unaff_ESI + 0xc)) * 0x100;
                 FUN_00444927(heap);
                 FUN_005e53ca(heap);
                 FUN_0044142c(heap);

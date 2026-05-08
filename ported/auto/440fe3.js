@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_0043c60b } from "./43c60b.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 export function FUN_00440fe3(heap) {
@@ -43,7 +44,7 @@ export function FUN_00440fe3(heap) {
   LAB_00441052: uVar4 = 0;
   uVar3 = in_EAX & 0xffff;
   do {
-    LOCK(heap);
+    LOCK();
     puVar1 = (unaff_ESI + 0xb0 + uVar4 * 4);
     uVar2 = heap.u32(puVar1);
     heap.u32(puVar1) = uVar3;

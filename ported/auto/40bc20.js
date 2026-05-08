@@ -61,7 +61,7 @@ export function FUN_0040bc20(heap) {
       if (local_8 == 0) {
         local_28 = local_30;
       } else {
-        local_28 = (uint)(heap.u32((__addr_DAT_005f04f0 + in_stack_00000018 * 0x16c)) * 2) / 6;
+        local_28 = (heap.u32((__addr_DAT_005f04f0 + in_stack_00000018 * 0x16c)) * 2) / 6;
       }
       heap.u32((__addr_DAT_005f04f8 + in_stack_00000018 * 0x16c)) = heap.u32((__addr_DAT_005f04f8 + in_stack_00000018 * 0x16c)) + local_30;
       if ((heap.u32((__addr_DAT_005f0508 + in_stack_00000018 * 0x16c)) == 0) || (heap.u32((__addr_DAT_005f04fc + in_stack_00000018 * 0x16c)) == 0)) {
@@ -69,7 +69,7 @@ export function FUN_0040bc20(heap) {
         if (iVar1 == 0) {
           if ((heap.u32(__addr_local_10) == 0) || (heap.u32((__addr_DAT_005f0500 + in_stack_00000018 * 0x16c)) != 0)) {
             if ((heap.u32(__addr_local_10) != 0) && (heap.u32((__addr_DAT_005f0500 + in_stack_00000018 * 0x16c)) != 0)) {
-              _memset(heap.u32(__addr_local_3c), -(uint)(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_10));
+              _memset(heap.u32(__addr_local_3c), -(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_10));
             }
           } else {
             local_24 = FUN_004122a3(heap, heap.u32((__addr_DAT_005f04c0 + in_stack_00000018 * 0x16c)), heap.u32(__addr_local_10), heap.u32(__addr_local_3c), in_stack_00000018 * 0x16c + 0x5f04c4, __addr_local_14);
@@ -102,7 +102,7 @@ export function FUN_0040bc20(heap) {
           }
           if ((heap.u32(__addr_local_38) == 0) || (heap.u32((__addr_DAT_005f0500 + in_stack_00000018 * 0x16c)) != 0)) {
             if ((heap.u32(__addr_local_2c) != 0x0) && ((heap.u32(__addr_local_38) != 0 && (heap.u32((__addr_DAT_005f0500 + in_stack_00000018 * 0x16c)) != 0)))) {
-              _memset(heap.u32(__addr_local_2c), -(uint)(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_38));
+              _memset(heap.u32(__addr_local_2c), -(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_38));
             }
           } else {
             local_24 = FUN_004122a3(heap, heap.u32((__addr_DAT_005f04c0 + in_stack_00000018 * 0x16c)), heap.u32(__addr_local_38), heap.u32(__addr_local_2c), in_stack_00000018 * 0x16c + 0x5f04c4, __addr_local_14);
@@ -152,9 +152,9 @@ export function FUN_0040bc20(heap) {
         }
         iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32((__addr_DAT_005f04ec + in_stack_00000018 * 0x16c))) + 0x2c))))(heap.u32((__addr_DAT_005f04ec + in_stack_00000018 * 0x16c)), heap.u32((__addr_DAT_005f04f4 + in_stack_00000018 * 0x16c)), local_28, __addr_local_3c, __addr_local_10, __addr_local_2c, __addr_local_38, 0);
         if (iVar1 == 0) {
-          _memset(heap.u32(__addr_local_3c), -(uint)(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_10));
+          _memset(heap.u32(__addr_local_3c), -(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_10));
           if ((heap.u32(__addr_local_2c) != 0x0) && (heap.u32(__addr_local_38) != 0)) {
-            _memset(heap.u32(__addr_local_2c), -(uint)(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_38));
+            _memset(heap.u32(__addr_local_2c), -(heap.u32((heap.u32((__addr_DAT_005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) & 0x80, heap.u32(__addr_local_38));
           }
           (heap.u32(heap.u32((heap.u32(heap.u32((__addr_DAT_005f04ec + in_stack_00000018 * 0x16c))) + 0x4c))))(heap.u32((__addr_DAT_005f04ec + in_stack_00000018 * 0x16c)), heap.u32(__addr_local_3c), heap.u32(__addr_local_10), heap.u32(__addr_local_2c), heap.u32(__addr_local_38));
           heap.u32((__addr_DAT_005f04f4 + in_stack_00000018 * 0x16c)) = heap.u32((__addr_DAT_005f04f4 + in_stack_00000018 * 0x16c)) + local_28;

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22 } from "../runtime/win32.js";
+import { CONCAT22 } from "../runtime/ghidra-builtins.js";
 export function FUN_005e117d(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_0099ad63 = __sp + 0;
@@ -35,10 +35,10 @@ export function FUN_005e117d(heap) {
   if ((in_AX < in_DX) && (unaff_BX < unaff_BP)) {
     uVar2 = in_AX >>> (heap.u32(0x00971eee) & 0x1f);
     uVar5 = unaff_BX >>> (heap.u32(0x00971eef) & 0x1f);
-    sVar7 = (((ushort)(unaff_BP - 1U) >>> (heap.u32(0x00971eef) & 0x1f)) - uVar5) + 1;
+    sVar7 = (((unaff_BP - 1U) >>> (heap.u32(0x00971eef) & 0x1f)) - uVar5) + 1;
     sVar3 = heap.u32(0x00971ee6);
-    puVar6 = __addr_DAT_0099ad63 + (ushort)(uVar5 * sVar3 + uVar2);
-    sVar4 = (((ushort)(in_DX - 1U) >>> (heap.u32(0x00971eee) & 0x1f)) - uVar2) + 1;
+    puVar6 = __addr_DAT_0099ad63 + (uVar5 * sVar3 + uVar2);
+    sVar4 = (((in_DX - 1U) >>> (heap.u32(0x00971eee) & 0x1f)) - uVar2) + 1;
     uVar1 = heap.u32(0x00971ee6) >>> 0x10;
     sVar8 = sVar4;
     do {
@@ -47,7 +47,7 @@ export function FUN_005e117d(heap) {
         puVar6 = puVar6 + 1;
         sVar8 = sVar8 + -1;
       } while (sVar8 != 0);
-      puVar6 = puVar6 + CONCAT22(heap, uVar1, sVar3 - sVar4);
+      puVar6 = puVar6 + CONCAT22(uVar1, sVar3 - sVar4);
       sVar7 = sVar7 + -1;
       sVar8 = sVar4;
     } while (sVar7 != 0);

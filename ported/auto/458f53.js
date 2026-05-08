@@ -78,7 +78,7 @@ export function FUN_00458f53(heap) {
   bVar3 = 0x30;
   while (true) {
     uVar1 = in_EAX;
-    in_EAX = (uint)(ushort)(uVar1 - 1000);
+    in_EAX = (uVar1 - 1000);
     if (uVar1 < 1000) {
       break;
     }

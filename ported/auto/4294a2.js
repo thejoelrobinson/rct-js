@@ -11,7 +11,7 @@ export function FUN_004294a2(heap) {
       FUN_0042c711(heap);
       return;
     }
-    if ((ushort)((heap.u32(0x0087d0c6) >>> 1) + heap.u32(0x0087d0c6)) < heap.u32(0x0087c3c0)) {
+    if (((heap.u32(0x0087d0c6) >>> 1) + heap.u32(0x0087d0c6)) < heap.u32(0x0087c3c0)) {
       FUN_0042c711(heap);
       return;
     }

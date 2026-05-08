@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT11, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_005e5ca6(heap) {
   let bVar1 = 0;
@@ -14,13 +15,13 @@ export function FUN_005e5ca6(heap) {
   let uVar3 = 0;
   let unaff_ESI = 0;
   if (in_EAX != heap.u32((unaff_ESI + 0x10))) {
-    LOCK(heap);
+    LOCK();
     uVar3 = heap.u32((unaff_ESI + 0x10));
     heap.u32((unaff_ESI + 0x10)) = in_EAX;
     UNLOCK(heap);
     bVar1 = 0;
     do {
-      uVar2 = CONCAT11(heap, in_EAX, uVar3) & 0x101;
+      uVar2 = CONCAT11(in_EAX, uVar3) & 0x101;
       if (uVar2 != (uVar2 >>> 8)) {
         FUN_005e5301(heap);
         in_EAX = extraout_ECX;

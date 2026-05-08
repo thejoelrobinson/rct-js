@@ -41,7 +41,7 @@ export function FUN_009bb374(heap) {
         puVar11 = (puVar10 + 1);
         heap.u32(puVar15) = heap.u32(puVar10);
       }
-      uVar3 = (uint)(uVar2 >>> 2);
+      uVar3 = (uVar2 >>> 2);
       if ((uVar2 >>> 1 & 1) != 0) {
         heap.u32(puVar16) = heap.u32(puVar11);
         puVar11 = (puVar11 + 2);
@@ -88,7 +88,7 @@ export function FUN_009bb374(heap) {
       puVar8 = puVar7 + -1;
       heap.u32(puVar12) = heap.u32(puVar7);
     }
-    uVar3 = (uint)(uVar2 >>> 2);
+    uVar3 = (uVar2 >>> 2);
     puVar9 = (puVar8 + -1);
     puVar14 = (puVar13 + -1);
     if ((uVar2 >>> 1 & 1) != 0) {

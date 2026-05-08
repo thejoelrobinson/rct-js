@@ -14,8 +14,8 @@ export function FUN_005e06cc(heap) {
   uVar2 = 0x20;
   do {
     do {
-      if (heap.u32((heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar2 << 7 | uVar2 >>> 9 | uVar1) >>> 5 | (uVar2 >>> 9) << 0xb)) * 4) + 2)) < 0x18) {
-        heap.u32((heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar2 << 7 | uVar2 >>> 9 | uVar1) >>> 5 | (uVar2 >>> 9) << 0xb)) * 4) + 5)) = 6;
+      if (heap.u32((heap.u32((__addr_DAT_00971ef4) + (((uVar2 << 7 | uVar2 >>> 9 | uVar1) >>> 5 | (uVar2 >>> 9) << 0xb)) * 4) + 2)) < 0x18) {
+        heap.u32((heap.u32((__addr_DAT_00971ef4) + (((uVar2 << 7 | uVar2 >>> 9 | uVar1) >>> 5 | (uVar2 >>> 9) << 0xb)) * 4) + 5)) = 6;
       }
       uVar1 = uVar1 + 0x20;
     } while (uVar1 < 0xfe0);

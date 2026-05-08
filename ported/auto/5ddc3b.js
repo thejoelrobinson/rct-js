@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44 } from "../runtime/win32.js";
+import { CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_005ddc3b(heap) {
   const __sp = heap.allocFrame(8);
@@ -25,13 +25,13 @@ export function FUN_005ddc3b(heap) {
       heap.u32((unaff_ESI + uVar5 * 2 + 6)) = heap.u32((pbVar1 + uVar5 * 2 + 1));
       uVar5 = uVar5 + 1;
     } while (uVar5 < 0xc);
-    return CONCAT44(heap, in_EDX, in_EAX);
+    return CONCAT44(in_EDX, in_EAX);
   }
   heap.u32(unaff_ESI + (5) * 4) = '\0';
   iVar3 = 200;
   while (iVar3 != 1) {
     bVar2 = FUN_005df40c(heap);
-    uVar5 = (uint)(ushort)(((ushort)(bVar2 * (ushort) * pbVar1) >>> 8) * 2);
+    uVar5 = (((bVar2 * heap.u32(pbVar1)) >>> 8) * 2);
     pcVar4 = __addr_DAT_00887420;
     while (((heap.u32(pcVar4) == -1 || (pcVar4 == unaff_ESI)) || (heap.u32(unaff_ESI + (1) * 4) != heap.u32(pcVar4 + (1) * 4))) || (iVar3 = extraout_ECX, heap.u32((pbVar1 + uVar5 + 1)) != heap.u32((pcVar4 + 6)))) {
       pcVar4 = pcVar4 + 0x260;
@@ -42,7 +42,7 @@ export function FUN_005ddc3b(heap) {
   }
   uVar5 = 0;
   LAB_005ddc9b: heap.u32((unaff_ESI + 6)) = heap.u32((pbVar1 + uVar5 + 1));
-  return CONCAT44(heap, in_EDX, in_EAX);
+  return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(8);
   }

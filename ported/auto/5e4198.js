@@ -21,7 +21,7 @@ export function FUN_005e4198(heap) {
     if ((heap.u32((unaff_EBX + 0x34 + unaff_ESI)) & 0x10) != 0) {
       uVar6 = sVar5 - 0x20;
     }
-    uVar1 = (uint) * (unaff_EBX + 0x36 + unaff_ESI) * uVar6;
+    uVar1 = heap.u32((unaff_EBX + 0x36 + unaff_ESI)) * uVar6;
     sVar5 = uVar1;
     uVar3 = heap.u32((unaff_EBX + 0x38 + unaff_ESI));
     if (uVar3 != 0) {
@@ -35,7 +35,7 @@ export function FUN_005e4198(heap) {
     }
     uVar3 = sVar2 + heap.u32((unaff_EBX + 0x36 + unaff_ESI));
     if (heap.u32((unaff_EBX + 0x38 + unaff_ESI)) != 0) {
-      uVar3 = (ushort)((uVar3 * uVar6) / (uint) * (unaff_EBX + 0x38 + unaff_ESI));
+      uVar3 = ((uVar3 * uVar6) / heap.u32((unaff_EBX + 0x38 + unaff_ESI)));
     }
     sVar5 = uVar3 + 0xb;
     if ((uVar6 + 10) < (uVar3 + 0xb)) {
@@ -49,7 +49,7 @@ export function FUN_005e4198(heap) {
     if ((heap.u32((unaff_EBX + 0x34 + unaff_ESI)) & 1) != 0) {
       uVar6 = sVar5 - 0x20;
     }
-    uVar1 = (uint) * (unaff_EBX + 0x3e + unaff_ESI) * uVar6;
+    uVar1 = heap.u32((unaff_EBX + 0x3e + unaff_ESI)) * uVar6;
     sVar5 = uVar1;
     uVar3 = heap.u32((unaff_EBX + 0x40 + unaff_ESI));
     if (uVar3 != 0) {
@@ -63,10 +63,10 @@ export function FUN_005e4198(heap) {
     }
     uVar3 = sVar2 + heap.u32((unaff_EBX + 0x3e + unaff_ESI));
     if (heap.u32((unaff_EBX + 0x40 + unaff_ESI)) != 0) {
-      uVar3 = (ushort)((uVar3 * uVar6) / (uint) * (unaff_EBX + 0x40 + unaff_ESI));
+      uVar3 = ((uVar3 * uVar6) / heap.u32((unaff_EBX + 0x40 + unaff_ESI)));
     }
     uVar4 = uVar3 + 0xb;
-    if ((ushort)(uVar6 + 10) < (ushort)(uVar3 + 0xb)) {
+    if ((uVar6 + 10) < (uVar3 + 0xb)) {
       uVar4 = uVar6 + 10;
     }
     heap.u32((unaff_EBX + 0x44 + unaff_ESI)) = uVar4;

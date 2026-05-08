@@ -22,7 +22,7 @@ export function FUN_009b37b8(heap) {
   if ((heap.u32(0x009a201c) & 1) == 0) {
     return;
   }
-  if (heap.u32(((uint) * unaff_ESI + heap.u32(0x009a200c))) == '\0') {
+  if (heap.u32((heap.u32(unaff_ESI) + heap.u32(0x009a200c))) == '\0') {
     return;
   }
   heap.setU32(0x0099c164, (1) >>> 0);

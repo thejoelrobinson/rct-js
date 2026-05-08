@@ -18,7 +18,7 @@ export function FUN_00429249(heap) {
   do {
     uVar4 = 0;
     do {
-      pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar4 << 7 | uVar4 >>> 9 | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
+      pbVar5 = heap.u32((__addr_DAT_00971ef4) + (((uVar4 << 7 | uVar4 >>> 9 | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
       bVar1 = heap.u32(pbVar5);
       while ((bVar1 & 0x3c) != 0) {
         pbVar5 = pbVar5 + 8;

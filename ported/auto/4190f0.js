@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, CONCAT31 } from "../runtime/win32.js";
+import { CONCAT22, CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_00416f60 } from "./416f60.js";
 import { FUN_00418ff0 } from "./418ff0.js";
 import { FUN_00419f50 } from "./419f50.js";
@@ -54,7 +54,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
   do {
     bVar10 = heap.u32(pbVar11);
     pbVar12 = pbVar11 + 1;
-    param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+    param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
     switch (iVar8) {
       case 0:
         if (('0' < bVar10) && (bVar10 < ':')) {
@@ -137,12 +137,12 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
             heap.u32(local_5c) = bVar10 - 0x30;
             bVar10 = heap.u32(pbVar12);
             local_5c = local_5c + 1;
-            param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+            param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
             pbVar12 = pbVar12 + 1;
           } else {
             bVar10 = heap.u32(pbVar12);
             local_60 = local_60 + 1;
-            param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+            param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
             pbVar12 = pbVar12 + 1;
           }
         }
@@ -171,7 +171,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
             local_60 = local_60 + -1;
             pbVar12 = pbVar12 + 1;
             (((param_3) >>> 8) & 0xffffffff) = (undefined3)(param_3 >>> 8);
-            param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+            param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
           }
         }
         while (true) {
@@ -192,7 +192,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
           }
           bVar10 = heap.u32(pbVar12);
           pbVar12 = pbVar12 + 1;
-          param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+          param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
         }
         local_54 = uVar13;
         switch (bVar10) {
@@ -291,7 +291,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
           }
           bVar10 = heap.u32(pbVar12);
           pbVar12 = pbVar12 + 1;
-          param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+          param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
         }
         local_48 = 0x1451;
         LAB_0041952a: while (true) {
@@ -305,7 +305,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
           }
           bVar10 = heap.u32(pbVar12);
           pbVar12 = pbVar12 + 1;
-          param_3 = CONCAT31(heap, (((param_3) >>> 8) & 0xffffffff), bVar10);
+          param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
         }
         iVar8 = 10;
         pbVar12 = pbVar12 + -1;
@@ -367,7 +367,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
     if (local_48 < 0x1451) {
       if (-0x1451 < local_48) {
         FUN_00419f50(heap, __addr_local_2c, local_48, param_4);
-        pbVar11 = CONCAT22(heap, uStack_28, uStack_2a);
+        pbVar11 = CONCAT22(uStack_28, uStack_2a);
         param_3 = local_26;
         /* goto LAB_00419694 */ throw new Error("goto LAB_00419694 not supported");
       }

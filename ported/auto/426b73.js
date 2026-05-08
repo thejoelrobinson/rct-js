@@ -20,7 +20,7 @@ export function FUN_00426b73(heap) {
   heap.setU32(0x0087d0c6, (0) >>> 0);
   do {
     if ((((heap.u32(pbVar4) != 0xff) && (heap.u32(pbVar4 + (0x21) * 4) == 1)) && ((heap.u32((pbVar4 + 2)) & 0x80) == 0)) && ((heap.u32((pbVar4 + 2)) & 0x400) == 0)) {
-      uVar3 = uVar3 + heap.u32((byte)(__addr_DAT_005f5d07) + ((uint) * pbVar4 * 8) * 4);
+      uVar3 = uVar3 + heap.u32((byte)(__addr_DAT_005f5d07) + (heap.u32(pbVar4) * 8) * 4);
       if (heap.u32((pbVar4 + 0xf6)) != -1) {
         if (-1 < (heap.u32((pbVar4 + 0xf6)) - heap.u32((pbVar4 + 0xe8)))) {
           heap.setU32(0x0087d0c6, (heap.u32(0x0087d0c6) + (heap.u32((pbVar4 + 0xf6)) - heap.u32((pbVar4 + 0xe8))) * 2) >>> 0);
@@ -40,10 +40,10 @@ export function FUN_00426b73(heap) {
     uVar1 = 0x28a;
   }
   uVar1 = uVar1 + 0x32;
-  if (uVar3 < (ushort)(heap.u32(0x0087c81c) + heap.u32(0x0087c81e))) {
+  if (uVar3 < (heap.u32(0x0087c81c) + heap.u32(0x0087c81e))) {
     uVar1 = uVar1 >>> 2;
   }
-  if (2000 < (ushort)(heap.u32(0x0087c81c) + heap.u32(0x0087c81e))) {
+  if (2000 < (heap.u32(0x0087c81c) + heap.u32(0x0087c81e))) {
     uVar1 = uVar1 >>> 2;
   }
   uVar2 = uVar1;

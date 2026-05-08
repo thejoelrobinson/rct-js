@@ -16,7 +16,7 @@ export function FUN_0044a246(heap) {
   do {
     if (heap.u32(pcVar2) != -1) {
       if ((heap.u32(pcVar2 + (0x21) * 4) != '\0') && (heap.u32((pcVar2 + 0x132)) != 0xffff)) {
-        heap.u32((pcVar2 + 0x104)) = heap.u32((pcVar2 + 0x104)) - (uint) * (pcVar2 + 0x132);
+        heap.u32((pcVar2 + 0x104)) = heap.u32((pcVar2 + 0x104)) - heap.u32((pcVar2 + 0x132));
         heap.u32(pcVar2 + (0xfd) * 4) = heap.u32(pcVar2 + (0xfd) * 4) | 2;
         heap.setU32(0x0099c167, (4) >>> 0);
         FUN_004429db(heap);

@@ -19,7 +19,7 @@ export function FUN_00439219(heap) {
   }
   uVar2 = heap.u32((unaff_ESI + 0x26)) << 7 | heap.u32((unaff_ESI + 0x26)) >>> 9 | heap.u32((unaff_ESI + 0x24));
   bVar3 = 0;
-  pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+  pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((uVar2 >>> 5 | uVar2 << 0xb)) * 4);
   if ((heap.u32((unaff_ESI + 0x29)) & 0x18) == 0) {
     bVar3 = 4;
   }

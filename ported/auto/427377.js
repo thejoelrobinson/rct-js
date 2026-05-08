@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_0042756b } from "./42756b.js";
 import { FUN_005e412c } from "./5e412c.js";
 import { FUN_005e43de } from "./5e43de.js";
@@ -21,7 +22,7 @@ export function FUN_00427377(heap) {
   if ((((heap.u32(0x00991f30) >>> 3 & 1) != 0) && (heap.u32((unaff_ESI + 0x5d)) == heap.u32(0x00991f5a))) && (heap.u32((unaff_ESI + 0xc)) == heap.u32(0x00991f58))) {
     FUN_005e687d(heap);
   }
-  LOCK(heap);
+  LOCK();
   puVar1 = heap.u32(unaff_ESI + (2) * 4);
   heap.u32(unaff_ESI + (2) * 4) = 0;
   UNLOCK(heap);

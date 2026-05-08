@@ -12,7 +12,7 @@ export function FUN_00416910(heap, param_1, param_2, param_3, param_4) {
   piVar1 = heap.u32(0x005f0250);
   if (heap.u32(0x005f0254) == '\0') {
     piVar1 = FUN_004186d0(heap, heap.u32(param_1), heap.u32(param_1 + (1) * 4));
-    FUN_00418630(heap, param_2 + (uint)(heap.u32(piVar1) == 0x2d) + (uint)(0 < param_3), param_3 + 1, piVar1);
+    FUN_00418630(heap, param_2 + (heap.u32(piVar1) == 0x2d) + (0 < param_3), param_3 + 1, piVar1);
   } else {
     FUN_00416cd0(heap, param_2 + (heap.u32(heap.u32(0x005f0250)) == 0x2d), 0 < param_3);
   }
@@ -26,7 +26,7 @@ export function FUN_00416910(heap, param_1, param_2, param_3, param_4) {
     puVar2 = puVar2 + 1;
     heap.u32(puVar2) = heap.u32(0x005ee758);
   }
-  puVar4 = (puVar2 + param_3 + (uint)(heap.u32(0x005f0254) == '\0'));
+  puVar4 = (puVar2 + param_3 + (heap.u32(0x005f0254) == '\0'));
   heap.u32(puVar4) = 0x30302b65;
   heap.u32((puVar4 + 1)) = 0x30;
   if (param_4 != 0) {

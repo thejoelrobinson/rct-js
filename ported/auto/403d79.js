@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { DefWindowProcA, DragQueryFileA, FlashWindow, GetDC, GetDeviceCaps, GetUpdateRect, HWND, ReleaseCapture, ReleaseDC, SetCapture, SetCursor, ValidateRect } from "../runtime/win32.js";
+import { DefWindowProcA, DragQueryFileA, FlashWindow, GetDC, GetDeviceCaps, GetUpdateRect, ReleaseCapture, ReleaseDC, SetCapture, SetCursor, ValidateRect } from "../runtime/win32.js";
 import { FUN_00401120 } from "./401120.js";
 import { FUN_00401200 } from "./401200.js";
 import { FUN_004015f0 } from "./4015f0.js";
@@ -38,7 +38,7 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
       ValidateRect(heap, heap.u32(0x005e916c), 0x0);
       return 0x1;
     }
-    pHVar4 = (HWND)(param_2 - 1);
+    pHVar4 = (param_2 - 1);
     switch (pHVar4) {
       case 0x0:
         break;
@@ -54,7 +54,7 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
         heap.setU32(0x005f15c4, (sVar1) >>> 0);
         heap.setU32(0x005f1b34, (sVar2) >>> 0);
         heap.setU32(0x005e917c, (1) >>> 0);
-        heap.setU32(0x005e9178, ((uint)(param_3 == 0x1)) >>> 0);
+        heap.setU32(0x005e9178, ((param_3 == 0x1)) >>> 0);
         pHVar4 = 0x0;
         break;
       case 0x5:
@@ -132,7 +132,7 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
           heap.setU32(0x005f15b4, (0) >>> 0);
         } else {
           uVar3 = GetDeviceCaps(heap, hdc, 0x26);
-          heap.setU32(0x005f15b4, ((uint)((uVar3 & 0x100) != 0)) >>> 0);
+          heap.setU32(0x005f15b4, (((uVar3 & 0x100) != 0)) >>> 0);
           ReleaseDC(heap, 0x0, hdc);
         }
         heap.setU32(0x005e9184, (1) >>> 0);
@@ -189,10 +189,10 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
         DragQueryFileA(heap, param_3, 0, __addr_DAT_005f1900, 0x104);
         return 0x0;
       }
-      switch ((HWND)(param_2 - 0x200)) {
+      switch (param_2 - 0x200) {
         case 0x0:
           if (heap.u32(0x005ebe40) == 0) {
-            return (HWND)(param_2 - 0x200);
+            return (param_2 - 0x200);
           }
           pHVar4 = sVar2;
           heap.setU32(0x005f1b20, (pHVar4 - heap.u32(0x005f1a14)) >>> 0);

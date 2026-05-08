@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { ClientToScreen, GetClientRect, LPPOINT, SetViewportOrgEx } from "../runtime/win32.js";
+import { ClientToScreen, GetClientRect, SetViewportOrgEx } from "../runtime/win32.js";
 export function FUN_00409677(heap, param_1) {
   const __sp = heap.allocFrame(132);
   const __addr_local_8 = __sp + 0;
@@ -15,7 +15,7 @@ export function FUN_00409677(heap, param_1) {
     heap.u32((param_1 + 0xc)) = 1;
     if ((heap.u32(0x005ebf54) == 0) && (heap.u32((param_1 + 0x80)) == heap.u32(0x005ebf34))) {
       GetClientRect(heap, heap.u32(0x005e916c), __addr_local_18);
-      ClientToScreen(heap, heap.u32(0x005e916c), (LPPOINT) & heap.u32(__addr_local_18));
+      ClientToScreen(heap, heap.u32(0x005e916c), __addr_local_18);
       SetViewportOrgEx(heap, heap.u32(__addr_local_8), heap.u32(__addr_local_18), heap.u32((__addr_local_18 + 4)), 0x0);
     }
   } else {

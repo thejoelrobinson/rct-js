@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44 } from "../runtime/win32.js";
+import { CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_005e5562 } from "./5e5562.js";
 export function FUN_004363f1(heap) {
   let sVar1 = 0;
@@ -18,5 +18,5 @@ export function FUN_004363f1(heap) {
       } while ((extraout_CX + 0x20) <= heap.u32(0x0099a028));
     } while ((sVar1 + 0x20) <= heap.u32(0x0099a024));
   }
-  return CONCAT44(heap, in_EDX, in_EAX);
+  return CONCAT44(in_EDX, in_EAX);
 }

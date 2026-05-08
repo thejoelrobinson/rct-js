@@ -4,8 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { RtlUnwind } from "../runtime/win32.js";
+import { RtlUnwind } from "../runtime/ghidra-builtins.js";
 export function RtlUnwind(heap, TargetFrame, TargetIp, ExceptionRecord, ReturnValue) {
-  RtlUnwind(heap, TargetFrame, TargetIp, ExceptionRecord, ReturnValue);
+  RtlUnwind(TargetFrame, TargetIp, ExceptionRecord, ReturnValue);
   return;
 }

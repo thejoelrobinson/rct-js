@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT31 } from "../runtime/win32.js";
+import { CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_0040844b } from "./40844b.js";
 import { FUN_00408490 } from "./408490.js";
 import { FUN_00427108 } from "./427108.js";
@@ -99,22 +99,22 @@ export function FUN_0042eae0(heap) {
   uVar8 = heap.u32(puVar14);
   bVar5 = uVar8;
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar8 = CONCAT31(heap, (int3)(uVar8 >>> 8), bVar5 - 0x20);
+    uVar8 = CONCAT31((int3)(uVar8 >>> 8), bVar5 - 0x20);
   }
   uVar7 = uVar8 >>> 8 | uVar8 << 0x18;
   bVar5 = (byte)(uVar8 >>> 8);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar7 = CONCAT31(heap, (int3)(uVar7 >>> 8), bVar5 - 0x20);
+    uVar7 = CONCAT31((int3)(uVar7 >>> 8), bVar5 - 0x20);
   }
   uVar8 = uVar7 >>> 8 | uVar7 << 0x18;
   bVar5 = (byte)(uVar7 >>> 8);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar8 = CONCAT31(heap, (int3)(uVar8 >>> 8), bVar5 - 0x20);
+    uVar8 = CONCAT31((int3)(uVar8 >>> 8), bVar5 - 0x20);
   }
   uVar7 = uVar8 >>> 8 | uVar8 << 0x18;
   bVar5 = (byte)(uVar8 >>> 8);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar7 = CONCAT31(heap, (int3)(uVar7 >>> 8), bVar5 - 0x20);
+    uVar7 = CONCAT31((int3)(uVar7 >>> 8), bVar5 - 0x20);
   }
   uVar8 = uVar7 >>> 8 | uVar7 << 0x18;
   if (uVar8 == heap.u32(0x005f92db)) {

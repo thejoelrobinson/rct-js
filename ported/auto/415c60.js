@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT31, CONCAT44 } from "../runtime/win32.js";
+import { CONCAT31, CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_004165f0 } from "./4165f0.js";
 import { FUN_00416640 } from "./416640.js";
 import { FUN_00416680 } from "./416680.js";
@@ -52,7 +52,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
   puVar10 = 0x0;
   heap.setU32(__addr_local_240, (0) >>> 0);
   cVar8 = heap.u32(param_2);
-  local_21c = CONCAT31(heap, (((local_21c) >>> 8) & 0xffffffff), cVar8);
+  local_21c = CONCAT31((((local_21c) >>> 8) & 0xffffffff), cVar8);
   pcVar11 = param_2;
   do {
     if ((cVar8 == '\0') || (param_2 = pcVar11 + 1, heap.u32(__addr_local_240) < 0)) {
@@ -263,7 +263,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
               local_230 = 0;
             } else {
               local_230 = 1;
-              puVar10 = ((uint)(int) * psVar5 >>> 1);
+              puVar10 = (heap.u32(psVar5) >>> 1);
             }
             }
             break;
@@ -322,7 +322,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
               uVar13 = FUN_004166e0(heap, __addr_param_3);
             }
             if ((((local_24c & 0x40) != 0) && (uVar13 < 0x100000000)) && (uVar13 < 0)) {
-              uVar13 = CONCAT44(heap, -((uVar13 >>> 0x20) + (uint)(uVar13 != 0)), -uVar13);
+              uVar13 = CONCAT44(-((uVar13 >>> 0x20) + (uVar13 != 0)), -uVar13);
               local_24c = local_24c | 0x100;
             }
             iVar7 = (uVar13 >>> 0x20);
@@ -336,10 +336,10 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
               local_24c = local_24c & 0xfffffff7;
             }
             local_248 = register0x00000010;
-            lVar14 = CONCAT44(heap, iVar7, iVar12);
+            lVar14 = CONCAT44(iVar7, iVar12);
             if (iVar12 == 0 && iVar7 == 0) {
               local_238 = 0;
-              lVar14 = CONCAT44(heap, iVar7, iVar12);
+              lVar14 = CONCAT44(iVar7, iVar12);
             }
             while (true) {
               iVar12 = local_22c;
@@ -414,7 +414,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
         }
     }
     cVar8 = heap.u32(param_2);
-    local_21c = CONCAT31(heap, (((local_21c) >>> 8) & 0xffffffff), cVar8);
+    local_21c = CONCAT31((((local_21c) >>> 8) & 0xffffffff), cVar8);
     pcVar11 = param_2;
   } while (true);
 } finally {

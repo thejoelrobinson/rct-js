@@ -20,7 +20,7 @@ export function FUN_005e12eb(heap) {
   heap.setU32(0x0099fb98, (-((heap.u32(0x0099fb94) - heap.u32(0x0099fb84)) - heap.u32(0x0099fb88))) >>> 0);
   heap.setU32(0x0099fb96, (unaff_BP - unaff_BX) >>> 0);
   uVar1 = unaff_BX;
-  heap.setU32(0x0099fb8c, (heap.u32(0x0099fb7c) + in_AX + (ushort)(heap.u32(0x0099fb84) + heap.u32(0x0099fb88)) * uVar1) >>> 0);
+  heap.setU32(0x0099fb8c, (heap.u32(0x0099fb7c) + in_AX + (heap.u32(0x0099fb84) + heap.u32(0x0099fb88)) * uVar1) >>> 0);
   heap.setU32(0x0099fb90, (in_AX) >>> 0);
   heap.setU32(0x0099fb92, (unaff_BX) >>> 0);
   for (puVar2 = __addr_DAT_009a013c; puVar2 < heap.u32(0x009a1164); puVar2 = puVar2 + 0x178) {

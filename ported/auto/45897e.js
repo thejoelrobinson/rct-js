@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CARRY1, CONCAT11, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CARRY1, CONCAT11, LOCK } from "../runtime/ghidra-builtins.js";
 export function FUN_0045897e(heap) {
   const __sp = heap.allocFrame(8);
   const __addr_DAT_008dc0b8 = __sp + 0;
@@ -70,7 +71,7 @@ export function FUN_0045897e(heap) {
         unaff_ESI = (puVar7 + 5);
         uVar5 = uVar5 + heap.u32((__addr_DAT_008dc0b8 + (uVar2 & 0x1ffff) * 0x10));
       } else {
-        uVar5 = CONCAT11(heap, (uVar5 >>> 8) + CARRY1(heap, uVar5, heap.u32((__addr_DAT_0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4)), uVar5 + heap.u32((__addr_DAT_0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4));
+        uVar5 = CONCAT11((uVar5 >>> 8) + CARRY1(uVar5, heap.u32((__addr_DAT_0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4)), uVar5 + heap.u32((__addr_DAT_0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4));
       }
     } while (uVar5 <= unaff_DI);
     puVar3 = heap.u32(0x00642fbc);
@@ -78,7 +79,7 @@ export function FUN_0045897e(heap) {
       pbVar8 = (unaff_ESI + -1);
       bVar4 = 0;
       do {
-        LOCK(heap);
+        LOCK();
         bVar1 = heap.u32(pbVar8);
         heap.u32(pbVar8) = bVar4;
         UNLOCK(heap);

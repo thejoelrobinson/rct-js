@@ -36,7 +36,7 @@ export function FUN_00402027(heap) {
         local_c = local_b0;
         local_8 = heap.u32(0x005f1ff4) - local_b2;
         uVar4 = local_b0;
-        uVar3 = (uint)(local_b2 >>> 2);
+        uVar3 = (local_b2 >>> 2);
         puVar5 = heap.u32(0x005f1fec);
         do {
           for (; uVar3 != 0; uVar3 = uVar3 - 1) {
@@ -47,7 +47,7 @@ export function FUN_00402027(heap) {
           heap.setU32(__addr_local_b8, ((heap.u32(__addr_local_b8) + (local_a8 - local_b2))) >>> 0);
           puVar5 = (puVar5 + local_8);
           uVar4 = uVar4 - 1;
-          uVar3 = (uint)(local_b2 >>> 2);
+          uVar3 = (local_b2 >>> 2);
         } while (uVar4 != 0);
         FUN_00402aa4(heap);
         (heap.u32(heap.u32(0x005ebe60)))(__addr_local_b8);

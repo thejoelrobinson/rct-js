@@ -31,7 +31,7 @@ export function FUN_00455bce(heap) {
   FUN_00455a66(heap);
   FUN_005e412c(heap);
   FUN_00455ade(heap);
-  if (heap.u32((__addr_DAT_00743bbf) + ((uint) * (unaff_ESI + 0xc) * 0x100) * 4) == '\t') {
+  if (heap.u32((__addr_DAT_00743bbf) + (heap.u32((unaff_ESI + 0xc)) * 0x100) * 4) == '\t') {
     (heap.u32(heap.u32(unaff_ESI + (1) * 4)))();
   }
   return;

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT44 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_0043725f } from "./43725f.js";
 export function FUN_00436fae(heap) {
   const __sp = heap.allocFrame(4);
@@ -27,10 +27,10 @@ export function FUN_00436fae(heap) {
   uVar6 = in_EAX;
   if ((((0xfdf < uVar6) || (0xfdf < in_CX)) || (uVar6 < 0x20)) || (in_CX < 0x20)) {
     heap.setU32(0x00991efc, (0x458) >>> 0);
-    return CONCAT44(heap, in_EDX, in_EAX);
+    return CONCAT44(in_EDX, in_EAX);
   }
   uVar6 = in_CX << 7 | in_CX >>> 9 | uVar6;
-  pbVar11 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar6 >>> 5 | uVar6 << 0xb)) * 4);
+  pbVar11 = heap.u32((__addr_DAT_00971ef4) + ((uVar6 >>> 5 | uVar6 << 0xb)) * 4);
   do {
     bVar8 = in_EDX;
     bVar3 = (byte)(in_EDX >>> 8);
@@ -38,13 +38,13 @@ export function FUN_00436fae(heap) {
     if ((heap.u32(pbVar11) & 0x3c) == 0) {
       if (((heap.u32(pbVar11 + (5) * 4) & 0x1f) != 0) && (((bVar2 = (heap.u32(pbVar11 + (5) * 4) & 0x1f) << 2, bVar8 < bVar2 && (heap.u32(pbVar11 + (2) * 4) < bVar3)) && (heap.setU32(0x00628af6, (heap.u32(0x00628af6) | 4) >>> 0), bVar2 < bVar3)))) {
         heap.setU32(0x00991efc, (0x459) >>> 0);
-        return CONCAT44(heap, in_EDX, in_EAX);
+        return CONCAT44(in_EDX, in_EAX);
       }
       if ((unaff_BL & 0xf0) != 0xf0) {
         bVar2 = heap.u32(pbVar11 + (2) * 4);
         if (bVar2 < bVar3) {
           bVar9 = heap.u32(pbVar11 + (4) * 4);
-          uVar6 = CONCAT11(heap, bVar9, unaff_BL) & 0x1fff;
+          uVar6 = CONCAT11(bVar9, unaff_BL) & 0x1fff;
           cVar10 = (uVar6 >>> 8);
           bVar3 = bVar2;
           if (((bVar9 & 1) != 0) && (bVar3 = bVar2 + 4, cVar10 == '\x1b')) {
@@ -74,14 +74,14 @@ export function FUN_00436fae(heap) {
     } else {
       if ((((heap.u32(pbVar11) & 0x3c) != 0x3c) && (bVar8 < heap.u32(pbVar11 + (3) * 4))) && ((heap.u32(pbVar11 + (2) * 4) < bVar3 && (((heap.u32(pbVar11 + (1) * 4) & 0x10) == 0 && ((heap.u32(pbVar11 + (1) * 4) & unaff_BL & 0xf) != 0)))))) {
       LAB_0043710e: FUN_0043725f(heap);
-      return CONCAT44(heap, in_EDX, in_EAX);
+      return CONCAT44(in_EDX, in_EAX);
     }
     }
     unaff_BL = bVar9;
     pbVar1 = pbVar11 + 1;
     pbVar11 = pbVar11 + 8;
     if ((heap.u32(pbVar1) & 0x80) != 0) {
-      return CONCAT44(heap, in_EDX, in_EAX);
+      return CONCAT44(in_EDX, in_EAX);
     }
   } while (true);
 } finally {

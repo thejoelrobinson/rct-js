@@ -16,8 +16,8 @@ export function FUN_00578e15(heap, param_1) {
   let in_DX = 0;
   puVar1 = heap.u32(0x00991f80);
   heap.setU32(0x0099a4ec, (in_DX + 3) >>> 0);
-  if (((heap.u32((__addr_DAT_00887422) + ((uint) * (param_1 + 7) * 0x130) * 4) & 1) != 0) && (heap.u32((__addr_DAT_0088747e + (uint) * (param_1 + 7) * 0x260)) != 0xffff)) {
-    heap.setU32(0x00991f80, (__addr_DAT_00743b94 + (uint) * (__addr_DAT_0088747e + (uint) * (param_1 + 7) * 0x260) * 0x100) >>> 0);
+  if (((heap.u32((__addr_DAT_00887422) + (heap.u32((param_1 + 7)) * 0x130) * 4) & 1) != 0) && (heap.u32((__addr_DAT_0088747e + heap.u32((param_1 + 7)) * 0x260)) != 0xffff)) {
+    heap.setU32(0x00991f80, (__addr_DAT_00743b94 + heap.u32((__addr_DAT_0088747e + heap.u32((param_1 + 7)) * 0x260)) * 0x100) >>> 0);
     heap.u8(0x991f78) = 2;
   }
   heap.setU32(0x0099a4e8, (in_AL + 0x10) >>> 0);

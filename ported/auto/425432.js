@@ -14,7 +14,7 @@ export function FUN_00425432(heap) {
   let uVar2 = 0;
   if ((in_EAX < 0x1000) && (in_CX < 0x1000)) {
     uVar2 = in_CX << 7 | in_CX >>> 9 | in_EAX;
-    pbVar3 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+    pbVar3 = heap.u32((__addr_DAT_00971ef4) + ((uVar2 >>> 5 | uVar2 << 0xb)) * 4);
     bVar1 = heap.u32(pbVar3);
     while ((bVar1 & 0x3c) != 0) {
       pbVar3 = pbVar3 + 8;

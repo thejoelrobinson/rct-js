@@ -21,7 +21,7 @@ export function FUN_004516de(heap) {
   if (heap.u32(0x008d7eb6) != '\0') {
     heap.setU32(0x00631c72, (0x1e) >>> 0);
   }
-  uVar5 = (uint) * unaff_ESI;
+  uVar5 = heap.u32(unaff_ESI);
   uVar4 = heap.u32((__addr_DAT_005f5658 + uVar5 * 4));
   if (((uVar5 == 8) && (heap.u32(unaff_ESI + (1) * 4) != 0xf)) && (heap.u32(unaff_ESI + (1) * 4) != 9)) {
     uVar4 = 0;
@@ -42,7 +42,7 @@ export function FUN_004516de(heap) {
   }
   if (cVar3 != '\0') {
     bVar2 = FUN_005df40c(heap);
-    bVar2 = (byte)((ushort)(bVar2 * extraout_CL) >>> 8);
+    bVar2 = (byte)((bVar2 * extraout_CL) >>> 8);
     uVar4 = heap.u32((__addr_DAT_005f5658 + uVar5 * 4));
     do {
       uVar5 = 0;

@@ -49,7 +49,7 @@ export function FUN_005d41a6(heap) {
     }
     FUN_005e680e(heap);
     heap.setU32(0x00991f30, (heap.u32(0x00991f30) | 0x40) >>> 0);
-    heap.setU32(0x00652294, (heap.u32((__addr_DAT_005f598e) + (heap.u32((uint)(byte)(__addr_DAT_00887420) + (heap.u32(0x00652289) * 0x260) * 4) * 4) * 4) + '\x10') >>> 0);
+    heap.setU32(0x00652294, (heap.u32((__addr_DAT_005f598e) + (heap.u32((byte)(__addr_DAT_00887420) + (heap.u32(0x00652289) * 0x260) * 4) * 4) * 4) + '\x10') >>> 0);
     heap.setU32(0x00652295, (0) >>> 0);
     heap.setU32(0x00652296, (0) >>> 0);
     heap.setU32(0x00652297, (0) >>> 0);

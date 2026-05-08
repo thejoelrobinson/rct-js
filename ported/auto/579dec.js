@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11 } from "../runtime/win32.js";
+import { CONCAT11 } from "../runtime/ghidra-builtins.js";
 export function FUN_00579dec(heap, param_1) {
   const __sp = heap.allocFrame(32);
   const __addr_DAT_00887422 = __sp + 0;
@@ -28,18 +28,18 @@ export function FUN_00579dec(heap, param_1) {
   let uVar6 = 0;
   heap.setU32(0x0099a4ec, (in_DX + 3) >>> 0);
   uVar2 = heap.u32(0x0099a4ec);
-  iVar4 = (uint) * (param_1 + 7) * 0x260;
+  iVar4 = heap.u32((param_1 + 7)) * 0x260;
   heap.setU32(0x00651c60, (0xffffffff) >>> 0);
   heap.setU32(0x00651c68, (0) >>> 0);
   heap.setU32(0x00651c6c, (0) >>> 0);
-  if ((heap.u32((__addr_DAT_00887422) + ((uint) * (param_1 + 7) * 0x130) * 4) & 1) != 0) {
+  if ((heap.u32((__addr_DAT_00887422) + (heap.u32((param_1 + 7)) * 0x130) * 4) & 1) != 0) {
     heap.setU32(0x00651c60, (heap.u32((__addr_DAT_0088747e + iVar4))) >>> 0);
     if (heap.u32(0x00651c60) != 0xffffffff) {
-      iVar3 = (uint) * (__addr_DAT_0088747e + iVar4) * 0x100;
+      iVar3 = heap.u32((__addr_DAT_0088747e + iVar4)) * 0x100;
       heap.setU32(0x00651c60, (__addr_DAT_00743b94 + iVar3) >>> 0);
       heap.u8(0x991f78) = 2;
-      heap.setU32(0x00651c68, (heap.u32((uint)(byte)(__addr_DAT_00743bb3) + (iVar3) * 4)) >>> 0);
-      heap.setU32(0x00651c6c, (heap.u32((uint)(byte)(__addr_DAT_00743bb4) + (iVar3) * 4)) >>> 0);
+      heap.setU32(0x00651c68, (heap.u32((byte)(__addr_DAT_00743bb3) + (iVar3) * 4)) >>> 0);
+      heap.setU32(0x00651c6c, (heap.u32((byte)(__addr_DAT_00743bb4) + (iVar3) * 4)) >>> 0);
       heap.setU32(0x00991f80, (heap.u32(0x00651c60)) >>> 0);
     }
   }
@@ -47,7 +47,7 @@ export function FUN_00579dec(heap, param_1) {
   heap.setU32(0x0099a4ea, (in_ECX + 0x10) >>> 0);
   uVar6 = 0x18;
   uVar5 = 0x18;
-  uVar1 = CONCAT11(heap, 0x5a, in_AL);
+  uVar1 = CONCAT11(0x5a, in_AL);
   heap.setU32(0x00651c64, (unaff_EDI) >>> 0);
   (heap.u32(heap.u32((__addr_PTR_LAB_00432204) + (heap.u32(0x00991f88)) * 4)))(iVar4, 0x18, 0x18, uVar2);
   (heap.u32(heap.u32((__addr_PTR_LAB_00432e90) + (heap.u32(0x00991f88)) * 4)))(iVar4, uVar5, uVar6, uVar2, in_ECX, uVar1);

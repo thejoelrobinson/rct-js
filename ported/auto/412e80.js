@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { ExceptionList, GetCommandLineA, GetModuleHandleA, GetStartupInfoA, GetVersion } from "../runtime/win32.js";
+import { GetCommandLineA, GetModuleHandleA, GetStartupInfoA, GetVersion } from "../runtime/win32.js";
+import { ExceptionList } from "../runtime/ghidra-builtins.js";
 import { FUN_00402e9b } from "./402e9b.js";
 import { FUN_00413050 } from "./413050.js";
 import { FUN_004141e0 } from "./4141e0.js";

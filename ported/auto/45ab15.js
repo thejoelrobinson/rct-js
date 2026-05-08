@@ -27,11 +27,11 @@ export function FUN_0045ab15(heap) {
   let sVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
-  if (((uint)(ushort)(heap.u32(0x006e3b82) + 4) * (uint) * (__addr_DAT_0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10) != (heap.u32(0x006e3b82) * (uint) * (__addr_DAT_0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) {
+  if (((heap.u32(0x006e3b82) + 4) * heap.u32((__addr_DAT_0064bc60 + (heap.u32(0x006e3b80) & 7) * 2)) >>> 0x10) != (heap.u32(0x006e3b82) * heap.u32((__addr_DAT_0064bc60 + (heap.u32(0x006e3b80) & 7) * 2)) >>> 0x10)) {
     FUN_0044470e(heap);
     FUN_0044290a(heap);
   }
-  if (0xffee < (ushort)(heap.u32(0x006e3b82) << 2)) {
+  if (0xffee < (heap.u32(0x006e3b82) << 2)) {
     FUN_0045818d(heap);
     FUN_004314c5(heap);
     FUN_0044408f(heap);
@@ -53,7 +53,7 @@ export function FUN_0045ab15(heap) {
     FUN_00429249(heap);
   }
   sVar1 = heap.u32(0x006e3b82) * 2 + 8;
-  if (0xfff7 < (ushort)(heap.u32(0x006e3b82) * 2)) {
+  if (0xfff7 < (heap.u32(0x006e3b82) * 2)) {
     sVar1 = FUN_0044a246(heap);
   }
   bVar3 = 0xfffb < heap.u32(0x006e3b82);

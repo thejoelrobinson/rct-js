@@ -4,7 +4,6 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { MMRESULT } from "../runtime/win32.js";
 import { FUN_004138d0 } from "./4138d0.js";
 export function FUN_004122a3(heap, param_1, param_2, param_3, param_4, param_5) {
   const __sp = heap.allocFrame(128);
@@ -17,7 +16,7 @@ export function FUN_004122a3(heap, param_1, param_2, param_3, param_4, param_5) 
   let local_8 = 0;
   local_8 = 0;
   MVar1 = mmioGetInfo(param_1, __addr_local_5c, 0);
-  local_8 = (MMRESULT)(MVar1 != 0);
+  local_8 = (MVar1 != 0);
   if (local_8 == 0) {
     local_14 = param_2;
     if (heap.u32((param_4 + 4)) < param_2) {

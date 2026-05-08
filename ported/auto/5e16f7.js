@@ -51,7 +51,7 @@ export function FUN_005e16f7(heap) {
         if (sVar3 < 0) {
           sVar3 = -sVar3;
         }
-        if ((ushort)(sVar2 + 7U | sVar3 + 7U) >>> 3 == 0) {
+        if ((sVar2 + 7U | sVar3 + 7U) >>> 3 == 0) {
           heap.u32((unaff_ESI + 0x32)) = heap.u32((unaff_ESI + 0x32)) & 0xfff7;
         }
       }

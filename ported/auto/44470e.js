@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_00426f56 } from "./426f56.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_0044470e(heap) {
@@ -22,21 +23,21 @@ export function FUN_0044470e(heap) {
   let uVar3 = 0;
   let iVar4 = 0;
   iVar1 = heap.u32(0x0087d304);
-  LOCK(heap);
+  LOCK();
   heap.setU32(0x0087d304, (0) >>> 0);
   UNLOCK(heap);
   iVar2 = 0;
   for (uVar3 = heap.u32(0x0087c398); uVar3 != 0xffff; uVar3 = heap.u32((__addr_DAT_00743b98) + (uVar3 * 0x80) * 4)) {
     iVar4 = uVar3 * 0x100;
     if (heap.u32((__addr_DAT_00743bc2) + (iVar4) * 4) == '\x01') {
-      iVar2 = iVar2 - (uint) * (__addr_DAT_00632f4c + heap.u32((uint)(byte)(__addr_DAT_00743bc3) + (iVar4) * 4) * 2);
+      iVar2 = iVar2 - heap.u32((__addr_DAT_00632f4c + heap.u32((byte)(__addr_DAT_00743bc3) + (iVar4) * 4) * 2));
     }
   }
   iVar2 = (iVar2 - heap.u32((__addr_DAT_005f96a4 + heap.u32(0x0087c3d7) * 4))) - heap.u32(0x0087c3b8) / 600;
   pcVar5 = __addr_DAT_00887420;
   do {
     if (((heap.u32(pcVar5) != -1) && (heap.u32(pcVar5 + (0x21) * 4) != '\0')) && (heap.u32((pcVar5 + 0x132)) != 0xffff)) {
-      iVar2 = iVar2 + (uint) * (pcVar5 + 0x132) * -2;
+      iVar2 = iVar2 + heap.u32((pcVar5 + 0x132)) * -2;
     }
     pcVar5 = pcVar5 + 0x260;
   } while (pcVar5 < __addr_DAT_008ad1c0);

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { GlobalAlloc, GlobalFree, HGLOBAL } from "../runtime/win32.js";
+import { GlobalAlloc, GlobalFree } from "../runtime/win32.js";
 import { FUN_00411fd0 } from "./411fd0.js";
 import { FUN_00412224 } from "./412224.js";
 import { FUN_004122a3 } from "./4122a3.js";
@@ -36,11 +36,11 @@ export function FUN_00412bbd(heap, param_1, param_2, param_3, param_4, param_5) 
     }
   }
   if (heap.u32(param_5) != 0) {
-    GlobalFree(heap, (HGLOBAL) * param_5);
+    GlobalFree(heap, heap.u32(param_5));
     heap.u32(param_5) = 0;
   }
   if (heap.u32(param_4) != 0) {
-    GlobalFree(heap, (HGLOBAL) * param_4);
+    GlobalFree(heap, heap.u32(param_4));
     heap.u32(param_4) = 0;
   }
   LAB_00412cd9: if (heap.u32(__addr_local_34) != 0x0) {

@@ -20,7 +20,7 @@ export function FUN_00411789(heap) {
   heap.u32((puVar2 + 2)) = 0;
   mciSendStringA(0x005ec244, __addr_local_104, 0x100, heap.u32(0x005e916c));
   iVar1 = _strcmp(__addr_local_104, 0x005ec258);
-  heap.setU32(0x005ec1c8, ((uint)(iVar1 == 0)) >>> 0);
+  heap.setU32(0x005ec1c8, ((iVar1 == 0)) >>> 0);
   return iVar1 == 0;
 } finally {
     heap.freeFrame(8);

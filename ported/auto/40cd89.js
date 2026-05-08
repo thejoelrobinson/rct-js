@@ -33,7 +33,7 @@ export function FUN_0040cd89(heap, param_1, param_2, param_3) {
     if (heap.u32(heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c))) == 1) {
       iVar1 = FUN_00412dcd(heap, __addr_DAT_005f04c0 + param_1 * 0x16c, param_1 * 0x16c + 0x5f04c4, param_1 * 0x16c + 0x5f04d8, param_3);
       if (iVar1 == 0) {
-        heap.u32((__addr_DAT_005f04f0 + param_1 * 0x16c)) = (uint)(heap.u32((heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c)) + 8)) * 0x78) / 100;
+        heap.u32((__addr_DAT_005f04f0 + param_1 * 0x16c)) = (heap.u32((heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c)) + 8)) * 0x78) / 100;
         _memset(__addr_local_1c, 0, 0x14);
         heap.setU32(__addr_local_1c, (0x14) >>> 0);
         local_18 = heap.u32(0x005ebfe0) | 0x100e0;

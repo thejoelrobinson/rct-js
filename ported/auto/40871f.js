@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { GetOpenFileNameA, GetSaveFileNameA, LPOPENFILENAMEA } from "../runtime/win32.js";
+import { GetOpenFileNameA, GetSaveFileNameA } from "../runtime/win32.js";
 import { FUN_0040ba8c } from "./40ba8c.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_0040871f(heap, param_1, param_2, param_3, param_4, param_5) {
@@ -83,11 +83,11 @@ export function FUN_0040871f(heap, param_1, param_2, param_3, param_4, param_5) 
   }
   if (param_1 == 1) {
     local_1c = 0xa1804;
-    local_26c = GetOpenFileNameA(heap, (LPOPENFILENAMEA) & heap.u32(__addr_local_50));
+    local_26c = GetOpenFileNameA(heap, __addr_local_50);
   } else {
     if (param_1 == 2) {
     local_1c = 0x82806;
-    local_26c = GetSaveFileNameA(heap, (LPOPENFILENAMEA) & heap.u32(__addr_local_50));
+    local_26c = GetSaveFileNameA(heap, __addr_local_50);
   }
   }
   if ((heap.u32(0x005ebe3c) == 2) && (heap.u32(0x005ebf54) == 1)) {

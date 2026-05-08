@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44 } from "../runtime/win32.js";
+import { CONCAT44 } from "../runtime/ghidra-builtins.js";
 export function FUN_00436f36(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_00971ef4 = __sp + 0;
@@ -27,15 +27,15 @@ export function FUN_00436f36(heap) {
     }
   }
   bVar2 = (byte)(in_EDX >>> 2);
-  iVar4 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((in_CX & 0xffe0) << 7 | in_CX >>> 9 | in_EAX & 0xffe0) >>> 5 | (in_CX >>> 9) << 0xb)) * 4);
+  iVar4 = heap.u32((__addr_DAT_00971ef4) + ((((in_CX & 0xffe0) << 7 | in_CX >>> 9 | in_EAX & 0xffe0) >>> 5 | (in_CX >>> 9) << 0xb)) * 4);
   while ((bVar2 < heap.u32((iVar4 + 2)) || (heap.u32((iVar4 + 3)) <= bVar2)) || ((heap.u32((iVar4 + 1)) & bVar3) == 0)) {
     pbVar1 = (iVar4 + 1);
     iVar4 = iVar4 + 8;
     if ((heap.u32(pbVar1) & 0x80) != 0) {
-      return CONCAT44(heap, in_EDX, in_EAX);
+      return CONCAT44(in_EDX, in_EAX);
     }
   }
-  return CONCAT44(heap, in_EDX, in_EAX);
+  return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(4);
   }

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CreatePalette, GetDC, GetDeviceCaps, GetSystemPaletteEntries, GetSystemPaletteUse, LPPALETTEENTRY, ReleaseDC } from "../runtime/win32.js";
+import { CreatePalette, GetDC, GetDeviceCaps, GetSystemPaletteEntries, GetSystemPaletteUse, ReleaseDC } from "../runtime/win32.js";
 export function FUN_0040f2f4(heap, param_1, param_2, param_3) {
   let hdc = 0;
   let UVar1 = 0;
@@ -63,7 +63,7 @@ export function FUN_0040f2f4(heap, param_1, param_2, param_3) {
       for (; local_8 < (0x100 - UVar1); local_8 = local_8 + 1) {
         heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\x01';
       }
-      GetSystemPaletteEntries(heap, hdc, 0x100 - UVar1, UVar1, (LPPALETTEENTRY)(param_3 + (0x100 - UVar1) * 4 + 4));
+      GetSystemPaletteEntries(heap, hdc, 0x100 - UVar1, UVar1, (param_3 + (0x100 - UVar1) * 4 + 4));
       for (local_8 = 0x100 - UVar1; local_8 < 0x100; local_8 = local_8 + 1) {
         heap.u32((param_1 + 2 + local_8 * 4)) = heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4));
         heap.u32((param_1 + 1 + local_8 * 4)) = heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1));

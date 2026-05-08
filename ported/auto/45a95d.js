@@ -75,11 +75,11 @@ export function FUN_0045a95d(heap) {
         if ((0x9b < bVar4) || (bVar4 < 0x8e)) {
           break;
         }
-        heap.setU32(0x0064bb04, (heap.u32((heap.u32(0x0093a464) + (uint)(byte)(bVar4 + 0x72) * 4))) >>> 0);
+        heap.setU32(0x0064bb04, (heap.u32((heap.u32(0x0093a464) + (byte)(bVar4 + 0x72) * 4))) >>> 0);
       }
     } while (bVar4 < 0x20);
-    uVar7 = heap.u32((uint)(byte)(__addr_DAT_0099a6c8) + ((byte)(bVar4 - 0x20)) * 4);
-    pbVar8 = __addr_DAT_006432d8 + (uint)(byte)(bVar4 - 0x20) * 8;
+    uVar7 = heap.u32((byte)(__addr_DAT_0099a6c8) + ((byte)(bVar4 - 0x20)) * 4);
+    pbVar8 = __addr_DAT_006432d8 + (byte)(bVar4 - 0x20) * 8;
     do {
       while (uVar3 = heap.u32(0x0064bb04), uVar6 != 0) {
         uVar6 = uVar6 - 1;

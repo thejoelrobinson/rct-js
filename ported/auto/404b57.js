@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { Arguments, FormatMessageA, GetLastError, MessageBoxA } from "../runtime/win32.js";
+import { FormatMessageA, GetLastError, MessageBoxA } from "../runtime/win32.js";
+import { Arguments } from "../runtime/ghidra-builtins.js";
 export function FUN_00404b57(heap, param_1) {
   const __sp = heap.allocFrame(260);
   const __addr_local_108 = __sp + 0;

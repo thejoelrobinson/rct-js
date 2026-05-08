@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, CONCAT44 } from "../runtime/win32.js";
+import { CONCAT22, CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_00452fce } from "./452fce.js";
 import { FUN_005e3b2b } from "./5e3b2b.js";
 import { FUN_005e3b77 } from "./5e3b77.js";
@@ -61,7 +61,7 @@ export function FUN_005e3c3c(heap) {
     bVar11 = uVar1 == 0;
     FUN_005e3b2b(heap);
     unaff_EDI = unaff_ESI;
-    if ((((!bVar11) && (heap.u32((unaff_ESI + 8)) < (heap.u32(0x00971ed6) - 0x14))) && (-0x3c < heap.u32((unaff_ESI + 8)))) && (heap.u32((unaff_ESI + 0x22)) < (ushort)(heap.u32(0x00971ed8) - 0x14U))) {
+    if ((((!bVar11) && (heap.u32((unaff_ESI + 8)) < (heap.u32(0x00971ed6) - 0x14))) && (-0x3c < heap.u32((unaff_ESI + 8)))) && (heap.u32((unaff_ESI + 0x22)) < (heap.u32(0x00971ed8) - 0x14U))) {
       FUN_005e3f31(heap);
       return;
     }
@@ -70,7 +70,7 @@ export function FUN_005e3c3c(heap) {
   sVar3 = FUN_005e3bbf(heap);
   sVar4 = extraout_DX;
   if (bVar11) {
-    bVar11 = (ushort)(heap.u32(0x00971ed8) - 0x24U) < extraout_CX;
+    bVar11 = (heap.u32(0x00971ed8) - 0x24U) < extraout_CX;
     sVar3 = FUN_005e3bbf(heap);
     sVar4 = extraout_DX_00;
     if (bVar11) {
@@ -78,55 +78,55 @@ export function FUN_005e3c3c(heap) {
       sVar3 = FUN_005e3bbf(heap);
       sVar4 = extraout_DX_01;
       if (bVar11) {
-        bVar11 = (ushort)(heap.u32(0x00971ed8) - 0x24U) < extraout_CX_00;
+        bVar11 = (heap.u32(0x00971ed8) - 0x24U) < extraout_CX_00;
         sVar3 = FUN_005e3bbf(heap);
         sVar4 = extraout_DX_02;
         if (bVar11) {
           for (unaff_EDI = __addr_DAT_009a013c; unaff_EDI < heap.u32(__addr_DAT_009a1164); unaff_EDI = unaff_EDI + 0x5e) {
             if ((heap.u32((unaff_EDI + 0x32)) & 1) == 0) {
-              bVar11 = 0xfffd < (ushort)(heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9)));
+              bVar11 = 0xfffd < (heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9)));
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_03;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 8)) - uVar6) < 2;
+              bVar11 = (heap.u32((unaff_EDI + 8)) - uVar6) < 2;
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_04;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = 0xfffd < (ushort)(heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26)));
+              bVar11 = 0xfffd < (heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26)));
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_05;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 0x22)) - extraout_CX_01) < 2;
+              bVar11 = (heap.u32((unaff_EDI + 0x22)) - extraout_CX_01) < 2;
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_06;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26))) < extraout_CX_02;
+              bVar11 = (heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26))) < extraout_CX_02;
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_07;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26))) < extraout_CX_03;
+              bVar11 = (heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26))) < extraout_CX_03;
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_08;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9))) < uVar6;
+              bVar11 = (heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9))) < uVar6;
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_09;
               if (!bVar11) {
                 /* goto LAB_005e3efb */ throw new Error("goto LAB_005e3efb not supported");
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9))) < uVar6;
+              bVar11 = (heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9))) < uVar6;
               sVar3 = FUN_005e3bbf(heap);
               sVar4 = extraout_DX_10;
               if (!bVar11) {
@@ -155,25 +155,25 @@ export function FUN_005e3c3c(heap) {
               } while (true);
             }
             if ((heap.u32((unaff_EDI + 0x32)) & 1) == 0) {
-              bVar11 = 0xfffd < (ushort)(heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9)));
+              bVar11 = 0xfffd < (heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 9)));
               sVar3 = FUN_005e3b77(heap);
               sVar4 = extraout_DX_11;
               if (!bVar11) {
                 break;
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 8)) - uVar6) < 2;
+              bVar11 = (heap.u32((unaff_EDI + 8)) - uVar6) < 2;
               sVar3 = FUN_005e3b77(heap);
               sVar4 = extraout_DX_12;
               if (!bVar11) {
                 break;
               }
-              bVar11 = 0xfffd < (ushort)(heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26)));
+              bVar11 = 0xfffd < (heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26)));
               sVar3 = FUN_005e3b77(heap);
               sVar4 = extraout_DX_13;
               if (!bVar11) {
                 break;
               }
-              bVar11 = (ushort)(heap.u32((unaff_EDI + 0x22)) - extraout_CX_04) < 2;
+              bVar11 = (heap.u32((unaff_EDI + 0x22)) - extraout_CX_04) < 2;
               sVar3 = FUN_005e3b77(heap);
               sVar4 = extraout_DX_14;
               if (!bVar11) {
@@ -195,8 +195,8 @@ export function FUN_005e3c3c(heap) {
     sVar4 = sVar4 - (sVar7 - heap.u32(0x00971ed6));
     sVar7 = sVar7 - (sVar7 - heap.u32(0x00971ed6));
   }
-  uVar12 = CONCAT44(heap, in_EDX, CONCAT22(heap, sVar3, sVar4));
-  uVar8 = CONCAT22(heap, (unaff_EBX >>> 0x10), sVar7 - sVar4);
+  uVar12 = CONCAT44(in_EDX, CONCAT22(sVar3, sVar4));
+  uVar8 = CONCAT22((unaff_EBX >>> 0x10), sVar7 - sVar4);
   while (true) {
     if (heap.u32(__addr_DAT_009a1164) < __addr_DAT_009a1164) {
       break;
@@ -227,7 +227,7 @@ export function FUN_005e3c3c(heap) {
   heap.u32((puVar9 + 0x5d)) = in_ECX;
   heap.u32((puVar9 + 0x175)) = 0xff;
   heap.u32((puVar9 + 0x32)) = 0;
-  heap.u32((puVar9 + 0x32)) = heap.u32((puVar9 + 0x32)) | (ushort)(in_ECX >>> 8);
+  heap.u32((puVar9 + 0x32)) = heap.u32((puVar9 + 0x32)) | (in_ECX >>> 8);
   if ((in_ECX & 0x300) == 0) {
     heap.u32((puVar9 + 0x32)) = heap.u32((puVar9 + 0x32)) | 0x600;
     FUN_00452fce(heap, uVar8, uVar12, unaff_EDI, puVar9, unaff_EBP, __addr_stack0x00000000, uVar8, (uVar12 >>> 0x20), in_ECX);

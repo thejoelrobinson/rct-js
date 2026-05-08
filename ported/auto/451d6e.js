@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT31 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_0042c711 } from "./42c711.js";
 import { FUN_00451f42 } from "./451f42.js";
 export function FUN_00451d6e(heap) {
@@ -30,7 +30,7 @@ export function FUN_00451d6e(heap) {
       heap.u32(pbVar8 + (0x15f) * 4) = heap.u32(pbVar8 + (0x15f) * 4) - 1;
     }
     if ((heap.u32(pbVar8 + (0x21) * 4) == 1) && (heap.u32(pbVar8 + (0x15f) * 4) == 0)) {
-      if ((heap.u32((__addr_DAT_005f5b78 + (uint) * pbVar8 * 8)) & 0x20000) == 0) {
+      if ((heap.u32((__addr_DAT_005f5b78 + heap.u32(pbVar8) * 8)) & 0x20000) == 0) {
         uVar6 = 0;
         do {
           if ((heap.u32((pbVar8 + uVar6 * 2 + 0x2a)) != -1) && (((bVar11 = heap.u32((pbVar8 + uVar6 * 2 + 0x42)) != -1, heap.u32((pbVar8 + uVar6 * 2 + 0x42)) != -1 && (FUN_00451f42(heap), bVar11)) || ((bVar11 = heap.u32((pbVar8 + uVar6 * 2 + 0x4a)) != -1, heap.u32((pbVar8 + uVar6 * 2 + 0x4a)) != -1 && (FUN_00451f42(heap), bVar11)))))) {
@@ -44,13 +44,13 @@ export function FUN_00451d6e(heap) {
           uVar3 = (uVar5 & 0xff) * 0x20;
           uVar4 = (uVar5 >>> 8) * 0x20;
           uVar6 = heap.u32(0x00631d55) << 8;
-          pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((uVar5 >>> 8) << 0xc | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
+          pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((((uVar5 >>> 8) << 0xc | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
           do {
-            uVar6 = CONCAT31(heap, (int3)(uVar6 >>> 8), heap.u32(pbVar9)) & 0xffffff3c;
+            uVar6 = CONCAT31((int3)(uVar6 >>> 8), heap.u32(pbVar9)) & 0xffffff3c;
             if ((uVar6 == '\b') && ((byte)(uVar6 >>> 8) == heap.u32(pbVar9 + (7) * 4))) {
               bVar2 = (byte)((heap.u32((byte)(__addr_DAT_006559d8) + (heap.u32(pbVar9 + (4) * 4) * 0x10) * 4) & 0xf) << (heap.u32(pbVar9) & 3));
-              uVar6 = CONCAT11(heap, bVar2 >>> 4, bVar2) & 0xffffff0f;
-              uVar6 = (uint)(byte)(uVar6 | (byte)(uVar6 >>> 8));
+              uVar6 = CONCAT11(bVar2 >>> 4, bVar2) & 0xffffff0f;
+              uVar6 = (byte)(uVar6 | (byte)(uVar6 >>> 8));
               heap.setU32(0x00631d56, ('\0') >>> 0);
               /* goto LAB_00451e85 */ throw new Error("goto LAB_00451e85 not supported");
             }
@@ -73,7 +73,7 @@ export function FUN_00451d6e(heap) {
     uVar7 = uVar7 ^ 2;
     uVar5 = uVar4 - heap.u32((__addr_DAT_0065247a) + (uVar7 * 2) * 4);
     uVar5 = uVar5 * 0x80 | uVar5 >>> 9 | uVar3 - heap.u32((__addr_DAT_00652478) + (uVar7 * 2) * 4);
-    pbVar10 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar5 >>> 5 | uVar5 << 0xb)) * 4);
+    pbVar10 = heap.u32((__addr_DAT_00971ef4) + ((uVar5 >>> 5 | uVar5 << 0xb)) * 4);
     do {
       if ((heap.u32(pbVar10) & 0x3c) == 4) {
         if ((heap.u32(pbVar10 + (4) * 4) & 4) == 0) {

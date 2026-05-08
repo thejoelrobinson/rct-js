@@ -23,7 +23,7 @@ export function FUN_0043c60b(heap) {
   if (bVar1 != heap.u32((unaff_ESI + 0x6e))) {
     FUN_005e53ca(heap);
     heap.u32((unaff_ESI + 0x6e)) = bVar1;
-    puVar2 = heap.u32((__addr_PTR_DAT_0062d644) + ((uint) * (unaff_ESI + 0x2d) * 2) * 4);
+    puVar2 = heap.u32((__addr_PTR_DAT_0062d644) + (heap.u32((unaff_ESI + 0x2d)) * 2) * 4);
     heap.u32((unaff_ESI + 0x14)) = heap.u32(puVar2 + (uVar3 * 4) * 4);
     heap.u32((unaff_ESI + 9)) = heap.u32(puVar2 + (uVar3 * 4 + 1) * 4);
     heap.u32((unaff_ESI + 0x15)) = heap.u32(puVar2 + (uVar3 * 4 + 2) * 4);

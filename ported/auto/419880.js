@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT12, CONCAT13, CONCAT22 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT12, CONCAT13, CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_00418f20 } from "./418f20.js";
 import { FUN_00418f90 } from "./418f90.js";
 import { FUN_00418fc0 } from "./418fc0.js";
@@ -108,7 +108,7 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   heap.setU32(__addr_local_10, (0) >>> 0);
   sVar9 = (((uVar4 >>> 8) + (param_2 >>> 0x18) * 2) * 0x4d + -0x134312f4 + uVar4 * 0x4d10 >>> 0x10);
   FUN_00419f50(heap, __addr_local_10, -sVar9, 1);
-  if (0x3ffe < CONCAT11(heap, cStack_5, local_6)) {
+  if (0x3ffe < CONCAT11(cStack_5, local_6)) {
     sVar9 = sVar9 + 1;
     FUN_00419c90(heap, __addr_local_10, __addr_local_1c);
   }
@@ -121,7 +121,7 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   if (0x15 < iVar8) {
     iVar8 = 0x15;
   }
-  uVar2 = CONCAT11(heap, cStack_5, local_6);
+  uVar2 = CONCAT11(cStack_5, local_6);
   local_6 = 0;
   cStack_5 = '\0';
   iVar5 = 8;
@@ -140,9 +140,9 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   psVar6 = psVar1;
   if (0 < iVar8) {
     do {
-      heap.setU32(__addr_param_1, (CONCAT22(heap, uStack_e, heap.u32(__addr_local_10))) >>> 0);
-      param_2 = CONCAT22(heap, uStack_a, uStack_c);
-      param_3 = CONCAT13(heap, cStack_5, CONCAT12(heap, local_6, uStack_8));
+      heap.setU32(__addr_param_1, (CONCAT22(uStack_e, heap.u32(__addr_local_10))) >>> 0);
+      param_2 = CONCAT22(uStack_a, uStack_c);
+      param_3 = CONCAT13(cStack_5, CONCAT12(local_6, uStack_8));
       FUN_00418f90(heap, __addr_local_10);
       FUN_00418f90(heap, __addr_local_10);
       FUN_00418f20(heap, __addr_local_10, __addr_param_1);

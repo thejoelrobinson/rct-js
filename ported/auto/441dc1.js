@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT22, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_0043fdfb } from "./43fdfb.js";
 import { FUN_00441ffd } from "./441ffd.js";
 export function FUN_00441dc1(heap) {
@@ -57,7 +58,7 @@ export function FUN_00441dc1(heap) {
         heap.u32((__addr_DAT_00629c7e) + (uVar5) * 4) = 1;
         heap.u32((__addr_DAT_00743ba0 + iVar12)) = heap.u32((__addr_DAT_00743ba0 + iVar12)) & 0xfeff;
         FUN_00441ffd(heap);
-        heap.setU32(0x0062d2de, (CONCAT22(heap, heap.u32(0x00971e86), uVar9)) >>> 0);
+        heap.setU32(0x0062d2de, (CONCAT22(heap.u32(0x00971e86), uVar9)) >>> 0);
         heap.u32((__addr_DAT_006294fe + uVar5 * 8)) = heap.u32(0x0062d2de);
         heap.setU32(0x0062d2e2, (ram0x00971e88) >>> 0);
         heap.u32((__addr_DAT_00629502 + uVar5 * 8)) = ram0x00971e88;
@@ -67,14 +68,14 @@ export function FUN_00441dc1(heap) {
         heap.u32((__addr_DAT_00629e5e) + (uVar5 * 0x38) * 4) = cVar6 + ']';
         iVar12 = uVar5 * 0x38 + 1;
         while (heap.u32((puVar13 + 4)) != 0xffff) {
-          iVar14 = (uint) * (puVar13 + 4) * 0x100;
+          iVar14 = heap.u32((puVar13 + 4)) * 0x100;
           puVar13 = __addr_DAT_00743b94 + iVar14;
           if (((heap.u32((__addr_DAT_00743bc2) + (iVar14) * 4) == '\0') && (heap.u32((__addr_DAT_00743bbe) + (iVar14) * 4) == '\0')) && ((heap.u32((__addr_DAT_00743ba0 + iVar14)) & 0x100) != 0)) {
             FUN_00441ffd(heap);
             if (((uVar9 == heap.u32(0x0062d2de)) && (heap.u32(0x00971e86) == heap.u16(0x62d2e0))) && (ram0x00971e88 == heap.u32(0x0062d2e2))) {
               heap.u32((__addr_DAT_00629c7e) + (uVar5) * 4) = heap.u32((__addr_DAT_00629c7e) + (uVar5) * 4) + 1;
               heap.u32((__addr_DAT_00743ba0 + iVar14)) = heap.u32((__addr_DAT_00743ba0 + iVar14)) & 0xfeff;
-              if (heap.u32((ushort)(__addr_DAT_00629c7e) + (uVar5) * 4) < 0x38) {
+              if (heap.u32((__addr_DAT_00629c7e) + (uVar5) * 4) < 0x38) {
                 FUN_0043fdfb(heap);
                 heap.u32((__addr_DAT_00629e5e) + (iVar12) * 4) = cVar6 + ']';
                 iVar12 = iVar12 + 1;
@@ -85,27 +86,27 @@ export function FUN_00441dc1(heap) {
         if (heap.u32(0x0062d2de) != 0) {
           uVar15 = 0;
           LAB_00441fad: if (uVar15 < uVar5) {
-            if (heap.u32((ushort)(__addr_DAT_00629c7e) + (uVar5) * 4) <= heap.u32((ushort)(__addr_DAT_00629c7e) + (uVar15) * 4)) {
+            if (heap.u32((__addr_DAT_00629c7e) + (uVar5) * 4) <= heap.u32((__addr_DAT_00629c7e) + (uVar15) * 4)) {
               /* goto code_r0x00441fbb */ throw new Error("goto code_r0x00441fbb not supported");
             }
-            uVar9 = heap.u32((uint)(byte)(__addr_DAT_0062940e) + (uVar5) * 4);
+            uVar9 = heap.u32((byte)(__addr_DAT_0062940e) + (uVar5) * 4);
             uVar7 = heap.u32((__addr_DAT_006294fe + uVar5 * 8));
             uVar8 = heap.u32((__addr_DAT_00629502 + uVar5 * 8));
             uVar10 = heap.u32((__addr_DAT_00629c7e) + (uVar5) * 4);
             do {
-              LOCK(heap);
+              LOCK();
               uVar2 = heap.u32((__addr_DAT_00629c7e) + (uVar15) * 4);
               heap.u32((__addr_DAT_00629c7e) + (uVar15) * 4) = uVar10;
               UNLOCK(heap);
-              LOCK(heap);
+              LOCK();
               uVar3 = heap.u32((__addr_DAT_006294fe + uVar15 * 8));
               heap.u32((__addr_DAT_006294fe + uVar15 * 8)) = uVar7;
               UNLOCK(heap);
-              LOCK(heap);
+              LOCK();
               uVar4 = heap.u32((__addr_DAT_00629502 + uVar15 * 8));
               heap.u32((__addr_DAT_00629502 + uVar15 * 8)) = uVar8;
               UNLOCK(heap);
-              LOCK(heap);
+              LOCK();
               bVar1 = heap.u32((__addr_DAT_0062940e) + (uVar15) * 4);
               heap.u32((__addr_DAT_0062940e) + (uVar15) * 4) = uVar9;
               uVar9 = bVar1;

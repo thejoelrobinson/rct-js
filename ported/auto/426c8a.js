@@ -72,7 +72,7 @@ export function FUN_00426c8a(heap) {
       if ((cVar5 == '\x02') && (heap.u32(0x0087c3c0) < 6)) {
         uVar2 = uVar2 >>> 3;
       }
-      if ((cVar5 == '\x01') && (heap.u32((ushort)(__addr_DAT_00887508) + (heap.u32((uint)(byte)(__addr_DAT_0087d0ee) + (uVar7) * 4) * 0x130) * 4) < 3)) {
+      if ((cVar5 == '\x01') && (heap.u32((__addr_DAT_00887508) + (heap.u32((byte)(__addr_DAT_0087d0ee) + (uVar7) * 4) * 0x130) * 4) < 3)) {
         uVar2 = uVar2 >>> 3;
       }
       if (uVar4 < uVar2) {

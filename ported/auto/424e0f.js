@@ -29,10 +29,10 @@ export function FUN_00424e0f(heap) {
   let iVar8 = 0;
   let bVar12 = 0;
   code_r0x00424e0f: iVar8 = 10;
-  LAB_00424e14: uVar6 = ((((((ushort)((heap.u32(0x008d4228) >>> 1 & 1) != 0) << 1 | (ushort)((heap.u32(0x008d4228) >>> 3 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 5 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 7 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 9 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 0xb & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 0xd & 1) != 0);
-  uVar2 = (((((((ushort)((heap.u32(0x008d4228) & 1) != 0) << 1 | (ushort)((heap.u32(0x008d4228) >>> 2 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 4 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 6 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 8 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 10 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 0xc & 1) != 0)) << 5;
+  LAB_00424e14: uVar6 = (((((((heap.u32(0x008d4228) >>> 1 & 1) != 0) << 1 | ((heap.u32(0x008d4228) >>> 3 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 5 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 7 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 9 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xb & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xd & 1) != 0);
+  uVar2 = ((((((((heap.u32(0x008d4228) & 1) != 0) << 1 | ((heap.u32(0x008d4228) >>> 2 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 4 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 6 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 8 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 10 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xc & 1) != 0)) << 5;
   uVar4 = uVar6 << 5;
-  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar6 << 0xc | uVar2) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
+  pbVar9 = heap.u32((__addr_DAT_00971ef4) + (((uVar6 << 0xc | uVar2) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
   do {
     if ((heap.u32(pbVar9) & 0x3c) == 0) {
       pbVar11 = unaff_EDI;
@@ -91,7 +91,7 @@ export function FUN_00424e0f(heap) {
     uVar4 = extraout_CX_01;
   }
   LAB_00424f60: uVar2 = uVar4 << 7 | uVar4 >>> 9 | uVar2;
-  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((uVar2 >>> 5 | uVar2 << 0xb)) * 4);
   do {
     if ((heap.u32(pbVar9) & 0x3c) == 0xc) {
       FUN_005df1ff(heap);

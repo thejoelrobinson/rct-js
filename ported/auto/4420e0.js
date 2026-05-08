@@ -21,7 +21,7 @@ export function FUN_004420e0(heap) {
   if (heap.u32((unaff_ESI + 0x2d)) == '\x10') {
     uVar2 = FUN_005df40c(heap);
     if (uVar2 < 0x148) {
-      if ((ushort)(uVar2 >>> 0x10) < 0x3334) {
+      if ((uVar2 >>> 0x10) < 0x3334) {
         FUN_00452fce(heap, (uVar2 >>> 0x20), extraout_ECX, 1, uVar2 >>> 0x10);
       }
       if (heap.u32((unaff_ESI + 0xe)) != -0x8000) {

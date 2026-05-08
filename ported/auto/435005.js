@@ -21,7 +21,7 @@ export function FUN_00435005(heap) {
   if (cVar3 == '\0') {
     return 0x8000;
   }
-  if ((cVar3 == '\x06') && (unaff_BX = (ushort) * (extraout_EDX + 2) * 4, (heap.u32((extraout_EDX + 4)) & 4) != 0)) {
+  if ((cVar3 == '\x06') && (unaff_BX = heap.u32((extraout_EDX + 2)) * 4, (heap.u32((extraout_EDX + 4)) & 4) != 0)) {
     unaff_BX = unaff_BX + 8;
   }
   heap.setU32(0x00628a34, (sVar1 + 0x1f) >>> 0);

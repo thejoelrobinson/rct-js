@@ -23,7 +23,7 @@ export function FUN_00444820(heap) {
   let uVar3 = 0;
   let iVar4 = 0;
   if (((heap.u32((heap.u32(0x00981ef8) + 0xe)) < 2) && (in_AX < 0x1000)) && (in_CX < 0x1000)) {
-    uVar1 = heap.u32((__addr_DAT_00991f8e) + ((ushort)((in_AX & 0xfe0) << 2 | in_CX >>> 5)) * 4);
+    uVar1 = heap.u32((__addr_DAT_00991f8e) + (((in_AX & 0xfe0) << 2 | in_CX >>> 5)) * 4);
     pbVar2 = heap.u32(0x00991f80);
     while (heap.setU32(0x00991f80, (pbVar2) >>> 0), uVar1 != 0xffff) {
       uVar3 = uVar1;

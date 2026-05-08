@@ -26,7 +26,7 @@ export function FUN_004183a0(heap, param_1, param_2, param_3) {
   heap.setU32(__addr_local_18, (heap.u32((param_1 + 3))) >>> 0);
   uVar4 = uVar1 & 0x7fff;
   iVar5 = uVar4 - 0x3fff;
-  local_10 = (uint) * param_1 << 0x10;
+  local_10 = heap.u32(param_1) << 0x10;
   if (iVar5 == -0x3fff) {
     iVar5 = 0;
     iVar2 = FUN_004182c0(heap, __addr_local_18);
@@ -70,7 +70,7 @@ export function FUN_004183a0(heap, param_1, param_2, param_3) {
     FUN_004182e0(heap, __addr_local_18, heap.u32(param_3 + (3) * 4));
   }
   uVar3 = 0;
-  LAB_00418521: heap.setU32(__addr_local_18, (iVar5 << (0x1fU - heap.u32(param_3 + (3) * 4) & 0x1f) | -(uint)((uVar1 & 0x8000) != 0) & 0x80000000 | heap.u32(__addr_local_18)) >>> 0);
+  LAB_00418521: heap.setU32(__addr_local_18, (iVar5 << (0x1fU - heap.u32(param_3 + (3) * 4) & 0x1f) | -((uVar1 & 0x8000) != 0) & 0x80000000 | heap.u32(__addr_local_18)) >>> 0);
   if (heap.u32(param_3 + (4) * 4) == 0x40) {
     heap.u32(param_2 + (1) * 4) = heap.u32(__addr_local_18);
     heap.u32(param_2) = local_14;

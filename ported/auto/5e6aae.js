@@ -32,7 +32,7 @@ export function FUN_005e6aae(heap) {
   }
   if (heap.u32(0x009a0132) < in_CX) {
     heap.setU32(0x009a0136, (heap.u32(0x009a0136) - (in_CX - heap.u32(0x009a0132))) >>> 0);
-    heap.setU32(0x009a012c, (heap.u32(0x009a012c) + (uint)(ushort)(heap.u32(0x009a0138) + heap.u32(0x009a0134)) * (uint)(ushort)(in_CX - heap.u32(0x009a0132))) >>> 0);
+    heap.setU32(0x009a012c, (heap.u32(0x009a012c) + (heap.u32(0x009a0138) + heap.u32(0x009a0134)) * (in_CX - heap.u32(0x009a0132))) >>> 0);
     heap.setU32(0x009a0132, (in_CX) >>> 0);
   }
   sVar2 = (heap.u32(0x009a0132) + heap.u32(0x009a0136)) - (in_DX + in_CX);

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LPBYTE, RegCloseKey, RegOpenKeyA, RegQueryValueExA } from "../runtime/win32.js";
+import { RegCloseKey, RegOpenKeyA, RegQueryValueExA } from "../runtime/win32.js";
 import { FUN_00401120 } from "./401120.js";
 import { FUN_0040179d } from "./40179d.js";
 import { FUN_00402bd5 } from "./402bd5.js";
@@ -13,29 +13,29 @@ import { FUN_00403c2a } from "./403c2a.js";
 import { FUN_004061b9 } from "./4061b9.js";
 import { FUN_004385d8 } from "./4385d8.js";
 export function FUN_00401000(heap) {
-  const __sp = heap.allocFrame(80);
+  const __sp = heap.allocFrame(84);
   const __addr_local_50 = __sp + 0;
   const __addr_local_44 = __sp + 4;
-  const __addr_local_48 = __sp + 8;
-  const __addr_DAT_005eee40 = __sp + 12;
-  const __addr_local_40 = __sp + 16;
+  const __addr_local_4c = __sp + 8;
+  const __addr_local_48 = __sp + 12;
+  const __addr_DAT_005eee40 = __sp + 16;
+  const __addr_local_40 = __sp + 20;
   try {
   let BVar1 = 0;
   let LVar2 = 0;
   let iVar3 = 0;
   let uVar4 = 0;
   let uVar5 = 0;
-  let local_4c = 0;
   let local_1 = 0;
   FUN_00402bd5(heap);
   FUN_00401120(heap, 0);
   LVar2 = RegOpenKeyA(heap, 0x80000002, 0x005e90a0, __addr_local_50);
   if (LVar2 == 0) {
     heap.setU32(__addr_local_48, (4) >>> 0);
-    local_4c = 0;
-    LVar2 = RegQueryValueExA(heap, heap.u32(__addr_local_50), 0x005e9098, 0x0, __addr_local_44, (LPBYTE) & local_4c, __addr_local_48);
+    heap.setU32(__addr_local_4c, (0) >>> 0);
+    LVar2 = RegQueryValueExA(heap, heap.u32(__addr_local_50), 0x005e9098, 0x0, __addr_local_44, __addr_local_4c, __addr_local_48);
     if (LVar2 == 0) {
-      heap.setU32(0x005eee38, (local_4c) >>> 0);
+      heap.setU32(0x005eee38, (heap.u32(__addr_local_4c)) >>> 0);
     }
     RegCloseKey(heap, heap.u32(__addr_local_50));
   }
@@ -85,6 +85,6 @@ export function FUN_00401000(heap) {
   FUN_004061b9(heap);
   return;
 } finally {
-    heap.freeFrame(80);
+    heap.freeFrame(84);
   }
 }

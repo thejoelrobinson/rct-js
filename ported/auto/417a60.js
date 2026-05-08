@@ -49,7 +49,7 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
           do {
             pcVar4 = __addr_local_404;
             do {
-              if (param_3 <= (uint)(pcVar7 - param_2)) {
+              if (param_3 <= (pcVar7 - param_2)) {
                 break;
               }
               cVar3 = heap.u32(pcVar7);
@@ -68,7 +68,7 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
               break;
             }
             local_41c = local_41c + heap.u32(__addr_local_410);
-            if ((heap.u32(__addr_local_410) < pcVar4 - __addr_local_404) || (param_3 <= (uint)(pcVar7 - param_2))) {
+            if ((heap.u32(__addr_local_410) < pcVar4 - __addr_local_404) || (param_3 <= (pcVar7 - param_2))) {
               break;
             }
           } while (true);

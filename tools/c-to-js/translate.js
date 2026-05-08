@@ -37,14 +37,64 @@ async function getParser() {
   return _parser;
 }
 
+// Names emitted by Ghidra for x86 ops that don't have a direct C equivalent.
+// These import from runtime/ghidra-builtins.js, not runtime/win32.js, so the
+// Win32 surface stays cleanly separated.
+const GHIDRA_BUILTINS = new Set([
+  "CONCAT11", "CONCAT12", "CONCAT13", "CONCAT14",
+  "CONCAT21", "CONCAT22", "CONCAT24",
+  "CONCAT31", "CONCAT44",
+  "CARRY1", "CARRY2", "CARRY4",
+  "SBORROW2", "SBORROW4",
+  "SCARRY2", "SCARRY4",
+  "LOCK", "RtlUnwind", "Arguments", "ExceptionList",
+]);
+
+// Tree-sitter-c is a context-free parser, so it can't distinguish typedef'd
+// type names from identifiers. Ghidra's output uses many Win32 type names
+// in casts like `(LPBOOL)&x` — without knowing LPBOOL is a type, the parser
+// reads this as `(LPBOOL) & &x`, a binary AND. We pre-strip cast prefixes
+// for the well-known Win32 types so the AST comes out clean.
+const WIN32_TYPE_NAMES = [
+  // KERNEL32 / generic
+  "LPBOOL", "LPBYTE", "LPCSTR", "LPDWORD", "LPSTR", "LPVOID", "LPCVOID",
+  "BYTE", "WORD", "DWORD", "BOOL", "CHAR", "TCHAR", "WCHAR", "VOID", "PVOID",
+  "UINT", "WPARAM", "LPARAM", "LRESULT", "HRESULT", "FARPROC", "size_t",
+  "uint", "ushort", "uchar", "uint16_t", "uint32_t", "int32_t", "int16_t",
+  "int8_t", "uint8_t", "long", "ulong",
+  // HANDLE-like (each its own typedef)
+  "HACCEL", "HBITMAP", "HBRUSH", "HCURSOR", "HDC", "HFILE", "HFONT", "HGDIOBJ",
+  "HGLOBAL", "HICON", "HINSTANCE", "HKEY", "HMENU", "HMMIO", "HMODULE",
+  "HPSTR", "HRSRC", "HWND",
+  // Pointer-to-type
+  "LPMSG", "LPRECT", "LPPOINT", "LPPALETTEENTRY", "LPSYSTEM_INFO",
+  "LPOPENFILENAMEA", "LPSECURITY_ATTRIBUTES", "LPOVERLAPPED",
+  // Multimedia
+  "MMRESULT", "TIMERPROC", "WNDPROC", "DLGPROC",
+  // Structured (rarely used as casts but harmless to include)
+  "PHKEY", "PFILETIME",
+];
+
+const CAST_REGEX = new RegExp(
+  // Match `(<type>[*]?[ ]*)<expr>` — strip the parenthesized type prefix.
+  "\\((?:(?:" + WIN32_TYPE_NAMES.join("|") + ")\\s*\\*?\\s*)\\)",
+  "g",
+);
+
+function stripWin32Casts(source) {
+  return source.replace(CAST_REGEX, "");
+}
+
 // Parse a single Ghidra C function and return { js, info } where info contains
 // metadata (function name, addr, imports, called functions).
 export async function translateFunction(source) {
+  source = stripWin32Casts(source);
   const parser = await getParser();
   const tree = parser.parse(source);
   const ctx = {
     source,
     imports: new Set(),     // Win32 imports referenced
+    builtins: new Set(),    // Ghidra pseudo-fns referenced (CONCAT*, CARRY*, ...)
     callsFun: new Set(),    // FUN_xxx referenced
     locals: new Set(),      // names declared as locals (so we don't mistake for DAT)
     paramNames: new Set(),
@@ -172,6 +222,9 @@ function renderHeader(ctx) {
   lines.push("");
   if (ctx.imports.size > 0) {
     lines.push(`import { ${[...ctx.imports].sort().join(", ")} } from "../runtime/win32.js";`);
+  }
+  if (ctx.builtins.size > 0) {
+    lines.push(`import { ${[...ctx.builtins].sort().join(", ")} } from "../runtime/ghidra-builtins.js";`);
   }
   if (ctx.callsFun.size > 0) {
     const calls = [...ctx.callsFun].sort();
@@ -513,8 +566,18 @@ function emitIdentifier(node, ctx) {
   }
   // Local / param — leave untouched
   if (ctx.locals.has(name) || ctx.paramNames.has(name)) return name;
-  // DAT_<hex> or _DAT_<hex> — global memory at that address. Treat as u32 read.
-  let m = /^_?DAT_([0-9a-fA-F]+)$/.exec(name);
+  // DAT_<hex>_<width> — Ghidra's typed sub-DWORD global. _2 = u16, _1 = u8.
+  // (Recognise this BEFORE the bare DAT_<hex> match so the suffix isn't lost.)
+  let m = /^_?DAT_([0-9a-fA-F]+)_(\d+)$/.exec(name);
+  if (m) {
+    const addr = `0x${m[1]}`;
+    const width = parseInt(m[2], 10);
+    return width === 1 ? `heap.u8(${addr})`
+         : width === 2 ? `heap.u16(${addr})`
+         : `heap.u32(${addr})`;
+  }
+  // DAT_<hex> or _DAT_<hex> — 32-bit global memory at that address.
+  m = /^_?DAT_([0-9a-fA-F]+)$/.exec(name);
   if (m) return `heap.u32(0x${m[1]})`;
   // s_..._<hex> — string literal global; treat as a pointer (the address).
   m = /_([0-9a-fA-F]{6,8})$/.exec(name);
@@ -526,6 +589,12 @@ function emitIdentifier(node, ctx) {
   m = /^FUN_([0-9a-fA-F]+)$/.exec(name);
   if (m) {
     ctx.callsFun.add(name);
+    return name;
+  }
+  // Ghidra pseudo-functions (CONCAT*, CARRY*, SBORROW*, SCARRY*, etc.) come
+  // from a separate runtime module so the Win32 surface stays clean.
+  if (GHIDRA_BUILTINS.has(name)) {
+    ctx.builtins.add(name);
     return name;
   }
   // Otherwise assume it's a Win32 import (bare CamelCase identifier).
@@ -571,10 +640,26 @@ function emitAssignment(node, ctx) {
   const left = node.childForFieldName("left");
   const op = node.childForFieldName("operator").text;
   const right = emitExpr(node.childForFieldName("right"), ctx);
-  // If LHS is DAT_xxx, emit setU32. Otherwise emit identifier = ...
+  // If LHS is DAT_xxx (with optional _<width> suffix), emit appropriately.
   if (left.type === "identifier") {
     const name = text(left, ctx);
-    const m = /^_?DAT_([0-9a-fA-F]+)$/.exec(name);
+    // DAT_<hex>_<width> — typed sub-DWORD write
+    let m = /^_?DAT_([0-9a-fA-F]+)_(\d+)$/.exec(name);
+    if (m) {
+      const addr = `0x${m[1]}`;
+      const width = parseInt(m[2], 10);
+      const setFn = width === 1 ? "setU8" : width === 2 ? "setU16" : "setU32";
+      const readFn = width === 1 ? "u8" : width === 2 ? "u16" : "u32";
+      const mask = width === 1 ? "0xff" : width === 2 ? "0xffff" : "0xffffffff";
+      if (op === "=") {
+        return `heap.${setFn}(${addr}, (${right}) & ${mask})`;
+      }
+      const binop = op.slice(0, op.length - 1);
+      const opMap = { ">>": ">>>" };
+      const finalOp = opMap[binop] || binop;
+      return `heap.${setFn}(${addr}, ((heap.${readFn}(${addr})) ${finalOp} (${right})) & ${mask})`;
+    }
+    m = /^_?DAT_([0-9a-fA-F]+)$/.exec(name);
     if (m) {
       // Compound op (e.g. += , |=) — compute RHS as full expr based on op.
       if (op === "=") {
@@ -616,6 +701,11 @@ function emitCall(node, ctx) {
       ctx.callsFun.add(name);
       // FUN_xxx takes heap as first arg
       return `${name}(heap${args.length ? ", " + args.join(", ") : ""})`;
+    }
+    // Ghidra pseudo-fn — pure helper; no `heap` arg.
+    if (GHIDRA_BUILTINS.has(name)) {
+      ctx.builtins.add(name);
+      return `${name}(${args.join(", ")})`;
     }
     // Win32 import — pass heap as first arg too (the runtime wrapper accepts it)
     if (/^[A-Z][A-Za-z0-9_]*$/.test(name)) {

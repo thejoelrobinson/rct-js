@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT31 } from "../runtime/win32.js";
+import { CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_00404ba4 } from "./404ba4.js";
 import { FUN_005e3874 } from "./5e3874.js";
 import { FUN_005e3ace } from "./5e3ace.js";
@@ -38,10 +38,10 @@ export function FUN_005e6078(heap) {
         FUN_005e613e(heap);
         cVar3 = unaff_EBX;
         if (((cVar3 == '\x02') || (cVar3 == '\b')) || (cVar3 == '\x03')) {
-          iVar6 = CONCAT31(heap, (int3)(iVar6 >>> 8), 3);
+          iVar6 = CONCAT31((int3)(iVar6 >>> 8), 3);
         }
       } else {
-        iVar6 = CONCAT31(heap, (int3)(iVar6 >>> 8), heap.u32(0x00991f5b));
+        iVar6 = CONCAT31((int3)(iVar6 >>> 8), heap.u32(0x00991f5b));
       }
       /* goto LAB_005e6105 */ throw new Error("goto LAB_005e6105 not supported");
     }

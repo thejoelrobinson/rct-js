@@ -12,7 +12,7 @@ export function FUN_005d74b4(heap) {
   try {
   let uVar1 = 0;
   let uVar2 = 0;
-  uVar1 = ((uint)(__addr_DAT_0070093a - heap.u32(0x0087c3b4)) >>> 5 | (__addr_DAT_0070093a - heap.u32(0x0087c3b4)) * 0x8000000) - heap.u32(0x0087c3b8);
+  uVar1 = ((__addr_DAT_0070093a - heap.u32(0x0087c3b4)) >>> 5 | (__addr_DAT_0070093a - heap.u32(0x0087c3b4)) * 0x8000000) - heap.u32(0x0087c3b8);
   uVar1 = (uVar1 >>> 7 | uVar1 * 0x2000000) + heap.u32(0x0087d0c8);
   uVar2 = heap.u32(0x0087c396);
   if ((uVar1 >>> 3 | uVar1 * 0x20000000) == heap.u32(0x0087d79c)) {

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT22 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_00436e2b } from "./436e2b.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_00436d2d(heap) {
@@ -61,22 +61,22 @@ export function FUN_00436d2d(heap) {
       if (bVar8 <= bVar11) {
         bVar11 = bVar8;
       }
-      uVar5 = sVar1 - CONCAT11(heap, bVar11, bVar11);
-      uVar9 = sVar6 - CONCAT11(heap, bVar11, bVar11);
+      uVar5 = sVar1 - CONCAT11(bVar11, bVar11);
+      uVar9 = sVar6 - CONCAT11(bVar11, bVar11);
       cVar14 = uVar5 == '\x02';
       if (cVar14) {
-        uVar5 = CONCAT11(heap, (uVar5 >>> 8), 1);
+        uVar5 = CONCAT11((uVar5 >>> 8), 1);
       }
       if ((uVar5 >>> 8) == '\x02') {
-        uVar5 = CONCAT11(heap, 1, uVar5);
+        uVar5 = CONCAT11(1, uVar5);
         cVar14 = cVar14 + '\x01';
       }
       if (uVar9 == '\x02') {
-        uVar9 = CONCAT11(heap, (uVar9 >>> 8), 1);
+        uVar9 = CONCAT11((uVar9 >>> 8), 1);
         cVar14 = cVar14 + '\x01';
       }
       if ((uVar9 >>> 8) == '\x02') {
-        uVar9 = CONCAT11(heap, 1, uVar9);
+        uVar9 = CONCAT11(1, uVar9);
         cVar14 = cVar14 + '\x01';
       }
       cVar4 = bVar11 * '\x04';
@@ -94,7 +94,7 @@ export function FUN_00436d2d(heap) {
       iVar7 = iVar13 + 1;
     } while (iVar10 < 0x7f);
     bVar11 = (iVar10 >>> 8) + 1;
-    iVar10 = CONCAT22(heap, (iVar10 >>> 0x10), CONCAT11(heap, bVar11, 1));
+    iVar10 = CONCAT22((iVar10 >>> 0x10), CONCAT11(bVar11, 1));
     iVar7 = iVar13 + 3;
   } while (bVar11 < 0x7f);
   return;

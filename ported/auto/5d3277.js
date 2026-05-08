@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11 } from "../runtime/win32.js";
+import { CONCAT11 } from "../runtime/ghidra-builtins.js";
 export function FUN_005d3277(heap) {
   const __sp = heap.allocFrame(8);
   const __addr_DAT_00971ef4 = __sp + 0;
@@ -22,9 +22,9 @@ export function FUN_005d3277(heap) {
   do {
     uVar5 = 0;
     do {
-      puVar7 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar5 << 7 | uVar5 >>> 9 | uVar4) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4);
+      puVar7 = heap.u32((__addr_DAT_00971ef4) + (((uVar5 << 7 | uVar5 >>> 9 | uVar4) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4);
       do {
-        uVar3 = CONCAT11(heap, heap.u32(puVar7), uVar3) & 0xffff3cff;
+        uVar3 = CONCAT11(heap.u32(puVar7), uVar3) & 0xffff3cff;
         if (((uVar3 >>> 8) == '\b') && (uVar3 == heap.u32(puVar7 + (7) * 4))) {
           if (puVar6 == 0xffffffff) {
             LAB_005d32fd: puVar6 = puVar7;

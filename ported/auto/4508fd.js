@@ -15,9 +15,9 @@ export function FUN_004508fd(heap) {
   let unaff_EBX = 0;
   let unaff_ESI = 0;
   uVar3 = heap.u32(0x008ae93e) + heap.u32((__addr_DAT_0065247a) + (unaff_EBX * 2) * 4);
-  if (((ushort)(heap.u32(0x008ae93c) + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4)) < 0x1000) && (uVar3 < 0x1000)) {
+  if (((heap.u32(0x008ae93c) + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4)) < 0x1000) && (uVar3 < 0x1000)) {
     uVar3 = uVar3 * 0x80 | uVar3 >>> 9 | heap.u32(0x008ae93c) + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4);
-    pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar3 >>> 5 | uVar3 << 0xb)) * 4);
+    pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((uVar3 >>> 5 | uVar3 << 0xb)) * 4);
     do {
       bVar2 = heap.u32(pbVar4) & 0x3c;
       if (bVar2 == 0) {

@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_0042f6df } from "./42f6df.js";
 export function FUN_0042f77c(heap) {
   const __sp = heap.allocFrame(4);
@@ -34,7 +35,7 @@ export function FUN_0042f77c(heap) {
       return;
     }
     FUN_0042f6df(heap);
-    LOCK(heap);
+    LOCK();
     UNLOCK(heap);
     heap.setU32(0x005f8cb4, (in_AL) >>> 0);
     FUN_0042f6df(heap);

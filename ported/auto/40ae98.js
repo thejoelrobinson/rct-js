@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { GetDC, GetSystemPaletteEntries, LPPALETTEENTRY, ReleaseDC } from "../runtime/win32.js";
+import { GetDC, GetSystemPaletteEntries, ReleaseDC } from "../runtime/win32.js";
 import { FUN_00405b05 } from "./405b05.js";
 import { FUN_00408d5d } from "./408d5d.js";
 import { FUN_0040ab29 } from "./40ab29.js";
@@ -105,7 +105,7 @@ export function FUN_0040ae98(heap) {
                 heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 3)) = '\x02';
                 heap.u8((heap.u32(__addr_local_2c + (local_478) * 4) + 3)) = '\x02';
               }
-              GetSystemPaletteEntries(heap, local_47c, 0xf6, 10, (LPPALETTEENTRY)(__addr_aBStack_3dc + 0x3b0));
+              GetSystemPaletteEntries(heap, local_47c, 0xf6, 10, (__addr_aBStack_3dc + 0x3b0));
               ReleaseDC(heap, 0x0, local_47c);
               for (local_478 = 10; local_478 < 0xf6; local_478 = local_478 + 1) {
                 heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 2)) = local_478 + 0xf7;

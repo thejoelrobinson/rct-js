@@ -21,16 +21,16 @@ export function FUN_005ddcbe(heap) {
   let unaff_ESI = 0;
   let uVar3 = 0;
   let iVar4 = 0;
-  uVar3 = (uint) * (unaff_ESI + 0x30);
+  uVar3 = heap.u32((unaff_ESI + 0x30));
   iVar4 = uVar3 * 0x260;
-  if ((((heap.u32((__addr_DAT_00887422) + (uVar3 * 0x130) * 4) & 0x480) == 0) && ((heap.u32((__addr_DAT_005f5b78 + heap.u32((uint)(byte)(__addr_DAT_00887420) + (iVar4) * 4) * 8)) & 0x8000000) != 0)) && (heap.u32((unaff_ESI + 0xd0)) = heap.u32((unaff_ESI + 0xd0)) + 1, (heap.u32((__addr_DAT_00887422) + (uVar3 * 0x130) * 4) & 0x800) == 0)) {
+  if ((((heap.u32((__addr_DAT_00887422) + (uVar3 * 0x130) * 4) & 0x480) == 0) && ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (iVar4) * 4) * 8)) & 0x8000000) != 0)) && (heap.u32((unaff_ESI + 0xd0)) = heap.u32((unaff_ESI + 0xd0)) + 1, (heap.u32((__addr_DAT_00887422) + (uVar3 * 0x130) * 4) & 0x800) == 0)) {
     uVar1 = 0x2580;
     if (heap.u32((__addr_DAT_00887420) + (iVar4) * 4) == '\b') {
       uVar1 = 0x3c00;
     }
     if (uVar1 < heap.u32((unaff_ESI + 0xd0))) {
       heap.u32((__addr_DAT_00887422) + (uVar3 * 0x130) * 4) = heap.u32((__addr_DAT_00887422) + (uVar3 * 0x130) * 4) | 0x800;
-      heap.u16(0x971e86) = heap.u32((__addr_DAT_005f5802 + heap.u32((uint)(byte)(__addr_DAT_00887420) + (iVar4) * 4) * 8)) + 6;
+      heap.u16(0x971e86) = heap.u32((__addr_DAT_005f5802 + heap.u32((byte)(__addr_DAT_00887420) + (iVar4) * 4) * 8)) + 6;
       iVar2 = 0;
       while (heap.u32((unaff_ESI + 10)) != heap.u32((__addr_DAT_0088747e + iVar2 * 2 + iVar4))) {
         iVar2 = iVar2 + 1;
@@ -38,7 +38,7 @@ export function FUN_005ddcbe(heap) {
       heap.u16(0x971e88) = iVar2 + 1;
       heap.u16(0x971e8a) = heap.u32((__addr_DAT_00887442) + (uVar3 * 0x130) * 4);
       unique0x00017200 = heap.u32((__addr_DAT_00887444) + (uVar3 * 0x98) * 4);
-      heap.setU32(0x00971e90, (heap.u32((__addr_DAT_005f5806 + heap.u32((uint)(byte)(__addr_DAT_00887420) + (iVar4) * 4) * 8))) >>> 0);
+      heap.setU32(0x00971e90, (heap.u32((__addr_DAT_005f5806 + heap.u32((byte)(__addr_DAT_00887420) + (iVar4) * 4) * 8))) >>> 0);
       FUN_0042c711(heap, iVar4);
     }
   }

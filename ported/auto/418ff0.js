@@ -29,7 +29,7 @@ export function FUN_00418ff0(heap, param_1, param_2, param_3) {
       FUN_00418f90(heap, puVar2);
       FUN_00418f20(heap, puVar2, __addr_local_c);
       FUN_00418f90(heap, puVar2);
-      heap.setU32(__addr_local_c, ((uint) * param_1) >>> 0);
+      heap.setU32(__addr_local_c, (heap.u32(param_1)) >>> 0);
       local_8 = 0;
       local_4 = 0;
       FUN_00418f20(heap, puVar2, __addr_local_c);

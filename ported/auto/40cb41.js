@@ -33,7 +33,7 @@ export function FUN_0040cb41(heap, param_1) {
       if (heap.u32((__addr_DAT_005f0504 + param_1 * 0x16c)) == 0) {
         heap.u32((__addr_DAT_005f0508 + param_1 * 0x16c)) = 1;
         heap.u32((__addr_DAT_005f04fc + param_1 * 0x16c)) = heap.u32(__addr_local_c);
-        _memset((heap.u32(__addr_local_c) + heap.u32(__addr_local_20)), (uint)(-(heap.u32((heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c)) + 0xe)) == 8) & 0x80), heap.u32(__addr_local_10) - heap.u32(__addr_local_c));
+        _memset((heap.u32(__addr_local_c) + heap.u32(__addr_local_20)), (-(heap.u32((heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c)) + 0xe)) == 8) & 0x80), heap.u32(__addr_local_10) - heap.u32(__addr_local_c));
       } else {
         local_24 = heap.u32(__addr_local_20);
         local_28 = heap.u32(__addr_local_10);

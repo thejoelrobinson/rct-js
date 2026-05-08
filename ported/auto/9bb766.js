@@ -16,12 +16,12 @@ export function FUN_009bb766(heap) {
   let unaff_EBX = 0;
   let uVar1 = 0;
   pbVar2 = heap.u32((__addr_DAT_008dc0b4) + (unaff_EBX * 4) * 4);
-  puVar3 = __addr_DAT_005f2000 + (uint) * (__addr_DAT_008dc0bc + unaff_EBX * 0x10) * 4;
-  uVar1 = (uint) * (__addr_DAT_008dc0b8 + unaff_EBX * 0x10);
+  puVar3 = __addr_DAT_005f2000 + heap.u32((__addr_DAT_008dc0bc + unaff_EBX * 0x10)) * 4;
+  uVar1 = heap.u32((__addr_DAT_008dc0b8 + unaff_EBX * 0x10));
   do {
-    heap.u32(puVar3) = ((ushort)((ushort) * pbVar2 * in_CL) >>> 8);
-    heap.u32(puVar3 + (1) * 4) = ((ushort)(heap.u32(pbVar2 + (1) * 4) * in_CL) >>> 8);
-    heap.u32(puVar3 + (2) * 4) = ((ushort)(heap.u32(pbVar2 + (2) * 4) * in_CL) >>> 8);
+    heap.u32(puVar3) = ((heap.u32(pbVar2) * in_CL) >>> 8);
+    heap.u32(puVar3 + (1) * 4) = ((heap.u32(pbVar2 + (1) * 4) * in_CL) >>> 8);
+    heap.u32(puVar3 + (2) * 4) = ((heap.u32(pbVar2 + (2) * 4) * in_CL) >>> 8);
     pbVar2 = pbVar2 + 3;
     puVar3 = puVar3 + 4;
     uVar1 = uVar1 - 1;

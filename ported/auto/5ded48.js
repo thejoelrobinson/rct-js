@@ -30,7 +30,7 @@ export function FUN_005ded48(heap) {
     uVar2 = 0;
   }
   uVar1 = sVar4 * 0x42;
-  if (uVar2 < (ushort)(sVar4 * 0x42)) {
+  if (uVar2 < (sVar4 * 0x42)) {
     uVar1 = uVar2;
   }
   heap.u32((unaff_ESI + 0x36)) = uVar1;

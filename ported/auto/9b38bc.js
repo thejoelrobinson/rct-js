@@ -12,14 +12,14 @@ export function FUN_009b38bc(heap) {
   let iVar4 = 0;
   let unaff_ESI = 0;
   if ((heap.u32(0x009a2000) & 0x20000000) != 0) {
-    puVar5 = ((uint) * (unaff_ESI + heap.u32(0x009a2020) * 2) + unaff_ESI);
+    puVar5 = (heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2)) + unaff_ESI);
     do {
       uVar1 = heap.u32(puVar5);
       heap.setU32(0x009aa032, (uVar1) >>> 0);
-      uVar2 = (ushort)(uVar1 & 0x7f);
+      uVar2 = (uVar1 & 0x7f);
       puVar5 = (puVar5 + uVar2 + 2);
-      iVar4 = (uint)(uVar1 >>> 8) - heap.u32(0x009a2024);
-      if (iVar4 == 0 || (uint)(uVar1 >>> 8) < heap.u32(0x009a2024)) {
+      iVar4 = (uVar1 >>> 8) - heap.u32(0x009a2024);
+      if (iVar4 == 0 || (uVar1 >>> 8) < heap.u32(0x009a2024)) {
         uVar2 = uVar2 + iVar4;
         if ((-1 < uVar2) && (uVar2 != 0)) {
           iVar4 = 0;
@@ -38,14 +38,14 @@ export function FUN_009b38bc(heap) {
     } while (true);
   }
   if ((heap.u32(0x009a2000) & 0x40000000) != 0) {
-    puVar5 = ((uint) * (unaff_ESI + heap.u32(0x009a2020) * 2) + unaff_ESI);
+    puVar5 = (heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2)) + unaff_ESI);
     do {
       uVar1 = heap.u32(puVar5);
       heap.setU32(0x009aa032, (uVar1) >>> 0);
-      uVar2 = (ushort)(uVar1 & 0x7f);
+      uVar2 = (uVar1 & 0x7f);
       puVar5 = (puVar5 + uVar2 + 2);
-      iVar4 = (uint)(uVar1 >>> 8) - heap.u32(0x009a2024);
-      if (iVar4 == 0 || (uint)(uVar1 >>> 8) < heap.u32(0x009a2024)) {
+      iVar4 = (uVar1 >>> 8) - heap.u32(0x009a2024);
+      if (iVar4 == 0 || (uVar1 >>> 8) < heap.u32(0x009a2024)) {
         uVar2 = uVar2 + iVar4;
         if ((-1 < uVar2) && (uVar2 != 0)) {
           iVar4 = 0;
@@ -63,14 +63,14 @@ export function FUN_009b38bc(heap) {
       }
     } while (true);
   }
-  puVar5 = ((uint) * (unaff_ESI + heap.u32(0x009a2020) * 2) + unaff_ESI);
+  puVar5 = (heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2)) + unaff_ESI);
   do {
     uVar1 = heap.u32(puVar5);
     heap.setU32(0x009aa032, (uVar1) >>> 0);
-    uVar2 = (ushort)(uVar1 & 0x7f);
+    uVar2 = (uVar1 & 0x7f);
     puVar5 = (puVar5 + uVar2 + 2);
-    iVar4 = (uint)(uVar1 >>> 8) - heap.u32(0x009a2024);
-    if (iVar4 == 0 || (uint)(uVar1 >>> 8) < heap.u32(0x009a2024)) {
+    iVar4 = (uVar1 >>> 8) - heap.u32(0x009a2024);
+    if (iVar4 == 0 || (uVar1 >>> 8) < heap.u32(0x009a2024)) {
       uVar2 = uVar2 + iVar4;
       if ((-1 < uVar2) && (uVar2 != 0)) {
         iVar4 = 0;

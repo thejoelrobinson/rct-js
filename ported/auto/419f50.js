@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22 } from "../runtime/win32.js";
+import { CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_00419c90 } from "./419c90.js";
 export function FUN_00419f50(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(4);
@@ -32,11 +32,11 @@ export function FUN_00419f50(heap, param_1, param_2, param_3) {
         puVar2 = (iVar3 + uVar1 * 0xc);
         if (0x7fff < heap.u32((iVar3 + uVar1 * 0xc))) {
           heap.setU32(__addr_local_c, ((undefined2) * puVar2) >>> 0);
-          (uStack_a & 0xffff) = (undefined2)((uint) * puVar2 >>> 0x10);
+          (uStack_a & 0xffff) = (undefined2)(heap.u32(puVar2) >>> 0x10);
           (((uStack_a) >>> 16) & 0xffff) = heap.u32(puVar2 + (1) * 4);
           uStack_6 = (undefined2)(heap.u32(puVar2 + (1) * 4) >>> 0x10);
           local_4 = heap.u32(puVar2 + (2) * 4);
-          uStack_a = CONCAT22(heap, (((uStack_a) >>> 16) & 0xffff), uStack_a) + -1;
+          uStack_a = CONCAT22((((uStack_a) >>> 16) & 0xffff), uStack_a) + -1;
           puVar2 = __addr_local_c;
         }
         FUN_00419c90(heap, param_1, puVar2);

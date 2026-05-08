@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT44, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_00444d1f } from "./444d1f.js";
 import { FUN_00450b21 } from "./450b21.js";
 import { FUN_005e3b2b } from "./5e3b2b.js";
@@ -28,7 +29,7 @@ export function FUN_005dd134(heap) {
   let uVar7 = 0;
   uVar7 = FUN_00450b21(heap);
   uVar3 = uVar7;
-  uVar4 = (uint)(uVar7 >>> 0x20) & 0xff;
+  uVar4 = (uVar7 >>> 0x20) & 0xff;
   iVar5 = uVar4 * 0x260;
   heap.u32((__addr_DAT_00887422) + (uVar4 * 0x130) * 4) = heap.u32((__addr_DAT_00887422) + (uVar4 * 0x130) * 4) & 0xff3f;
   heap.u32((__addr_DAT_0088751d) + (iVar5) * 4) = heap.u32((__addr_DAT_0088751d) + (iVar5) * 4) | 0xc;
@@ -39,7 +40,7 @@ export function FUN_005dd134(heap) {
     heap.u32((__addr_DAT_00887422) + (uVar4 * 0x130) * 4) = heap.u32((__addr_DAT_00887422) + (uVar4 * 0x130) * 4) & 0xf7fb;
     uVar4 = 0;
     do {
-      LOCK(heap);
+      LOCK();
       uVar2 = heap.u32((__addr_DAT_0088747e + uVar4 * 2 + iVar5));
       heap.u32((__addr_DAT_0088747e + uVar4 * 2 + iVar5)) = 0xffff;
       UNLOCK(heap);
@@ -60,7 +61,7 @@ export function FUN_005dd134(heap) {
   if (!bVar6) {
     (heap.u32(heap.u32((unaff_ESI + 4))))();
   }
-  return CONCAT44(heap, in_EDX, uVar3);
+  return CONCAT44(in_EDX, uVar3);
 } finally {
     heap.freeFrame(20);
   }

@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44, GetNextWindow } from "../runtime/win32.js";
+import { GetNextWindow } from "../runtime/win32.js";
+import { CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_0040844b } from "./40844b.js";
 import { FUN_00408490 } from "./408490.js";
 import { FUN_0042fc2c } from "./42fc2c.js";
@@ -60,7 +61,7 @@ export function FUN_005d5ff8(heap) {
             }
           }
           if (uVar4 == 0) {
-            if ((heap.u32((byte)(__addr_DAT_0087c3fc) + (((heap.u32(0x00656b35) & 0x1f) >>> 3) + (uint)(heap.u32(0x00656b35) >>> 5) * 4) * 4) >>> (heap.u32(0x00656b35) & 7) & 1) != 0) {
+            if ((heap.u32((byte)(__addr_DAT_0087c3fc) + (((heap.u32(0x00656b35) & 0x1f) >>> 3) + (heap.u32(0x00656b35) >>> 5) * 4) * 4) >>> (heap.u32(0x00656b35) & 7) & 1) != 0) {
               pcVar7 = __addr_DAT_0065d92c;
               uVar4 = 0;
               pcVar8 = pcVar6;
@@ -75,7 +76,7 @@ export function FUN_005d5ff8(heap) {
     /* goto LAB_005d60c6 */ throw new Error("goto LAB_005d60c6 not supported");
   }
   LAB_005d60f4: heap.u32(pcVar6) = '\0';
-  return CONCAT44(heap, in_EDX, in_EAX);
+  return CONCAT44(in_EDX, in_EAX);
   while (cVar1 != '\0') {
     LAB_005d6095: cVar1 = heap.u32(pcVar7);
     heap.u32(pcVar8) = cVar1;

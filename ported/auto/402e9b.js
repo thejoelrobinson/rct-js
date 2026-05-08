@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject, ExceptionList, LoadCursorA, SetErrorMode } from "../runtime/win32.js";
+import { DeleteObject, LoadCursorA, SetErrorMode } from "../runtime/win32.js";
+import { ExceptionList } from "../runtime/ghidra-builtins.js";
 import { FUN_00401000 } from "./401000.js";
 import { FUN_00402ce0 } from "./402ce0.js";
 import { FUN_00404752 } from "./404752.js";

@@ -16,8 +16,8 @@ export function FUN_009bbff8(heap) {
   let uVar4 = 0;
   uVar1 = heap.u32(0x0099fb80);
   uVar3 = heap.u32(0x0099fb82);
-  uVar2 = (uint)(ushort)(heap.u32(0x0099fb84) + heap.u32(0x0099fb80));
-  uVar4 = (uint)(ushort)(heap.u32(0x0099fb86) + heap.u32(0x0099fb82));
+  uVar2 = (heap.u32(0x0099fb84) + heap.u32(0x0099fb80));
+  uVar4 = (heap.u32(0x0099fb86) + heap.u32(0x0099fb82));
   heap.setU32(0x009b2280, (in_EAX) >>> 0);
   for (puVar5 = __addr_DAT_009a013c; puVar5 < heap.u32(0x009a1164); puVar5 = puVar5 + 0x178) {
     FUN_009bc041(heap, uVar4, uVar2, uVar3, uVar1);

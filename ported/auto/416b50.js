@@ -12,7 +12,7 @@ export function FUN_00416b50(heap, param_1, param_2, param_3, param_4) {
   let cVar1 = 0;
   heap.setU32(0x005f0250, (FUN_004186d0(heap, heap.u32(param_1), heap.u32(param_1 + (1) * 4))) >>> 0);
   heap.setU32(0x005f0258, (heap.u32(heap.u32(0x005f0250) + (1) * 4) + -1) >>> 0);
-  pcVar2 = ((uint)(heap.u32(heap.u32(0x005f0250)) == 0x2d) + param_2);
+  pcVar2 = ((heap.u32(heap.u32(0x005f0250)) == 0x2d) + param_2);
   FUN_00418630(heap, pcVar2, param_3, heap.u32(0x005f0250));
   heap.setU32(0x005f025c, (heap.u32(0x005f0258) < heap.u32(heap.u32(0x005f0250) + (1) * 4) + -1) >>> 0);
   heap.setU32(0x005f0258, (heap.u32(heap.u32(0x005f0250) + (1) * 4) + -1) >>> 0);

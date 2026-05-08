@@ -32,7 +32,7 @@ export function FUN_004316f3(heap) {
   let iVar9 = 0;
   let iVar10 = 0;
   heap.setU32(0x00991f8c, (heap.u32((unaff_ESI + 0x12))) >>> 0);
-  heap.setU32(0x005f96ce, ((ushort) * (unaff_ESI + 0x10)) >>> 0);
+  heap.setU32(0x005f96ce, (heap.u32((unaff_ESI + 0x10))) >>> 0);
   uVar8 = -1 << (heap.u32((unaff_ESI + 0x10)) & 0x1f);
   heap.setU32(0x005f96c4, (in_AX & uVar8) >>> 0);
   heap.setU32(0x005f96c6, (unaff_BX & uVar8) >>> 0);

@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_00428ec0 } from "./428ec0.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_0042913a(heap) {
@@ -35,7 +36,7 @@ export function FUN_0042913a(heap) {
   uVar5 = uVar5 >>> 2;
   uVar8 = 0;
   do {
-    LOCK(heap);
+    LOCK();
     bVar1 = heap.u32((__addr_DAT_0087cc8a) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087cc8a) + (uVar8) * 4) = uVar5;
     uVar5 = bVar1;
@@ -50,7 +51,7 @@ export function FUN_0042913a(heap) {
   uVar8 = uVar5 / 10;
   uVar9 = 0;
   do {
-    LOCK(heap);
+    LOCK();
     bVar1 = heap.u32((__addr_DAT_0087ccaa) + (uVar9) * 4);
     heap.u32((__addr_DAT_0087ccaa) + (uVar9) * 4) = uVar8;
     uVar8 = bVar1;
@@ -61,7 +62,7 @@ export function FUN_0042913a(heap) {
   uVar8 = 0;
   iVar6 = heap.u32(0x0087c3b4) - heap.u32(0x0087c3b8);
   do {
-    LOCK(heap);
+    LOCK();
     iVar2 = heap.u32((__addr_DAT_0087d104) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087d104) + (uVar8) * 4) = iVar6;
     UNLOCK(heap);
@@ -74,7 +75,7 @@ export function FUN_0042913a(heap) {
   }
   uVar8 = 0;
   do {
-    LOCK(heap);
+    LOCK();
     iVar6 = heap.u32((__addr_DAT_0087d314) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087d314) + (uVar8) * 4) = heap.u32(0x0087d30c);
     UNLOCK(heap);
@@ -87,7 +88,7 @@ export function FUN_0042913a(heap) {
   uVar8 = 0;
   uVar7 = heap.u32(0x0087d514);
   do {
-    LOCK(heap);
+    LOCK();
     uVar3 = heap.u32((__addr_DAT_0087d518) + (uVar8) * 4);
     heap.u32((__addr_DAT_0087d518) + (uVar8) * 4) = uVar7;
     UNLOCK(heap);

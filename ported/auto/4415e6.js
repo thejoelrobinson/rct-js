@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT31 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_0044189c } from "./44189c.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_004415e6(heap) {
@@ -42,10 +42,10 @@ export function FUN_004415e6(heap) {
     }
   }
   uVar6 = 0xf;
-  if (((unaff_ESI != -1) && (CONCAT11(heap, (heap.u32(0x006293be) >>> 5), (heap.u32(0x006293bc) >>> 5)) == heap.u32((unaff_ESI + 0xcc)))) && (heap.u32(0x006293c0) == heap.u32((unaff_ESI + 0xce)))) {
+  if (((unaff_ESI != -1) && (CONCAT11((heap.u32(0x006293be) >>> 5), (heap.u32(0x006293bc) >>> 5)) == heap.u32((unaff_ESI + 0xcc)))) && (heap.u32(0x006293c0) == heap.u32((unaff_ESI + 0xce)))) {
     uVar6 = 0;
     do {
-      if ((CONCAT11(heap, (in_ECX >>> 5), (in_EAX >>> 5)) == heap.u32((unaff_ESI + 0xd0 + uVar6 * 4))) && (in_DL == heap.u32((unaff_ESI + 0xd2 + uVar6 * 4)))) {
+      if ((CONCAT11((in_ECX >>> 5), (in_EAX >>> 5)) == heap.u32((unaff_ESI + 0xd0 + uVar6 * 4))) && (in_DL == heap.u32((unaff_ESI + 0xd2 + uVar6 * 4)))) {
         uVar6 = heap.u32((unaff_ESI + 0xd3 + uVar6 * 4)) & 0xf;
         /* goto LAB_004416c9 */ throw new Error("goto LAB_004416c9 not supported");
       }
@@ -54,7 +54,7 @@ export function FUN_004415e6(heap) {
     uVar6 = 0xf;
   }
   LAB_004416c9: uVar7 = in_ECX << 7 | in_ECX >>> 9 | in_EAX;
-  pbVar8 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar7 >>> 5 | uVar7 << 0xb)) * 4);
+  pbVar8 = heap.u32((__addr_DAT_00971ef4) + ((uVar7 >>> 5 | uVar7 << 0xb)) * 4);
   LAB_004416e1: heap.u8(0x6293c4) = uVar5;
   if ((in_DL != heap.u32(pbVar8 + (2) * 4)) || ((heap.u32(pbVar8) & 0x3c) != 4)) {
     /* goto LAB_004416f0 */ throw new Error("goto LAB_004416f0 not supported");
@@ -88,7 +88,7 @@ export function FUN_004415e6(heap) {
         heap.u8(0x6293c5) = 0;
         FUN_0044189c(heap);
         if (((((local_c) >>> 16) & 0xffff) == -1) && (heap.u32(0x006293c1) < local_c)) {
-          local_c = CONCAT31(heap, 0xffff00, heap.u32(0x006293c1));
+          local_c = CONCAT31(0xffff00, heap.u32(0x006293c1));
           local_8 = uVar2;
         }
       }
@@ -105,7 +105,7 @@ export function FUN_004415e6(heap) {
   LAB_004417aa: local_8 = 0xffffffff;
   LAB_004417af: cVar3 = heap.u32(0x006293c0);
   if ((unaff_ESI != -1) && (local_8 != 0xffffffff)) {
-    sVar4 = CONCAT11(heap, (heap.u32(0x006293be) >>> 5), (heap.u32(0x006293bc) >>> 5));
+    sVar4 = CONCAT11((heap.u32(0x006293be) >>> 5), (heap.u32(0x006293bc) >>> 5));
     if ((sVar4 != heap.u32((unaff_ESI + 0xcc))) || (heap.u32(0x006293c0) != heap.u32((unaff_ESI + 0xce)))) {
       heap.u32((unaff_ESI + 0xcc)) = sVar4;
       heap.u32((unaff_ESI + 0xce)) = cVar3;
@@ -116,14 +116,14 @@ export function FUN_004415e6(heap) {
       heap.u32((unaff_ESI + 0xdc)) = 0xffffffff;
     }
     uVar6 = 0;
-    sVar4 = CONCAT11(heap, (in_ECX >>> 5), (in_EAX >>> 5));
+    sVar4 = CONCAT11((in_ECX >>> 5), (in_EAX >>> 5));
     do {
       if ((sVar4 == heap.u32((unaff_ESI + 0xd0 + uVar6 * 4))) && (in_DL == heap.u32((unaff_ESI + 0xd2 + uVar6 * 4)))) {
         /* goto LAB_00441885 */ throw new Error("goto LAB_00441885 not supported");
       }
       uVar6 = uVar6 + 1;
     } while (uVar6 < 4);
-    uVar6 = (uint) * (unaff_ESI + 0xcf);
+    uVar6 = heap.u32((unaff_ESI + 0xcf));
     heap.u32((unaff_ESI + 0xcf)) = heap.u32((unaff_ESI + 0xcf)) + '\x01';
     heap.u32((unaff_ESI + 0xcf)) = heap.u32((unaff_ESI + 0xcf)) & 3;
     heap.u32((unaff_ESI + 0xd0 + uVar6 * 4)) = sVar4;

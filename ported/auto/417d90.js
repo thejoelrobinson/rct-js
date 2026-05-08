@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CARRY4, CONCAT44 } from "../runtime/win32.js";
+import { CARRY4, CONCAT44 } from "../runtime/ghidra-builtins.js";
 export function __aulldiv(heap, param_1, param_2, param_3, param_4) {
   let uVar1 = 0;
   let lVar2 = 0;
@@ -25,21 +25,21 @@ export function __aulldiv(heap, param_1, param_2, param_3, param_4) {
   } else {
     do {
       uVar5 = uVar8 >>> 1;
-      uVar9 = uVar9 >>> 1 | (uint)((uVar8 & 1) != 0) << 0x1f;
+      uVar9 = uVar9 >>> 1 | ((uVar8 & 1) != 0) << 0x1f;
       uVar7 = uVar6 >>> 1;
-      uVar3 = uVar3 >>> 1 | (uint)((uVar6 & 1) != 0) << 0x1f;
+      uVar3 = uVar3 >>> 1 | ((uVar6 & 1) != 0) << 0x1f;
       uVar8 = uVar5;
       uVar6 = uVar7;
     } while (uVar5 != 0);
-    uVar1 = CONCAT44(heap, uVar7, uVar3) / uVar9;
+    uVar1 = CONCAT44(uVar7, uVar3) / uVar9;
     iVar4 = uVar1;
     lVar2 = param_3 * (uVar1 & 0xffffffff);
-    uVar3 = (uint)(lVar2 >>> 0x20);
+    uVar3 = (lVar2 >>> 0x20);
     uVar8 = uVar3 + iVar4 * param_4;
-    if (((CARRY4(heap, uVar3, iVar4 * param_4)) || (param_2 < uVar8)) || ((param_2 <= uVar8 && (param_1 < lVar2)))) {
+    if (((CARRY4(uVar3, iVar4 * param_4)) || (param_2 < uVar8)) || ((param_2 <= uVar8 && (param_1 < lVar2)))) {
       iVar4 = iVar4 + -1;
     }
     uVar3 = 0;
   }
-  return CONCAT44(heap, uVar3, iVar4);
+  return CONCAT44(uVar3, iVar4);
 }

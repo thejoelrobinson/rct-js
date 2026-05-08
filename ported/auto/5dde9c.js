@@ -23,7 +23,7 @@ export function FUN_005dde9c(heap) {
       if (uVar1 == 0xffff) {
         break;
       }
-      if ((heap.u32(((uint)(uVar1 >>> 5) * 4 + 0x87cba8 + ((uVar1 & 0x1f) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
+      if ((heap.u32(((uVar1 >>> 5) * 4 + 0x87cba8 + ((uVar1 & 0x1f) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
         heap.u32(puVar4) = uVar1;
         puVar4 = puVar4 + 1;
       }

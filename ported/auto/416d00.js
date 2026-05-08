@@ -39,7 +39,7 @@ export function FUN_00416d00(heap, param_1, param_2, param_3, param_4, param_5, 
   if (param_7 == 0) {
     param_7 = heap.u32(0x005f0280);
   }
-  iVar2 = MultiByteToWideChar(heap, param_7, (-(uint)(param_8 != 0) & 8) + 1, param_3, iVar1, 0x0, 0);
+  iVar2 = MultiByteToWideChar(heap, param_7, (-(param_8 != 0) & 8) + 1, param_3, iVar1, 0x0, 0);
   if (iVar2 == 0) {
     return 0;
   }

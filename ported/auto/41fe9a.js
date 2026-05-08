@@ -6,5 +6,5 @@
 
 export function FUN_0041fe9a(heap) {
   let unaff_EDI = 0;
-  return (uint) * (unaff_EDI + 199) * 0x2800 >>> 0x10;
+  return heap.u32((unaff_EDI + 199)) * 0x2800 >>> 0x10;
 }

@@ -65,7 +65,7 @@ export function FUN_005d89c0(heap) {
           FUN_004518fc(heap, in_EDX, unaff_EDI, unaff_EBX);
           heap.u32((__addr_DAT_0088751d) + (iVar7) * 4) = heap.u32((__addr_DAT_0088751d) + (iVar7) * 4) | 0x1c;
           heap.u32((__addr_DAT_0088755d) + (iVar7) * 4) = 1;
-          heap.u32((__addr_DAT_00887560) + (iVar7) * 4) = heap.u32((__addr_DAT_00743bdf) + ((uint) * (__addr_DAT_0088747e + heap.u32((uint)(byte)(__addr_DAT_00887561) + (iVar7) * 4) * 2 + iVar7) * 0x100) * 4);
+          heap.u32((__addr_DAT_00887560) + (iVar7) * 4) = heap.u32((__addr_DAT_00743bdf) + (heap.u32((__addr_DAT_0088747e + heap.u32((byte)(__addr_DAT_00887561) + (iVar7) * 4) * 2 + iVar7)) * 0x100) * 4);
           heap.u32((__addr_DAT_00887563) + (iVar7) * 4) = heap.u32((__addr_DAT_0088755c) + (iVar7) * 4);
         }
         }
@@ -91,7 +91,7 @@ export function FUN_005d89c0(heap) {
       if (uVar4 < 400) {
         heap.u32((unaff_ESI + 0xb6)) = 400;
       }
-      heap.u32(unaff_ESI + (0xba) * 4) = heap.u32(unaff_ESI + (0xba) * 4) + ((ushort) * (unaff_ESI + 0xb6) >>> 8);
+      heap.u32(unaff_ESI + (0xba) * 4) = heap.u32(unaff_ESI + (0xba) * 4) + (heap.u32((unaff_ESI + 0xb6)) >>> 8);
       heap.u32((unaff_ESI + 0xb6)) = heap.u32((unaff_ESI + 0xb6)) - (heap.u32((unaff_ESI + 0xb6)) >>> 8);
       FUN_005e53ca(heap);
       in_EDX = extraout_EDX;
@@ -102,7 +102,7 @@ export function FUN_005d89c0(heap) {
       }
       return in_EAX;
     }
-    unaff_ESI = __addr_DAT_00743b94 + (uint) * (unaff_ESI + 0x3e) * 0x100;
+    unaff_ESI = __addr_DAT_00743b94 + heap.u32((unaff_ESI + 0x3e)) * 0x100;
   } while (true);
 } finally {
     heap.freeFrame(44);

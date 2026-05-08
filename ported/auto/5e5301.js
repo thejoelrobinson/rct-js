@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22 } from "../runtime/win32.js";
+import { CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_005e117d } from "./5e117d.js";
 import { FUN_005e43de } from "./5e43de.js";
 export function FUN_005e5301(heap) {
@@ -30,11 +30,11 @@ export function FUN_005e5301(heap) {
     uStack_4 = uStack_2;
     uStack_2 = in_EAX;
     for (puVar2 = __addr_DAT_009a013c; puVar2 < heap.u32(0x009a1164); puVar2 = puVar2 + 0x178) {
-      if (((uVar1 == heap.u32(puVar2 + (0x174) * 4)) && (unaff_EBX == heap.u32((puVar2 + 0x30)))) && (heap.u32((heap.u32((puVar2 + 0x1c)) + (uint)(ushort)((ushort)(byte)(uVar1 >>> 8) * 0x10) + 2)) != -2)) {
+      if (((uVar1 == heap.u32(puVar2 + (0x174) * 4)) && (unaff_EBX == heap.u32((puVar2 + 0x30)))) && (heap.u32((heap.u32((puVar2 + 0x1c)) + ((byte)(uVar1 >>> 8) * 0x10) + 2)) != -2)) {
         FUN_005e117d(heap, unaff_EDI, puVar2, unaff_EBP, __addr_uStack_6, unaff_EBX, in_EDX, in_ECX);
       }
     }
-    return CONCAT22(heap, (uVar1 >>> 0x10), uStack_2);
+    return CONCAT22((uVar1 >>> 0x10), uStack_2);
   }
   if ((in_EAX & 0x40) != 0) {
     uVar1 = in_EAX & 0xffffffbf;

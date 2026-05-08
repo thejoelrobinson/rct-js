@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT31 } from "../runtime/win32.js";
+import { CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_009b438b } from "./9b438b.js";
 export function FUN_00458230(heap) {
   const __sp = heap.allocFrame(36);
@@ -38,8 +38,8 @@ export function FUN_00458230(heap) {
     }
     heap.u32(pcVar9) = cVar1;
     pcVar9 = pcVar9 + 1;
-    uVar6 = (uint)(ushort)(uVar5 + 1);
-  } while ((ushort)(uVar5 + 1) < 0x5afe);
+    uVar6 = (uVar5 + 1);
+  } while ((uVar5 + 1) < 0x5afe);
   uVar6 = 0x5afe;
   do {
     cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10));
@@ -49,8 +49,8 @@ export function FUN_00458230(heap) {
     }
     heap.u32(pcVar9) = cVar1;
     pcVar9 = pcVar9 + 1;
-    uVar6 = (uint)(ushort)(uVar5 + 1);
-  } while ((ushort)(uVar5 + 1) < 0x5bde);
+    uVar6 = (uVar5 + 1);
+  } while ((uVar5 + 1) < 0x5bde);
   uVar6 = 0x5bde;
   do {
     cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10)) + '\x01';
@@ -60,8 +60,8 @@ export function FUN_00458230(heap) {
     }
     heap.u32(pcVar9) = cVar1;
     pcVar9 = pcVar9 + 1;
-    uVar6 = (uint)(ushort)(uVar5 + 1);
-  } while ((ushort)(uVar5 + 1) < 0x5cbe);
+    uVar6 = (uVar5 + 1);
+  } while ((uVar5 + 1) < 0x5cbe);
   uVar6 = 0x5cbe;
   do {
     cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10)) + '\x01';
@@ -71,8 +71,8 @@ export function FUN_00458230(heap) {
     }
     heap.u32(pcVar9) = cVar1;
     pcVar9 = pcVar9 + 1;
-    uVar6 = (uint)(ushort)(uVar5 + 1);
-  } while ((ushort)(uVar5 + 1) < 0x5d9e);
+    uVar6 = (uVar5 + 1);
+  } while ((uVar5 + 1) < 0x5d9e);
   local_10 = __addr_local_50;
   local_c = 0;
   local_a = 0;
@@ -95,7 +95,7 @@ export function FUN_00458230(heap) {
       uVar3 = 0;
       do {
         bVar2 = uVar3 + heap.u32(pcVar9);
-        uVar3 = CONCAT31(heap, (int3)(uVar3 >>> 8), bVar2) >>> 1 | (uint)((bVar2 & 1) != 0) << 0x1f;
+        uVar3 = CONCAT31((int3)(uVar3 >>> 8), bVar2) >>> 1 | ((bVar2 & 1) != 0) << 0x1f;
         pcVar9 = pcVar9 + 8;
         iVar4 = iVar4 + -1;
       } while (iVar4 != 0);

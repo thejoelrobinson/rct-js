@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11 } from "../runtime/win32.js";
+import { CONCAT11 } from "../runtime/ghidra-builtins.js";
 import { FUN_0043c60b } from "./43c60b.js";
 import { FUN_0043de68 } from "./43de68.js";
 import { FUN_0043e0dd } from "./43e0dd.js";
@@ -92,12 +92,12 @@ export function FUN_00439288(heap) {
         heap.u32((unaff_ESI + 0x3b)) = 0;
       }
       if (0x15 < heap.u32((unaff_ESI + 0xe2))) {
-        uVar10 = heap.u32((uint)(byte)(__addr_DAT_00887420) + ((uint) * (unaff_ESI + 0x68) * 0x260) * 4);
+        uVar10 = heap.u32((byte)(__addr_DAT_00887420) + (heap.u32((unaff_ESI + 0x68)) * 0x260) * 4);
         FUN_00440fe3(heap);
       }
     }
   }
-  if ((((heap.u32((unaff_ESI + 0x2a)) == '\0') && (heap.u32((unaff_ESI + 0x2b)) == '\x05')) && ((heap.u32((unaff_ESI + 0x2f)) == '\0' && ((((heap.u32((unaff_ESI + 200)) & 1) == 0 && (heap.u32((unaff_ESI + 0xc5)) == -1)) && (4 < (uint)(heap.u32(0x006e3b84) - heap.u32((unaff_ESI + 0xa8))) >>> 0xb)))))) && (FUN_0043e0dd(heap), heap.u32((unaff_ESI + 0xc5)) == -1)) {
+  if ((((heap.u32((unaff_ESI + 0x2a)) == '\0') && (heap.u32((unaff_ESI + 0x2b)) == '\x05')) && ((heap.u32((unaff_ESI + 0x2f)) == '\0' && ((((heap.u32((unaff_ESI + 200)) & 1) == 0 && (heap.u32((unaff_ESI + 0xc5)) == -1)) && (4 < (heap.u32(0x006e3b84) - heap.u32((unaff_ESI + 0xa8))) >>> 0xb)))))) && (FUN_0043e0dd(heap), heap.u32((unaff_ESI + 0xc5)) == -1)) {
     pbVar1 = (unaff_ESI + 0x3b);
     bVar4 = heap.u32(pbVar1);
     heap.u32(pbVar1) = heap.u32(pbVar1) + 0x80;
@@ -134,7 +134,7 @@ export function FUN_00439288(heap) {
     LAB_0043965b: bVar4 = heap.u32((unaff_ESI + 0x3b));
     uVar10 = bVar4;
     if (0x7f < bVar4) {
-      uVar10 = (uint)(byte)(bVar4 - 2);
+      uVar10 = (byte)(bVar4 - 2);
     }
   } else {
     uVar6 = FUN_005df40c(heap);
@@ -171,7 +171,7 @@ export function FUN_00439288(heap) {
           }
           if (puVar12 + -0x62927c != 0x0) {
             bVar4 = FUN_005df40c(heap);
-            uVar10 = CONCAT11(heap, 0xff, heap.u32((__addr_DAT_0062927c) + ((ushort)(bVar4 * (ushort)(byte)(puVar12 + -0x62927c)) >>> 8) * 4));
+            uVar10 = CONCAT11(0xff, heap.u32((__addr_DAT_0062927c) + ((bVar4 * (byte)(puVar12 + -0x62927c)) >>> 8) * 4));
             FUN_00440fe3(heap);
             cVar9 = uVar10;
             if (((cVar9 == '\x14') || (cVar9 == '\x15')) || (cVar9 == '\x16')) {

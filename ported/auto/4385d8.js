@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, GetNextWindow } from "../runtime/win32.js";
+import { GetNextWindow } from "../runtime/win32.js";
+import { CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_004039ff } from "./4039ff.js";
 import { FUN_00403abb } from "./403abb.js";
 import { FUN_004046fc } from "./4046fc.js";
@@ -125,7 +126,7 @@ export function FUN_004385d8(heap) {
   iVar5 = FUN_0040473c(heap);
   heap.setU32(0x00999f90, (iVar5 - heap.u32(0x00999f90)) >>> 0);
   if (500 < heap.u32(0x00999f90)) {
-    heap.setU32(0x00999f90, (CONCAT22(heap, (heap.u32(0x00999f90) >>> 0x10), 500)) >>> 0);
+    heap.setU32(0x00999f90, (CONCAT22((heap.u32(0x00999f90) >>> 0x10), 500)) >>> 0);
   }
   heap.setU32(0x00999f98, (heap.u32(0x00999f90)) >>> 0);
   if (heap.u32(0x0099c169) == '\0') {
@@ -251,7 +252,7 @@ export function FUN_004385d8(heap) {
   }
   LAB_00438a0d: do {
     iVar5 = FUN_0040473c(heap);
-  } while ((uint)(iVar5 - heap.u32(0x00999f90)) < 0x19);
+  } while ((iVar5 - heap.u32(0x00999f90)) < 0x19);
   return;
 } finally {
     heap.freeFrame(8);

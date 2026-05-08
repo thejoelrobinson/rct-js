@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { GetComputerNameA, GetDC, GetDeviceCaps, GetSystemInfo, GetSystemMetrics, GetUserNameA, GetVersionExA, GlobalMemoryStatus, LPSYSTEM_INFO, ReleaseDC } from "../runtime/win32.js";
+import { GetComputerNameA, GetDC, GetDeviceCaps, GetSystemInfo, GetSystemMetrics, GetUserNameA, GetVersionExA, GlobalMemoryStatus, ReleaseDC } from "../runtime/win32.js";
 import { FUN_00402e3d } from "./402e3d.js";
 export function FUN_00404752(heap) {
   const __sp = heap.allocFrame(276);
@@ -34,7 +34,7 @@ export function FUN_00404752(heap) {
     heap.setU32(0x005f14e8, (heap.u32((__addr_local_a0 + 8))) >>> 0);
     heap.setU32(0x005f14ec, (heap.u32((__addr_local_a0 + 12))) >>> 0);
   }
-  GetSystemInfo(heap, (LPSYSTEM_INFO) & heap.u32(heap.u32(__addr_local_c4 + (0) * 4)));
+  GetSystemInfo(heap, heap.u32(__addr_local_c4 + (0) * 4));
   heap.setU32(0x005f14f0, (heap.u16(heap.u32(heap.u32(__addr_local_c4 + (0) * 4)))) >>> 0);
   heap.setU32(0x005f14f2, (local_a4) >>> 0);
   heap.setU32(0x005f14f4, (local_a2) >>> 0);
@@ -56,10 +56,10 @@ export function FUN_00404752(heap) {
   } else {
     heap.setU32(0x005f15b0, (GetDeviceCaps(heap, local_8, 0xc)) >>> 0);
     uVar2 = GetDeviceCaps(heap, local_8, 0x26);
-    heap.setU32(0x005f15b4, ((uint)((uVar2 & 0x100) != 0)) >>> 0);
+    heap.setU32(0x005f15b4, (((uVar2 & 0x100) != 0)) >>> 0);
     ReleaseDC(heap, 0x0, local_8);
   }
-  heap.setU32(0x005f15bc, ((uint)(7 < heap.u32(0x005f15b0))) >>> 0);
+  heap.setU32(0x005f15bc, ((7 < heap.u32(0x005f15b0))) >>> 0);
   if ((heap.u32(0x005f14e4) < 4) || (heap.u32(0x005f15b0) < 4)) {
     heap.setU32(0x005f15b8, (0) >>> 0);
   } else {

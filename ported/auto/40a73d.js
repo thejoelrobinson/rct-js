@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { ClientToScreen, GetClientRect, LPPOINT } from "../runtime/win32.js";
+import { ClientToScreen, GetClientRect } from "../runtime/win32.js";
 import { FUN_00408d5d } from "./408d5d.js";
 export function FUN_0040a73d(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(132);
@@ -25,7 +25,7 @@ export function FUN_0040a73d(heap, param_1, param_2, param_3) {
       local_10 = heap.u32(param_2 + (2) * 4);
       local_c = heap.u32(param_2 + (3) * 4);
       GetClientRect(heap, heap.u32(0x005e916c), __addr_local_30);
-      ClientToScreen(heap, heap.u32(0x005e916c), (LPPOINT) & heap.u32(__addr_local_30));
+      ClientToScreen(heap, heap.u32(0x005e916c), __addr_local_30);
       heap.u32(param_2) = heap.u32(param_2) + heap.u32(__addr_local_30);
       heap.u32(param_2 + (1) * 4) = heap.u32(param_2 + (1) * 4) + heap.u32((__addr_local_30 + 4));
       heap.u32(param_2 + (2) * 4) = heap.u32(param_2 + (2) * 4) + heap.u32(__addr_local_30);

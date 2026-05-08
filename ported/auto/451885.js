@@ -35,7 +35,7 @@ export function FUN_00451885(heap) {
       iVar2 = iVar2 + 1;
     } while (iVar2 < heap.u32((byte)(__addr_DAT_00887498) + (iVar4) * 4));
   }
-  heap.u32((__addr_DAT_00887566 + iVar4)) = heap.u32((__addr_DAT_00887566 + iVar4)) + (in_AX & 0xff) * (ushort)((byte)(100U - ((ushort) * (__addr_DAT_00887566 + iVar4) >>> 8)) >>> 1);
+  heap.u32((__addr_DAT_00887566 + iVar4)) = heap.u32((__addr_DAT_00887566 + iVar4)) + (in_AX & 0xff) * ((byte)(100U - (heap.u32((__addr_DAT_00887566 + iVar4)) >>> 8)) >>> 1);
   return;
 } finally {
     heap.freeFrame(28);

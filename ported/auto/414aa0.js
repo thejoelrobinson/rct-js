@@ -50,7 +50,7 @@ export function FUN_00414aa0(heap, param_1) {
       do {
         bVar3 = heap.u32(pbVar12);
         for (pbVar13 = pbVar12; (bVar3 != 0 && (bVar3 = heap.u32(pbVar13 + (1) * 4), bVar3 != 0)); pbVar13 = pbVar13 + 2) {
-          uVar8 = (uint) * pbVar13;
+          uVar8 = heap.u32(pbVar13);
           if (uVar8 <= bVar3) {
             bVar4 = heap.u32((__addr_DAT_005ec368) + (uVar7) * 4);
             do {

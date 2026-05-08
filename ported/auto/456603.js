@@ -20,7 +20,7 @@ export function FUN_00456603(heap) {
   if (((heap.u32((unaff_ESI + 0xc6)) & 8) != 0) && (0xb < heap.u32((unaff_ESI + 0xe2)))) {
     if ((heap.u32((unaff_ESI + 0x29)) & 0x18) == 0) {
       uVar3 = heap.u32((unaff_ESI + 0x26)) << 7 | heap.u32((unaff_ESI + 0x26)) >>> 9 | heap.u32((unaff_ESI + 0x24));
-      pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar3 >>> 5 | uVar3 << 0xb)) * 4);
+      pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar3 >>> 5 | uVar3 << 0xb)) * 4);
       bVar1 = heap.u32(pbVar5);
       while ((bVar1 & 0x3c) != 0) {
         pbVar5 = pbVar5 + 8;
@@ -46,14 +46,14 @@ export function FUN_00456603(heap) {
       uVar3 = heap.u32((unaff_ESI + 0x26)) + heap.u32((__addr_DAT_0065247a) + (uVar2 * 2) * 4);
       if ((uVar4 < 0x1000) && (uVar3 < 0x1000)) {
         uVar4 = uVar3 * 0x80 | uVar3 >>> 9 | uVar4;
-        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
+        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
         bVar1 = heap.u32(pbVar5);
         while ((bVar1 & 0x3c) != 0) {
           pbVar5 = pbVar5 + 8;
           bVar1 = heap.u32(pbVar5);
         }
         if ((heap.u32(pbVar5 + (5) * 4) & 0xe0) == 0) {
-          uVar3 = heap.u32(pbVar5 + (2) * 4) - (ushort) * (unaff_ESI + 0x28);
+          uVar3 = heap.u32(pbVar5 + (2) * 4) - heap.u32((unaff_ESI + 0x28));
           if (uVar3 < 0) {
             uVar3 = -uVar3;
           }
@@ -69,14 +69,14 @@ export function FUN_00456603(heap) {
       uVar3 = heap.u32((unaff_ESI + 0x26)) + heap.u32((__addr_DAT_0065247a) + (uVar2 * 2) * 4);
       if ((uVar4 < 0x1000) && (uVar3 < 0x1000)) {
         uVar4 = uVar3 * 0x80 | uVar3 >>> 9 | uVar4;
-        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
+        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
         bVar1 = heap.u32(pbVar5);
         while ((bVar1 & 0x3c) != 0) {
           pbVar5 = pbVar5 + 8;
           bVar1 = heap.u32(pbVar5);
         }
         if ((heap.u32(pbVar5 + (5) * 4) & 0xe0) == 0) {
-          uVar3 = heap.u32(pbVar5 + (2) * 4) - (ushort) * (unaff_ESI + 0x28);
+          uVar3 = heap.u32(pbVar5 + (2) * 4) - heap.u32((unaff_ESI + 0x28));
           if (uVar3 < 0) {
             uVar3 = -uVar3;
           }
@@ -92,14 +92,14 @@ export function FUN_00456603(heap) {
       uVar3 = heap.u32((unaff_ESI + 0x26)) + heap.u32((__addr_DAT_0065247a) + (uVar2 * 2) * 4);
       if ((uVar4 < 0x1000) && (uVar3 < 0x1000)) {
         uVar4 = uVar3 * 0x80 | uVar3 >>> 9 | uVar4;
-        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
+        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
         bVar1 = heap.u32(pbVar5);
         while ((bVar1 & 0x3c) != 0) {
           pbVar5 = pbVar5 + 8;
           bVar1 = heap.u32(pbVar5);
         }
         if ((heap.u32(pbVar5 + (5) * 4) & 0xe0) == 0) {
-          uVar3 = heap.u32(pbVar5 + (2) * 4) - (ushort) * (unaff_ESI + 0x28);
+          uVar3 = heap.u32(pbVar5 + (2) * 4) - heap.u32((unaff_ESI + 0x28));
           if (uVar3 < 0) {
             uVar3 = -uVar3;
           }
@@ -115,14 +115,14 @@ export function FUN_00456603(heap) {
       uVar3 = heap.u32((unaff_ESI + 0x26)) + heap.u32((__addr_DAT_0065247a) + (uVar2 * 2) * 4);
       if ((uVar4 < 0x1000) && (uVar3 < 0x1000)) {
         uVar4 = uVar3 * 0x80 | uVar3 >>> 9 | uVar4;
-        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
+        pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
         bVar1 = heap.u32(pbVar5);
         while ((bVar1 & 0x3c) != 0) {
           pbVar5 = pbVar5 + 8;
           bVar1 = heap.u32(pbVar5);
         }
         if ((heap.u32(pbVar5 + (5) * 4) & 0xe0) == 0) {
-          uVar3 = heap.u32(pbVar5 + (2) * 4) - (ushort) * (unaff_ESI + 0x28);
+          uVar3 = heap.u32(pbVar5 + (2) * 4) - heap.u32((unaff_ESI + 0x28));
           if (uVar3 < 0) {
             uVar3 = -uVar3;
           }

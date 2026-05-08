@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, CONCAT44 } from "../runtime/win32.js";
+import { CONCAT22, CONCAT44 } from "../runtime/ghidra-builtins.js";
 export function FUN_0053e318(heap, param_1) {
   const __sp = heap.allocFrame(48);
   const __addr_DAT_00887422 = __sp + 0;
@@ -33,13 +33,13 @@ export function FUN_0053e318(heap, param_1) {
   puVar1 = heap.u32(0x00991f80);
   heap.setU32(0x0099a4ec, (in_EDX + 7) >>> 0);
   uVar2 = heap.u32(0x0099a4ec);
-  uVar6 = (uint) * (param_1 + 7);
+  uVar6 = heap.u32((param_1 + 7));
   iVar7 = uVar6 * 0x260;
   puVar3 = 0xffffffff;
   if ((heap.u32((__addr_DAT_00887422) + (uVar6 * 0x130) * 4) & 1) != 0) {
     puVar3 = heap.u32((__addr_DAT_0088747e + iVar7));
     if (puVar3 != 0xffffffff) {
-      puVar3 = __addr_DAT_00743b94 + (uint) * (__addr_DAT_0088747e + iVar7) * 0x100;
+      puVar3 = __addr_DAT_00743b94 + heap.u32((__addr_DAT_0088747e + iVar7)) * 0x100;
       heap.u8(0x991f78) = 2;
       heap.setU32(0x00991f80, (puVar3) >>> 0);
     }
@@ -54,11 +54,11 @@ export function FUN_0053e318(heap, param_1) {
     }
     heap.setU32(0x00651bb0, (heap.u32((__addr_DAT_00651b80 + unaff_EDI * 4)) + (iVar4 + -1) * 2) >>> 0);
   }
-  uVar5 = (uint) * (__addr_DAT_00887426 + iVar7 + 1) << 0x18 | (uint) * (__addr_DAT_00887426 + uVar6 * 0x130) << 0x11 | heap.u32(0x00651bb0);
+  uVar5 = heap.u32((__addr_DAT_00887426 + iVar7 + 1)) << 0x18 | heap.u32((__addr_DAT_00887426 + uVar6 * 0x130)) << 0x11 | heap.u32(0x00651bb0);
   heap.setU32(0x0099a4e8, (heap.u32((__addr_DAT_00651b94 + unaff_EDI * 8))) >>> 0);
   heap.setU32(0x0099a4ea, (heap.u32((__addr_DAT_00651b96 + unaff_EDI * 8))) >>> 0);
-  uVar8 = CONCAT22(heap, (((uint) * (__addr_DAT_00887426 + uVar6 * 0x130) << 0x11) >>> 0x10), heap.u32((__addr_DAT_00651b92 + unaff_EDI * 8)));
-  uVar6 = (uint) * (__addr_DAT_00651b90 + unaff_EDI * 8);
+  uVar8 = CONCAT22(((heap.u32((__addr_DAT_00887426 + uVar6 * 0x130)) << 0x11) >>> 0x10), heap.u32((__addr_DAT_00651b92 + unaff_EDI * 8)));
+  uVar6 = heap.u32((__addr_DAT_00651b90 + unaff_EDI * 8));
   heap.setU32(0x00651bb4, (unaff_EDI) >>> 0);
   if ((unaff_EDI & 2) == 0) {
     (heap.u32(heap.u32((__addr_PTR_LAB_00432204) + (heap.u32(0x00991f88)) * 4)))(iVar7, uVar8, uVar6, uVar2);
@@ -73,7 +73,7 @@ export function FUN_0053e318(heap, param_1) {
   }
   heap.setU32(0x00991f80, (puVar1) >>> 0);
   heap.u8(0x991f78) = 3;
-  return CONCAT44(heap, in_EDX, in_EAX);
+  return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(48);
   }

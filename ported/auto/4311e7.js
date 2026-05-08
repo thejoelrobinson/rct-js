@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT44, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_004311e7(heap) {
   const __sp = heap.allocFrame(24);
@@ -41,13 +42,13 @@ export function FUN_004311e7(heap) {
       } while (iVar2 != -2);
       heap.u32(piVar3) = heap.u32((piVar4 + 5));
       heap.u32(unaff_EBP) = iVar1;
-      LOCK(heap);
+      LOCK();
       iVar1 = heap.u32(unaff_EBP + (1) * 4);
       heap.u32((unaff_EBP + 1)) = heap.u32(piVar3 + (1) * 4);
       UNLOCK(heap);
       heap.u32((piVar3 + 1)) = iVar1;
     }
-    uVar8 = CONCAT44(heap, piVar3, uVar8 >>> 1 | bVar7 << 0x1f);
+    uVar8 = CONCAT44(piVar3, uVar8 >>> 1 | bVar7 << 0x1f);
   }
   uVar6 = 0;
   do {

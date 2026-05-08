@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22 } from "../runtime/win32.js";
+import { CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_005e12eb } from "./5e12eb.js";
 import { FUN_005e1bfd } from "./5e1bfd.js";
 import { FUN_009bb374 } from "./9bb374.js";
@@ -96,7 +96,7 @@ export function FUN_005e1b3e(heap) {
     uVar3 = heap.u32((unaff_EDI + 0x20)) - heap.u32(unaff_ESI + (2) * 4);
     heap.u32(unaff_ESI) = uVar3;
     heap.u32(unaff_ESI + (6) * 4) = uVar3 << (heap.u32(unaff_ESI + (8) * 4) & 0x1f);
-    FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(heap, uVar4, unaff_BP));
+    FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(uVar4, unaff_BP));
     uVar4 = heap.u32(unaff_ESI);
     uVar3 = uVar2 - uVar4;
     heap.u32(unaff_ESI) = uVar3;
@@ -121,7 +121,7 @@ export function FUN_005e1b3e(heap) {
         uVar5 = (heap.u32((unaff_EDI + 0x22)) + heap.u32((unaff_EDI + 0x26))) - heap.u32(unaff_ESI + (3) * 4);
         heap.u32(unaff_ESI + (1) * 4) = uVar5;
         heap.u32(unaff_ESI + (7) * 4) = uVar5 << (heap.u32(unaff_ESI + (8) * 4) & 0x1f);
-        FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(heap, uVar4, unaff_BP));
+        FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(uVar4, unaff_BP));
         uVar4 = heap.u32(unaff_ESI + (1) * 4);
         uVar5 = uVar9 - uVar4;
         heap.u32(unaff_ESI + (1) * 4) = uVar5;
@@ -143,7 +143,7 @@ export function FUN_005e1b3e(heap) {
     uVar3 = heap.u32((unaff_EDI + 0x22)) - heap.u32(unaff_ESI + (3) * 4);
     heap.u32(unaff_ESI + (1) * 4) = uVar3;
     heap.u32(unaff_ESI + (7) * 4) = uVar3 << (heap.u32(unaff_ESI + (8) * 4) & 0x1f);
-    FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(heap, uVar4, unaff_BP));
+    FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(uVar4, unaff_BP));
     uVar4 = heap.u32(unaff_ESI + (1) * 4);
     uVar3 = uVar2 - uVar4;
     heap.u32(unaff_ESI + (1) * 4) = uVar3;
@@ -164,7 +164,7 @@ export function FUN_005e1b3e(heap) {
   uVar3 = (heap.u32((unaff_EDI + 0x20)) + heap.u32((unaff_EDI + 0x24))) - heap.u32(unaff_ESI + (2) * 4);
   heap.u32(unaff_ESI) = uVar3;
   heap.u32(unaff_ESI + (6) * 4) = uVar3 << (heap.u32(unaff_ESI + (8) * 4) & 0x1f);
-  FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(heap, uVar4, unaff_BP));
+  FUN_005e1bfd(heap, unaff_ESI, unaff_EDI, CONCAT22(uVar4, unaff_BP));
   uVar4 = heap.u32(unaff_ESI);
   uVar3 = uVar2 - uVar4;
   heap.u32(unaff_ESI) = uVar3;

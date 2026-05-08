@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT22, CONCAT31 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT22, CONCAT31 } from "../runtime/ghidra-builtins.js";
 import { FUN_004077b3 } from "./4077b3.js";
 import { FUN_00407a41 } from "./407a41.js";
 import { FUN_00407c42 } from "./407c42.js";
@@ -94,7 +94,7 @@ export function FUN_004533d0(heap) {
       puVar19 = __addr_DAT_0063240c;
       LAB_00453535: for (; puVar19 < heap.u32(0x00632408); puVar19 = puVar19 + 5) {
         uVar9 = heap.u32(puVar19 + (2) * 4);
-        iVar17 = CONCAT22(heap, (in_ECX >>> 0x10), 0xffff);
+        iVar17 = CONCAT22((in_ECX >>> 0x10), 0xffff);
         if (uVar9 < 0) {
           uVar9 = -uVar9;
         }
@@ -103,9 +103,9 @@ export function FUN_004533d0(heap) {
         }
         if (0x800 < uVar9) {
           uVar6 = (uint3)(iVar17 >>> 8);
-          iVar17 = CONCAT31(heap, uVar6, (-(uVar9 - 0xc00) >>> 2));
+          iVar17 = CONCAT31(uVar6, (-(uVar9 - 0xc00) >>> 2));
           cVar11 = (-(uVar9 - 0xc00) >>> 10);
-          if ((cVar11 != '\0') && (iVar17 = CONCAT31(heap, uVar6, 0xff), cVar11 < '\0')) {
+          if ((cVar11 != '\0') && (iVar17 = CONCAT31(uVar6, 0xff), cVar11 < '\0')) {
             iVar17 = uVar6 << 8;
           }
         }
@@ -120,22 +120,22 @@ export function FUN_004533d0(heap) {
         if (0x800 < uVar9) {
           uVar8 = (undefined2)(iVar17 >>> 0x10);
           bVar3 = iVar17;
-          iVar17 = CONCAT22(heap, uVar8, CONCAT11(heap, (-(uVar9 - 0xc00) >>> 2), bVar3));
+          iVar17 = CONCAT22(uVar8, CONCAT11((-(uVar9 - 0xc00) >>> 2), bVar3));
           bVar2 = (byte)(-(uVar9 - 0xc00) >>> 10);
-          if ((bVar2 != 0) && (iVar17 = CONCAT22(heap, uVar8, CONCAT11(heap, 0xff, bVar3)), (bVar2 << 8) < 0)) {
-            iVar17 = CONCAT22(heap, uVar8, bVar3);
+          if ((bVar2 != 0) && (iVar17 = CONCAT22(uVar8, CONCAT11(0xff, bVar3)), (bVar2 << 8) < 0)) {
+            iVar17 = CONCAT22(uVar8, bVar3);
           }
         }
         bVar2 = (byte)(iVar17 >>> 8);
         if (bVar2 <= iVar17) {
-          iVar17 = CONCAT31(heap, (int3)(iVar17 >>> 8), bVar2);
+          iVar17 = CONCAT31((int3)(iVar17 >>> 8), bVar2);
         }
         uVar7 = (undefined3)(iVar17 >>> 8);
         bVar2 = iVar17 - heap.u32(0x00632404);
         if (iVar17 < heap.u32(0x00632404)) {
           bVar2 = 0;
         }
-        in_ECX = CONCAT31(heap, uVar7, bVar2);
+        in_ECX = CONCAT31(uVar7, bVar2);
         uVar9 = heap.u32(puVar19);
         uVar12 = heap.u32(puVar19 + (3) * 4);
         puVar16 = __addr_DAT_00632448;
@@ -171,10 +171,10 @@ export function FUN_004533d0(heap) {
         if (bVar2 < bVar3) {
           bVar4 = 0;
         }
-        in_ECX = CONCAT31(heap, uVar7, bVar4);
+        in_ECX = CONCAT31(uVar7, bVar4);
         iVar17 = uVar9 * 0x100;
         puVar18 = __addr_DAT_00743b94 + iVar17;
-        uVar9 = ((ushort)(heap.u32((ushort)(byte)(__addr_DAT_00743c50) + (iVar17) * 4) * bVar4) >>> 3) + 0xe001;
+        uVar9 = ((heap.u32((byte)(__addr_DAT_00743c50) + (iVar17) * 4) * bVar4) >>> 3) + 0xe001;
         if (uVar9 < -10000) {
           uVar9 = 0xd8f0;
         }
@@ -215,7 +215,7 @@ export function FUN_004533d0(heap) {
           }
           FUN_00407c42(heap, puVar16 + 2, heap.u32((__addr_DAT_0063268c) + (uVar1) * 4), iVar5, iVar17, uVar12);
         }
-        LAB_0045377a: uVar9 = ((ushort)(heap.u32(puVar18 + (0xbe) * 4) * in_ECX) >>> 3) + 0xe001;
+        LAB_0045377a: uVar9 = ((heap.u32(puVar18 + (0xbe) * 4) * in_ECX) >>> 3) + 0xe001;
         if (uVar9 < -10000) {
           uVar9 = 0xd8f0;
         }

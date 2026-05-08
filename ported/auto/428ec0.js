@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT22, CONCAT44 } from "../runtime/win32.js";
+import { CONCAT22, CONCAT44 } from "../runtime/ghidra-builtins.js";
 export function FUN_00428ec0(heap) {
   const __sp = heap.allocFrame(36);
   const __addr_DAT_00743b98 = __sp + 0;
@@ -28,7 +28,7 @@ export function FUN_00428ec0(heap) {
   let sVar7 = 0;
   let iVar8 = 0;
   let local_1c = 0;
-  uVar4 = (ushort)(in_EAX >>> 0x10);
+  uVar4 = (in_EAX >>> 0x10);
   uVar2 = heap.u32(0x0087c81c);
   if (1999 < heap.u32(0x0087c81c)) {
     uVar2 = 2000;
@@ -48,7 +48,7 @@ export function FUN_00428ec0(heap) {
   }
   sVar1 = 0x28a - (0x96 - (uVar2 / 0xd & 0xff));
   if (heap.u32(0x0087c81c) != 0) {
-    uVar2 = (ushort)((uVar5 * 300) / heap.u32(0x0087c81c));
+    uVar2 = ((uVar5 * 300) / heap.u32(0x0087c81c));
     if (0xf9 < uVar2) {
       uVar2 = 0xfa;
     }
@@ -89,14 +89,14 @@ export function FUN_00428ec0(heap) {
   }
   uVar3 = 0;
   for (uVar5 = heap.u32(0x0087c39c); uVar5 != 0xffff; uVar5 = heap.u32((__addr_DAT_00743b98) + (uVar5 * 0x80) * 4)) {
-    if (0x1dff < (uint)(heap.u32((__addr_DAT_00743bb8 + uVar5 * 0x100)) - heap.u32(0x006e3b84))) {
+    if (0x1dff < (heap.u32((__addr_DAT_00743bb8 + uVar5 * 0x100)) - heap.u32(0x006e3b84))) {
       uVar3 = uVar3 + 1;
     }
   }
   if (0x95 < uVar3) {
     uVar3 = 0x96;
   }
-  sVar7 = (sVar1 - (200 - (ushort)(uVar2 + uVar6) / 10)) - ((0x96 - uVar3) * -4 + 600);
+  sVar7 = (sVar1 - (200 - (uVar2 + uVar6) / 10)) - ((0x96 - uVar3) * -4 + 600);
   pcVar9 = __addr_DAT_00887420;
   uVar2 = 0;
   uVar5 = 0;
@@ -129,14 +129,14 @@ export function FUN_00428ec0(heap) {
     }
     sVar1 = sVar7 - (uVar6 + uVar2);
   }
-  local_1c = CONCAT22(heap, uVar4, sVar1);
+  local_1c = CONCAT22(uVar4, sVar1);
   if (sVar1 < 0) {
     local_1c = uVar4 << 0x10;
   }
   if (999 < local_1c) {
-    local_1c = CONCAT22(heap, (local_1c >>> 0x10), 999);
+    local_1c = CONCAT22((local_1c >>> 0x10), 999);
   }
-  return CONCAT44(heap, in_EDX, local_1c);
+  return CONCAT44(in_EDX, local_1c);
 } finally {
     heap.freeFrame(36);
   }

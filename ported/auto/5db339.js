@@ -29,24 +29,24 @@ export function FUN_005db339(heap) {
   puVar7 = unaff_ESI;
   while (true) {
     heap.u32(puVar7 + (0x51) * 4) = 0;
-    sVar1 = heap.u32((__addr_DAT_0065eada + (uint)(heap.u32(puVar7 + (0x1e) * 4) >>> 1) * 4));
+    sVar1 = heap.u32((__addr_DAT_0065eada + (heap.u32(puVar7 + (0x1e) * 4) >>> 1) * 4));
     iVar4 = heap.u32((__addr_DAT_0065e7dc + heap.u32(puVar7 + (0x1f) * 4) * 4));
     iVar5 = heap.u32((__addr_DAT_0065e8bc + heap.u32(puVar7 + (0x1f) * 4) * 4));
-    heap.u32((puVar7 + 0xb6)) = ((uint)((heap.u32((__addr_DAT_0065ead8 + (uint)(heap.u32(puVar7 + (0x1e) * 4) >>> 1) * 4)) * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 8);
-    heap.u32((puVar7 + 0xc0)) = ((uint)((sVar1 * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 8);
-    heap.u32((puVar7 + 0x4e)) = ((uint)((iVar5 >>> 0x17) * iVar6) >>> 8);
+    heap.u32((puVar7 + 0xb6)) = (((heap.u32((__addr_DAT_0065ead8 + (heap.u32(puVar7 + (0x1e) * 4) >>> 1) * 4)) * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 8);
+    heap.u32((puVar7 + 0xc0)) = (((sVar1 * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 8);
+    heap.u32((puVar7 + 0x4e)) = (((iVar5 >>> 0x17) * iVar6) >>> 8);
     uVar8 = FUN_005df40c(heap);
     iVar6 = (uVar8 >>> 0x20);
     heap.u32((puVar7 + 0xb6)) = heap.u32((puVar7 + 0xb6)) + ((uVar8 & 0xf) - 8);
-    heap.u32((puVar7 + 0xc0)) = heap.u32((puVar7 + 0xc0)) + (((ushort)(uVar8 >>> 4) & 0xf) - 8);
-    heap.u32((puVar7 + 0x4e)) = heap.u32((puVar7 + 0x4e)) + (((ushort)(uVar8 >>> 8) & 0xf) - 8);
+    heap.u32((puVar7 + 0xc0)) = heap.u32((puVar7 + 0xc0)) + (((uVar8 >>> 4) & 0xf) - 8);
+    heap.u32((puVar7 + 0x4e)) = heap.u32((puVar7 + 0x4e)) + (((uVar8 >>> 8) & 0xf) - 8);
     heap.u32((puVar7 + 0x38)) = 0;
     heap.u32((puVar7 + 0x3a)) = 0;
     heap.u32((puVar7 + 0x3c)) = 0;
     if (heap.u32((puVar7 + 0x3e)) == 0xffff) {
       break;
     }
-    puVar7 = __addr_DAT_00743b94 + (uint) * (puVar7 + 0x3e) * 0x100;
+    puVar7 = __addr_DAT_00743b94 + heap.u32((puVar7 + 0x3e)) * 0x100;
   }
   uVar2 = heap.u32((unaff_ESI + 0x40));
   uVar3 = heap.u32((puVar7 + 0x42));

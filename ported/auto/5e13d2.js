@@ -90,7 +90,7 @@ export function FUN_005e13d2(heap) {
         if (heap.u32(0x0099fb96) == 0 || sVar6 < sVar9) {
           /* goto LAB_005e1637 */ throw new Error("goto LAB_005e1637 not supported");
         }
-        heap.setU32(0x0099fb8c, (heap.u32(0x0099fb8c) + (uint)(ushort)(heap.u32(0x0099fb94) + heap.u32(0x0099fb98)) * sVar9) >>> 0);
+        heap.setU32(0x0099fb8c, (heap.u32(0x0099fb8c) + (heap.u32(0x0099fb94) + heap.u32(0x0099fb98)) * sVar9) >>> 0);
       }
       sVar9 = heap.u32(0x0099fb96);
       sVar8 = (heap.u32(0x0099fb92) + heap.u32(0x0099fb96)) - unaff_BP;

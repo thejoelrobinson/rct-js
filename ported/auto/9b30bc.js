@@ -13,7 +13,7 @@ export function FUN_009b30bc(heap) {
   let unaff_EBP = 0;
   bVar3 = (byte) * (unaff_EDI + 0xe);
   uVar2 = heap.u32((unaff_EDI + 2)) >>> (bVar3 & 0x1f);
-  uVar5 = (uint)(heap.u32((unaff_EDI + 10)) >>> (bVar3 & 0x1f));
+  uVar5 = (heap.u32((unaff_EDI + 10)) >>> (bVar3 & 0x1f));
   uVar1 = heap.u32((unaff_EDI + 3));
   puVar6 = heap.u32(unaff_EDI);
   do {
@@ -21,7 +21,7 @@ export function FUN_009b30bc(heap) {
       heap.u32(puVar6) = unaff_EBP;
       puVar6 = (puVar6 + 1);
     }
-    uVar4 = (uint)(uVar2 >>> 2);
+    uVar4 = (uVar2 >>> 2);
     if ((uVar2 >>> 1 & 1) != 0) {
       heap.u32(puVar6) = unaff_EBP;
       puVar6 = (puVar6 + 2);

@@ -37,7 +37,7 @@ export function FUN_005db446(heap) {
   iVar6 = uVar5 * 0x260;
   puVar7 = unaff_ESI;
   if ((heap.u32((__addr_DAT_00887422) + (uVar5 * 0x130) * 4) & 0x400) == 0) {
-    for (; heap.u32(puVar7 + (1) * 4) != '\0'; puVar7 = __addr_DAT_00743b94 + (uint) * (puVar7 + 0x40) * 0x100) {
+    for (; heap.u32(puVar7 + (1) * 4) != '\0'; puVar7 = __addr_DAT_00743b94 + heap.u32((puVar7 + 0x40)) * 0x100) {
     
     }
     iVar4 = -1;
@@ -81,7 +81,7 @@ export function FUN_005db446(heap) {
     if (heap.u32((puVar7 + 0x3e)) == 0xffff) {
       break;
     }
-    puVar7 = __addr_DAT_00743b94 + (uint) * (puVar7 + 0x3e) * 0x100;
+    puVar7 = __addr_DAT_00743b94 + heap.u32((puVar7 + 0x3e)) * 0x100;
   }
   uVar1 = heap.u32((unaff_ESI + 0x40));
   uVar2 = heap.u32((puVar7 + 0x42));

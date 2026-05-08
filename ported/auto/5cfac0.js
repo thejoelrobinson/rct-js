@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT22, CONCAT24 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT22, CONCAT24 } from "../runtime/ghidra-builtins.js";
 export function FUN_005cfac0(heap) {
   const __sp = heap.allocFrame(24);
   const __addr_DAT_00652478 = __sp + 0;
@@ -23,24 +23,24 @@ export function FUN_005cfac0(heap) {
   let iVar5 = 0;
   heap.setU32(0x00652471, (unaff_EBX) >>> 0);
   if ((unaff_EBX & 4) == 0) {
-    in_EAX = CONCAT22(heap, (in_EAX >>> 0x10), in_EAX + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4));
+    in_EAX = CONCAT22((in_EAX >>> 0x10), in_EAX + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4));
     in_CX = in_CX + heap.u32((__addr_DAT_0065247a) + (unaff_EBX * 2) * 4);
   }
   uVar2 = in_CX << 7 | in_CX >>> 9 | in_EAX;
-  pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+  pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((uVar2 >>> 5 | uVar2 << 0xb)) * 4);
   do {
     if ((((heap.u32(pbVar4) & 0x3c) == 8) && (heap.u32(pbVar4 + (7) * 4) == heap.u32(0x00652470))) && ((heap.u32(pbVar4 + (5) * 4) & 0xf) == 0)) {
       iVar5 = heap.u32(pbVar4 + (4) * 4) * 10;
-      uVar2 = CONCAT11(heap, heap.u32((__addr_DAT_00653ef7) + (iVar5) * 4), heap.u32((__addr_DAT_00653ef7) + (iVar5) * 4)) & 0x4ff;
-      uVar3 = CONCAT11(heap, (uVar2 >>> 8), uVar2 + heap.u32(pbVar4)) & 0xffffff03;
-      if (((byte)(uVar3 | (byte)(uVar3 >>> 8)) == unaff_EBX) && ((ushort)(heap.u32(pbVar4 + (2) * 4) * 4 + (heap.u32((__addr_DAT_00653ef9 + iVar5)) - heap.u32((heap.u32((__addr_PTR_DAT_00652498) + (heap.u32(pbVar4 + (4) * 4)) * 4) + 5)))) == in_DX)) {
-        return CONCAT24(heap, heap.u32(pbVar4 + (2) * 4) << 2, in_EAX);
+      uVar2 = CONCAT11(heap.u32((__addr_DAT_00653ef7) + (iVar5) * 4), heap.u32((__addr_DAT_00653ef7) + (iVar5) * 4)) & 0x4ff;
+      uVar3 = CONCAT11((uVar2 >>> 8), uVar2 + heap.u32(pbVar4)) & 0xffffff03;
+      if (((byte)(uVar3 | (byte)(uVar3 >>> 8)) == unaff_EBX) && ((heap.u32(pbVar4 + (2) * 4) * 4 + (heap.u32((__addr_DAT_00653ef9 + iVar5)) - heap.u32((heap.u32((__addr_PTR_DAT_00652498) + (heap.u32(pbVar4 + (4) * 4)) * 4) + 5)))) == in_DX)) {
+        return CONCAT24(heap.u32(pbVar4 + (2) * 4) << 2, in_EAX);
       }
     }
     pbVar1 = pbVar4 + 1;
     pbVar4 = pbVar4 + 8;
     if ((heap.u32(pbVar1) & 0x80) != 0) {
-      return CONCAT24(heap, in_DX, in_EAX);
+      return CONCAT24(in_DX, in_EAX);
     }
   } while (true);
 } finally {

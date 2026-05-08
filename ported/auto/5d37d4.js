@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT44, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT11, CONCAT44, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_0042693f } from "./42693f.js";
 import { FUN_00436795 } from "./436795.js";
 import { FUN_00448331 } from "./448331.js";
@@ -53,7 +54,7 @@ export function FUN_005d37d4(heap) {
         bVar3 = heap.u32(pbVar19 + (uVar13 + 0x32) * 4);
         while (true) {
           uVar9 = uVar8 << 7 | uVar8 >>> 9 | uVar6;
-          pbVar12 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar9 >>> 5 | uVar9 << 0xb)) * 4);
+          pbVar12 = heap.u32((__addr_DAT_00971ef4) + ((uVar9 >>> 5 | uVar9 << 0xb)) * 4);
           while (((bVar3 != heap.u32(pbVar12 + (2) * 4) || (bVar4 = heap.u32(pbVar12), (bVar4 & 0x3c) != 8)) || (heap.u32(pbVar12 + (7) * 4) != heap.u32(0x00652308))) || (((heap.u32(pbVar12 + (5) * 4) & 0xf) != 0 || ((heap.u32((__addr_DAT_006559d8) + (heap.u32(pbVar12 + (4) * 4) * 0x10) * 4) & 0x10) == 0)))) {
             pbVar1 = pbVar12 + 1;
             pbVar12 = pbVar12 + 8;
@@ -61,9 +62,9 @@ export function FUN_005d37d4(heap) {
               /* goto LAB_005d396a */ throw new Error("goto LAB_005d396a not supported");
             }
           }
-          uVar9 = CONCAT11(heap, heap.u32(pbVar12 + (5) * 4), uVar13 << 4) & 0x8fff;
+          uVar9 = CONCAT11(heap.u32(pbVar12 + (5) * 4), uVar13 << 4) & 0x8fff;
           heap.u32(pbVar12 + (5) * 4) = uVar9 | (byte)(uVar9 >>> 8);
-          if ((heap.u32((__addr_DAT_005f5b78 + (uint) * pbVar19 * 8)) & 8) != 0) {
+          if ((heap.u32((__addr_DAT_005f5b78 + heap.u32(pbVar19) * 8)) & 8) != 0) {
             break;
           }
           uVar14 = bVar4 & 3;
@@ -89,8 +90,8 @@ export function FUN_005d37d4(heap) {
               sVar7 = -sVar5;
               sVar10 = sVar2;
           }
-          uVar9 = (sVar10 + uVar8) * 0x80 | (ushort)(sVar10 + uVar8) >>> 9 | sVar7 + uVar6;
-          pbVar12 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar9 >>> 5 | uVar9 << 0xb)) * 4);
+          uVar9 = (sVar10 + uVar8) * 0x80 | (sVar10 + uVar8) >>> 9 | sVar7 + uVar6;
+          pbVar12 = heap.u32((__addr_DAT_00971ef4) + ((uVar9 >>> 5 | uVar9 << 0xb)) * 4);
           while (((byte)((heap.u32((pcVar20 + 0xf)) >>> 2) + bVar3) != heap.u32(pbVar12 + (2) * 4) || ((heap.u32(pbVar12) & 0x3c) != 8)) || ((heap.u32((__addr_DAT_006559d8) + (heap.u32(pbVar12 + (4) * 4) * 0x10) * 4) & 0x10) == 0)) {
             pbVar1 = pbVar12 + 1;
             pbVar12 = pbVar12 + 8;
@@ -98,7 +99,7 @@ export function FUN_005d37d4(heap) {
               /* goto LAB_005d396a */ throw new Error("goto LAB_005d396a not supported");
             }
           }
-          uVar9 = CONCAT11(heap, heap.u32(pbVar12 + (5) * 4), uVar13 << 4) & 0x8fff;
+          uVar9 = CONCAT11(heap.u32(pbVar12 + (5) * 4), uVar13 << 4) & 0x8fff;
           heap.u32(pbVar12 + (5) * 4) = uVar9 | (byte)(uVar9 >>> 8);
           pcVar20 = pcVar20 + 10;
         }
@@ -109,7 +110,7 @@ export function FUN_005d37d4(heap) {
   uVar13 = 0;
   psVar15 = __addr_DAT_006522f6;
   do {
-    LOCK(heap);
+    LOCK();
     sVar2 = heap.u32((__addr_DAT_00887462) + (uVar18 * 0x130 + uVar13) * 4);
     heap.u32((__addr_DAT_00887462) + (uVar18 * 0x130 + uVar13) * 4) = -1;
     UNLOCK(heap);
@@ -117,7 +118,7 @@ export function FUN_005d37d4(heap) {
       heap.u32(psVar15) = sVar2;
       psVar15 = psVar15 + 1;
     }
-    LOCK(heap);
+    LOCK();
     sVar2 = heap.u32((__addr_DAT_0088746a) + (uVar18 * 0x130 + uVar13) * 4);
     heap.u32((__addr_DAT_0088746a) + (uVar18 * 0x130 + uVar13) * 4) = -1;
     UNLOCK(heap);
@@ -133,7 +134,7 @@ export function FUN_005d37d4(heap) {
     uVar8 = heap.u32(puVar16);
     puVar17 = puVar16;
     if (uVar8 == 0xffff) {
-      return CONCAT44(heap, in_EDX, in_EAX);
+      return CONCAT44(in_EDX, in_EAX);
     }
     while (puVar17 = puVar17 + 1, heap.u32(puVar17) != 0xffff) {
       if (uVar8 == heap.u32(puVar17)) {
@@ -142,18 +143,18 @@ export function FUN_005d37d4(heap) {
     }
     uVar6 = (uVar8 & 0xff) * 0x20;
     uVar9 = (uVar8 >>> 8) * 0x20;
-    pbVar19 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((uVar8 >>> 8) << 0xc | uVar6) >>> 5 | (uVar9 >>> 9) << 0xb)) * 4);
+    pbVar19 = heap.u32((__addr_DAT_00971ef4) + ((((uVar8 >>> 8) << 0xc | uVar6) >>> 5 | (uVar9 >>> 9) << 0xb)) * 4);
     do {
       if ((((heap.u32(pbVar19) & 0x3c) == 0x10) && (heap.u32(0x00652308) == heap.u32(pbVar19 + (7) * 4))) && (heap.u32(pbVar19 + (4) * 4) < 2)) {
         uVar13 = heap.u32(pbVar19) & 3;
         uVar11 = uVar9 + heap.u32((__addr_DAT_0065247a) + (uVar13 * 2) * 4);
         uVar11 = uVar11 * 0x80 | uVar11 >>> 9 | uVar6 + heap.u32((__addr_DAT_00652478) + (uVar13 * 2) * 4);
-        pbVar12 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar11 >>> 5 | uVar11 << 0xb)) * 4);
+        pbVar12 = heap.u32((__addr_DAT_00971ef4) + ((uVar11 >>> 5 | uVar11 << 0xb)) * 4);
         do {
           if ((((heap.u32(pbVar12) & 0x3c) == 8) && (heap.u32(0x00652308) == heap.u32(pbVar12 + (7) * 4))) && ((heap.u32(pbVar19 + (2) * 4) == heap.u32(pbVar12 + (2) * 4) && ((heap.u32((byte)(__addr_DAT_006559d8) + (heap.u32(pbVar12 + (4) * 4) << 4 | heap.u32(pbVar12 + (5) * 4) & 0xf) * 4) >>> ((byte)((uVar13 - heap.u32(pbVar12)) + 2) & 3) & 1) != 0)))) {
             uVar13 = 0;
             if (heap.u32(pbVar12 + (4) * 4) != 0x65) {
-              uVar13 = (uint)(heap.u32(pbVar12 + (5) * 4) >>> 4);
+              uVar13 = (heap.u32(pbVar12 + (5) * 4) >>> 4);
             }
             uVar13 = uVar13 & 7;
             if (heap.u32(pbVar19 + (4) * 4) == 0) {
@@ -167,7 +168,7 @@ export function FUN_005d37d4(heap) {
               }
               heap.u32((__addr_DAT_0088746a) + (uVar18 * 0x130 + uVar13) * 4) = uVar8;
             }
-            uVar11 = CONCAT11(heap, heap.u32(pbVar19 + (5) * 4), uVar13) & 0x8fff;
+            uVar11 = CONCAT11(heap.u32(pbVar19 + (5) * 4), uVar13) & 0x8fff;
             heap.u32(pbVar19 + (5) * 4) = uVar11 << 4 | (byte)(uVar11 >>> 8);
             /* goto LAB_005d3b16 */ throw new Error("goto LAB_005d3b16 not supported");
           }

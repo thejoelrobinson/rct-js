@@ -30,8 +30,8 @@ export function FUN_0044a3ba(heap) {
   puVar1 = in_EDX;
   do {
     puVar5 = puVar1;
-    puVar1 = __addr_DAT_00743b94 + (uint) * (puVar5 + 0x40) * 0x100;
-  } while (heap.u32((__addr_DAT_00743bd2 + (uint) * (puVar5 + 0x40) * 0x100)) != -1);
+    puVar1 = __addr_DAT_00743b94 + heap.u32((puVar5 + 0x40)) * 0x100;
+  } while (heap.u32((__addr_DAT_00743bd2 + heap.u32((puVar5 + 0x40)) * 0x100)) != -1);
   psVar6 = (__addr_DAT_0088747e + heap.u32(puVar5 + (0x30) * 4) * 0x260);
   uVar9 = 1;
   while (true) {
@@ -41,7 +41,7 @@ export function FUN_0044a3ba(heap) {
       break;
     }
     psVar6 = psVar6 + 1;
-    uVar9 = (uint)(ushort)(sVar8 + 1);
+    uVar9 = (sVar8 + 1);
   }
   heap.setU32(0x00631ca0, (in_EDX) >>> 0);
   uVar2 = FUN_005e3b2b(heap);

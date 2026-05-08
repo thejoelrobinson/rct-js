@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT44 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT44 } from "../runtime/ghidra-builtins.js";
 import { FUN_005cfac7 } from "./5cfac7.js";
 import { FUN_005cfc50 } from "./5cfc50.js";
 import { FUN_005d21fa } from "./5d21fa.js";
@@ -49,7 +49,7 @@ export function FUN_005d3457(heap) {
   if ((heap.u32((__addr_DAT_006559d8) + (heap.u32(heap.u32(__addr_puStack_18) + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
     bVar1 = heap.u32(heap.u32(__addr_puStack_18) + (7) * 4);
     bVar5 = (in_ECX >>> 4 & 1) != 0;
-    heap.u32((__addr_DAT_0088750a + bVar1 * 0x260)) = CONCAT11(heap, (in_ECX >>> 5), (uVar3 >>> 5));
+    heap.u32((__addr_DAT_0088750a + bVar1 * 0x260)) = CONCAT11((in_ECX >>> 5), (uVar3 >>> 5));
     heap.u32((__addr_DAT_0088750e) + (bVar1 * 0x260) * 4) = heap.u32(heap.u32(__addr_puStack_18) + (2) * 4);
     while (true) {
       heap.setU32(__addr_puStack_18, (puVar2) >>> 0);
@@ -63,12 +63,12 @@ export function FUN_005d3457(heap) {
     }
     if ((heap.u32((__addr_DAT_006559d8) + (heap.u32(heap.u32(__addr_puStack_18) + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
       bVar1 = heap.u32(heap.u32(__addr_puStack_18) + (7) * 4);
-      heap.u32((__addr_DAT_0088750c + bVar1 * 0x260)) = CONCAT11(heap, (in_ECX >>> 5), (uVar3 >>> 5));
+      heap.u32((__addr_DAT_0088750c + bVar1 * 0x260)) = CONCAT11((in_ECX >>> 5), (uVar3 >>> 5));
       heap.u32((__addr_DAT_0088750f) + (bVar1 * 0x260) * 4) = heap.u32(heap.u32(__addr_puStack_18) + (2) * 4);
-      return CONCAT44(heap, heap.u32(__addr_uStack_4), uVar3);
+      return CONCAT44(heap.u32(__addr_uStack_4), uVar3);
     }
   }
-  return CONCAT44(heap, heap.u32(__addr_uStack_4), uVar3);
+  return CONCAT44(heap.u32(__addr_uStack_4), uVar3);
 } finally {
     heap.freeFrame(28);
   }

@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, LOCK, UNLOCK } from "../runtime/win32.js";
+import { UNLOCK } from "../runtime/win32.js";
+import { CONCAT11, LOCK } from "../runtime/ghidra-builtins.js";
 import { FUN_0042635e } from "./42635e.js";
 import { FUN_00427108 } from "./427108.js";
 import { FUN_005cfe66 } from "./5cfe66.js";
@@ -77,7 +78,7 @@ export function FUN_005d3e56(heap) {
           FUN_005e680e(heap);
           cVar3 = heap.u32(0x00652288);
           heap.setU32(0x00991f30, (heap.u32(0x00991f30) | 0x40) >>> 0);
-          LOCK(heap);
+          LOCK();
           heap.setU32(0x00652288, ('\x05') >>> 0);
           UNLOCK(heap);
           if (cVar3 != '\x05') {
@@ -116,10 +117,10 @@ export function FUN_005d3e56(heap) {
         uVar10 = FUN_005d5003(heap);
         return uVar10;
       }
-      if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((uint)(byte)(__addr_DAT_00887420) + (heap.u32(in_EDX + (7) * 4) * 0x260) * 4) * 8)) & 0x100) != 0) {
+      if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (heap.u32(in_EDX + (7) * 4) * 0x260) * 4) * 8)) & 0x100) != 0) {
         FUN_005d3329(heap);
       }
-      uVar8 = CONCAT11(heap, heap.u32(in_EDX), heap.u32(in_EDX + (4) * 4)) & 0xffff03ff;
+      uVar8 = CONCAT11(heap.u32(in_EDX), heap.u32(in_EDX + (4) * 4)) & 0xffff03ff;
       bVar12 = false;
       uVar13 = FUN_005cfe66(heap);
       uVar4 = (undefined2)(uVar13 >>> 0x20);
@@ -137,7 +138,7 @@ export function FUN_005d3e56(heap) {
         heap.setU32(0x0065228e, (uVar4) >>> 0);
         heap.setU32(0x00652290, (uVar9) >>> 0);
         heap.setU32(0x00652291, (uVar6) >>> 0);
-        if (((heap.u32((__addr_DAT_005f5b78 + heap.u32((uint)(byte)(__addr_DAT_00887420) + (heap.u32(0x00652289) * 0x260) * 4) * 8)) & 0x8000) == 0) && (FUN_005d1dd4(heap), heap.u32(0x00652288) != '\x01')) {
+        if (((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (heap.u32(0x00652289) * 0x260) * 4) * 8)) & 0x8000) == 0) && (FUN_005d1dd4(heap), heap.u32(0x00652288) != '\x01')) {
           heap.setU32(0x00652288, ('\x03') >>> 0);
           heap.setU32(0x00652292, (0) >>> 0);
           heap.setU32(0x00652293, (0) >>> 0);

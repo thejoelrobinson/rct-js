@@ -20,11 +20,11 @@ export function FUN_00444d1f(heap) {
   if (heap.u32((unaff_ESI + 0xe)) == 0x8000) {
     uVar2 = 0x4000;
   } else {
-    uVar2 = (uint)(ushort)((heap.u32((unaff_ESI + 0xe)) & 0xfe0) << 2 | heap.u32((unaff_ESI + 0x10)) >>> 5);
+    uVar2 = ((heap.u32((unaff_ESI + 0xe)) & 0xfe0) << 2 | heap.u32((unaff_ESI + 0x10)) >>> 5);
   }
   puVar3 = __addr_DAT_00991f8e + uVar2;
-  while (__addr_DAT_00743b94 + (uint) * puVar3 * 0x100 != unaff_ESI) {
-    puVar3 = __addr_DAT_00743b96 + (uint) * puVar3 * 0x80;
+  while (__addr_DAT_00743b94 + heap.u32(puVar3) * 0x100 != unaff_ESI) {
+    puVar3 = __addr_DAT_00743b96 + heap.u32(puVar3) * 0x80;
   }
   heap.u32(puVar3) = heap.u32((unaff_ESI + 2));
   return uVar1;

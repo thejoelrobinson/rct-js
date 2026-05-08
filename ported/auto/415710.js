@@ -9,7 +9,7 @@ export function FUN_00415710(heap, param_1, param_2, param_3) {
   let iVar2 = 0;
   iVar2 = param_2 - heap.u32((param_1 + 0x10)) >>> 0xc;
   piVar1 = (param_1 + 0x18 + iVar2 * 8);
-  heap.u32(piVar1) = heap.u32((param_1 + 0x18 + iVar2 * 8)) + (uint) * param_3;
+  heap.u32(piVar1) = heap.u32((param_1 + 0x18 + iVar2 * 8)) + heap.u32(param_3);
   heap.u32(param_3) = 0;
   heap.u32(piVar1 + (1) * 4) = 0xf1;
   if ((heap.u32(piVar1) == 0xf0) && (heap.setU32(0x005f024c, (heap.u32(0x005f024c) + 1) >>> 0), heap.u32(0x005f024c) == 0x20)) {

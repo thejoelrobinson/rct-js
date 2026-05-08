@@ -50,7 +50,7 @@ export function FUN_009bb7bb(heap) {
     }
     iVar1 = heap.u32((__addr_DAT_008dc0b4) + ((iVar4 + 999) * 4) * 4);
     sVar2 = 5;
-    puVar7 = ((uint)(ushort)(((uint)(ushort)(((uint) - heap.u32(0x00999f94) >>> 1) << 7) * 0xf >>> 0x10) * 3) + iVar1);
+    puVar7 = (((((-heap.u32(0x00999f94) >>> 1) << 7) * 0xf >>> 0x10) * 3) + iVar1);
     do {
       heap.u32(puVar9) = heap.u32(puVar7);
       heap.u32((puVar9 + 1)) = heap.u32((puVar7 + 1));
@@ -64,7 +64,7 @@ export function FUN_009bb7bb(heap) {
     } while (sVar2 != 0);
     iVar1 = heap.u32((__addr_DAT_008dc0b4) + ((iVar4 + 0x3ea) * 4) * 4);
     sVar2 = 5;
-    puVar7 = ((uint)(ushort)(((uint)(ushort)(((uint) - heap.u32(0x00999f94) >>> 1) << 7) * 0xf >>> 0x10) * 3) + iVar1);
+    puVar7 = (((((-heap.u32(0x00999f94) >>> 1) << 7) * 0xf >>> 0x10) * 3) + iVar1);
     do {
       heap.u32(puVar9) = heap.u32(puVar7);
       heap.u32((puVar9 + 1)) = heap.u32((puVar7 + 1));
@@ -78,7 +78,7 @@ export function FUN_009bb7bb(heap) {
     } while (sVar2 != 0);
     iVar4 = heap.u32((__addr_DAT_008dc0b4) + ((iVar4 + 0x3ed) * 4) * 4);
     sVar2 = 3;
-    puVar7 = ((uint)(ushort)(((heap.u32(0x00999f94) * -0x3c0 & 0xffffU) * 3 >>> 0x10) * 3) + iVar4);
+    puVar7 = ((((heap.u32(0x00999f94) * -0x3c0 & 0xffffU) * 3 >>> 0x10) * 3) + iVar4);
     do {
       heap.u32(puVar9) = heap.u32(puVar7);
       heap.u32((puVar9 + 1)) = heap.u32((puVar7 + 1));

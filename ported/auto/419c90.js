@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT22 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_00418ef0 } from "./418ef0.js";
 import { FUN_00418f90 } from "./418f90.js";
 import { FUN_00418fc0 } from "./418fc0.js";
@@ -42,7 +42,7 @@ export function FUN_00419c90(heap, param_1, param_2) {
   if (((0x7ffe < uVar1) || (0x7ffe < uVar3)) || (0xbffd < uVar4)) {
     heap.u32(param_1 + (1) * 4) = 0;
     heap.u32(param_1) = 0;
-    heap.u32(param_1 + (2) * 4) = (-(uint)(uVar6 != 0) & 0x80000000) + 0x7fff8000;
+    heap.u32(param_1 + (2) * 4) = (-(uVar6 != 0) & 0x80000000) + 0x7fff8000;
     return;
   }
   if (uVar4 < 0x3fc0) {
@@ -70,7 +70,7 @@ export function FUN_00419c90(heap, param_1, param_2) {
       puVar7 = (local_18 * 2 + param_1);
       local_10 = iVar5;
       do {
-        iVar2 = FUN_00418ef0(heap, heap.u32((local_20 + -2)), (uint) * puVar8 * (uint) * puVar7, local_20 + -2);
+        iVar2 = FUN_00418ef0(heap, heap.u32((local_20 + -2)), heap.u32(puVar8) * heap.u32(puVar7), local_20 + -2);
         if (iVar2 != 0) {
           heap.u32(local_20) = heap.u32(local_20) + 1;
         }
@@ -105,10 +105,10 @@ export function FUN_00419c90(heap, param_1, param_2) {
       heap.setU32(__addr_local_c, (heap.u32(__addr_local_c) | 1) >>> 0);
     }
   }
-  if ((0x8000 < CONCAT11(heap, uStack_b, heap.u32(__addr_local_c))) || (iVar2 = CONCAT22(heap, local_4, uStack_6), iVar5 = CONCAT22(heap, heap.u32(__addr_local_8), uStack_a), (CONCAT22(heap, uStack_a, CONCAT11(heap, uStack_b, heap.u32(__addr_local_c))) & 0x1ffff) == 0x18000)) {
-    if (CONCAT22(heap, heap.u32(__addr_local_8), uStack_a) == -1) {
+  if ((0x8000 < CONCAT11(uStack_b, heap.u32(__addr_local_c))) || (iVar2 = CONCAT22(local_4, uStack_6), iVar5 = CONCAT22(heap.u32(__addr_local_8), uStack_a), (CONCAT22(uStack_a, CONCAT11(uStack_b, heap.u32(__addr_local_c))) & 0x1ffff) == 0x18000)) {
+    if (CONCAT22(heap.u32(__addr_local_8), uStack_a) == -1) {
       iVar5 = 0;
-      if (CONCAT22(heap, local_4, uStack_6) == -1) {
+      if (CONCAT22(local_4, uStack_6) == -1) {
         if (uStack_2 == 0xffff) {
           uStack_2 = 0x8000;
           uVar4 = uVar4 + 1;
@@ -120,11 +120,11 @@ export function FUN_00419c90(heap, param_1, param_2) {
           iVar5 = 0;
         }
       } else {
-        iVar2 = CONCAT22(heap, local_4, uStack_6) + 1;
+        iVar2 = CONCAT22(local_4, uStack_6) + 1;
       }
     } else {
-      iVar5 = CONCAT22(heap, heap.u32(__addr_local_8), uStack_a) + 1;
-      iVar2 = CONCAT22(heap, local_4, uStack_6);
+      iVar5 = CONCAT22(heap.u32(__addr_local_8), uStack_a) + 1;
+      iVar2 = CONCAT22(local_4, uStack_6);
     }
   }
   heap.setU32(__addr_local_8, ((iVar5 >>> 0x10)) >>> 0);
@@ -134,12 +134,12 @@ export function FUN_00419c90(heap, param_1, param_2) {
   if (0x7ffe < uVar4) {
     heap.u32(param_1 + (1) * 4) = 0;
     heap.u32(param_1) = 0;
-    heap.u32(param_1 + (2) * 4) = (-(uint)(uVar6 != 0) & 0x80000000) + 0x7fff8000;
+    heap.u32(param_1 + (2) * 4) = (-(uVar6 != 0) & 0x80000000) + 0x7fff8000;
     return;
   }
   heap.u32(param_1) = uStack_a;
-  heap.u32((param_1 + 2)) = CONCAT22(heap, uStack_6, heap.u32(__addr_local_8));
-  heap.u32((param_1 + 6)) = CONCAT22(heap, uStack_2, local_4);
+  heap.u32((param_1 + 2)) = CONCAT22(uStack_6, heap.u32(__addr_local_8));
+  heap.u32((param_1 + 6)) = CONCAT22(uStack_2, local_4);
   heap.u32((param_1 + 10)) = uVar4 | uVar6;
   return;
 } finally {

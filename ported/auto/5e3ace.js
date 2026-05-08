@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT24 } from "../runtime/win32.js";
+import { CONCAT24 } from "../runtime/ghidra-builtins.js";
 import { FUN_005e3874 } from "./5e3874.js";
 export function FUN_005e3ace(heap) {
   const __sp = heap.allocFrame(8);
@@ -30,7 +30,7 @@ export function FUN_005e3ace(heap) {
         }
         puVar1 = puVar3;
       } while ((in_EAX < heap.u32((puVar4 + -0x158))) || ((heap.u32((puVar4 + -0x158)) + heap.u32((puVar4 + -0x154))) <= in_EAX));
-    } while ((unaff_EBX < heap.u32((puVar4 + -0x156))) || (sVar2 = heap.u32((puVar4 + -0x156)) + heap.u32((puVar4 + -0x152)), uVar5 = CONCAT24(heap, sVar2, in_EAX), sVar2 <= unaff_EBX));
+    } while ((unaff_EBX < heap.u32((puVar4 + -0x156))) || (sVar2 = heap.u32((puVar4 + -0x156)) + heap.u32((puVar4 + -0x152)), uVar5 = CONCAT24(sVar2, in_EAX), sVar2 <= unaff_EBX));
     if ((heap.u32((puVar4 + -0x146)) & 0x20) != 0) {
       uVar5 = FUN_005e3874(heap, unaff_EDI);
       in_EAX = uVar5;

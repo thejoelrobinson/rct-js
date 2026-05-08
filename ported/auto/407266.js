@@ -4,14 +4,15 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { GetCursorPos, LPPOINT } from "../runtime/win32.js";
+import { GetCursorPos } from "../runtime/win32.js";
 import { FUN_00406fca } from "./406fca.js";
 import { FUN_004070f8 } from "./4070f8.js";
 export function FUN_00407266(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f1284 = __sp + 0;
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_005eee90 = __sp + 0;
+  const __addr_DAT_005f1284 = __sp + 4;
   try {
-  GetCursorPos(heap, (LPPOINT) & heap.u32(0x005eee90));
+  GetCursorPos(heap, __addr_DAT_005eee90);
   heap.setU32(0x005ebef4, (1) >>> 0);
   FUN_00406fca(heap);
   _memset(__addr_DAT_005f1284, 4, 0);
@@ -21,6 +22,6 @@ export function FUN_00407266(heap) {
   heap.setU32(0x005f128c, (0) >>> 0);
   return;
 } finally {
-    heap.freeFrame(4);
+    heap.freeFrame(8);
   }
 }

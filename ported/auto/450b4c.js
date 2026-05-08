@@ -45,7 +45,7 @@ export function FUN_00450b4c(heap) {
     if ((bVar1 != 0xff) && (iVar7 = bVar1 * 0x260, (heap.u32((__addr_DAT_00887422) + (bVar1 * 0x130) * 4) & 1) != 0)) {
       if ((heap.u32((__addr_DAT_008ae9c5) + (iVar11) * 4) & 1) == 0) {
         for (iVar6 = 0; iVar6 < heap.u32((byte)(__addr_DAT_00887498) + (iVar7) * 4); iVar6 = iVar6 + 1) {
-          if ((heap.u32((__addr_DAT_0088747e + iVar6 * 2 + iVar7)) != 0xffff) && (iVar9 = (uint) * (__addr_DAT_0088747e + iVar6 * 2 + iVar7) * 0x100, heap.u32((__addr_DAT_00743be4) + (iVar9) * 4) == '\x03')) {
+          if ((heap.u32((__addr_DAT_0088747e + iVar6 * 2 + iVar7)) != 0xffff) && (iVar9 = heap.u32((__addr_DAT_0088747e + iVar6 * 2 + iVar7)) * 0x100, heap.u32((__addr_DAT_00743be4) + (iVar9) * 4) == '\x03')) {
             heap.u32((__addr_DAT_008ae9ce) + (iVar11) * 4) = iVar6;
             heap.u32((__addr_DAT_008ae9cf) + (iVar11) * 4) = heap.u32((__addr_DAT_00743bdf) + (iVar9) * 4);
             heap.u32((__addr_DAT_008ae9c5) + (iVar11) * 4) = heap.u32((__addr_DAT_008ae9c5) + (iVar11) * 4) | 1;
@@ -54,10 +54,10 @@ export function FUN_00450b4c(heap) {
           }
         }
       } else {
-        LAB_00450bd4: uVar5 = heap.u32((__addr_DAT_0088747e + heap.u32((uint)(byte)(__addr_DAT_008ae9ce) + (iVar11) * 4) * 2 + iVar7));
+        LAB_00450bd4: uVar5 = heap.u32((__addr_DAT_0088747e + heap.u32((byte)(__addr_DAT_008ae9ce) + (iVar11) * 4) * 2 + iVar7));
         if (uVar5 != 0xffff) {
           iVar6 = uVar5 * 0x100;
-          uVar8 = heap.u32((uint)(ushort)(__addr_DAT_008ae9cc) + (uVar10 * 0x2586) * 4);
+          uVar8 = heap.u32((__addr_DAT_008ae9cc) + (uVar10 * 0x2586) * 4);
           if ((heap.u32((__addr_DAT_008ae9c5) + (iVar11) * 4) & 2) != 0) {
             if (heap.u32((__addr_DAT_00743be4) + (iVar6) * 4) != '\x03') {
               /* goto LAB_00450d74 */ throw new Error("goto LAB_00450d74 not supported");
@@ -108,10 +108,10 @@ export function FUN_00450b4c(heap) {
                 heap.u32((__addr_DAT_008b0f50) + (iVar11 + uVar8) * 4) = iVar7;
                 heap.u32((__addr_DAT_008b2210) + (iVar11 + uVar8) * 4) = uVar5;
               } else {
-                heap.u32((__addr_DAT_008b0f50) + (iVar11 + uVar8) * 4) = ((ushort)(iVar7 + heap.u32((ushort)(byte)(__addr_DAT_008b0f50) + (iVar11 + uVar8) * 4)) >>> 1);
-                heap.u32((__addr_DAT_008b2210) + (iVar11 + uVar8) * 4) = ((ushort)(uVar5 + heap.u32((byte)(__addr_DAT_008b2210) + (iVar11 + uVar8) * 4)) >>> 1);
+                heap.u32((__addr_DAT_008b0f50) + (iVar11 + uVar8) * 4) = ((iVar7 + heap.u32((byte)(__addr_DAT_008b0f50) + (iVar11 + uVar8) * 4)) >>> 1);
+                heap.u32((__addr_DAT_008b2210) + (iVar11 + uVar8) * 4) = ((uVar5 + heap.u32((byte)(__addr_DAT_008b2210) + (iVar11 + uVar8) * 4)) >>> 1);
               }
-              if (((heap.u32(0x006e3b84) & 1) != 0) && (uVar5 = uVar8 + 1, heap.u32((ushort)(__addr_DAT_008ae9ca) + (uVar10 * 0x2586) * 4) < uVar5)) {
+              if (((heap.u32(0x006e3b84) & 1) != 0) && (uVar5 = uVar8 + 1, heap.u32((__addr_DAT_008ae9ca) + (uVar10 * 0x2586) * 4) < uVar5)) {
                 heap.u32((__addr_DAT_008ae9ca) + (uVar10 * 0x2586) * 4) = uVar5;
               }
             }

@@ -40,7 +40,7 @@ export function FUN_005e1210(heap) {
         uVar4 = uVar4 + heap.u32(0x00971ee6);
         uVar2 = uVar1;
       } while (uVar4 <= uVar6);
-      if (((ushort)(uVar1 * heap.u32(0x00971ee2)) < heap.u32(0x00971eda)) && ((ushort)(uVar5 * heap.u32(0x00971ee4)) < heap.u32(0x00971edc))) {
+      if (((uVar1 * heap.u32(0x00971ee2)) < heap.u32(0x00971eda)) && ((uVar5 * heap.u32(0x00971ee4)) < heap.u32(0x00971edc))) {
         FUN_005e12eb(heap);
       }
     }

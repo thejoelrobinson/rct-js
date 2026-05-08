@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CARRY1 } from "../runtime/win32.js";
+import { CARRY1 } from "../runtime/ghidra-builtins.js";
 import { FUN_0042c711 } from "./42c711.js";
 import { FUN_004405f3 } from "./4405f3.js";
 import { FUN_00440fe3 } from "./440fe3.js";
@@ -116,13 +116,13 @@ export function FUN_00441a10(heap) {
           pbVar1 = (unaff_ESI + 0x3b);
           bVar5 = heap.u32(pbVar1);
           heap.u32(pbVar1) = heap.u32(pbVar1) + bVar4;
-          if (CARRY1(heap, bVar5, bVar4)) {
+          if (CARRY1(bVar5, bVar4)) {
             heap.u32((unaff_ESI + 0x3b)) = 0xff;
           }
           pbVar1 = (unaff_ESI + 0x3a);
           bVar5 = heap.u32(pbVar1);
           heap.u32(pbVar1) = heap.u32(pbVar1) + bVar4;
-          if (CARRY1(heap, bVar5, bVar4)) {
+          if (CARRY1(bVar5, bVar4)) {
             heap.u32((unaff_ESI + 0x3a)) = 0xff;
           }
         }
@@ -142,7 +142,7 @@ export function FUN_00441a10(heap) {
       pbVar1 = (unaff_ESI + 0x42);
       bVar4 = heap.u32(pbVar1);
       heap.u32(pbVar1) = heap.u32(pbVar1) + bVar5;
-      if (CARRY1(heap, bVar4, bVar5)) {
+      if (CARRY1(bVar4, bVar5)) {
         heap.u32((unaff_ESI + 0x42)) = 0xff;
       }
       if (uVar6 == '\x03') {
@@ -171,7 +171,7 @@ export function FUN_00441a10(heap) {
         heap.setU32(0x006293b0, (0xe8) >>> 0);
         heap.setU32(0x0099c167, ('$') >>> 0);
       }
-      uVar10 = (uint) * (__addr_DAT_0062d580 + uVar10 * 8);
+      uVar10 = heap.u32((__addr_DAT_0062d580 + uVar10 * 8));
       uVar8 = FUN_004429db(heap);
       heap.setU32(0x0099c167, (heap.u32(0x0099c167) + -4) >>> 0);
       if (heap.u32(0x006293ca) == '\0') {

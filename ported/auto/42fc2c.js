@@ -27,7 +27,7 @@ export function FUN_0042fc2c(heap) {
       FUN_0042f96d(heap);
       FUN_0042f98e(heap);
       FUN_00408387(heap, heap.u32(0x005f88a4));
-      uVar1 = (uint)(heap.u32(0x00656b3b) >>> 2);
+      uVar1 = (heap.u32(0x00656b3b) >>> 2);
       if (heap.u32(0x00656b3b) >>> 2 == 0) {
         return 0;
       }

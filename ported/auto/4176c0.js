@@ -19,7 +19,7 @@ export function FUN_004176c0(heap, param_1, param_2, param_3, param_4) {
     uVar1 = param_1;
     param_1 = param_1 / param_3;
     cVar3 = (uVar1 % param_3);
-    if ((uint)(uVar1 % param_3) < 10) {
+    if ((uVar1 % param_3) < 10) {
       cVar3 = cVar3 + '0';
     } else {
       cVar3 = cVar3 + 'W';

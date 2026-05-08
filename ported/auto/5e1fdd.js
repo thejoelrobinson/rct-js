@@ -51,7 +51,7 @@ export function FUN_005e1fdd(heap) {
       uVar3 = 0;
     }
     if (heap.u32(0x00971ed6) <= uVar3) {
-      uVar3 = (uint)(ushort)(heap.u32(0x00971ed6) - 1);
+      uVar3 = (heap.u32(0x00971ed6) - 1);
     }
     return uVar3;
   }

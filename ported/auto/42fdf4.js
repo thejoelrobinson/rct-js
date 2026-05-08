@@ -4,7 +4,8 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CARRY4, GetNextWindow } from "../runtime/win32.js";
+import { GetNextWindow } from "../runtime/win32.js";
+import { CARRY4 } from "../runtime/ghidra-builtins.js";
 import { FUN_00408387 } from "./408387.js";
 import { FUN_004083b5 } from "./4083b5.js";
 import { FUN_0040844b } from "./40844b.js";
@@ -87,7 +88,7 @@ export function FUN_0042fdf4(heap) {
       if (pHVar5 != 0xffffffff) {
         do {
           heap.setU32(0x005f9427, (pHVar5) >>> 0);
-          bVar12 = CARRY4(heap, uVar9, heap.u32(0x005f9307));
+          bVar12 = CARRY4(uVar9, heap.u32(0x005f9307));
           uVar9 = uVar9 + heap.u32(0x005f9307);
           iVar4 = iVar4 + heap.u32(0x005f9303) + bVar12;
           pHVar6 = GetNextWindow(heap, heap.u32(0x005f9427), 0x5f92e7);
@@ -129,7 +130,7 @@ export function FUN_0042fdf4(heap) {
   if (pHVar5 != 0xffffffff) {
     do {
       heap.setU32(0x005f9427, (pHVar5) >>> 0);
-      bVar12 = CARRY4(heap, heap.u32(0x0099fb70), heap.u32(0x005f9307));
+      bVar12 = CARRY4(heap.u32(0x0099fb70), heap.u32(0x005f9307));
       heap.setU32(0x0099fb70, (heap.u32(0x0099fb70) + heap.u32(0x005f9307)) >>> 0);
       heap.setU32(0x0099fb74, (heap.u32(0x0099fb74) + heap.u32(0x005f9303) + bVar12) >>> 0);
       pcVar7 = __addr_DAT_005f8fb3;

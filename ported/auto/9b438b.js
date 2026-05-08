@@ -4,7 +4,7 @@
 
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
-import { CONCAT11, CONCAT22 } from "../runtime/win32.js";
+import { CONCAT11, CONCAT22 } from "../runtime/ghidra-builtins.js";
 import { FUN_009b4457 } from "./9b4457.js";
 import { FUN_009b4660 } from "./9b4660.js";
 import { FUN_009b4911 } from "./9b4911.js";
@@ -70,7 +70,7 @@ export function FUN_009b438b(heap) {
     heap.setU32(0x009a2010, (pbVar9) >>> 0);
     heap.setU32(0x009a2014, (uVar3) >>> 0);
     if ((heap.u32(0x009a201c) & 4) != 0) {
-      uVar4 = CONCAT22(heap, sVar5, heap.u32(0x009a2016));
+      uVar4 = CONCAT22(sVar5, heap.u32(0x009a2016));
       heap.setU32(0x009a2020, (0) >>> 0);
       heap.setU32(0x009a202c, (heap.u32(0x009a2016)) >>> 0);
       sVar5 = (in_DX + sVar5) - heap.u32((unaff_EDI + 6));
@@ -92,7 +92,7 @@ export function FUN_009b438b(heap) {
       sVar2 = heap.u32(0x009a202c);
       sVar6 = (sVar5 + heap.u32(0x009a202c)) - heap.u32((unaff_EDI + 10));
       if ((sVar6 == 0 || (sVar5 + heap.u32(0x009a202c)) < heap.u32((unaff_EDI + 10))) || (heap.setU32(0x009a202c, (heap.u32(0x009a202c) - sVar6) >>> 0), heap.u32(0x009a202c) != 0 && sVar6 <= sVar2)) {
-        uVar4 = CONCAT22(heap, (uVar4 >>> 0x10), heap.u32(0x009a2014));
+        uVar4 = CONCAT22((uVar4 >>> 0x10), heap.u32(0x009a2014));
         heap.setU32(0x009a2024, (0) >>> 0);
         heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
         sVar5 = (in_CX + heap.u32(0x009a2018)) - heap.u32((unaff_EDI + 4));
@@ -120,7 +120,7 @@ export function FUN_009b438b(heap) {
       heap.setU32(0x009a2014, (uVar3) >>> 0);
       return uVar4;
     }
-    uVar4 = CONCAT22(heap, sVar5, heap.u32(0x009a2016));
+    uVar4 = CONCAT22(sVar5, heap.u32(0x009a2016));
     heap.setU32(0x009a202c, (heap.u32(0x009a2016)) >>> 0);
     uVar7 = (in_DX + sVar5) - heap.u32((unaff_EDI + 6));
     if (uVar7 < 0) {
@@ -131,17 +131,17 @@ export function FUN_009b438b(heap) {
       if (heap.u32(0x009a202c) == 0) {
         return uVar4;
       }
-      uVar4 = (uVar3 & 0xffff) * (uint)(ushort) - uVar7 & 0xffff;
+      uVar4 = (uVar3 & 0xffff) * -uVar7 & 0xffff;
       uVar7 = 0;
     } else {
-      uVar4 = (uint)(ushort)(heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 0xc))) * uVar7;
+      uVar4 = (heap.u32((unaff_EDI + 8)) + heap.u32((unaff_EDI + 0xc))) * uVar7;
     }
     sVar5 = heap.u32(0x009a202c);
     sVar2 = (uVar7 + heap.u32(0x009a202c)) - heap.u32((unaff_EDI + 10));
     if ((sVar2 == 0 || (uVar7 + heap.u32(0x009a202c)) < heap.u32((unaff_EDI + 10))) || (heap.setU32(0x009a202c, (heap.u32(0x009a202c) - sVar2) >>> 0), heap.u32(0x009a202c) != 0 && sVar2 <= sVar5)) {
       heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
       heap.setU32(0x009a2030, ((heap.u32((unaff_EDI + 8)) - heap.u32(0x009a2014)) + heap.u32((unaff_EDI + 0xc))) >>> 0);
-      uVar4 = CONCAT22(heap, (uVar4 >>> 0x10), heap.u32(0x009a2030));
+      uVar4 = CONCAT22((uVar4 >>> 0x10), heap.u32(0x009a2030));
       heap.setU32(0x009a202e, (0) >>> 0);
       sVar5 = (in_CX + heap.u32(0x009a2018)) - heap.u32((unaff_EDI + 4));
       if (sVar5 < 0) {
@@ -176,10 +176,10 @@ export function FUN_009b438b(heap) {
           uVar3 = bVar1;
           if (bVar1 < '\0') {
             pbVar10 = pbVar9 + 1;
-            sVar5 = sVar5 - (ushort)(byte) - (bVar1 >>> 3);
+            sVar5 = sVar5 - (byte) - (bVar1 >>> 3);
             pbVar9 = pbVar9 + 2;
-            pbVar10 = pbVar11 + -(uint)(CONCAT11(heap, bVar1, heap.u32(pbVar10)) & 0x7ff);
-            for (uVar3 = (uint)(byte) - (bVar1 >>> 3); uVar3 != 0; uVar3 = uVar3 - 1) {
+            pbVar10 = pbVar11 + -(CONCAT11(bVar1, heap.u32(pbVar10)) & 0x7ff);
+            for (uVar3 = (byte) - (bVar1 >>> 3); uVar3 != 0; uVar3 = uVar3 - 1) {
               heap.u32(pbVar11) = heap.u32(pbVar10);
               pbVar10 = pbVar10 + 1;
               pbVar11 = pbVar11 + 1;
@@ -232,10 +232,10 @@ export function FUN_009b438b(heap) {
   heap.setU32(0x009a2010, (pbVar9) >>> 0);
   heap.setU32(0x009a2014, (uVar3) >>> 0);
   if ((heap.u32(0x009a201c) & 4) != 0) {
-    uVar4 = CONCAT22(heap, sVar5, heap.u32(0x009a2016));
+    uVar4 = CONCAT22(sVar5, heap.u32(0x009a2016));
     heap.setU32(0x009a2020, (0) >>> 0);
     if ((uVar3 & 0x10000) != 0) {
-      uVar4 = CONCAT22(heap, sVar5, heap.u32(0x009a2016) + -1);
+      uVar4 = CONCAT22(sVar5, heap.u32(0x009a2016) + -1);
       if ((heap.u32(0x009a2016) + -1) == 0) {
         heap.setU32(0x009a2020, (0) >>> 0);
         return uVar4;
@@ -260,7 +260,7 @@ export function FUN_009b438b(heap) {
     sVar5 = heap.u32(0x009a202c);
     sVar2 = (uVar7 + heap.u32(0x009a202c)) - heap.u32((unaff_EDI + 10));
     if ((sVar2 == 0 || (uVar7 + heap.u32(0x009a202c)) < heap.u32((unaff_EDI + 10))) || (heap.setU32(0x009a202c, (heap.u32(0x009a202c) - sVar2) >>> 0), heap.u32(0x009a202c) != 0 && sVar2 <= sVar5)) {
-      uVar4 = CONCAT22(heap, (uVar4 >>> 0x10), heap.u32(0x009a2014));
+      uVar4 = CONCAT22((uVar4 >>> 0x10), heap.u32(0x009a2014));
       heap.setU32(0x009a2024, (0) >>> 0);
       heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
       sVar5 = (in_CX + heap.u32(0x009a2018) & 0xfffeU) - heap.u32((unaff_EDI + 4));
@@ -292,7 +292,7 @@ export function FUN_009b438b(heap) {
   if ((uVar3 & 0x10000) != 0) {
     sVar2 = heap.u32(0x009a2016) + -1;
   }
-  uVar4 = CONCAT22(heap, sVar5, sVar2);
+  uVar4 = CONCAT22(sVar5, sVar2);
   if (sVar2 != 0) {
     uVar7 = (in_DX + sVar5 & 0xfffeU) - heap.u32((unaff_EDI + 6));
     if (uVar7 < 0) {
@@ -303,10 +303,10 @@ export function FUN_009b438b(heap) {
       if (heap.u32(0x009a202c) == 0) {
         return uVar4;
       }
-      uVar4 = (uVar3 & 0xffff) * (uint)(ushort) - uVar7 & 0xffff;
+      uVar4 = (uVar3 & 0xffff) * -uVar7 & 0xffff;
       uVar7 = 0;
     } else {
-      uVar4 = (uint)(ushort)((heap.u32((unaff_EDI + 8)) >>> 1) + heap.u32((unaff_EDI + 0xc))) * (uint)(uVar7 >>> 1);
+      uVar4 = ((heap.u32((unaff_EDI + 8)) >>> 1) + heap.u32((unaff_EDI + 0xc))) * (uVar7 >>> 1);
       heap.setU32(0x009a202c, (sVar2) >>> 0);
     }
     sVar5 = heap.u32(0x009a202c);
@@ -314,7 +314,7 @@ export function FUN_009b438b(heap) {
     if ((sVar2 == 0 || (uVar7 + heap.u32(0x009a202c)) < heap.u32((unaff_EDI + 10))) || (heap.setU32(0x009a202c, (heap.u32(0x009a202c) - sVar2) >>> 0), heap.u32(0x009a202c) != 0 && sVar2 <= sVar5)) {
       heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
       heap.setU32(0x009a2030, ((heap.u32((unaff_EDI + 8)) >>> 1) + heap.u32((unaff_EDI + 0xc))) >>> 0);
-      uVar4 = CONCAT22(heap, (uVar4 >>> 0x10), heap.u32(0x009a2030));
+      uVar4 = CONCAT22((uVar4 >>> 0x10), heap.u32(0x009a2030));
       heap.setU32(0x009a202e, (0) >>> 0);
       sVar5 = (in_CX + heap.u32(0x009a2018) & 0xfffeU) - heap.u32((unaff_EDI + 4));
       if (sVar5 < 0) {
@@ -347,10 +347,10 @@ export function FUN_009b438b(heap) {
           uVar3 = bVar1;
           if (bVar1 < '\0') {
             pbVar10 = pbVar9 + 1;
-            sVar5 = sVar5 - (ushort)(byte) - (bVar1 >>> 3);
+            sVar5 = sVar5 - (byte) - (bVar1 >>> 3);
             pbVar9 = pbVar9 + 2;
-            pbVar10 = pbVar11 + -(uint)(CONCAT11(heap, bVar1, heap.u32(pbVar10)) & 0x7ff);
-            for (uVar3 = (uint)(byte) - (bVar1 >>> 3); uVar3 != 0; uVar3 = uVar3 - 1) {
+            pbVar10 = pbVar11 + -(CONCAT11(bVar1, heap.u32(pbVar10)) & 0x7ff);
+            for (uVar3 = (byte) - (bVar1 >>> 3); uVar3 != 0; uVar3 = uVar3 - 1) {
               heap.u32(pbVar11) = heap.u32(pbVar10);
               pbVar10 = pbVar10 + 1;
               pbVar11 = pbVar11 + 1;
