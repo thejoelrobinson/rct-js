@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DirectSoundCreate } from "../../runtime/win32.js";
+import { DirectSoundCreate, _memset } from "../../runtime/win32.js";
 import { FUN_00407f70 } from "./407f70.js";
 import { FUN_00407faf } from "./407faf.js";
 export function FUN_004072f0(heap, param_1, param_2, param_3, param_4, param_5) {
@@ -32,16 +32,16 @@ export function FUN_004072f0(heap, param_1, param_2, param_3, param_4, param_5) 
     }
     local_8 = param_2 * 0x210 + heap.u32(0x005ebf10);
   }
-  _memset(__addr_DAT_005f0380, 0, 0x12);
+  _memset(heap, __addr_DAT_005f0380, 0, 0x12);
   heap.setU32(0x005f0380, (1) >>> 0);
   heap.setU32(0x005f0382, (param_3) >>> 0);
   heap.setU32(0x005f0384, (param_4) >>> 0);
-  uVar1 = (param_3 * param_5 + (param_3 * param_5 >>> 0x1f & 7U)) >>> 3;
+  uVar1 = (param_3 * param_5 + (param_3 * param_5 >>> 0x1f & 7)) >>> 3;
   heap.setU32(0x005f038c, (uVar1) >>> 0);
   heap.setU32(0x005f0388, ((uVar1 & 0xffff) * param_4) >>> 0);
   heap.setU32(0x005f038e, (param_5) >>> 0);
   heap.setU32(0x005f0390, (0) >>> 0);
-  _memset(__addr_local_1c, 0, 0x14);
+  _memset(heap, __addr_local_1c, 0, 0x14);
   heap.setU32(__addr_local_1c, (0x14) >>> 0);
   local_14 = 0;
   local_c = 0;
@@ -79,16 +79,16 @@ export function FUN_004072f0(heap, param_1, param_2, param_3, param_4, param_5) 
       if ((iVar2 == 0) && (iVar2 = (heap.u32(heap.u32((heap.u32(heap.u32(__addr_DAT_005ec05c)) + 0xc))))(heap.u32(__addr_DAT_005ec05c), __addr_local_1c, __addr_DAT_005ec064, 0), iVar2 == 0)) {
         iVar2 = (heap.u32(heap.u32(heap.u32(heap.u32(__addr_DAT_005ec064)))))(heap.u32(__addr_DAT_005ec064), __addr_DAT_005e7cd0, __addr_DAT_005ec060);
         if (iVar2 == 0) {
-          _memset(heap.u32(0x005ec068), 0, 0x40);
-          heap.u32(heap.u32(0x005ec068)) = 0x40;
+          _memset(heap, heap.u32(0x005ec068), 0, 0x40);
+          heap.setU32(heap.u32(0x005ec068), (0x40) >>> 0);
           iVar2 = FUN_00407f70(heap);
           if (iVar2 != 0) {
-            heap.u32((heap.u32(0x005ec068) + 4)) = 0;
+            heap.setU32((heap.u32(0x005ec068) + 4), (0) >>> 0);
           }
-          heap.u32((heap.u32(0x005ec068) + 8)) = 0;
-          heap.u32((heap.u32(0x005ec068) + 4)) = 0xbf800000;
-          heap.u32((heap.u32(0x005ec068) + 0x3c)) = 0x411e6666;
-          heap.u32((heap.u32(0x005ec068) + 0x38)) = 0x3e800000;
+          heap.setU32((heap.u32(0x005ec068) + 8), (0) >>> 0);
+          heap.setU32((heap.u32(0x005ec068) + 4), (0xbf800000) >>> 0);
+          heap.setU32((heap.u32(0x005ec068) + 0x3c), (0x411e6666) >>> 0);
+          heap.setU32((heap.u32(0x005ec068) + 0x38), (0x3e800000) >>> 0);
           iVar2 = FUN_00407faf(heap);
           if (((iVar2 != 0) && (iVar2 = (heap.u32(heap.u32((heap.u32(heap.u32(__addr_DAT_005ec060)) + 0x44))))(heap.u32(__addr_DAT_005ec060)), iVar2 == 0)) && (iVar2 = FUN_00407f70(heap), iVar2 != 0)) {
             return 1;

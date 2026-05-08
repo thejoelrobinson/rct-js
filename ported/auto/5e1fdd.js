@@ -11,6 +11,7 @@ import { FUN_0042d60a } from "./42d60a.js";
 import { FUN_0042d637 } from "./42d637.js";
 export function FUN_005e1fdd(heap) {
   let sVar1 = 0;
+  let puVar2 = 0;
   let uVar3 = 0;
   if ((heap.u32(0x00991f30) >>> 5 & 1) == 0) {
     if (heap.u32(0x0099c16b) == '\x01') {

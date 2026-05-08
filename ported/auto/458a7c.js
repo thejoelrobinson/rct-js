@@ -6,6 +6,8 @@
 
 export function FUN_00458a7c(heap) {
   let bVar1 = 0;
+  let unaff_ESI = 0;
+  let pbVar2 = 0;
   while (true) {
     pbVar2 = unaff_ESI;
     bVar1 = heap.u32(pbVar2);

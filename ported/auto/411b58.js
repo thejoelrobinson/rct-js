@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FindResourceA, LoadResource, LockResource } from "../../runtime/win32.js";
+import { FindResourceA, LoadResource, LockResource, _lclose, _lopen, _lread } from "../../runtime/win32.js";
 export function FUN_00411b58(heap, param_1, param_2) {
   const __sp = heap.allocFrame(1048);
   const __addr_local_14 = __sp + 0;
@@ -17,22 +17,23 @@ export function FUN_00411b58(heap, param_1, param_2) {
   let local_44a = 0;
   let local_438 = 0;
   let local_420 = 0;
+  let local_1c = 0;
   let local_18 = 0;
   let local_10 = 0;
   let local_c = 0;
   let local_8 = 0;
   for (local_18 = 0; local_18 < 0x100; local_18 = local_18 + 1) {
-    heap.u32(__addr_local_41c + (local_18 * 4) * 4) = (((local_18 >>> 5 & 7) * 0xff) / 7);
-    heap.u32(__addr_local_41c + (local_18 * 4 + 1) * 4) = (((local_18 >>> 2 & 7) * 0xff) / 7);
-    heap.u32(__addr_local_41c + (local_18 * 4 + 2) * 4) = (((local_18 & 3) * 0xff) / 3);
-    heap.u32(__addr_local_41c + (local_18 * 4 + 3) * 4) = 0;
+    heap.setU32((__addr_local_41c + (local_18 * 4) * 4), ((((local_18 >>> 5 & 7) * 0xff) / 7)) >>> 0);
+    heap.setU32((__addr_local_41c + (local_18 * 4 + 1) * 4), ((((local_18 >>> 2 & 7) * 0xff) / 7)) >>> 0);
+    heap.setU32((__addr_local_41c + (local_18 * 4 + 2) * 4), ((((local_18 & 3) * 0xff) / 3)) >>> 0);
+    heap.setU32((__addr_local_41c + (local_18 * 4 + 3) * 4), (0) >>> 0);
   }
   if ((param_2 == 0x0) || (local_10 = FindResourceA(heap, 0x0, param_2, 0x2), local_10 == 0x0)) {
-    if ((param_2 != 0x0) && (local_c = _lopen(param_2, 0), local_c != -1)) {
-      _lread(local_c, __addr_local_430, 0xe);
-      _lread(local_c, __addr_local_458, 0x28);
-      _lread(local_c, __addr_local_41c, 0x400);
-      _lclose(local_c);
+    if ((param_2 != 0x0) && (local_c = _lopen(heap, param_2, 0), local_c != -1)) {
+      _lread(heap, local_c, __addr_local_430, 0xe);
+      _lread(heap, local_c, __addr_local_458, 0x28);
+      _lread(heap, local_c, __addr_local_41c, 0x400);
+      _lclose(heap, local_c);
       if (heap.u32(__addr_local_458 + (0) * 4) == 0x28) {
         if (local_44a < 9) {
           if (local_438 == 0) {
@@ -48,8 +49,8 @@ export function FUN_00411b58(heap, param_1, param_2) {
       }
       for (local_18 = 0; local_18 < local_420; local_18 = local_18 + 1) {
         uVar1 = heap.u32(__addr_local_41c + (local_18 * 4) * 4);
-        heap.u32(__addr_local_41c + (local_18 * 4) * 4) = heap.u32(__addr_local_41c + (local_18 * 4 + 2) * 4);
-        heap.u32(__addr_local_41c + (local_18 * 4 + 2) * 4) = uVar1;
+        heap.setU32((__addr_local_41c + (local_18 * 4) * 4), (heap.u32(__addr_local_41c + (local_18 * 4 + 2) * 4)) >>> 0);
+        heap.setU32((__addr_local_41c + (local_18 * 4 + 2) * 4), (uVar1) >>> 0);
       }
     }
   } else {
@@ -70,10 +71,10 @@ export function FUN_00411b58(heap, param_1, param_2) {
     }
     }
     for (local_18 = 0; local_18 < local_420; local_18 = local_18 + 1) {
-      heap.u32(__addr_local_41c + (local_18 * 4) * 4) = heap.u32((local_8 + 2 + local_18 * 4));
-      heap.u32(__addr_local_41c + (local_18 * 4 + 1) * 4) = heap.u32((local_8 + 1 + local_18 * 4));
-      heap.u32(__addr_local_41c + (local_18 * 4 + 2) * 4) = heap.u32((local_8 + local_18 * 4));
-      heap.u32(__addr_local_41c + (local_18 * 4 + 3) * 4) = 0;
+      heap.setU32((__addr_local_41c + (local_18 * 4) * 4), (heap.u32((local_8 + 2 + local_18 * 4))) >>> 0);
+      heap.setU32((__addr_local_41c + (local_18 * 4 + 1) * 4), (heap.u32((local_8 + 1 + local_18 * 4))) >>> 0);
+      heap.setU32((__addr_local_41c + (local_18 * 4 + 2) * 4), (heap.u32((local_8 + local_18 * 4))) >>> 0);
+      heap.setU32((__addr_local_41c + (local_18 * 4 + 3) * 4), (0) >>> 0);
     }
   }
   (heap.u32(heap.u32((heap.u32(param_1) + 0x14))))(param_1, 4, __addr_local_41c, __addr_local_14, 0);

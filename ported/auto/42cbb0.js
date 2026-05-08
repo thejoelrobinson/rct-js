@@ -14,14 +14,15 @@ export function FUN_0042cbb0(heap) {
   let in_EAX = 0;
   let in_ECX = 0;
   let in_EDX = 0;
+  let pcVar1 = 0;
   for (pcVar1 = __addr_DAT_008d7eb8; heap.u32(pcVar1) != '\0'; pcVar1 = pcVar1 + 0x10c) {
-    if (((in_EAX == heap.u32(pcVar1)) && (in_ECX == heap.u32((pcVar1 + 2)))) && (heap.u32(pcVar1 + (1) * 4) = heap.u32(pcVar1 + (1) * 4) | 1, pcVar1 == __addr_DAT_008d7eb8)) {
+    if (((in_EAX == heap.u32(pcVar1)) && (in_ECX == heap.u32((pcVar1 + 2)))) && (heap.setU32((pcVar1 + (1) * 4), (heap.u32(pcVar1 + (1) * 4) | 1) >>> 0), pcVar1 == __addr_DAT_008d7eb8)) {
       FUN_005e5301(heap);
     }
   }
   for (pcVar1 = __addr_DAT_008d8a3c; heap.u32(pcVar1) != '\0'; pcVar1 = pcVar1 + 0x10c) {
     if ((in_EAX == heap.u32(pcVar1)) && (in_ECX == heap.u32((pcVar1 + 2)))) {
-      heap.u32(pcVar1 + (1) * 4) = heap.u32(pcVar1 + (1) * 4) | 1;
+      heap.setU32((pcVar1 + (1) * 4), (heap.u32(pcVar1 + (1) * 4) | 1) >>> 0);
       FUN_005e5301(heap);
     }
   }

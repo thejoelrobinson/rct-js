@@ -11,6 +11,7 @@ export function FUN_00431636(heap) {
   let in_EDX = 0;
   let unaff_BX = 0;
   let unaff_BP = 0;
+  let unaff_ESI = 0;
   let sVar1 = 0;
   if ((((heap.u32(unaff_ESI + (2) * 4) < in_EDX) && (heap.u32(unaff_ESI + (3) * 4) < unaff_BP)) && (in_EAX < (heap.u32(unaff_ESI + (2) * 4) + heap.u32(unaff_ESI)))) && (sVar1 = heap.u32(unaff_ESI + (3) * 4) + heap.u32(unaff_ESI + (1) * 4), unaff_BX < sVar1)) {
     if (unaff_BX < heap.u32(unaff_ESI + (3) * 4)) {

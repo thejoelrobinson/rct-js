@@ -45,7 +45,7 @@ export function FUN_0042f4be(heap) {
       FUN_0042f98e(heap);
       FUN_00408387(heap, heap.u32(0x005f88a4));
       sVar2 = FUN_004314ed(heap);
-      if ((((-sVar2 == heap.u32(0x0087d7a2)) && ((0x1f < heap.u32(0x008dbed2) || ((heap.u32((byte)(__addr_DAT_0099fb78) + (heap.u32(0x008dbed2) >>> 3) * 4) >>> (heap.u32(0x008dbed2) & 7) & 1) == 0)))) && ((4 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0xf4241)))) && ((((8 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x4c4b41)) && ((0x10 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x7270e1)))) && ((0x50 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x2faf081)))))) {
+      if ((((-sVar2 == heap.u32(0x0087d7a2)) && ((0x1f < heap.u32(0x008dbed2) || ((heap.u32((__addr_DAT_0099fb78) + (heap.u32(0x008dbed2) >>> 3) * 4) >>> (heap.u32(0x008dbed2) & 7) & 1) == 0)))) && ((4 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0xf4241)))) && ((((8 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x4c4b41)) && ((0x10 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x7270e1)))) && ((0x50 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x2faf081)))))) {
         FUN_00436558(heap);
         FUN_00444b4a(heap);
         if (heap.u32(0x0087c81c) < 0) {
@@ -61,15 +61,15 @@ export function FUN_0042f4be(heap) {
         heap.setU32(0x006e3cf0, (heap.u32(0x008ad1c2)) >>> 0);
         heap.setU32(0x006e3cf2, (heap.u32(0x008ad1c4)) >>> 0);
         bVar4 = heap.u32(0x008ad1c6) - heap.u32((heap.u32(0x006e3b88) + 0x10));
-        heap.u32((heap.u32(0x006e3b88) + 0x10)) = heap.u32(0x008ad1c6);
-        heap.u8(0x991f88) = (undefined1)(uVar1 >>> 8);
+        heap.setU32((heap.u32(0x006e3b88) + 0x10), (heap.u32(0x008ad1c6)) >>> 0);
+        (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0042f4be"); })();
         if (bVar4 != 0) {
           if (bVar4 < '\0') {
-            heap.u32((iVar3 + 0xc)) = heap.u32((iVar3 + 0xc)) >>> (-bVar4 & 0x1f);
-            heap.u32((iVar3 + 0xe)) = heap.u32((iVar3 + 0xe)) >>> (-bVar4 & 0x1f);
+            heap.setU32((iVar3 + 0xc), (heap.u32((iVar3 + 0xc)) >>> (-bVar4 & 0x1f)) >>> 0);
+            heap.setU32((iVar3 + 0xe), (heap.u32((iVar3 + 0xe)) >>> (-bVar4 & 0x1f)) >>> 0);
           } else {
-            heap.u32((iVar3 + 0xc)) = heap.u32((iVar3 + 0xc)) << (bVar4 & 0x1f);
-            heap.u32((iVar3 + 0xe)) = heap.u32((iVar3 + 0xe)) << (bVar4 & 0x1f);
+            heap.setU32((iVar3 + 0xc), (heap.u32((iVar3 + 0xc)) << (bVar4 & 0x1f)) >>> 0);
+            heap.setU32((iVar3 + 0xe), (heap.u32((iVar3 + 0xe)) << (bVar4 & 0x1f)) >>> 0);
           }
         }
         heap.setU32(0x006e3cf0, (heap.u32(0x006e3cf0) - (heap.u32((iVar3 + 0xc)) >>> 1)) >>> 0);

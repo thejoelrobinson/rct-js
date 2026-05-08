@@ -1,5 +1,5 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/0.c
+// Source: decompiled/c/412e80.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
@@ -17,7 +17,7 @@ import { FUN_00414940 } from "./414940.js";
 import { FUN_00414f80 } from "./414f80.js";
 import { FUN_00414f90 } from "./414f90.js";
 import { FUN_00415190 } from "./415190.js";
-export function entry(heap) {
+export function FUN_00412e80(heap) {
   const __sp = heap.allocFrame(144);
   const __addr_DAT_005e7390 = __sp + 0;
   const __addr_LAB_00413268 = __sp + 4;
@@ -30,8 +30,13 @@ export function entry(heap) {
   let iVar3 = 0;
   let uVar4 = 0;
   let pHVar5 = 0;
+  let pbVar6 = 0;
   let uVar8 = 0;
+  let local_1c = 0;
+  let puStack_10 = 0;
+  let puStack_c = 0;
   let local_8 = 0;
+  let pbVar7 = 0;
   local_8 = 0xffffffff;
   puStack_c = __addr_DAT_005e7390;
   puStack_10 = __addr_LAB_00413268;
@@ -83,7 +88,7 @@ export function entry(heap) {
   for (; (heap.u32(pbVar6) != 0 && (heap.u32(pbVar6) < 0x21)); pbVar6 = pbVar6 + 1) {
   
   }
-  heap.u32((__addr_local_60 + 4)) = 0;
+  heap.setU32((__addr_local_60 + 4), (0) >>> 0);
   GetStartupInfoA(heap, __addr_local_60);
   if ((heap.u32((__addr_local_60 + 4)) & 1) == 0) {
     uVar4 = 10;

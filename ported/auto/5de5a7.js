@@ -21,9 +21,9 @@ export function FUN_005de5a7(heap) {
   if (bVar1) {
     FUN_005dde9c(heap);
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_006e1d40;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x2fff4;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x3c0000;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_006e1d40) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x2fff4) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x3c0000) >>> 0);
     FUN_005e412c(heap);
     FUN_005ded48(heap);
     FUN_00424db7(heap);

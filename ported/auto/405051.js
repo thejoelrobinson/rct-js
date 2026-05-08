@@ -26,6 +26,8 @@ export function FUN_00405051(heap, param_1, param_2, param_3, param_4, param_5) 
   let LVar1 = 0;
   let uVar2 = 0;
   let iVar3 = 0;
+  let pcVar4 = 0;
+  let puVar5 = 0;
   let local_48 = 0;
   let local_47 = 0;
   let local_43 = 0;
@@ -43,15 +45,15 @@ export function FUN_00405051(heap, param_1, param_2, param_3, param_4, param_5) 
   heap.setU32(__addr_local_d4, (heap.u32(0x005ebd24)) >>> 0);
   puVar5 = __addr_local_d3;
   for (iVar3 = 0x1f; iVar3 != 0; iVar3 = iVar3 + -1) {
-    heap.u32(puVar5) = 0;
+    heap.setU32(puVar5, (0) >>> 0);
     puVar5 = puVar5 + 1;
   }
-  heap.u32(puVar5) = 0;
-  heap.u32((puVar5 + 2)) = 0;
+  heap.setU32(puVar5, (0) >>> 0);
+  heap.setU32((puVar5 + 2), (0) >>> 0);
   pcVar4 = 0x005ebd28;
   puVar5 = __addr_local_38;
   for (iVar3 = 5; iVar3 != 0; iVar3 = iVar3 + -1) {
-    heap.u32(puVar5) = heap.u32(pcVar4);
+    heap.setU32(puVar5, (heap.u32(pcVar4)) >>> 0);
     pcVar4 = pcVar4 + 4;
     puVar5 = puVar5 + 1;
   }

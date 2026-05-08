@@ -12,6 +12,7 @@ export function FUN_004364c2(heap) {
   let in_CX = 0;
   let in_DX = 0;
   let uVar1 = 0;
+  let psVar2 = 0;
   uVar1 = heap.u32(0x008ae938);
   psVar2 = __addr_DAT_008ad1c8;
   if (uVar1 != 0) {
@@ -27,9 +28,9 @@ export function FUN_004364c2(heap) {
     } while (uVar1 != 0);
   }
   heap.setU32(0x008ae938, (heap.u32(0x008ae938) + 1) >>> 0);
-  heap.u32(psVar2 + (1) * 4) = in_AX;
-  heap.u32(psVar2 + (2) * 4) = in_CX;
-  heap.u32(psVar2) = in_DX;
+  heap.setU32((psVar2 + (1) * 4), (in_AX) >>> 0);
+  heap.setU32((psVar2 + (2) * 4), (in_CX) >>> 0);
+  heap.setU32(psVar2, (in_DX) >>> 0);
   return;
 } finally {
     heap.freeFrame(4);

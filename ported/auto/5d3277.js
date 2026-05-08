@@ -10,11 +10,14 @@ export function FUN_005d3277(heap) {
   const __addr_DAT_00971ef4 = __sp + 0;
   const __addr_DAT_006559d8 = __sp + 4;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let in_EDX = 0;
   let uVar3 = 0;
   let uVar4 = 0;
   let uVar5 = 0;
+  let puVar6 = 0;
+  let puVar7 = 0;
   puVar6 = 0xffffffff;
   uVar4 = 0;
   uVar3 = in_EDX & 0x7fffffff;

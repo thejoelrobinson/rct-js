@@ -16,6 +16,7 @@ export function FUN_005ddbe1(heap) {
   let bVar1 = 0;
   let in_AH = 0;
   let cVar2 = 0;
+  let pcVar3 = 0;
   let uVar4 = 0;
   uVar4 = in_AL;
   bVar1 = 1;
@@ -37,11 +38,11 @@ export function FUN_005ddbe1(heap) {
         cVar2 = heap.u32((__addr_DAT_005f6b12) + (uVar4 * 4) * 4);
       }
     }
-    heap.u32(pcVar3) = cVar2;
+    heap.setU32(pcVar3, (cVar2) >>> 0);
     pcVar3 = pcVar3 + 1;
     bVar1 = bVar1 + 1;
   } while (bVar1 <= in_AH);
-  heap.u32(pcVar3) = -1;
+  heap.setU32(pcVar3, (-1) >>> 0);
   return;
 } finally {
     heap.freeFrame(20);

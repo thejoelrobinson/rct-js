@@ -9,9 +9,9 @@ export function FUN_005e18ae(heap) {
   let unaff_BX = 0;
   let unaff_ESI = 0;
   if ((heap.u32((unaff_ESI + 0x16e)) == -1) && ((heap.u32((unaff_ESI + 0x32)) & 4) == 0)) {
-    heap.u32((unaff_ESI + 0x170)) = in_AX;
-    heap.u32((unaff_ESI + 0x172)) = unaff_BX;
-    heap.u32((unaff_ESI + 0x32)) = heap.u32((unaff_ESI + 0x32)) | 8;
+    heap.setU32((unaff_ESI + 0x170), (in_AX) >>> 0);
+    heap.setU32((unaff_ESI + 0x172), (unaff_BX) >>> 0);
+    heap.setU32((unaff_ESI + 0x32), (heap.u32((unaff_ESI + 0x32)) | 8) >>> 0);
   }
   return;
 }

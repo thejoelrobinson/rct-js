@@ -13,7 +13,7 @@ export function FUN_0042c6f3(heap) {
   heap.setU32(0x008d8a3c, (0) >>> 0);
   uVar1 = 0;
   do {
-    heap.u32((__addr_DAT_0087d728) + (uVar1) * 4) = 0;
+    heap.setU32(((__addr_DAT_0087d728) + (uVar1) * 4), (0) >>> 0);
     uVar1 = uVar1 + 1;
   } while (uVar1 < 0x10);
   return;

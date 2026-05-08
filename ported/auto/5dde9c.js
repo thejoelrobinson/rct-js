@@ -12,7 +12,11 @@ export function FUN_005dde9c(heap) {
   const __addr_DAT_006e1d80 = __sp + 8;
   try {
   let uVar1 = 0;
+  let psVar2 = 0;
   let sVar3 = 0;
+  let puVar4 = 0;
+  let puVar5 = 0;
+  let puVar6 = 0;
   let uVar7 = 0;
   uVar7 = 0;
   do {
@@ -24,12 +28,12 @@ export function FUN_005dde9c(heap) {
         break;
       }
       if ((heap.u32(((uVar1 >>> 5) * 4 + 0x87cba8 + ((uVar1 & 0x1f) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
-        heap.u32(puVar4) = uVar1;
+        heap.setU32(puVar4, (uVar1) >>> 0);
         puVar4 = puVar4 + 1;
       }
       puVar5 = puVar5 + 1;
     }
-    heap.u32(puVar4) = 0xffff;
+    heap.setU32(puVar4, (0xffff) >>> 0);
     uVar7 = uVar7 + 1;
   } while (uVar7 < 0xc);
   uVar7 = 0;
@@ -37,11 +41,11 @@ export function FUN_005dde9c(heap) {
   sVar3 = 4;
   do {
     psVar2 = heap.u32((__addr_PTR_DAT_006e2788) + (uVar7) * 4);
-    heap.u32(puVar6) = 0;
+    heap.setU32(puVar6, (0) >>> 0);
     if (heap.u32(psVar2) != -1) {
-      heap.u32(puVar6) = 5;
-      heap.u32((puVar6 + 2)) = sVar3;
-      heap.u32((puVar6 + 4)) = sVar3 + 0x22;
+      heap.setU32(puVar6, (5) >>> 0);
+      heap.setU32((puVar6 + 2), (sVar3) >>> 0);
+      heap.setU32((puVar6 + 4), (sVar3 + 0x22) >>> 0);
       sVar3 = sVar3 + 0x23;
     }
     uVar7 = uVar7 + 1;

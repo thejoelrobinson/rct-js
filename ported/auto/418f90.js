@@ -9,8 +9,8 @@ export function FUN_00418f90(heap, param_1) {
   let uVar2 = 0;
   uVar1 = heap.u32(param_1);
   uVar2 = heap.u32(param_1 + (1) * 4);
-  heap.u32(param_1) = uVar1 * 2;
-  heap.u32(param_1 + (1) * 4) = uVar2 * 2 | uVar1 >>> 0x1f;
-  heap.u32(param_1 + (2) * 4) = heap.u32(param_1 + (2) * 4) << 1 | uVar2 >>> 0x1f;
+  heap.setU32(param_1, (uVar1 * 2) >>> 0);
+  heap.setU32((param_1 + (1) * 4), (uVar2 * 2 | uVar1 >>> 0x1f) >>> 0);
+  heap.setU32((param_1 + (2) * 4), (heap.u32(param_1 + (2) * 4) << 1 | uVar2 >>> 0x1f) >>> 0);
   return;
 }

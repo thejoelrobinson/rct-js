@@ -1,11 +1,11 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/0.c
+// Source: decompiled/c/417d90.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CARRY4, CONCAT44 } from "../../runtime/ghidra-builtins.js";
-export function __aulldiv(heap, param_1, param_2, param_3, param_4) {
+export function FUN_00417d90(heap, param_1, param_2, param_3, param_4) {
   let uVar1 = 0;
   let lVar2 = 0;
   let uVar3 = 0;

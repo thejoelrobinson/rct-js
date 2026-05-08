@@ -17,14 +17,14 @@ export function FUN_00440659(heap) {
   FUN_005e5fcb(heap);
   if (bVar1) {
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_006291b0;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 500;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_006291b0) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 500) >>> 0);
     FUN_005e412c(heap);
     heap.setU32(0x0062d2fc, (0xffff) >>> 0);
-    heap.u32((unaff_ESI + 0x16a)) = 0;
+    heap.setU32((unaff_ESI + 0x16a), (0) >>> 0);
     heap.setU32(0x0062d2fe, (0) >>> 0);
     heap.setU32(0x0062d2fa, (0xff) >>> 0);
-    heap.u32((unaff_ESI + 0x16c)) = 0;
+    heap.setU32((unaff_ESI + 0x16c), (0) >>> 0);
   }
   return;
 } finally {

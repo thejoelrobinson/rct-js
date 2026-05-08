@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { ram0x00971e88 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT44, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_00441ffd } from "./441ffd.js";
 export function FUN_00442079(heap) {

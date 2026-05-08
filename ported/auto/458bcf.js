@@ -4,7 +4,6 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FUN_00458bcf } from "./458bcf.js";
 import { FUN_00458f0f } from "./458f0f.js";
 import { FUN_00458f25 } from "./458f25.js";
 import { FUN_00458f53 } from "./458f53.js";
@@ -28,15 +27,40 @@ export function FUN_00458bcf(heap) {
   try {
   let uVar1 = 0;
   let uVar2 = 0;
+  let pbVar3 = 0;
   let bVar4 = 0;
   let in_EAX = 0;
+  let pbVar5 = 0;
   let uVar6 = 0;
+  let in_ECX = 0;
+  let extraout_ECX = 0;
+  let extraout_ECX_00 = 0;
+  let extraout_ECX_01 = 0;
+  let extraout_ECX_02 = 0;
+  let extraout_ECX_03 = 0;
+  let extraout_ECX_04 = 0;
+  let extraout_ECX_05 = 0;
+  let extraout_ECX_06 = 0;
+  let extraout_ECX_07 = 0;
+  let extraout_ECX_08 = 0;
+  let extraout_ECX_09 = 0;
+  let extraout_ECX_10 = 0;
+  let extraout_ECX_11 = 0;
+  let extraout_ECX_12 = 0;
+  let extraout_ECX_13 = 0;
+  let extraout_ECX_14 = 0;
+  let extraout_ECX_15 = 0;
+  let ppuVar7 = 0;
+  let pcVar8 = 0;
+  let pbVar9 = 0;
+  let pbVar10 = 0;
+  let unaff_EDI = 0;
   if (0x7fff < in_EAX) {
     if (in_EAX < 0x9000) {
-      pbVar5 = __addr_DAT_0087f41c + (in_EAX - 0x8000U & 0xfffff3ff) * 0x20;
+      pbVar5 = __addr_DAT_0087f41c + (in_EAX - 0x8000 & 0xfffff3ff) * 0x20;
       do {
         bVar4 = heap.u32(pbVar5);
-        heap.u32(unaff_EDI) = bVar4;
+        heap.setU32(unaff_EDI, (bVar4) >>> 0);
         pbVar5 = pbVar5 + 1;
         unaff_EDI = unaff_EDI + 1;
       } while (bVar4 != 0);
@@ -53,31 +77,31 @@ export function FUN_00458bcf(heap) {
       break;
     }
     if (bVar4 == 0) {
-      heap.u32(unaff_EDI) = 0;
+      heap.setU32(unaff_EDI, (0) >>> 0);
       return;
     }
     if (bVar4 < 5) {
-      LAB_00458c4a: heap.u32(unaff_EDI) = bVar4;
+      LAB_00458c4a: heap.setU32(unaff_EDI, (bVar4) >>> 0);
       unaff_EDI = unaff_EDI + 1;
       bVar4 = heap.u32(pbVar10);
       pbVar10 = pbVar10 + 1;
     } else {
       if (0x10 < bVar4) {
       if (0x16 < bVar4) {
-        heap.u32(unaff_EDI) = bVar4;
-        heap.u32(unaff_EDI + (1) * 4) = heap.u32(pbVar10);
+        heap.setU32(unaff_EDI, (bVar4) >>> 0);
+        heap.setU32((unaff_EDI + (1) * 4), (heap.u32(pbVar10)) >>> 0);
         unaff_EDI = unaff_EDI + 2;
         bVar4 = heap.u32(pbVar5 + (2) * 4);
         pbVar10 = pbVar5 + 3;
       }
-      heap.u32(unaff_EDI) = bVar4;
+      heap.setU32(unaff_EDI, (bVar4) >>> 0);
       unaff_EDI = unaff_EDI + 1;
       bVar4 = heap.u32(pbVar10);
       pbVar10 = pbVar10 + 1;
       /* goto LAB_00458c4a */ throw new Error("goto LAB_00458c4a not supported");
     }
     }
-    heap.u32(unaff_EDI) = bVar4;
+    heap.setU32(unaff_EDI, (bVar4) >>> 0);
     unaff_EDI = unaff_EDI + 1;
     pbVar5 = pbVar10;
   }
@@ -134,7 +158,7 @@ export function FUN_00458bcf(heap) {
       do {
         unaff_EDI = pbVar3;
         bVar4 = heap.u32(pbVar9);
-        heap.u32(unaff_EDI) = bVar4;
+        heap.setU32(unaff_EDI, (bVar4) >>> 0);
         pbVar9 = pbVar9 + 1;
         pbVar5 = pbVar10;
         pbVar3 = unaff_EDI + 1;
@@ -179,7 +203,7 @@ export function FUN_00458bcf(heap) {
         do {
           unaff_EDI = pbVar5;
           bVar4 = heap.u32(pbVar9);
-          heap.u32(unaff_EDI) = bVar4;
+          heap.setU32(unaff_EDI, (bVar4) >>> 0);
           pbVar9 = pbVar9 + 1;
           pbVar5 = unaff_EDI + 1;
         } while (bVar4 != 0);
@@ -202,7 +226,7 @@ export function FUN_00458bcf(heap) {
         do {
           unaff_EDI = pbVar5;
           bVar4 = heap.u32(pcVar8);
-          heap.u32(unaff_EDI) = bVar4;
+          heap.setU32(unaff_EDI, (bVar4) >>> 0);
           pcVar8 = pcVar8 + 1;
           pbVar5 = unaff_EDI + 1;
         } while (bVar4 != 0);
@@ -226,10 +250,10 @@ export function FUN_00458bcf(heap) {
       }
       break;
     case 0x8d:
-      heap.u32(unaff_EDI) = 0x17;
+      heap.setU32(unaff_EDI, (0x17) >>> 0);
       uVar1 = heap.u32(in_ECX);
       in_ECX = in_ECX + 2;
-      heap.u32((unaff_EDI + 1)) = uVar1;
+      heap.setU32((unaff_EDI + 1), (uVar1) >>> 0);
       unaff_EDI = unaff_EDI + 5;
       pbVar5 = pbVar10;
       /* goto FUN_00458c14 */ throw new Error("goto FUN_00458c14 not supported");
@@ -239,13 +263,13 @@ export function FUN_00458bcf(heap) {
   do {
     unaff_EDI = pbVar9;
     bVar4 = heap.u32(ppuVar7);
-    heap.u32(unaff_EDI) = bVar4;
+    heap.setU32(unaff_EDI, (bVar4) >>> 0);
     ppuVar7 = (ppuVar7 + 1);
     pbVar5 = pbVar10;
     pbVar9 = unaff_EDI + 1;
   } while (bVar4 != 0);
   /* goto FUN_00458c14 */ throw new Error("goto FUN_00458c14 not supported");
-  switchD_00458c5d_default: heap.u32(unaff_EDI) = bVar4;
+  switchD_00458c5d_default: heap.setU32(unaff_EDI, (bVar4) >>> 0);
   unaff_EDI = unaff_EDI + 1;
   pbVar5 = pbVar10;
   /* goto FUN_00458c14 */ throw new Error("goto FUN_00458c14 not supported");

@@ -37,13 +37,13 @@ export function FUN_004015f0(heap, param_1, param_2, param_3, param_4) {
       param_4 = heap.u32(0x005f1b34);
     }
     if ((0 < param_3 - param_1) && (0 < param_4 - param_2)) {
-      iVar1 = (param_1 + (param_1 >>> 0x1f & 0x3fU)) >>> 6;
-      iVar2 = (param_2 + (param_2 >>> 0x1f & 7U)) >>> 3;
+      iVar1 = (param_1 + (param_1 >>> 0x1f & 0x3f)) >>> 6;
+      iVar2 = (param_2 + (param_2 >>> 0x1f & 7)) >>> 3;
       local_30 = iVar2 * 0x14 + iVar1;
-      iVar1 = (((param_3 + (param_3 >>> 0x1f & 0x3fU)) >>> 6) - iVar1) + 1;
-      for (local_24 = 0; local_24 < (((param_4 + (param_4 >>> 0x1f & 7U)) >>> 3) - iVar2) + 1; local_24 = local_24 + 1) {
+      iVar1 = (((param_3 + (param_3 >>> 0x1f & 0x3f)) >>> 6) - iVar1) + 1;
+      for (local_24 = 0; local_24 < (((param_4 + (param_4 >>> 0x1f & 7)) >>> 3) - iVar2) + 1; local_24 = local_24 + 1) {
         for (local_14 = 0; local_14 < iVar1; local_14 = local_14 + 1) {
-          heap.u32((__addr_DAT_005f2420) + (local_30) * 4) = 1;
+          heap.setU32(((__addr_DAT_005f2420) + (local_30) * 4), (1) >>> 0);
           local_30 = local_30 + 1;
           heap.setU32(0x005e9158, (heap.u32(0x005e9158) + 1) >>> 0);
         }

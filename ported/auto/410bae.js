@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { _memset } from "../../runtime/win32.js";
 import { FUN_00410a33 } from "./410a33.js";
 import { FUN_00410b34 } from "./410b34.js";
 export function FUN_00410bae(heap) {
@@ -17,7 +18,7 @@ export function FUN_00410bae(heap) {
   let local_70 = 0;
   if (heap.u32(0x005ec158) != 0x0) {
     FUN_00410b34(heap);
-    _memset(__addr_local_80, 0, 0x7c);
+    _memset(heap, __addr_local_80, 0, 0x7c);
     heap.setU32(__addr_local_80, (0x7c) >>> 0);
     local_7c = heap.u32(0x005e9048);
     local_78 = heap.u32(0x005e904c);

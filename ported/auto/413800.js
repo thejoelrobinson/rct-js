@@ -1,12 +1,14 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/0.c
+// Source: decompiled/c/413800.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-export function _strrchr(heap, _Str, _Ch) {
+export function FUN_00413800(heap, _Str, _Ch) {
   let cVar1 = 0;
   let iVar2 = 0;
+  let pcVar3 = 0;
+  let pcVar4 = 0;
   iVar2 = -1;
   do {
     pcVar4 = _Str;

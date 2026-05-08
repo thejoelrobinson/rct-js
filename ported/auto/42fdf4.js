@@ -37,7 +37,13 @@ export function FUN_0042fdf4(heap) {
   let sVar2 = 0;
   let uVar3 = 0;
   let iVar4 = 0;
+  let pHVar5 = 0;
+  let pHVar6 = 0;
+  let pcVar7 = 0;
+  let pcVar8 = 0;
   let uVar9 = 0;
+  let puVar10 = 0;
+  let pcVar11 = 0;
   let bVar12 = 0;
   let uVar13 = 0;
   pcVar7 = __addr_DAT_005f8fb3;
@@ -45,14 +51,14 @@ export function FUN_0042fdf4(heap) {
   do {
     pcVar11 = pcVar8;
     cVar1 = heap.u32(pcVar7);
-    heap.u32(pcVar11) = cVar1;
+    heap.setU32(pcVar11, (cVar1) >>> 0);
     pcVar7 = pcVar7 + 1;
     pcVar8 = pcVar11 + 1;
   } while (cVar1 != '*');
   pcVar8 = __addr_DAT_005f92e0;
   do {
     cVar1 = heap.u32(pcVar8);
-    heap.u32(pcVar11) = cVar1;
+    heap.setU32(pcVar11, (cVar1) >>> 0);
     pcVar8 = pcVar8 + 1;
     pcVar11 = pcVar11 + 1;
   } while (cVar1 != '\0');
@@ -106,20 +112,20 @@ export function FUN_0042fdf4(heap) {
   }
   LAB_0042ff47: uVar9 = 0;
   do {
-    heap.u32((__addr_DAT_0099e96c) + (uVar9) * 4) = 0x80000000;
+    heap.setU32(((__addr_DAT_0099e96c) + (uVar9) * 4), (0x80000000) >>> 0);
     uVar9 = uVar9 + 1;
   } while (uVar9 < 0x80);
   puVar10 = __addr_DAT_0099eb6c;
   iVar4 = 0x1000;
   do {
-    heap.u32(puVar10) = 0;
+    heap.setU32(puVar10, (0) >>> 0);
     puVar10 = puVar10 + 1;
     iVar4 = iVar4 + -1;
   } while (iVar4 != 0);
   LAB_0042ff6e: puVar10 = __addr_DAT_0099c16c;
   iVar4 = 0x800;
   do {
-    heap.u32(puVar10) = 0;
+    heap.setU32(puVar10, (0) >>> 0);
     puVar10 = puVar10 + 1;
     iVar4 = iVar4 + -1;
   } while (iVar4 != 0);
@@ -138,14 +144,14 @@ export function FUN_0042fdf4(heap) {
       do {
         pcVar11 = pcVar8;
         cVar1 = heap.u32(pcVar7);
-        heap.u32(pcVar11) = cVar1;
+        heap.setU32(pcVar11, (cVar1) >>> 0);
         pcVar7 = pcVar7 + 1;
         pcVar8 = pcVar11 + 1;
       } while (cVar1 != '*');
       pcVar8 = __addr_DAT_005f9313;
       do {
         cVar1 = heap.u32(pcVar8);
-        heap.u32(pcVar11) = cVar1;
+        heap.setU32(pcVar11, (cVar1) >>> 0);
         pcVar8 = pcVar8 + 1;
         pcVar11 = pcVar11 + 1;
         bVar12 = false;
@@ -157,7 +163,7 @@ export function FUN_0042fdf4(heap) {
         pcVar8 = __addr_DAT_008dbe94;
         do {
           cVar1 = heap.u32(pcVar8);
-          heap.u32(pcVar7) = cVar1;
+          heap.setU32(pcVar7, (cVar1) >>> 0);
           pcVar8 = pcVar8 + 1;
           pcVar7 = pcVar7 + 1;
         } while (cVar1 != '\0');
@@ -165,7 +171,7 @@ export function FUN_0042fdf4(heap) {
         pcVar8 = __addr_DAT_005f9313;
         do {
           cVar1 = heap.u32(pcVar8);
-          heap.u32(pcVar7) = cVar1;
+          heap.setU32(pcVar7, (cVar1) >>> 0);
           pcVar8 = pcVar8 + 1;
           pcVar7 = pcVar7 + 1;
         } while (cVar1 != '\0');

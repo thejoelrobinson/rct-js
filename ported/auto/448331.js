@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { uint3 } from "../../runtime/win32.js";
 import { CONCAT11, CONCAT21, CONCAT22, CONCAT31, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { FUN_00448c64 } from "./448c64.js";
 import { FUN_00448d15 } from "./448d15.js";
@@ -14,6 +15,7 @@ export function FUN_00448331(heap) {
   const __addr_DAT_0065247a = __sp + 4;
   const __addr_DAT_00971ef4 = __sp + 8;
   try {
+  let pbVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
   let in_EAX = 0;
@@ -29,12 +31,14 @@ export function FUN_00448331(heap) {
   let bVar10 = 0;
   let uVar11 = 0;
   let uVar12 = 0;
+  let unaff_ESI = 0;
+  let pbVar13 = 0;
   let unaff_EDI = 0;
   let uVar14 = 0;
   let uVar15 = 0;
   let uVar7 = 0;
   uVar14 = FUN_00448c64(heap);
-  uVar7 = (undefined4)(uVar14 >>> 0x20);
+  uVar7 = (uVar14 >>> 0x20);
   uVar11 = 0;
   LAB_00448339: uVar9 = CONCAT21((uVar7 >>> 0x10), heap.u32(unaff_ESI));
   uVar2 = uVar9 & 0xffff3c;
@@ -67,7 +71,7 @@ export function FUN_00448331(heap) {
             /* goto joined_r0x004483cb */ throw new Error("goto joined_r0x004483cb not supported");
           }
         } else {
-          if ((byte)(bVar6 - 4) != heap.u32(pbVar13 + (2) * 4)) {
+          if ((bVar6 - 4) != heap.u32(pbVar13 + (2) * 4)) {
             /* goto LAB_004483ae */ throw new Error("goto LAB_004483ae not supported");
           }
           if ((heap.u32(pbVar13 + (4) * 4) & 4) == 0) {
@@ -82,14 +86,14 @@ export function FUN_00448331(heap) {
           FUN_00448d15(heap, uVar7, uVar4, uVar3);
         }
         uVar3 = uVar11 ^ 2;
-        heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) = heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) & ~('\x01' << (uVar3 & 7));
+        heap.setU32((pbVar13 + ((uVar3 >>> 3) + 6) * 4), (heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) & ~('\x01' << (uVar3 & 7))) >>> 0);
         uVar3 = uVar3 - 1 & 3;
         uVar4 = uVar3 + 4;
-        heap.u32(pbVar13 + ((uVar4 >>> 3) + 6) * 4) = heap.u32(pbVar13 + ((uVar4 >>> 3) + 6) * 4) & ~('\x01' << (uVar4 & 7));
+        heap.setU32((pbVar13 + ((uVar4 >>> 3) + 6) * 4), (heap.u32(pbVar13 + ((uVar4 >>> 3) + 6) * 4) & ~('\x01' << (uVar4 & 7))) >>> 0);
         uVar3 = (uVar3 + 1 & 3) + 4;
-        heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) = heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) & ~('\x01' << (uVar3 & 7));
+        heap.setU32((pbVar13 + ((uVar3 >>> 3) + 6) * 4), (heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) & ~('\x01' << (uVar3 & 7))) >>> 0);
         uVar15 = FUN_005e56d3(heap, pbVar13, unaff_EDI);
-        uVar7 = (undefined4)(uVar15 >>> 0x20);
+        uVar7 = (uVar15 >>> 0x20);
         uVar12 = uVar11 + 1 & 3;
         uVar3 = extraout_ECX + heap.u32((__addr_DAT_0065247a) + (uVar12 * 2) * 4);
         uVar3 = uVar3 * 0x80 | uVar3 >>> 9 | uVar15 + heap.u32((__addr_DAT_00652478) + (uVar12 * 2) * 4);
@@ -102,10 +106,10 @@ export function FUN_00448331(heap) {
   }
   /* goto LAB_004484b1 */ throw new Error("goto LAB_004484b1 not supported");
   while (pbVar1 = pbVar13 + 1, pbVar13 = pbVar13 + 8, (heap.u32(pbVar1) & 0x80) == 0) {
-    LAB_00448460: if (((heap.u32(pbVar13) & 0x3c) == 4) && ((byte)(uVar15 >>> 0x20) == heap.u32(pbVar13 + (2) * 4))) {
+    LAB_00448460: if (((heap.u32(pbVar13) & 0x3c) == 4) && ((uVar15 >>> 0x20) == heap.u32(pbVar13 + (2) * 4))) {
       if ((heap.u32(pbVar13 + (4) * 4) & 4) == 0) {
-        uVar3 = (uVar12 + 1U & 3) + 4;
-        heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) = heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) & ~('\x01' << (uVar3 & 7));
+        uVar3 = (uVar12 + 1 & 3) + 4;
+        heap.setU32((pbVar13 + ((uVar3 >>> 3) + 6) * 4), (heap.u32(pbVar13 + ((uVar3 >>> 3) + 6) * 4) & ~('\x01' << (uVar3 & 7))) >>> 0);
         FUN_005e56d3(heap, pbVar13, unaff_EDI, extraout_ECX, uVar11, uVar15);
         uVar7 = extraout_EDX;
       }
@@ -115,7 +119,7 @@ export function FUN_00448331(heap) {
   LAB_004484b1: uVar11 = uVar11 + 1;
   if (3 < uVar11) {
     if ((heap.u32(unaff_ESI) & 0x3c) == 4) {
-      heap.u32(unaff_ESI + (6) * 4) = 0;
+      heap.setU32((unaff_ESI + (6) * 4), (0) >>> 0);
     }
     return CONCAT44(in_EDX, in_EAX);
   }

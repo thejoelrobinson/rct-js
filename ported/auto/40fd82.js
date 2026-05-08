@@ -21,20 +21,20 @@ export function FUN_0040fd82(heap, param_1) {
   }
   if (local_8 != 0x0) {
     CVar1 = GetTextColor(heap, local_8);
-    heap.u32((param_1 + 0x98)) = CVar1;
+    heap.setU32((param_1 + 0x98), (CVar1) >>> 0);
     CVar1 = GetBkColor(heap, local_8);
-    heap.u32((param_1 + 0x9c)) = CVar1;
+    heap.setU32((param_1 + 0x9c), (CVar1) >>> 0);
     iVar2 = GetBkMode(heap, local_8);
-    heap.u32((param_1 + 0xa4)) = iVar2;
-    heap.u32((param_1 + 0xa0)) = 0;
-    heap.u32((param_1 + 0xc)) = 1;
+    heap.setU32((param_1 + 0xa4), (iVar2) >>> 0);
+    heap.setU32((param_1 + 0xa0), (0) >>> 0);
+    heap.setU32((param_1 + 0xc), (1) >>> 0);
     if (heap.u32((param_1 + 0x90)) == 0) {
       pvVar4 = SelectObject(heap, local_8, heap.u32((param_1 + 0x8c)));
-      heap.u32((param_1 + 0x94)) = pvVar4;
+      heap.setU32((param_1 + 0x94), (pvVar4) >>> 0);
       SetDIBColorTable(heap, local_8, 0, 0x100, __addr_DAT_005ef6a8);
     } else {
       pHVar3 = SelectPalette(heap, local_8, heap.u32(0x005ec0d8), 0);
-      heap.u32((param_1 + 0x94)) = pHVar3;
+      heap.setU32((param_1 + 0x94), (pHVar3) >>> 0);
       RealizePalette(heap, local_8);
     }
   }

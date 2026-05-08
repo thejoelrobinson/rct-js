@@ -13,6 +13,7 @@ export function FUN_00429249(heap) {
   let sVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
+  let pbVar5 = 0;
   sVar2 = 0;
   uVar3 = 0;
   do {

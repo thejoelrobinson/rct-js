@@ -13,13 +13,17 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
   const __addr_local_410 = __sp + 4;
   const __addr_local_404 = __sp + 8;
   try {
+  let piVar1 = 0;
   let bVar2 = 0;
   let cVar3 = 0;
+  let pcVar4 = 0;
   let BVar5 = 0;
   let iVar6 = 0;
+  let pcVar7 = 0;
   let local_41c = 0;
   let local_414 = 0;
   let local_40c = 0;
+  let local_408 = 0;
   if (param_1 < heap.u32(0x005f3f60)) {
     piVar1 = __addr_DAT_005f3e60 + (param_1 >>> 5);
     iVar6 = (param_1 & 0x1f) * 8;
@@ -55,11 +59,11 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
               cVar3 = heap.u32(pcVar7);
               pcVar7 = pcVar7 + 1;
               if (cVar3 == '\n') {
-                heap.u32(pcVar4) = '\r';
+                heap.setU32(pcVar4, ('\r') >>> 0);
                 local_40c = local_40c + 1;
                 pcVar4 = pcVar4 + 1;
               }
-              heap.u32(pcVar4) = cVar3;
+              heap.setU32(pcVar4, (cVar3) >>> 0);
               pcVar4 = pcVar4 + 1;
             } while (pcVar4 - __addr_local_404 < 0x400);
             BVar5 = WriteFile(heap, heap.u32((iVar6 + heap.u32(local_408))), __addr_local_404, pcVar4 - __addr_local_404, __addr_local_410, 0x0);

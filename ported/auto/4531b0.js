@@ -12,6 +12,7 @@ export function FUN_004531b0(heap) {
   const __addr_DAT_0063268c = __sp + 4;
   try {
   let iVar1 = 0;
+  let psVar2 = 0;
   if (heap.u32(0x006323f4) != -1) {
     psVar2 = __addr_DAT_00632608;
     do {
@@ -19,7 +20,7 @@ export function FUN_004531b0(heap) {
         iVar1 = FUN_00407b91(heap, psVar2 + 1);
         if (iVar1 != 1) {
           FUN_00407a41(heap, psVar2 + 1);
-          heap.u32(psVar2) = -1;
+          heap.setU32(psVar2, (-1) >>> 0);
         }
       }
       psVar2 = psVar2 + 0xb;

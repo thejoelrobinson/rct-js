@@ -13,6 +13,7 @@ export function FUN_005e40c4(heap) {
   let iVar2 = 0;
   let sVar3 = 0;
   let unaff_ESI = 0;
+  let pcVar4 = 0;
   iVar1 = 0;
   iVar2 = 0;
   for (pcVar4 = heap.u32((unaff_ESI + 0x1c)); heap.u32(pcVar4) != '\x15'; pcVar4 = pcVar4 + 0x10) {
@@ -21,11 +22,11 @@ export function FUN_005e40c4(heap) {
       sVar3 = 0;
       if (((heap.u32((pcVar4 + 10)) & 1) != 0) && (extraout_CX != heap.u32((iVar2 + 0x38 + unaff_ESI)))) {
         sVar3 = 1;
-        heap.u32((iVar2 + 0x38 + unaff_ESI)) = extraout_CX;
+        heap.setU32((iVar2 + 0x38 + unaff_ESI), (extraout_CX) >>> 0);
       }
       if (((heap.u32((pcVar4 + 10)) & 2) != 0) && (extraout_DX != heap.u32((iVar2 + 0x40 + unaff_ESI)))) {
         sVar3 = sVar3 + 1;
-        heap.u32((iVar2 + 0x40 + unaff_ESI)) = extraout_DX;
+        heap.setU32((iVar2 + 0x40 + unaff_ESI), (extraout_DX) >>> 0);
       }
       if (sVar3 != 0) {
         FUN_005e4198(heap);

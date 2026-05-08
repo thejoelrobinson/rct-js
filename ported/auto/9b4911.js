@@ -21,9 +21,15 @@ export function FUN_009b4911(heap) {
   let sVar8 = 0;
   let iVar9 = 0;
   let uVar11 = 0;
+  let puVar10 = 0;
   let unaff_ESI = 0;
+  let puVar12 = 0;
+  let puVar13 = 0;
+  let unaff_EDI = 0;
+  let puVar14 = 0;
+  let puVar15 = 0;
   let uVar5 = 0;
-  uVar11 = (undefined2)(heap.u32(0x009a2020) >>> 0x10);
+  uVar11 = (heap.u32(0x009a2020) >>> 0x10);
   if ((heap.u32(0x009a2000) & 0x20000000) != 0) {
     if ((heap.u32(0x009a2000) & 0x40000000) != 0) {
       puVar10 = (CONCAT22(uVar11, heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2))) + unaff_ESI);
@@ -122,7 +128,7 @@ export function FUN_009b4911(heap) {
   }
   puVar10 = (CONCAT22(uVar11, heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2))) + unaff_ESI);
   do {
-    heap.setU32(0x009aa032, ((byte) * puVar10) >>> 0);
+    heap.setU32(0x009aa032, (heap.u32(puVar10)) >>> 0);
     puVar12 = puVar10 + 1;
     uVar6 = (heap.u32(puVar10) >>> 8);
     uVar5 = (heap.u32(0x009aa032) & 0x7f);
@@ -148,16 +154,16 @@ export function FUN_009b4911(heap) {
         if ((uVar5 & 1) != 0) {
           puVar15 = (puVar14 + 1);
           puVar13 = (puVar12 + 1);
-          heap.u32(puVar14) = heap.u32(puVar12);
+          heap.setU32(puVar14, (heap.u32(puVar12)) >>> 0);
         }
         uVar6 = uVar5 >>> 2;
         if ((uVar5 >>> 1 & 1) != 0) {
-          heap.u32(puVar15) = heap.u32(puVar13);
+          heap.setU32(puVar15, (heap.u32(puVar13)) >>> 0);
           puVar13 = puVar13 + 1;
           puVar15 = puVar15 + 1;
         }
         for (; uVar6 != 0; uVar6 = uVar6 - 1) {
-          heap.u32(puVar15) = heap.u32(puVar13);
+          heap.setU32(puVar15, (heap.u32(puVar13)) >>> 0);
           puVar13 = puVar13 + 2;
           puVar15 = puVar15 + 2;
         }

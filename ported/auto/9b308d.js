@@ -6,6 +6,8 @@
 
 export function FUN_009b308d(heap) {
   let uVar1 = 0;
+  let puVar2 = 0;
+  let puVar3 = 0;
   puVar2 = heap.u32(0x008dc0b4) + -0x1400;
   puVar3 = heap.u32(0x008dc0b4);
   do {

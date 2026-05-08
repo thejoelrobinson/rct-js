@@ -9,6 +9,7 @@ export function FUN_005e68e2(heap) {
   const __addr_DAT_009a013c = __sp + 0;
   try {
   let in_AX = 0;
+  let puVar1 = 0;
   puVar1 = __addr_DAT_009a013c;
   while (true) {
     if (heap.u32(0x009a1164) <= puVar1) {

@@ -18,6 +18,7 @@ export function FUN_00437952(heap) {
   let bVar3 = 0;
   let uVar4 = 0;
   let uVar5 = 0;
+  let pbVar6 = 0;
   if ((in_EAX < 0x1000) && (in_CX < 0x1000)) {
     pbVar6 = heap.u32((__addr_DAT_00971ef4) + ((((in_CX & 0xfe0) << 7 | in_EAX & 0xfe0) >>> 5 | ((in_CX & 0xfe0) >>> 9) << 0xb)) * 4);
     bVar3 = heap.u32(pbVar6);
@@ -31,7 +32,7 @@ export function FUN_00437952(heap) {
       cVar1 = (uVar4 >>> 8);
       uVar4 = CONCAT11(cVar1, cVar2 + '\x04');
       if (cVar1 == '\x1e') {
-        uVar4 = (byte)(cVar2 + 8);
+        uVar4 = (cVar2 + 8);
       }
     }
     bVar3 = uVar4 - in_EDX;

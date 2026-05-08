@@ -8,6 +8,7 @@ import { GetNextWindow } from "../../runtime/win32.js";
 import { FUN_0042d60a } from "./42d60a.js";
 import { FUN_0042d637 } from "./42d637.js";
 export function FUN_005e1f70(heap) {
+  let pHVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
   if (heap.u32(0x0099c16b) == 1) {

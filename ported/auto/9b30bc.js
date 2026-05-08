@@ -11,23 +11,25 @@ export function FUN_009b30bc(heap) {
   let uVar4 = 0;
   let uVar5 = 0;
   let unaff_EBP = 0;
-  bVar3 = (byte) * (unaff_EDI + 0xe);
+  let unaff_EDI = 0;
+  let puVar6 = 0;
+  bVar3 = heap.u32((unaff_EDI + 0xe));
   uVar2 = heap.u32((unaff_EDI + 2)) >>> (bVar3 & 0x1f);
   uVar5 = (heap.u32((unaff_EDI + 10)) >>> (bVar3 & 0x1f));
   uVar1 = heap.u32((unaff_EDI + 3));
   puVar6 = heap.u32(unaff_EDI);
   do {
     if ((uVar2 & 1) != 0) {
-      heap.u32(puVar6) = unaff_EBP;
+      heap.setU32(puVar6, (unaff_EBP) >>> 0);
       puVar6 = (puVar6 + 1);
     }
     uVar4 = (uVar2 >>> 2);
     if ((uVar2 >>> 1 & 1) != 0) {
-      heap.u32(puVar6) = unaff_EBP;
+      heap.setU32(puVar6, (unaff_EBP) >>> 0);
       puVar6 = (puVar6 + 2);
     }
     for (; uVar4 != 0; uVar4 = uVar4 - 1) {
-      heap.u32(puVar6) = unaff_EBP;
+      heap.setU32(puVar6, (unaff_EBP) >>> 0);
       puVar6 = puVar6 + 1;
     }
     puVar6 = (puVar6 + uVar1);

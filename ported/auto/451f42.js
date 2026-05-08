@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT31 } from "../../runtime/ghidra-builtins.js";
 export function FUN_00451f42(heap) {
   const __sp = heap.allocFrame(12);
@@ -11,6 +12,7 @@ export function FUN_00451f42(heap) {
   const __addr_DAT_00652478 = __sp + 4;
   const __addr_DAT_0065247a = __sp + 8;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let bVar3 = 0;
   let uVar4 = 0;
@@ -21,7 +23,9 @@ export function FUN_00451f42(heap) {
   let unaff_EBX = 0;
   let uVar8 = 0;
   let unaff_ESI = 0;
-  uVar6 = (byte)(in_EAX >>> 8);
+  let pbVar9 = 0;
+  let puVar10 = 0;
+  uVar6 = (in_EAX >>> 8);
   uVar4 = in_EAX * 0x20;
   uVar7 = uVar6 * 0x20;
   bVar2 = heap.u32((unaff_EBX + 0x32 + unaff_ESI));

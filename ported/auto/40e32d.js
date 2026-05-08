@@ -6,9 +6,9 @@
 
 export function FUN_0040e32d(heap, param_1) {
   if (heap.u32((param_1 + 0x90)) == 0) {
-    heap.u32((param_1 + 4)) = 4;
-    heap.u32((param_1 + 10)) = 1;
-    heap.u32((param_1 + 0xc)) = 1;
+    heap.setU32((param_1 + 4), (4) >>> 0);
+    heap.setU32((param_1 + 10), (1) >>> 0);
+    heap.setU32((param_1 + 0xc), (1) >>> 0);
   } else {
     param_1 = 0;
   }

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject, LoadCursorA, SetErrorMode } from "../../runtime/win32.js";
+import { DeleteObject, LoadCursorA, SetErrorMode, timeBeginPeriod, timeEndPeriod } from "../../runtime/win32.js";
 import { ExceptionList } from "../../runtime/ghidra-builtins.js";
 import { FUN_00401000 } from "./401000.js";
 import { FUN_00402ce0 } from "./402ce0.js";
@@ -31,6 +31,8 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
   let MVar1 = 0;
   let iVar2 = 0;
   let local_24 = 0;
+  let puStack_10 = 0;
+  let puStack_c = 0;
   let local_8 = 0;
   local_8 = 0xffffffff;
   puStack_c = __addr_DAT_005e7370;
@@ -41,7 +43,7 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
   ExceptionList = __addr_local_14;
   heap.setU32(0x005e91c8, (LoadCursorA(heap, 0x0, 0x7f00)) >>> 0);
   for (local_24 = 0; local_24 < 0x20; local_24 = local_24 + 1) {
-    heap.u32((__addr_DAT_005f1b60) + (local_24) * 4) = 0;
+    heap.setU32(((__addr_DAT_005f1b60) + (local_24) * 4), (0) >>> 0);
   }
   heap.setU32(0x005f1fdc, (0) >>> 0);
   heap.setU32(0x005f1b30, (0) >>> 0);
@@ -55,7 +57,7 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
   FUN_00413170(heap, __addr_DAT_005f1ba0, 0x005e9030);
   SetErrorMode(heap, 0);
   local_8 = 0;
-  MVar1 = timeBeginPeriod(1);
+  MVar1 = timeBeginPeriod(heap, 1);
   FUN_00404752(heap);
   FUN_00404b0e(heap);
   iVar2 = FUN_00405f2c(heap);
@@ -73,7 +75,7 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
     }
     FUN_004061f5(heap);
     if (MVar1 == 0) {
-      timeEndPeriod(1);
+      timeEndPeriod(heap, 1);
     }
     if (heap.u32(0x005e9194) != 0) {
       FUN_00402ce0(heap);

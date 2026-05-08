@@ -21,20 +21,25 @@ export function FUN_00452739(heap) {
   try {
   let in_EAX = 0;
   let iVar1 = 0;
+  let puVar2 = 0;
   let sVar3 = 0;
+  let puVar4 = 0;
+  let piVar5 = 0;
+  let puVar6 = 0;
   let uVar7 = 0;
+  let piVar8 = 0;
   FUN_00452835(heap);
   puVar4 = __addr_DAT_00632448;
   sVar3 = 6;
   do {
-    heap.u32(puVar4) = 0xffff;
+    heap.setU32(puVar4, (0xffff) >>> 0);
     puVar4 = puVar4 + 0x1e;
     sVar3 = sVar3 + -1;
   } while (sVar3 != 0);
   puVar4 = __addr_DAT_00632608;
   sVar3 = 6;
   do {
-    heap.u32(puVar4) = 0xffff;
+    heap.setU32(puVar4, (0xffff) >>> 0);
     puVar4 = puVar4 + 0xb;
     sVar3 = sVar3 + -1;
   } while (sVar3 != 0);
@@ -63,7 +68,7 @@ export function FUN_00452739(heap) {
         puVar6 = __addr_DAT_006325f0;
         uVar7 = 0;
         do {
-          heap.u32(puVar6) = 0xff;
+          heap.setU32(puVar6, (0xff) >>> 0);
           puVar6 = puVar6 + 8;
           uVar7 = uVar7 + 1;
         } while (uVar7 < 2);

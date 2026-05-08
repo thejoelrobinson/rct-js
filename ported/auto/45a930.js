@@ -10,7 +10,7 @@ export function FUN_0045a930(heap) {
   try {
   let in_EAX = 0;
   if ((0x7fff < in_EAX) && (in_EAX < 0x9000)) {
-    heap.u32((__addr_DAT_0087f41c) + ((in_EAX & 0x3ff) * 0x20) * 4) = 0;
+    heap.setU32(((__addr_DAT_0087f41c) + ((in_EAX & 0x3ff) * 0x20) * 4), (0) >>> 0);
   }
   return;
 } finally {

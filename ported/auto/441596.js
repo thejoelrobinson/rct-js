@@ -15,11 +15,14 @@ export function FUN_00441596(heap) {
   let cVar2 = 0;
   let in_EAX = 0;
   let in_EDX = 0;
+  let pcVar3 = 0;
+  let pbVar4 = 0;
+  let pcVar5 = 0;
   pcVar3 = heap.u32((__addr_PTR_DAT_006302d8) + (in_EAX) * 4);
   FUN_00458bcf(heap);
   for (pbVar4 = __addr_DAT_0099a888; bVar1 = heap.u32(pbVar4), bVar1 != 0; pbVar4 = pbVar4 + 1) {
     if ((0x60 < bVar1) && (bVar1 < 0x7b)) {
-      heap.u32(pbVar4) = heap.u32(pbVar4) - 0x20;
+      heap.setU32(pbVar4, (heap.u32(pbVar4) - 0x20) >>> 0);
     }
   }
   pcVar5 = __addr_DAT_0099a888;

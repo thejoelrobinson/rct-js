@@ -26,10 +26,10 @@ export function FUN_0040a73d(heap, param_1, param_2, param_3) {
       local_c = heap.u32(param_2 + (3) * 4);
       GetClientRect(heap, heap.u32(0x005e916c), __addr_local_30);
       ClientToScreen(heap, heap.u32(0x005e916c), __addr_local_30);
-      heap.u32(param_2) = heap.u32(param_2) + heap.u32(__addr_local_30);
-      heap.u32(param_2 + (1) * 4) = heap.u32(param_2 + (1) * 4) + heap.u32((__addr_local_30 + 4));
-      heap.u32(param_2 + (2) * 4) = heap.u32(param_2 + (2) * 4) + heap.u32(__addr_local_30);
-      heap.u32(param_2 + (3) * 4) = heap.u32(param_2 + (3) * 4) + heap.u32((__addr_local_30 + 4));
+      heap.setU32(param_2, (heap.u32(param_2) + heap.u32(__addr_local_30)) >>> 0);
+      heap.setU32((param_2 + (1) * 4), (heap.u32(param_2 + (1) * 4) + heap.u32((__addr_local_30 + 4))) >>> 0);
+      heap.setU32((param_2 + (2) * 4), (heap.u32(param_2 + (2) * 4) + heap.u32(__addr_local_30)) >>> 0);
+      heap.setU32((param_2 + (3) * 4), (heap.u32(param_2 + (3) * 4) + heap.u32((__addr_local_30 + 4))) >>> 0);
     }
     heap.setU32(__addr_local_20, (param_3) >>> 0);
     local_1c = param_3;
@@ -41,10 +41,10 @@ export function FUN_0040a73d(heap, param_1, param_2, param_3) {
       }
     } while (local_8 == -0x7789fe3e);
     if (heap.u32(0x005ebf54) == 0) {
-      heap.u32(param_2) = local_18;
-      heap.u32(param_2 + (1) * 4) = local_14;
-      heap.u32(param_2 + (2) * 4) = local_10;
-      heap.u32(param_2 + (3) * 4) = local_c;
+      heap.setU32(param_2, (local_18) >>> 0);
+      heap.setU32((param_2 + (1) * 4), (local_14) >>> 0);
+      heap.setU32((param_2 + (2) * 4), (local_10) >>> 0);
+      heap.setU32((param_2 + (3) * 4), (local_c) >>> 0);
     }
     if (local_8 == 0) {
       return 1;

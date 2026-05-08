@@ -10,6 +10,7 @@ export function FUN_00417016(heap, param_1) {
   let in_EAX = 0;
   let uVar3 = 0;
   let uVar4 = 0;
+  let puVar5 = 0;
   let cVar6 = 0;
   let uVar7 = 0;
   cVar6 = in_EAX;

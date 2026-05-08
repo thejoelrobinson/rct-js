@@ -13,8 +13,8 @@ export function FUN_0044142c(heap) {
   let iVar1 = 0;
   if ((heap.u32((unaff_ESI + 0x2b)) == '\a') || (heap.u32((unaff_ESI + 0x2b)) == '\x03')) {
     iVar1 = heap.u32((unaff_ESI + 0x68)) * 0x260;
-    heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) = heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) + -1;
-    heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) = heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) | 0xc;
+    heap.setU32(((__addr_DAT_0088752b) + (iVar1) * 4), (heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) + -1) >>> 0);
+    heap.setU32(((__addr_DAT_0088751d) + (iVar1) * 4), (heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) | 0xc) >>> 0);
   }
   return;
 } finally {

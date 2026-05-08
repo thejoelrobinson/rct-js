@@ -6,16 +6,20 @@
 
 export function FUN_004159b0(heap, param_1, param_2, param_3) {
   let bVar1 = 0;
+  let pbVar2 = 0;
+  let pbVar3 = 0;
+  let pbVar4 = 0;
   let uVar5 = 0;
+  let pbVar6 = 0;
   pbVar2 = heap.u32(param_1);
   if (param_3 <= heap.u32(param_1 + (1) * 4)) {
-    heap.u32(pbVar2) = param_3;
+    heap.setU32(pbVar2, (param_3) >>> 0);
     if (pbVar2 + param_3 < param_1 + 0x3e) {
-      heap.u32(param_1) = heap.u32(param_1) + param_3;
-      heap.u32(param_1 + (1) * 4) = heap.u32(param_1 + (1) * 4) - param_3;
+      heap.setU32(param_1, (heap.u32(param_1) + param_3) >>> 0);
+      heap.setU32((param_1 + (1) * 4), (heap.u32(param_1 + (1) * 4) - param_3) >>> 0);
     } else {
-      heap.u32(param_1 + (1) * 4) = 0;
-      heap.u32(param_1) = (param_1 + 2);
+      heap.setU32((param_1 + (1) * 4), (0) >>> 0);
+      heap.setU32(param_1, ((param_1 + 2)) >>> 0);
     }
     return (pbVar2 + 8) * 0x10 + param_1 * -0xf;
   }
@@ -36,15 +40,15 @@ export function FUN_004159b0(heap, param_1, param_2, param_3) {
         }
         if (param_3 <= uVar5) {
           if (param_1 + 0x3e <= pbVar6 + param_3) {
-            heap.u32(param_1) = (param_1 + 2);
+            heap.setU32(param_1, ((param_1 + 2)) >>> 0);
             /* goto LAB_00415aff */ throw new Error("goto LAB_00415aff not supported");
           }
-          heap.u32(param_1) = (pbVar6 + param_3);
-          heap.u32(param_1 + (1) * 4) = uVar5 - param_3;
+          heap.setU32(param_1, ((pbVar6 + param_3)) >>> 0);
+          heap.setU32((param_1 + (1) * 4), (uVar5 - param_3) >>> 0);
           /* goto LAB_00415b06 */ throw new Error("goto LAB_00415b06 not supported");
         }
         if (pbVar6 == pbVar2) {
-          heap.u32(param_1 + (1) * 4) = uVar5;
+          heap.setU32((param_1 + (1) * 4), (uVar5) >>> 0);
         } else {
           param_2 = param_2 - uVar5;
           if (param_2 < param_3) {
@@ -72,13 +76,13 @@ export function FUN_004159b0(heap, param_1, param_2, param_3) {
         }
         if (param_3 <= uVar5) {
           if (pbVar6 + param_3 < param_1 + 0x3e) {
-            heap.u32(param_1) = (pbVar6 + param_3);
-            heap.u32(param_1 + (1) * 4) = uVar5 - param_3;
+            heap.setU32(param_1, ((pbVar6 + param_3)) >>> 0);
+            heap.setU32((param_1 + (1) * 4), (uVar5 - param_3) >>> 0);
           } else {
-            heap.u32(param_1) = pbVar3;
-            LAB_00415aff: heap.u32(param_1 + (1) * 4) = 0;
+            heap.setU32(param_1, (pbVar3) >>> 0);
+            LAB_00415aff: heap.setU32((param_1 + (1) * 4), (0) >>> 0);
           }
-          LAB_00415b06: heap.u32(pbVar6) = param_3;
+          LAB_00415b06: heap.setU32(pbVar6, (param_3) >>> 0);
           return (pbVar6 + 8) * 0x10 + param_1 * -0xf;
         }
         param_2 = param_2 - uVar5;

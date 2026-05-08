@@ -19,6 +19,7 @@ export function FUN_005e53ca(heap) {
   let in_ECX = 0;
   let in_EDX = 0;
   let unaff_ESI = 0;
+  let piVar6 = 0;
   sVar1 = heap.u32((unaff_ESI + 0x16));
   sVar2 = heap.u32((unaff_ESI + 0x18));
   if (sVar1 != -0x8000) {

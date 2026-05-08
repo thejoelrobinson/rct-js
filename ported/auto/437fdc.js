@@ -25,10 +25,10 @@ export function FUN_00437fdc(heap) {
     }
     heap.setU32(0x00628c44, (iVar1) >>> 0);
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_00628a50;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 4;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_00628a50) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 4) >>> 0);
     FUN_005e412c(heap);
-    heap.u32((unaff_ESI + 0x15a)) = heap.u32(0x00991f88);
+    heap.setU32((unaff_ESI + 0x15a), (heap.u32(0x00991f88)) >>> 0);
     FUN_0043803e(heap);
   }
   return;

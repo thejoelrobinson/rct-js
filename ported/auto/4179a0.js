@@ -33,7 +33,7 @@ export function FUN_004179a0(heap, param_1, param_2, param_3) {
         FUN_00418d90(heap, DVar2);
         return 0xffffffff;
       }
-      heap.u32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) = heap.u32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) & 0xfd;
+      heap.setU32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3), (heap.u32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) & 0xfd) >>> 0);
       return DVar1;
     }
   }

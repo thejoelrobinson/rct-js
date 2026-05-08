@@ -13,6 +13,7 @@ export function FUN_005ded48(heap) {
   let uVar1 = 0;
   let extraout_CX = 0;
   let uVar2 = 0;
+  let psVar3 = 0;
   let sVar4 = 0;
   let unaff_ESI = 0;
   (heap.u32(heap.u32((unaff_ESI + 4))))();
@@ -33,7 +34,7 @@ export function FUN_005ded48(heap) {
   if (uVar2 < (sVar4 * 0x42)) {
     uVar1 = uVar2;
   }
-  heap.u32((unaff_ESI + 0x36)) = uVar1;
+  heap.setU32((unaff_ESI + 0x36), (uVar1) >>> 0);
   FUN_005e4198(heap);
   return;
 } finally {

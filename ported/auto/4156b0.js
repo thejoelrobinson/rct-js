@@ -8,6 +8,7 @@ export function FUN_004156b0(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(4);
   const __addr_PTR_LOOP_005ec500 = __sp + 0;
   try {
+  let ppuVar1 = 0;
   let uVar2 = 0;
   ppuVar1 = __addr_PTR_LOOP_005ec500;
   while (param_1 <= heap.u32(ppuVar1 + (4) * 4) || (heap.u32(ppuVar1 + (5) * 4) <= param_1)) {
@@ -22,9 +23,9 @@ export function FUN_004156b0(heap, param_1, param_2, param_3) {
   if ((param_1 & 0xfff) < 0x100) {
     return 0;
   }
-  heap.u32(param_2) = ppuVar1;
+  heap.setU32(param_2, (ppuVar1) >>> 0);
   uVar2 = param_1 & 0xfffff000;
-  heap.u32(param_3) = uVar2;
+  heap.setU32(param_3, (uVar2) >>> 0);
   return ((param_1 + (-0x100 - uVar2)) >>> 4) + 8 + uVar2;
 } finally {
     heap.freeFrame(4);

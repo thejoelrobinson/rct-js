@@ -6,6 +6,7 @@
 
 export function FUN_004138d0(heap, param_1, param_2, param_3) {
   let uVar1 = 0;
+  let puVar2 = 0;
   if ((param_2 < param_1) && (param_1 < (param_3 + param_2))) {
     param_2 = ((param_3 - 4) + param_2);
     puVar2 = ((param_3 - 4) + param_1);
@@ -14,7 +15,7 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
       param_3 = param_3 & 3;
       if (7 < uVar1) {
         for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-          heap.u32(puVar2) = heap.u32(param_2);
+          heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
           param_2 = param_2 + -1;
           puVar2 = puVar2 + -1;
         }
@@ -43,13 +44,13 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
           switch (puVar2 & 3) {
             case 1:
               param_3 = uVar1 & 3;
-              heap.u32((puVar2 + 3)) = heap.u32((param_2 + 3));
+              heap.setU32((puVar2 + 3), (heap.u32((param_2 + 3))) >>> 0);
               param_2 = (param_2 + -1);
               uVar1 = uVar1 >>> 2;
               puVar2 = (puVar2 - 1);
               if (7 < uVar1) {
                 for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-                  heap.u32(puVar2) = heap.u32(param_2);
+                  heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
                   param_2 = param_2 + -1;
                   puVar2 = puVar2 + -1;
                 }
@@ -66,14 +67,14 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
               break;
             case 2:
               param_3 = uVar1 & 3;
-              heap.u32((puVar2 + 3)) = heap.u32((param_2 + 3));
+              heap.setU32((puVar2 + 3), (heap.u32((param_2 + 3))) >>> 0);
               uVar1 = uVar1 >>> 2;
-              heap.u32((puVar2 + 2)) = heap.u32((param_2 + 2));
+              heap.setU32((puVar2 + 2), (heap.u32((param_2 + 2))) >>> 0);
               param_2 = (param_2 + -2);
               puVar2 = (puVar2 - 2);
               if (7 < uVar1) {
                 for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-                  heap.u32(puVar2) = heap.u32(param_2);
+                  heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
                   param_2 = param_2 + -1;
                   puVar2 = puVar2 + -1;
                 }
@@ -90,15 +91,15 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
               break;
             case 3:
               param_3 = uVar1 & 3;
-              heap.u32((puVar2 + 3)) = heap.u32((param_2 + 3));
-              heap.u32((puVar2 + 2)) = heap.u32((param_2 + 2));
+              heap.setU32((puVar2 + 3), (heap.u32((param_2 + 3))) >>> 0);
+              heap.setU32((puVar2 + 2), (heap.u32((param_2 + 2))) >>> 0);
               uVar1 = uVar1 >>> 2;
-              heap.u32((puVar2 + 1)) = heap.u32((param_2 + 1));
+              heap.setU32((puVar2 + 1), (heap.u32((param_2 + 1))) >>> 0);
               param_2 = (param_2 + -3);
               puVar2 = (puVar2 - 3);
               if (7 < uVar1) {
                 for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-                  heap.u32(puVar2) = heap.u32(param_2);
+                  heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
                   param_2 = param_2 + -1;
                   puVar2 = puVar2 + -1;
                 }
@@ -117,34 +118,34 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
     }
     switch (uVar1) {
       case 7:
-        heap.u32(puVar2 + (7 - uVar1) * 4) = heap.u32(param_2 + (7 - uVar1) * 4);
+        heap.setU32((puVar2 + (7 - uVar1) * 4), (heap.u32(param_2 + (7 - uVar1) * 4)) >>> 0);
       case 6:
-        heap.u32(puVar2 + (6 - uVar1) * 4) = heap.u32(param_2 + (6 - uVar1) * 4);
+        heap.setU32((puVar2 + (6 - uVar1) * 4), (heap.u32(param_2 + (6 - uVar1) * 4)) >>> 0);
       case 5:
-        heap.u32(puVar2 + (5 - uVar1) * 4) = heap.u32(param_2 + (5 - uVar1) * 4);
+        heap.setU32((puVar2 + (5 - uVar1) * 4), (heap.u32(param_2 + (5 - uVar1) * 4)) >>> 0);
       case 4:
-        heap.u32(puVar2 + (4 - uVar1) * 4) = heap.u32(param_2 + (4 - uVar1) * 4);
+        heap.setU32((puVar2 + (4 - uVar1) * 4), (heap.u32(param_2 + (4 - uVar1) * 4)) >>> 0);
       case 3:
-        heap.u32(puVar2 + (3 - uVar1) * 4) = heap.u32(param_2 + (3 - uVar1) * 4);
+        heap.setU32((puVar2 + (3 - uVar1) * 4), (heap.u32(param_2 + (3 - uVar1) * 4)) >>> 0);
       case 2:
-        heap.u32(puVar2 + (2 - uVar1) * 4) = heap.u32(param_2 + (2 - uVar1) * 4);
+        heap.setU32((puVar2 + (2 - uVar1) * 4), (heap.u32(param_2 + (2 - uVar1) * 4)) >>> 0);
       case 1:
-        heap.u32(puVar2 + (1 - uVar1) * 4) = heap.u32(param_2 + (1 - uVar1) * 4);
+        heap.setU32((puVar2 + (1 - uVar1) * 4), (heap.u32(param_2 + (1 - uVar1) * 4)) >>> 0);
         param_2 = param_2 + -uVar1;
         puVar2 = puVar2 + -uVar1;
     }
     switch (param_3) {
       case 1:
-        switchD_00413a87_caseD_1: heap.u32((puVar2 + 3)) = heap.u32((param_2 + 3));
+        switchD_00413a87_caseD_1: heap.setU32((puVar2 + 3), (heap.u32((param_2 + 3))) >>> 0);
         return param_1;
       case 2:
-        switchD_00413a87_caseD_2: heap.u32((puVar2 + 3)) = heap.u32((param_2 + 3));
-        heap.u32((puVar2 + 2)) = heap.u32((param_2 + 2));
+        switchD_00413a87_caseD_2: heap.setU32((puVar2 + 3), (heap.u32((param_2 + 3))) >>> 0);
+        heap.setU32((puVar2 + 2), (heap.u32((param_2 + 2))) >>> 0);
         return param_1;
       case 3:
-        switchD_00413a87_caseD_3: heap.u32((puVar2 + 3)) = heap.u32((param_2 + 3));
-        heap.u32((puVar2 + 2)) = heap.u32((param_2 + 2));
-        heap.u32((puVar2 + 1)) = heap.u32((param_2 + 1));
+        switchD_00413a87_caseD_3: heap.setU32((puVar2 + 3), (heap.u32((param_2 + 3))) >>> 0);
+        heap.setU32((puVar2 + 2), (heap.u32((param_2 + 2))) >>> 0);
+        heap.setU32((puVar2 + 1), (heap.u32((param_2 + 1))) >>> 0);
         return param_1;
     }
     switchD_00413a87_caseD_0: return param_1;
@@ -155,7 +156,7 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
     param_3 = param_3 & 3;
     if (7 < uVar1) {
       for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-        heap.u32(puVar2) = heap.u32(param_2);
+        heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
         param_2 = param_2 + 1;
         puVar2 = puVar2 + 1;
       }
@@ -184,15 +185,15 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
         switch (param_1 & 3) {
           case 1:
             param_3 = uVar1 & 3;
-            heap.u32(param_1) = heap.u32(param_2);
-            heap.u32((param_1 + 1)) = heap.u32((param_2 + 1));
+            heap.setU32(param_1, (heap.u32(param_2)) >>> 0);
+            heap.setU32((param_1 + 1), (heap.u32((param_2 + 1))) >>> 0);
             uVar1 = uVar1 >>> 2;
-            heap.u32((param_1 + 2)) = heap.u32((param_2 + 2));
+            heap.setU32((param_1 + 2), (heap.u32((param_2 + 2))) >>> 0);
             param_2 = (param_2 + 3);
             puVar2 = (param_1 + 3);
             if (7 < uVar1) {
               for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-                heap.u32(puVar2) = heap.u32(param_2);
+                heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
                 param_2 = param_2 + 1;
                 puVar2 = puVar2 + 1;
               }
@@ -209,14 +210,14 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
             break;
           case 2:
             param_3 = uVar1 & 3;
-            heap.u32(param_1) = heap.u32(param_2);
+            heap.setU32(param_1, (heap.u32(param_2)) >>> 0);
             uVar1 = uVar1 >>> 2;
-            heap.u32((param_1 + 1)) = heap.u32((param_2 + 1));
+            heap.setU32((param_1 + 1), (heap.u32((param_2 + 1))) >>> 0);
             param_2 = (param_2 + 2);
             puVar2 = (param_1 + 2);
             if (7 < uVar1) {
               for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-                heap.u32(puVar2) = heap.u32(param_2);
+                heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
                 param_2 = param_2 + 1;
                 puVar2 = puVar2 + 1;
               }
@@ -233,13 +234,13 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
             break;
           case 3:
             param_3 = uVar1 & 3;
-            heap.u32(param_1) = heap.u32(param_2);
+            heap.setU32(param_1, (heap.u32(param_2)) >>> 0);
             param_2 = (param_2 + 1);
             uVar1 = uVar1 >>> 2;
             puVar2 = (param_1 + 1);
             if (7 < uVar1) {
               for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-                heap.u32(puVar2) = heap.u32(param_2);
+                heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
                 param_2 = param_2 + 1;
                 puVar2 = puVar2 + 1;
               }
@@ -258,34 +259,34 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
   }
   switch (uVar1) {
     case 7:
-      heap.u32(puVar2 + (uVar1 - 7) * 4) = heap.u32(param_2 + (uVar1 - 7) * 4);
+      heap.setU32((puVar2 + (uVar1 - 7) * 4), (heap.u32(param_2 + (uVar1 - 7) * 4)) >>> 0);
     case 6:
-      heap.u32(puVar2 + (uVar1 - 6) * 4) = heap.u32(param_2 + (uVar1 - 6) * 4);
+      heap.setU32((puVar2 + (uVar1 - 6) * 4), (heap.u32(param_2 + (uVar1 - 6) * 4)) >>> 0);
     case 5:
-      heap.u32(puVar2 + (uVar1 - 5) * 4) = heap.u32(param_2 + (uVar1 - 5) * 4);
+      heap.setU32((puVar2 + (uVar1 - 5) * 4), (heap.u32(param_2 + (uVar1 - 5) * 4)) >>> 0);
     case 4:
-      heap.u32(puVar2 + (uVar1 - 4) * 4) = heap.u32(param_2 + (uVar1 - 4) * 4);
+      heap.setU32((puVar2 + (uVar1 - 4) * 4), (heap.u32(param_2 + (uVar1 - 4) * 4)) >>> 0);
     case 3:
-      heap.u32(puVar2 + (uVar1 - 3) * 4) = heap.u32(param_2 + (uVar1 - 3) * 4);
+      heap.setU32((puVar2 + (uVar1 - 3) * 4), (heap.u32(param_2 + (uVar1 - 3) * 4)) >>> 0);
     case 2:
-      heap.u32(puVar2 + (uVar1 - 2) * 4) = heap.u32(param_2 + (uVar1 - 2) * 4);
+      heap.setU32((puVar2 + (uVar1 - 2) * 4), (heap.u32(param_2 + (uVar1 - 2) * 4)) >>> 0);
     case 1:
-      heap.u32(puVar2 + (uVar1 - 1) * 4) = heap.u32(param_2 + (uVar1 - 1) * 4);
+      heap.setU32((puVar2 + (uVar1 - 1) * 4), (heap.u32(param_2 + (uVar1 - 1) * 4)) >>> 0);
       param_2 = param_2 + uVar1;
       puVar2 = puVar2 + uVar1;
   }
   switch (param_3) {
     case 1:
-      switchD_00413905_caseD_1: heap.u32(puVar2) = heap.u32(param_2);
+      switchD_00413905_caseD_1: heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
       return param_1;
     case 2:
-      switchD_00413905_caseD_2: heap.u32(puVar2) = heap.u32(param_2);
-      heap.u32((puVar2 + 1)) = heap.u32((param_2 + 1));
+      switchD_00413905_caseD_2: heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
+      heap.setU32((puVar2 + 1), (heap.u32((param_2 + 1))) >>> 0);
       return param_1;
     case 3:
-      switchD_00413905_caseD_3: heap.u32(puVar2) = heap.u32(param_2);
-      heap.u32((puVar2 + 1)) = heap.u32((param_2 + 1));
-      heap.u32((puVar2 + 2)) = heap.u32((param_2 + 2));
+      switchD_00413905_caseD_3: heap.setU32(puVar2, (heap.u32(param_2)) >>> 0);
+      heap.setU32((puVar2 + 1), (heap.u32((param_2 + 1))) >>> 0);
+      heap.setU32((puVar2 + 2), (heap.u32((param_2 + 2))) >>> 0);
       return param_1;
   }
   switchD_00413905_caseD_0: return param_1;

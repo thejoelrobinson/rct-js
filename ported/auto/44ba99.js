@@ -23,9 +23,9 @@ export function FUN_0044ba99(heap) {
     uVar2 = uVar3 & 1;
     uVar3 = uVar3 >>> 1;
     if (uVar2 == 0) {
-      heap.u32((iVar7 + 2)) = sVar6;
+      heap.setU32((iVar7 + 2), (sVar6) >>> 0);
       sVar6 = sVar6 + sVar4;
-      heap.u32((iVar7 + 4)) = sVar6;
+      heap.setU32((iVar7 + 4), (sVar6) >>> 0);
       sVar6 = sVar6 + 1;
     }
     iVar7 = iVar7 + 0x10;

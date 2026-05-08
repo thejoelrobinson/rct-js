@@ -8,7 +8,7 @@ import { FUN_0040dd0c } from "./40dd0c.js";
 export function FUN_00407a41(heap, param_1) {
   if (heap.u32(param_1) != 0) {
     (heap.u32(heap.u32((heap.u32(heap.u32(param_1)) + 8))))(heap.u32(param_1));
-    heap.u32(param_1) = 0;
+    heap.setU32(param_1, (0) >>> 0);
     FUN_0040dd0c(heap, param_1);
   }
   return;

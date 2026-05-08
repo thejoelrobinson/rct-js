@@ -12,7 +12,7 @@ export function FUN_00403337(heap, param_1) {
   const __addr_local_8 = __sp + 8;
   try {
   FUN_0040330f(heap, param_1, __addr_local_c, __addr_local_8);
-  heap.u32((__addr_DAT_005f1b60) + (heap.u32(__addr_local_c)) * 4) = heap.u32((__addr_DAT_005f1b60) + (heap.u32(__addr_local_c)) * 4) | heap.u32(__addr_local_8 + (0) * 4);
+  heap.setU32(((__addr_DAT_005f1b60) + (heap.u32(__addr_local_c)) * 4), (heap.u32((__addr_DAT_005f1b60) + (heap.u32(__addr_local_c)) * 4) | heap.u32(__addr_local_8 + (0) * 4)) >>> 0);
   return;
 } finally {
     heap.freeFrame(12);

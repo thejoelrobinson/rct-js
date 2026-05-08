@@ -23,7 +23,7 @@ export function FUN_0043e7ef(heap) {
     if ((heap.u32((__addr_DAT_00743bbf) + (iVar2) * 4) == '\x06') && (in_EDX == heap.u32((__addr_DAT_00743bfc) + (iVar2) * 4))) {
       FUN_0043e792(heap);
       FUN_0044142c(heap);
-      heap.u32((__addr_DAT_00743bbf) + (iVar2) * 4) = 0;
+      heap.setU32(((__addr_DAT_00743bbf) + (iVar2) * 4), (0) >>> 0);
       FUN_00441452(heap);
     }
   }

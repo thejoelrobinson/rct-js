@@ -20,12 +20,14 @@ export function FUN_005d3457(heap) {
   const __addr_DAT_0088750f = __sp + 24;
   try {
   let bVar1 = 0;
+  let puVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
   let in_ECX = 0;
   let extraout_ECX = 0;
   let extraout_ECX_00 = 0;
   let in_EDX = 0;
+  let unaff_ESI = 0;
   let in_CF = 0;
   let bVar5 = 0;
   let in_ZF = 0;
@@ -49,8 +51,8 @@ export function FUN_005d3457(heap) {
   if ((heap.u32((__addr_DAT_006559d8) + (heap.u32(heap.u32(__addr_puStack_18) + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
     bVar1 = heap.u32(heap.u32(__addr_puStack_18) + (7) * 4);
     bVar5 = (in_ECX >>> 4 & 1) != 0;
-    heap.u32((__addr_DAT_0088750a + bVar1 * 0x260)) = CONCAT11((in_ECX >>> 5), (uVar3 >>> 5));
-    heap.u32((__addr_DAT_0088750e) + (bVar1 * 0x260) * 4) = heap.u32(heap.u32(__addr_puStack_18) + (2) * 4);
+    heap.setU32((__addr_DAT_0088750a + bVar1 * 0x260), (CONCAT11((in_ECX >>> 5), (uVar3 >>> 5))) >>> 0);
+    heap.setU32(((__addr_DAT_0088750e) + (bVar1 * 0x260) * 4), (heap.u32(heap.u32(__addr_puStack_18) + (2) * 4)) >>> 0);
     while (true) {
       heap.setU32(__addr_puStack_18, (puVar2) >>> 0);
       uVar4 = FUN_005cfac7(heap);
@@ -63,8 +65,8 @@ export function FUN_005d3457(heap) {
     }
     if ((heap.u32((__addr_DAT_006559d8) + (heap.u32(heap.u32(__addr_puStack_18) + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
       bVar1 = heap.u32(heap.u32(__addr_puStack_18) + (7) * 4);
-      heap.u32((__addr_DAT_0088750c + bVar1 * 0x260)) = CONCAT11((in_ECX >>> 5), (uVar3 >>> 5));
-      heap.u32((__addr_DAT_0088750f) + (bVar1 * 0x260) * 4) = heap.u32(heap.u32(__addr_puStack_18) + (2) * 4);
+      heap.setU32((__addr_DAT_0088750c + bVar1 * 0x260), (CONCAT11((in_ECX >>> 5), (uVar3 >>> 5))) >>> 0);
+      heap.setU32(((__addr_DAT_0088750f) + (bVar1 * 0x260) * 4), (heap.u32(heap.u32(__addr_puStack_18) + (2) * 4)) >>> 0);
       return CONCAT44(heap.u32(__addr_uStack_4), uVar3);
     }
   }

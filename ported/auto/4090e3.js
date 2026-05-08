@@ -38,9 +38,9 @@ export function FUN_004090e3(heap) {
         if ((iVar2 != 0) && (iVar2 = FUN_00408d5d(heap), iVar2 == 0)) {
           return;
         }
-        heap.u32(heap.u32(0x005ebf38) + (local_40) * 4) = heap.u32(heap.u32(0x005ebf38) + (local_40 + 1) * 4);
+        heap.setU32((heap.u32(0x005ebf38) + (local_40) * 4), (heap.u32(heap.u32(0x005ebf38) + (local_40 + 1) * 4)) >>> 0);
       }
-      heap.u32(heap.u32(0x005ebf38) + (local_40) * 4) = uVar1;
+      heap.setU32((heap.u32(0x005ebf38) + (local_40) * 4), (uVar1) >>> 0);
     }
   } else {
     if ((heap.u32(0x005f0950) < 2) || (heap.u32(0x005ebf4c) != 0)) {
@@ -62,10 +62,10 @@ export function FUN_004090e3(heap) {
       local_20 = 0;
       heap.setU32(__addr_local_24, (heap.u32(0x005f0ef4) * 0x40 + 0x40) >>> 0);
       local_1c = heap.u32(__addr_local_24) + local_2c;
-      heap.u32((__addr_DAT_005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4) = heap.u32(0x005f1a10);
-      heap.u32((__addr_DAT_005f0f04) + (heap.u32(0x005f0ef4) * 4) * 4) = heap.u32(0x005f1a14);
-      heap.u32((__addr_DAT_005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) = local_10;
-      heap.u32((__addr_DAT_005f0f0c) + (heap.u32(0x005f0ef4) * 4) * 4) = local_c;
+      heap.setU32(((__addr_DAT_005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4), (heap.u32(0x005f1a10)) >>> 0);
+      heap.setU32(((__addr_DAT_005f0f04) + (heap.u32(0x005f0ef4) * 4) * 4), (heap.u32(0x005f1a14)) >>> 0);
+      heap.setU32(((__addr_DAT_005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4), (local_10) >>> 0);
+      heap.setU32(((__addr_DAT_005f0f0c) + (heap.u32(0x005f0ef4) * 4) * 4), (local_c) >>> 0);
       local_18 = local_28;
       local_14 = local_28;
       local_8 = local_2c;
@@ -111,8 +111,8 @@ export function FUN_004090e3(heap) {
           break;
         }
       } while (iVar2 == -0x7789fe3e);
-      heap.u32((__addr_DAT_005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4) = 0;
-      heap.u32((__addr_DAT_005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) = heap.u32((__addr_DAT_005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4);
+      heap.setU32(((__addr_DAT_005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4), (0) >>> 0);
+      heap.setU32(((__addr_DAT_005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4), (heap.u32((__addr_DAT_005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4)) >>> 0);
     }
   }
   }

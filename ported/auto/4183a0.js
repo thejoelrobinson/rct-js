@@ -70,14 +70,14 @@ export function FUN_004183a0(heap, param_1, param_2, param_3) {
     FUN_004182e0(heap, __addr_local_18, heap.u32(param_3 + (3) * 4));
   }
   uVar3 = 0;
-  LAB_00418521: heap.setU32(__addr_local_18, (iVar5 << (0x1fU - heap.u32(param_3 + (3) * 4) & 0x1f) | -((uVar1 & 0x8000) != 0) & 0x80000000 | heap.u32(__addr_local_18)) >>> 0);
+  LAB_00418521: heap.setU32(__addr_local_18, (iVar5 << (0x1f - heap.u32(param_3 + (3) * 4) & 0x1f) | -((uVar1 & 0x8000) != 0) & 0x80000000 | heap.u32(__addr_local_18)) >>> 0);
   if (heap.u32(param_3 + (4) * 4) == 0x40) {
-    heap.u32(param_2 + (1) * 4) = heap.u32(__addr_local_18);
-    heap.u32(param_2) = local_14;
+    heap.setU32((param_2 + (1) * 4), (heap.u32(__addr_local_18)) >>> 0);
+    heap.setU32(param_2, (local_14) >>> 0);
     return uVar3;
   }
   if (heap.u32(param_3 + (4) * 4) == 0x20) {
-    heap.u32(param_2) = heap.u32(__addr_local_18);
+    heap.setU32(param_2, (heap.u32(__addr_local_18)) >>> 0);
   }
   return uVar3;
 } finally {

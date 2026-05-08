@@ -14,6 +14,7 @@ export function FUN_009bbff8(heap) {
   let uVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
+  let puVar5 = 0;
   uVar1 = heap.u32(0x0099fb80);
   uVar3 = heap.u32(0x0099fb82);
   uVar2 = (heap.u32(0x0099fb84) + heap.u32(0x0099fb80));

@@ -36,10 +36,10 @@ export function FUN_00429c3d(heap) {
         if ((heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) != '\x03') && (heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) != '\a')) {
           return -0x8000;
         }
-        if ((heap.u32((__addr_DAT_00887422) + (heap.u32((byte)(__addr_DAT_00743bfc) + (iVar4) * 4) * 0x130) * 4) & 1) == 0) {
+        if ((heap.u32((__addr_DAT_00887422) + (heap.u32((__addr_DAT_00743bfc) + (iVar4) * 4) * 0x130) * 4) & 1) == 0) {
           return -0x8000;
         }
-        uVar1 = heap.u32((__addr_DAT_0088747e + heap.u32((byte)(__addr_DAT_00743bfe) + (iVar4) * 4) * 2 + heap.u32((byte)(__addr_DAT_00743bfc) + (iVar4) * 4) * 0x260));
+        uVar1 = heap.u32((__addr_DAT_0088747e + heap.u32((__addr_DAT_00743bfe) + (iVar4) * 4) * 2 + heap.u32((__addr_DAT_00743bfc) + (iVar4) * 4) * 0x260));
         cVar3 = heap.u32((__addr_DAT_00743bff) + (iVar4) * 4);
         while (true) {
           if (cVar3 == '\0') {

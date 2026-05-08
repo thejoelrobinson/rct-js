@@ -13,10 +13,12 @@ export function FUN_00444b4a(heap) {
   try {
   let uVar1 = 0;
   let iVar2 = 0;
+  let pcVar3 = 0;
+  let puVar4 = 0;
   let uVar5 = 0;
   puVar4 = __addr_DAT_00991f8e;
   for (iVar2 = 0x4001; iVar2 != 0; iVar2 = iVar2 + -1) {
-    heap.u32(puVar4) = 0xffff;
+    heap.setU32(puVar4, (0xffff) >>> 0);
     puVar4 = puVar4 + 1;
   }
   pcVar3 = __addr_DAT_00743b94;
@@ -29,9 +31,9 @@ export function FUN_00444b4a(heap) {
       }
       LOCK();
       uVar1 = heap.u32((__addr_DAT_00991f8e) + (uVar5) * 4);
-      heap.u32((__addr_DAT_00991f8e) + (uVar5) * 4) = heap.u32((pcVar3 + 10));
+      heap.setU32(((__addr_DAT_00991f8e) + (uVar5) * 4), (heap.u32((pcVar3 + 10))) >>> 0);
       UNLOCK();
-      heap.u32((pcVar3 + 2)) = uVar1;
+      heap.setU32((pcVar3 + 2), (uVar1) >>> 0);
     }
     pcVar3 = pcVar3 + 0x100;
   } while (pcVar3 < __addr_DAT_0087c394);

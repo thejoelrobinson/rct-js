@@ -13,7 +13,7 @@ export function FUN_00455a66(heap) {
   let uVar1 = 0;
   let unaff_ESI = 0;
   let bVar2 = 0;
-  bVar2 = heap.u32((byte)(__addr_DAT_00743bc3) + (heap.u32((unaff_ESI + 0x30)) * 0x100) * 4) < 2;
+  bVar2 = heap.u32((__addr_DAT_00743bc3) + (heap.u32((unaff_ESI + 0x30)) * 0x100) * 4) < 2;
   uVar1 = FUN_0043feb6(heap);
   if (bVar2) {
     uVar1 = uVar1 | 0x2000;
@@ -26,7 +26,7 @@ export function FUN_00455a66(heap) {
   }
   }
   uVar1 = FUN_005e43de(heap);
-  LAB_00455aa6: heap.u32((unaff_ESI + 0x10)) = uVar1;
+  LAB_00455aa6: heap.setU32((unaff_ESI + 0x10), (uVar1) >>> 0);
   return;
 } finally {
     heap.freeFrame(4);

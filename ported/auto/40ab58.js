@@ -4,17 +4,19 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DestroyWindow } from "../../runtime/win32.js";
+import { DestroyWindow, _memset } from "../../runtime/win32.js";
 import { FUN_00413470 } from "./413470.js";
 export function FUN_0040ab58(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_local_74 = __sp + 0;
   try {
+  let puVar1 = 0;
   let iVar2 = 0;
   let local_70 = 0;
   let local_c = 0;
+  let local_8 = 0;
   local_8 = heap.u32(0x005ebf48);
-  _memset(__addr_local_74, 0, 0x6c);
+  _memset(heap, __addr_local_74, 0, 0x6c);
   heap.setU32(__addr_local_74, (0x6c) >>> 0);
   local_70 = 1;
   iVar2 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x58))))(heap.u32(0x005ebf34), __addr_local_74);

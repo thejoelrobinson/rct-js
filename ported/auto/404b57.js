@@ -5,14 +5,15 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { FormatMessageA, GetLastError, MessageBoxA } from "../../runtime/win32.js";
-import { Arguments } from "../../runtime/ghidra-builtins.js";
 export function FUN_00404b57(heap, param_1) {
   const __sp = heap.allocFrame(260);
   const __addr_local_108 = __sp + 0;
   try {
   let dwMessageId = 0;
   let dwLanguageId = 0;
+  let lpBuffer = 0;
   let nSize = 0;
+  let Arguments = 0;
   Arguments = 0x0;
   nSize = 0x104;
   lpBuffer = __addr_local_108;

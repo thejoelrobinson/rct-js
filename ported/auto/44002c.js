@@ -10,7 +10,7 @@ export function FUN_0044002c(heap) {
   let unaff_ESI = 0;
   if (heap.u32((unaff_ESI + 8)) == 0) {
     FUN_005e429d(heap);
-    heap.u32((unaff_ESI + 0x32)) = heap.u32((unaff_ESI + 0x32)) | 4;
+    heap.setU32((unaff_ESI + 0x32), (heap.u32((unaff_ESI + 0x32)) | 4) >>> 0);
     FUN_005e43de(heap);
   }
   return;

@@ -1,11 +1,13 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/0.c
+// Source: decompiled/c/413340.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-export function _strlen(heap, _Str) {
+export function FUN_00413340(heap, _Str) {
   let uVar1 = 0;
+  let puVar2 = 0;
+  let puVar3 = 0;
   puVar2 = _Str;
   do {
     if ((puVar2 & 3) == 0) {

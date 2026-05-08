@@ -69,7 +69,7 @@ export function FUN_00453f76(heap) {
     if (heap.u32(0x00632974) == 0) {
     if ((heap.u32(0x008d7eb2) == '\x02') && (uVar2 = FUN_005df40c(heap), uVar2 < 0x1b5)) {
       heap.setU32(0x00632974, (((uVar2 >>> 0x10) & 0x3f) + 0x2b) >>> 0);
-      heap.setU32(0x00632976, ((byte)(uVar2 >>> 0x18) & 0x1f) >>> 0);
+      heap.setU32(0x00632976, ((uVar2 >>> 0x18) & 0x1f) >>> 0);
       heap.setU32(0x009b2300, ('\x01') >>> 0);
     }
   } else {

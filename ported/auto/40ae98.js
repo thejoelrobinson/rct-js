@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetDC, GetSystemPaletteEntries, ReleaseDC } from "../../runtime/win32.js";
+import { GetDC, GetSystemPaletteEntries, ReleaseDC, _memset } from "../../runtime/win32.js";
 import { FUN_00405b05 } from "./405b05.js";
 import { FUN_00408d5d } from "./408d5d.js";
 import { FUN_0040ab29 } from "./40ab29.js";
@@ -55,7 +55,7 @@ export function FUN_0040ae98(heap) {
       local_474 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x54))))(heap.u32(0x005ebf30), heap.u32(0x005f12ac), heap.u32(0x005f129c), heap.u32(0x005f1380));
       if (local_474 == 0) {
         if (heap.u32(0x005f12b4) < 1) {
-          _memset(__addr_local_470, 0, 0x6c);
+          _memset(heap, __addr_local_470, 0, 0x6c);
           heap.setU32(__addr_local_470, (0x6c) >>> 0);
           local_46c = 1;
           local_408 = 0x200;
@@ -66,7 +66,7 @@ export function FUN_0040ae98(heap) {
           }
           heap.setU32(0x005ebf38, (0) >>> 0);
         } else {
-          _memset(__addr_local_470, 0, 0x6c);
+          _memset(heap, __addr_local_470, 0, 0x6c);
           heap.setU32(__addr_local_470, (0x6c) >>> 0);
           local_46c = 0x21;
           local_408 = 0x218;
@@ -102,16 +102,16 @@ export function FUN_0040ae98(heap) {
               local_47c = GetDC(heap, 0x0);
               GetSystemPaletteEntries(heap, local_47c, 0, 10, __addr_local_404);
               for (local_478 = 0; local_478 < 10; local_478 = local_478 + 1) {
-                heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 3)) = '\x02';
-                heap.u8((heap.u32(__addr_local_2c + (local_478) * 4) + 3)) = '\x02';
+                heap.setU8((heap.u32(__addr_local_404 + (local_478) * 4) + 3), ('\x02') & 0xff);
+                heap.setU8((heap.u32(__addr_local_2c + (local_478) * 4) + 3), ('\x02') & 0xff);
               }
               GetSystemPaletteEntries(heap, local_47c, 0xf6, 10, (__addr_aBStack_3dc + 0x3b0));
               ReleaseDC(heap, 0x0, local_47c);
               for (local_478 = 10; local_478 < 0xf6; local_478 = local_478 + 1) {
-                heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 2)) = local_478 + 0xf7;
-                heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 1)) = heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 2));
-                heap.u8(heap.u32(__addr_local_404 + (local_478) * 4)) = heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 1));
-                heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 3)) = '\x05';
+                heap.setU8((heap.u32(__addr_local_404 + (local_478) * 4) + 2), (local_478 + 0xf7) & 0xff);
+                heap.setU8((heap.u32(__addr_local_404 + (local_478) * 4) + 1), (heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 2))) & 0xff);
+                heap.setU8(heap.u32(__addr_local_404 + (local_478) * 4), (heap.u8((heap.u32(__addr_local_404 + (local_478) * 4) + 1))) & 0xff);
+                heap.setU8((heap.u32(__addr_local_404 + (local_478) * 4) + 3), ('\x05') & 0xff);
               }
               local_474 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x14))))(heap.u32(0x005ebf30), 0x4c, __addr_local_404, __addr_DAT_005ebf3c, 0);
               if (local_474 != 0) {
@@ -120,7 +120,7 @@ export function FUN_0040ae98(heap) {
               }
               (heap.u32(heap.u32((heap.u32(heap.u32(__addr_DAT_005ebf34)) + 0x7c))))(heap.u32(__addr_DAT_005ebf34), heap.u32(__addr_DAT_005ebf3c));
               for (local_478 = 0; iVar2 = local_474, local_478 < 0x100; local_478 = local_478 + 1) {
-                heap.u32((__addr_DAT_005f0960 + local_478 * 4)) = heap.u32(__addr_local_404 + (local_478) * 4);
+                heap.setU32((__addr_DAT_005f0960 + local_478 * 4), (heap.u32(__addr_local_404 + (local_478) * 4)) >>> 0);
               }
             }
             local_474 = iVar2;
@@ -130,7 +130,7 @@ export function FUN_0040ae98(heap) {
             local_468 = 0x40;
             iVar2 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x18))))(heap.u32(0x005ebf30), __addr_local_470, __addr_DAT_005ebf40, 0);
             if (iVar2 == 0) {
-              heap.u32(__addr_local_4e0 + (0) * 4) = 100;
+              heap.setU32((__addr_local_4e0 + (0) * 4), (100) >>> 0);
               local_490 = 0;
               local_474 = 0;
               while (iVar2 = (heap.u32(heap.u32((heap.u32(heap.u32(__addr_DAT_005ebf40)) + 0x14))))(heap.u32(__addr_DAT_005ebf40), 0, 0, 0, 0x1000400, __addr_local_4e0), iVar2 == -0x7789fe3e) {
@@ -144,10 +144,10 @@ export function FUN_0040ae98(heap) {
             heap.setU32(0x005f138c, (8) >>> 0);
             heap.setU32(0x005f12a4, (8) >>> 0);
             for (local_478 = 0; local_478 < heap.u32(0x005f12b4); local_478 = local_478 + 1) {
-              heap.u32((__addr_DAT_005f0f04) + (local_478 * 4) * 4) = 0;
-              heap.u32((__addr_DAT_005f0f00) + (local_478 * 4) * 4) = heap.u32((__addr_DAT_005f0f04) + (local_478 * 4) * 4);
-              heap.u32((__addr_DAT_005f0f0c) + (local_478 * 4) * 4) = 0;
-              heap.u32((__addr_DAT_005f0f08) + (local_478 * 4) * 4) = heap.u32((__addr_DAT_005f0f0c) + (local_478 * 4) * 4);
+              heap.setU32(((__addr_DAT_005f0f04) + (local_478 * 4) * 4), (0) >>> 0);
+              heap.setU32(((__addr_DAT_005f0f00) + (local_478 * 4) * 4), (heap.u32((__addr_DAT_005f0f04) + (local_478 * 4) * 4)) >>> 0);
+              heap.setU32(((__addr_DAT_005f0f0c) + (local_478 * 4) * 4), (0) >>> 0);
+              heap.setU32(((__addr_DAT_005f0f08) + (local_478 * 4) * 4), (heap.u32((__addr_DAT_005f0f0c) + (local_478 * 4) * 4)) >>> 0);
             }
             heap.setU32(0x005ebe50, (FUN_0040ab58) >>> 0);
             uVar1 = 1;

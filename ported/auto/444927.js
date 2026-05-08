@@ -17,7 +17,9 @@ export function FUN_00444927(heap) {
   let uVar2 = 0;
   let in_ECX = 0;
   let in_DX = 0;
+  let unaff_ESI = 0;
   let uVar3 = 0;
+  let puVar4 = 0;
   if (in_AX == 0x8000) {
     uVar2 = 0x4000;
   } else {
@@ -33,21 +35,21 @@ export function FUN_00444927(heap) {
     while (__addr_DAT_00743b94 + heap.u32(puVar4) * 0x100 != unaff_ESI) {
       puVar4 = __addr_DAT_00743b96 + heap.u32(puVar4) * 0x80;
     }
-    heap.u32(puVar4) = heap.u32((unaff_ESI + 2));
+    heap.setU32(puVar4, (heap.u32((unaff_ESI + 2))) >>> 0);
     LOCK();
     uVar1 = heap.u32((__addr_DAT_00991f8e) + (uVar2) * 4);
-    heap.u32((__addr_DAT_00991f8e) + (uVar2) * 4) = heap.u32((unaff_ESI + 10));
+    heap.setU32(((__addr_DAT_00991f8e) + (uVar2) * 4), (heap.u32((unaff_ESI + 10))) >>> 0);
     UNLOCK();
-    heap.u32((unaff_ESI + 2)) = uVar1;
+    heap.setU32((unaff_ESI + 2), (uVar1) >>> 0);
   }
   if (in_AX != 0x8000) {
     (heap.u32(heap.u32((__addr_PTR_LAB_004449c4) + (heap.u32(0x00991f88)) * 4)))();
     return;
   }
-  heap.u32((unaff_ESI + 0x16)) = 0x8000;
-  heap.u32((unaff_ESI + 0xe)) = 0x8000;
-  heap.u32((unaff_ESI + 0x10)) = in_ECX;
-  heap.u32((unaff_ESI + 0x12)) = in_DX;
+  heap.setU32((unaff_ESI + 0x16), (0x8000) >>> 0);
+  heap.setU32((unaff_ESI + 0xe), (0x8000) >>> 0);
+  heap.setU32((unaff_ESI + 0x10), (in_ECX) >>> 0);
+  heap.setU32((unaff_ESI + 0x12), (in_DX) >>> 0);
   return;
 } finally {
     heap.freeFrame(16);

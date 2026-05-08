@@ -18,9 +18,9 @@ export function FUN_00443f36(heap) {
     iVar2 = iVar3 + -4;
     LOCK();
     uVar1 = heap.u32((__addr_DAT_0087c81c + iVar3));
-    heap.u32((__addr_DAT_0087c81c + iVar3)) = 0;
+    heap.setU32((__addr_DAT_0087c81c + iVar3), (0) >>> 0);
     UNLOCK();
-    heap.u32((iVar3 + 0x87c854)) = uVar1;
+    heap.setU32((iVar3 + 0x87c854), (uVar1) >>> 0);
     iVar3 = iVar2;
   } while (iVar2 != 0);
   FUN_005e5301(heap);

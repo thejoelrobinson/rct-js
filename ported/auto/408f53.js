@@ -17,13 +17,13 @@ export function FUN_00408f53(heap, param_1) {
       }
     } while (iVar1 == -0x7789fe3e);
     if (iVar1 == 0) {
-      heap.u32(param_1) = heap.u32(param_1 + (0xe) * 4);
-      heap.u32((param_1 + 1)) = 4;
-      heap.u32((param_1 + 6)) = heap.u32(param_1 + (8) * 4);
-      heap.u32((param_1 + 2)) = heap.u32(param_1 + (7) * 4);
-      heap.u32(param_1 + (4) * 4) = heap.u32(param_1 + (9) * 4);
-      heap.u32((param_1 + 10)) = 1;
-      heap.u32((param_1 + 3)) = 1;
+      heap.setU32(param_1, (heap.u32(param_1 + (0xe) * 4)) >>> 0);
+      heap.setU32((param_1 + 1), (4) >>> 0);
+      heap.setU32((param_1 + 6), (heap.u32(param_1 + (8) * 4)) >>> 0);
+      heap.setU32((param_1 + 2), (heap.u32(param_1 + (7) * 4)) >>> 0);
+      heap.setU32((param_1 + (4) * 4), (heap.u32(param_1 + (9) * 4)) >>> 0);
+      heap.setU32((param_1 + 10), (1) >>> 0);
+      heap.setU32((param_1 + 3), (1) >>> 0);
       uVar3 = 1;
     } else {
       uVar3 = 0;

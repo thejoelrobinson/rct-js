@@ -20,11 +20,11 @@ export function FUN_005d60fb(heap) {
   let unaff_ESI = 0;
   heap.setU32(0x0065d8cf, (FUN_005d3b30(heap)) >>> 0);
   FUN_005e3f31(heap);
-  heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_006521b8;
-  heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x34;
+  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_006521b8) >>> 0);
+  heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x34) >>> 0);
   FUN_005e412c(heap);
-  heap.u32((unaff_ESI + 0x15a)) = 0xffff;
-  heap.u32((unaff_ESI + 0x15c)) = 0xffff;
+  heap.setU32((unaff_ESI + 0x15a), (0xffff) >>> 0);
+  heap.setU32((unaff_ESI + 0x15c), (0xffff) >>> 0);
   FUN_005e6bcd(heap);
   heap.setU32(0x00652290, (0) >>> 0);
   FUN_005e0c2f(heap);

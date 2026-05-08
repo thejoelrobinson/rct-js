@@ -6,16 +6,17 @@
 
 import { FUN_00440fe3 } from "./440fe3.js";
 export function FUN_004428d6(heap) {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let unaff_ESI = 0;
-  if ((1 < heap.u32(0x0087d7a0)) && (heap.u32((unaff_ESI + 0xf4)) = heap.u32((unaff_ESI + 0xf4)) + '\x01', heap.u32((unaff_ESI + 0xf4)) == -2)) {
-    heap.u32((unaff_ESI + 0xf4)) = 0xdc;
+  if ((1 < heap.u32(0x0087d7a0)) && (heap.setU32((unaff_ESI + 0xf4), (heap.u32((unaff_ESI + 0xf4)) + '\x01') >>> 0), heap.u32((unaff_ESI + 0xf4)) == -2)) {
+    heap.setU32((unaff_ESI + 0xf4), (0xdc) >>> 0);
     FUN_00440fe3(heap);
     pbVar1 = (unaff_ESI + 0x3b);
     bVar2 = heap.u32(pbVar1);
-    heap.u32(pbVar1) = heap.u32(pbVar1) - 0x1e;
+    heap.setU32(pbVar1, (heap.u32(pbVar1) - 0x1e) >>> 0);
     if (bVar2 < 0x1e) {
-      heap.u32((unaff_ESI + 0x3b)) = 0;
+      heap.setU32((unaff_ESI + 0x3b), (0) >>> 0);
     }
   }
   return;

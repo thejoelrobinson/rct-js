@@ -10,11 +10,13 @@ export function FUN_00439219(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_00971ef4 = __sp + 0;
   try {
+  let pbVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
   let unaff_ESI = 0;
-  heap.u32((unaff_ESI + 0xc4)) = heap.u32((unaff_ESI + 0xc4)) + '\x01';
-  if (((byte) * (unaff_ESI + 10) & 0xf) != (heap.u32((unaff_ESI + 0xc4)) & 0xf)) {
+  let pbVar4 = 0;
+  heap.setU32((unaff_ESI + 0xc4), (heap.u32((unaff_ESI + 0xc4)) + '\x01') >>> 0);
+  if ((heap.u32((unaff_ESI + 10)) & 0xf) != (heap.u32((unaff_ESI + 0xc4)) & 0xf)) {
     return;
   }
   uVar2 = heap.u32((unaff_ESI + 0x26)) << 7 | heap.u32((unaff_ESI + 0x26)) >>> 9 | heap.u32((unaff_ESI + 0x24));
@@ -28,7 +30,7 @@ export function FUN_00439219(heap) {
     pbVar4 = pbVar4 + 8;
     if ((heap.u32(pbVar1) & 0x80) != 0) {
       FUN_0044142c(heap);
-      heap.u32((unaff_ESI + 0x2b)) = 0;
+      heap.setU32((unaff_ESI + 0x2b), (0) >>> 0);
       FUN_00441452(heap);
       return;
     }

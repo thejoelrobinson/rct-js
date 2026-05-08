@@ -38,6 +38,8 @@ export function FUN_005d3e56(heap) {
   let extraout_CX = 0;
   let extraout_CX_00 = 0;
   let extraout_CX_01 = 0;
+  let in_EDX = 0;
+  let extraout_EDX = 0;
   let uVar6 = 0;
   let bVar7 = 0;
   let uVar9 = 0;
@@ -101,7 +103,7 @@ export function FUN_005d3e56(heap) {
         in_EDX = extraout_EDX;
         uVar5 = extraout_CX_00;
       } else {
-        heap.u32((iVar11 + 0x30)) = heap.u32(in_EDX + (7) * 4);
+        heap.setU32((iVar11 + 0x30), (heap.u32(in_EDX + (7) * 4)) >>> 0);
         FUN_005d21fa(heap);
         uVar5 = extraout_CX;
       }
@@ -116,19 +118,19 @@ export function FUN_005d3e56(heap) {
         uVar10 = FUN_005d5003(heap);
         return uVar10;
       }
-      if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (heap.u32(in_EDX + (7) * 4) * 0x260) * 4) * 8)) & 0x100) != 0) {
+      if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((__addr_DAT_00887420) + (heap.u32(in_EDX + (7) * 4) * 0x260) * 4) * 8)) & 0x100) != 0) {
         FUN_005d3329(heap);
       }
       uVar8 = CONCAT11(heap.u32(in_EDX), heap.u32(in_EDX + (4) * 4)) & 0xffff03ff;
       bVar12 = false;
       uVar13 = FUN_005cfe66(heap);
-      uVar4 = (undefined2)(uVar13 >>> 0x20);
+      uVar4 = (uVar13 >>> 0x20);
       uVar10 = uVar13;
       if (!bVar12) {
         heap.setU32(0x00652289, (heap.u32((unaff_EDI + 7))) >>> 0);
         heap.setU32(0x00652288, ('\x03') >>> 0);
         uVar5 = uVar13;
-        uVar9 = (undefined1)(uVar8 >>> 8);
+        uVar9 = (uVar8 >>> 8);
         uVar6 = uVar8;
         heap.setU32(0x00652292, (0) >>> 0);
         heap.setU32(0x00652293, (0) >>> 0);
@@ -137,7 +139,7 @@ export function FUN_005d3e56(heap) {
         heap.setU32(0x0065228e, (uVar4) >>> 0);
         heap.setU32(0x00652290, (uVar9) >>> 0);
         heap.setU32(0x00652291, (uVar6) >>> 0);
-        if (((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (heap.u32(0x00652289) * 0x260) * 4) * 8)) & 0x8000) == 0) && (FUN_005d1dd4(heap), heap.u32(0x00652288) != '\x01')) {
+        if (((heap.u32((__addr_DAT_005f5b78 + heap.u32((__addr_DAT_00887420) + (heap.u32(0x00652289) * 0x260) * 4) * 8)) & 0x8000) == 0) && (FUN_005d1dd4(heap), heap.u32(0x00652288) != '\x01')) {
           heap.setU32(0x00652288, ('\x03') >>> 0);
           heap.setU32(0x00652292, (0) >>> 0);
           heap.setU32(0x00652293, (0) >>> 0);
@@ -163,7 +165,7 @@ export function FUN_005d3e56(heap) {
       }
     }
   } else {
-    heap.u16(0x971e8c) = heap.u32((__addr_DAT_00887442) + (uVar10 * 0x130) * 4);
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_005d3e56"); })();
     heap.setU32(0x00971e8e, (heap.u32((__addr_DAT_00887444) + (uVar10 * 0x98) * 4)) >>> 0);
     uVar10 = FUN_00427108(heap);
   }

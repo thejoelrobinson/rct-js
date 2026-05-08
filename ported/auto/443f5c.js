@@ -12,7 +12,7 @@ export function FUN_00443f5c(heap) {
   let uVar1 = 0;
   uVar1 = 0;
   do {
-    heap.u32((__addr_DAT_0087c820 + uVar1)) = 0;
+    heap.setU32((__addr_DAT_0087c820 + uVar1), (0) >>> 0);
     uVar1 = uVar1 + 4;
   } while (uVar1 < 0x38);
   heap.setU32(0x0087d304, (0) >>> 0);

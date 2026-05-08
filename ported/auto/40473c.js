@@ -4,7 +4,8 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { timeGetTime } from "../../runtime/win32.js";
 export function FUN_0040473c(heap) {
-  timeGetTime();
+  timeGetTime(heap);
   return;
 }

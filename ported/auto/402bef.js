@@ -19,7 +19,7 @@ export function FUN_00402bef(heap) {
   if (heap.u32(0x005e9114) == 0) {
     heap.setU32(0x005e9120, (1000) >>> 0);
   } else {
-    heap.setU32(0x005e9120, ((undefined4)(1000 / heap.u32(0x005e9114))) >>> 0);
+    heap.setU32(0x005e9120, ((1000 / heap.u32(0x005e9114))) >>> 0);
   }
   heap.setU32(0x005eee80, (heap.u32(0x005e9110)) >>> 0);
   heap.setU32(0x005eee88, (heap.u32(0x005eee88) + heap.u32(0x005e9114)) >>> 0);

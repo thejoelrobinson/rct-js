@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { undefined3 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { FUN_00416f60 } from "./416f60.js";
 import { FUN_00418ff0 } from "./418ff0.js";
@@ -23,14 +24,20 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
   let iVar8 = 0;
   let uVar9 = 0;
   let bVar10 = 0;
+  let pbVar11 = 0;
+  let pbVar12 = 0;
   let uVar13 = 0;
+  let pbVar14 = 0;
   let local_60 = 0;
+  let local_5c = 0;
   let local_54 = 0;
+  let local_50 = 0;
   let local_4c = 0;
   let local_48 = 0;
   let local_30 = 0;
   let uStack_2a = 0;
   let uStack_28 = 0;
+  let local_26 = 0;
   let local_22 = 0;
   let local_5 = 0;
   local_5c = __addr_local_1c;
@@ -134,7 +141,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
           }
           if (uVar13 < 0x19) {
             uVar13 = uVar13 + 1;
-            heap.u32(local_5c) = bVar10 - 0x30;
+            heap.setU32(local_5c, (bVar10 - 0x30) >>> 0);
             bVar10 = heap.u32(pbVar12);
             local_5c = local_5c + 1;
             param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
@@ -170,7 +177,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
             bVar10 = heap.u32(pbVar12);
             local_60 = local_60 + -1;
             pbVar12 = pbVar12 + 1;
-            (((param_3) >>> 8) & 0xffffffff) = (undefined3)(param_3 >>> 8);
+            (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004190f0"); })();
             param_3 = CONCAT31((((param_3) >>> 8) & 0xffffffff), bVar10);
           }
         }
@@ -186,7 +193,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
           }
           if (uVar13 < 0x19) {
             uVar13 = uVar13 + 1;
-            heap.u32(local_5c) = bVar10 - 0x30;
+            heap.setU32(local_5c, (bVar10 - 0x30) >>> 0);
             local_5c = local_5c + 1;
             local_60 = local_60 + -1;
           }
@@ -329,7 +336,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
     }
     pbVar11 = pbVar12;
   } while (iVar8 != 10);
-  heap.u32(param_2) = pbVar12;
+  heap.setU32(param_2, (pbVar12) >>> 0);
   if (bVar2) {
     if (0x18 < uVar13) {
       if ('\x04' < local_5) {
@@ -402,10 +409,10 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
     pbVar11 = 0x0;
     local_30 = 4;
   }
-  heap.u32(param_1) = heap.u32(__addr_local_2c);
-  heap.u32((param_1 + 1)) = pbVar11;
-  heap.u32((param_1 + 3)) = param_3;
-  heap.u32(param_1 + (5) * 4) = local_22 | uVar7;
+  heap.setU32(param_1, (heap.u32(__addr_local_2c)) >>> 0);
+  heap.setU32((param_1 + 1), (pbVar11) >>> 0);
+  heap.setU32((param_1 + 3), (param_3) >>> 0);
+  heap.setU32((param_1 + (5) * 4), (local_22 | uVar7) >>> 0);
   return local_30;
 } finally {
     heap.freeFrame(28);

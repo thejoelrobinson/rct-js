@@ -14,8 +14,8 @@ export function FUN_00415580(heap, param_1) {
     PTR_LOOP_005ee520 = heap.u32(param_1 + (1) * 4);
   }
   if (param_1 != __addr_PTR_LOOP_005ec500) {
-    heap.u32(heap.u32(param_1 + (1) * 4)) = heap.u32(param_1);
-    heap.u32((heap.u32(param_1) + 4)) = heap.u32(param_1 + (1) * 4);
+    heap.setU32(heap.u32(param_1 + (1) * 4), (heap.u32(param_1)) >>> 0);
+    heap.setU32((heap.u32(param_1) + 4), (heap.u32(param_1 + (1) * 4)) >>> 0);
     HeapFree(heap, heap.u32(0x005f3e44), 0, param_1);
     return;
   }

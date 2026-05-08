@@ -30,10 +30,10 @@ export function FUN_004340f5(heap) {
     heap.setU32(0x00991f88, (heap.u32(0x00991f88) + 1) >>> 0);
     heap.setU32(0x00991f88, (heap.u32(0x00991f88) & 3) >>> 0);
     uVar3 = FUN_005e4355(heap);
-    heap.u32((unaff_ESI + 0x170)) = uVar3;
-    heap.u32((unaff_ESI + 0x172)) = sVar2;
-    heap.u32((iVar1 + 8)) = uVar3;
-    heap.u32((iVar1 + 10)) = sVar2;
+    heap.setU32((unaff_ESI + 0x170), (uVar3) >>> 0);
+    heap.setU32((unaff_ESI + 0x172), (sVar2) >>> 0);
+    heap.setU32((iVar1 + 8), (uVar3) >>> 0);
+    heap.setU32((iVar1 + 10), (sVar2) >>> 0);
     FUN_005e43de(heap);
     FUN_00434231(heap);
     FUN_004448fb(heap);

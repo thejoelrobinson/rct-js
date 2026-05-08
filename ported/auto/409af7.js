@@ -22,11 +22,11 @@ export function FUN_00409af7(heap, param_1, param_2) {
     if ((0 < local_8) && (0 < local_c)) {
       if (0x40 < local_8) {
         local_8 = 0x40;
-        heap.u32(param_2 + (2) * 4) = heap.u32(param_2) + 0x40;
+        heap.setU32((param_2 + (2) * 4), (heap.u32(param_2) + 0x40) >>> 0);
       }
       if (0x40 < local_c) {
         local_c = 0x40;
-        heap.u32(param_2 + (3) * 4) = heap.u32(param_2 + (1) * 4) + 0x40;
+        heap.setU32((param_2 + (3) * 4), (heap.u32(param_2 + (1) * 4) + 0x40) >>> 0);
       }
       local_18 = 0;
       heap.setU32(__addr_local_1c, (0) >>> 0);

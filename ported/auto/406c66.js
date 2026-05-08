@@ -9,7 +9,7 @@ export function FUN_00406c66(heap, param_1, param_2) {
   let iVar1 = 0;
   let uVar2 = 0;
   iVar1 = FUN_004113d9(heap, param_1, heap.u32(param_2), 0);
-  heap.u32(param_2) = iVar1;
+  heap.setU32(param_2, (iVar1) >>> 0);
   if (heap.u32(0x005ebedc) == 0) {
     uVar2 = 2;
   } else {

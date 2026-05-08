@@ -43,17 +43,17 @@ export function FUN_00406820(heap) {
             return 0;
           }
           FUN_00410780(heap);
-          heap.u32((heap.u32(0x005ebed4) + local_34 * 0x1c)) = iVar1;
+          heap.setU32((heap.u32(0x005ebed4) + local_34 * 0x1c), (iVar1) >>> 0);
           if ((local_28 & 4) == 0) {
-            heap.u32((heap.u32(0x005ebed4) + 4 + local_34 * 0x1c)) = 0;
+            heap.setU32((heap.u32(0x005ebed4) + 4 + local_34 * 0x1c), (0) >>> 0);
           } else {
-            heap.u32((heap.u32(0x005ebed4) + 4 + local_34 * 0x1c)) = 1;
+            heap.setU32((heap.u32(0x005ebed4) + 4 + local_34 * 0x1c), (1) >>> 0);
           }
-          heap.u32((heap.u32(0x005ebed4) + 8 + local_34 * 0x1c)) = local_24;
-          heap.u32((heap.u32(0x005ebed4) + 0xc + local_34 * 0x1c)) = local_20;
-          heap.u32((heap.u32(0x005ebed4) + 0x10 + local_34 * 0x1c)) = local_1c;
-          heap.u32((heap.u32(0x005ebed4) + 0x14 + local_34 * 0x1c)) = local_18;
-          heap.u32((heap.u32(0x005ebed4) + 0x18 + local_34 * 0x1c)) = local_14;
+          heap.setU32((heap.u32(0x005ebed4) + 8 + local_34 * 0x1c), (local_24) >>> 0);
+          heap.setU32((heap.u32(0x005ebed4) + 0xc + local_34 * 0x1c), (local_20) >>> 0);
+          heap.setU32((heap.u32(0x005ebed4) + 0x10 + local_34 * 0x1c), (local_1c) >>> 0);
+          heap.setU32((heap.u32(0x005ebed4) + 0x14 + local_34 * 0x1c), (local_18) >>> 0);
+          heap.setU32((heap.u32(0x005ebed4) + 0x18 + local_34 * 0x1c), (local_14) >>> 0);
           local_34 = local_34 + 1;
         }
       }

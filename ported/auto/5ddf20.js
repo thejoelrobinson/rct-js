@@ -18,7 +18,7 @@ export function FUN_005ddf20(heap) {
   FUN_005dde9c(heap);
   uVar1 = 0;
   do {
-    heap.u32((__addr_DAT_006e1eab) + (uVar1) * 4) = heap.u32(heap.u32((__addr_PTR_DAT_006e2758) + (uVar1) * 4));
+    heap.setU32(((__addr_DAT_006e1eab) + (uVar1) * 4), (heap.u32(heap.u32((__addr_PTR_DAT_006e2758) + (uVar1) * 4))) >>> 0);
     uVar1 = uVar1 + 1;
   } while (uVar1 < 0xc);
   return;

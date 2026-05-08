@@ -10,6 +10,7 @@ export function FUN_009b38bc(heap) {
   let uVar2 = 0;
   let sVar3 = 0;
   let iVar4 = 0;
+  let puVar5 = 0;
   let unaff_ESI = 0;
   if ((heap.u32(0x009a2000) & 0x20000000) != 0) {
     puVar5 = (heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2)) + unaff_ESI);

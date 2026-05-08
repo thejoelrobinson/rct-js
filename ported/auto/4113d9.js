@@ -61,7 +61,7 @@ export function FUN_004113d9(heap, param_1, param_2, param_3) {
         return heap.u32(__addr_param_2);
       }
       uVar3 = FUN_00410f7e(heap, heap.u32(__addr_local_8));
-      heap.u32(param_3) = uVar3;
+      heap.setU32(param_3, (uVar3) >>> 0);
       return heap.u32(__addr_param_2);
     }
   }

@@ -8,6 +8,7 @@ import { FUN_00418810 } from "./418810.js";
 export function FUN_00416cd0(heap, param_1, param_2) {
   let cVar1 = 0;
   let uVar2 = 0;
+  let pcVar3 = 0;
   if (param_2 != 0) {
     uVar2 = 0xffffffff;
     pcVar3 = param_1;

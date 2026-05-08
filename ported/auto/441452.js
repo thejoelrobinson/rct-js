@@ -17,8 +17,8 @@ export function FUN_00441452(heap) {
     FUN_005e5301(heap);
     if ((heap.u32((unaff_ESI + 0x2b)) == '\x03') || (heap.u32((unaff_ESI + 0x2b)) == '\a')) {
       iVar1 = heap.u32((unaff_ESI + 0x68)) * 0x260;
-      heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) = heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) + '\x01';
-      heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) = heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) | 0xc;
+      heap.setU32(((__addr_DAT_0088752b) + (iVar1) * 4), (heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) + '\x01') >>> 0);
+      heap.setU32(((__addr_DAT_0088751d) + (iVar1) * 4), (heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) | 0xc) >>> 0);
     }
     FUN_005e5301(heap);
     return in_EAX;

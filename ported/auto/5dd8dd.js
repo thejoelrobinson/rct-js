@@ -30,7 +30,7 @@ export function FUN_005dd8dd(heap) {
   let iVar7 = 0;
   uVar6 = in_EDX & 0xff;
   iVar7 = uVar6 * 0x260;
-  if ((heap.u32((__addr_DAT_00887420) + (iVar7) * 4) == 0x29) || ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (iVar7) * 4) * 8)) & 0x10000) != 0)) {
+  if ((heap.u32((__addr_DAT_00887420) + (iVar7) * 4) == 0x29) || ((heap.u32((__addr_DAT_005f5b78 + heap.u32((__addr_DAT_00887420) + (iVar7) * 4) * 8)) & 0x10000) != 0)) {
     FUN_005e6028(heap);
   }
   uVar4 = 0;
@@ -49,7 +49,7 @@ export function FUN_005dd8dd(heap) {
           uVar1 = heap.u32((__addr_DAT_00887426) + (uVar6 * 0x130 + iVar2) * 4);
         }
         }
-        heap.u32((__addr_DAT_00743bc6 + uVar5 * 0x100)) = uVar1;
+        heap.setU32((__addr_DAT_00743bc6 + uVar5 * 0x100), (uVar1) >>> 0);
         FUN_005e53ca(heap);
         iVar2 = extraout_ECX + 1;
         uVar5 = heap.u32((__addr_DAT_00743bd2 + uVar5 * 0x100));

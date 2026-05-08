@@ -21,6 +21,7 @@ export function FUN_004077b3(heap, param_1, param_2, param_3, param_4) {
   try {
   let iVar1 = 0;
   let local_30 = 0;
+  let local_20 = 0;
   let local_18 = 0;
   let local_10 = 0;
   let local_8 = 0;
@@ -60,19 +61,19 @@ export function FUN_004077b3(heap, param_1, param_2, param_3, param_4) {
           if (iVar1 == 0) {
             iVar1 = FUN_0040dba3(heap, heap.u32(param_2), heap.u32(__addr_local_24), heap.u32(__addr_local_14));
             if (iVar1 != 0) {
-              heap.u32(param_2 + (2) * 4) = param_3;
-              heap.u32(param_2 + (1) * 4) = param_1;
-              heap.u32(__addr_local_38 + (0) * 4) = 0x14;
+              heap.setU32((param_2 + (2) * 4), (param_3) >>> 0);
+              heap.setU32((param_2 + (1) * 4), (param_1) >>> 0);
+              heap.setU32((__addr_local_38 + (0) * 4), (0x14) >>> 0);
               (heap.u32(heap.u32((heap.u32(heap.u32(param_2)) + 0xc))))(heap.u32(param_2), __addr_local_38);
-              heap.u32(param_2 + (3) * 4) = local_30;
+              heap.setU32((param_2 + (3) * 4), (local_30) >>> 0);
               FUN_0040dcaf(heap, param_2);
               return 1;
             }
             (heap.u32(heap.u32((heap.u32(heap.u32(param_2)) + 8))))(heap.u32(param_2));
-            heap.u32(param_2) = 0;
+            heap.setU32(param_2, (0) >>> 0);
           }
         }
-        heap.u32(param_2) = 0;
+        heap.setU32(param_2, (0) >>> 0);
       }
       return 0;
     }

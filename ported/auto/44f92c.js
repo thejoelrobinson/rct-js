@@ -16,6 +16,7 @@ export function FUN_0044f92c(heap) {
   const __addr_DAT_0088746a = __sp + 12;
   const __addr_DAT_00971ef4 = __sp + 16;
   try {
+  let pbVar1 = 0;
   let uVar2 = 0;
   let in_EAX = 0;
   let uVar3 = 0;
@@ -23,7 +24,15 @@ export function FUN_0044f92c(heap) {
   let in_ECX = 0;
   let in_EDX = 0;
   let uVar5 = 0;
+  let psVar6 = 0;
+  let puVar7 = 0;
+  let unaff_ESI = 0;
+  let pcVar8 = 0;
+  let pbVar9 = 0;
+  let pcVar10 = 0;
   let bVar11 = 0;
+  let pcVar12 = 0;
+  let pcVar13 = 0;
   let extraout_ECX = 0;
   pcVar10 = ((in_EDX & 0xff) * 0x260);
   uVar3 = in_EAX;
@@ -52,24 +61,24 @@ export function FUN_0044f92c(heap) {
     in_ECX = (uVar4 >>> 5);
     uVar2 = CONCAT11((uVar4 >>> 5), (uVar2 >>> 5));
     uVar3 = uVar2;
-    heap.u32((pcVar10 + 0x8874a2)) = uVar2;
-    heap.u32(pcVar10 + (0x8874a1) * 4) = heap.u32((__addr_DAT_00653ef7) + (heap.u32(unaff_ESI + (4) * 4) * 10) * 4) + heap.u32(unaff_ESI) & 3;
+    heap.setU32((pcVar10 + 0x8874a2), (uVar2) >>> 0);
+    heap.setU32((pcVar10 + (0x8874a1) * 4), (heap.u32((__addr_DAT_00653ef7) + (heap.u32(unaff_ESI + (4) * 4) * 10) * 4) + heap.u32(unaff_ESI) & 3) >>> 0);
   }
   if (heap.u32(pcVar10 + (0x887420) * 4) == '\x14') {
     uVar5 = 0;
     psVar6 = __addr_DAT_006522f6;
     do {
       if (heap.u32((pcVar10 + (__addr_DAT_00887462 + uVar5))) != -1) {
-        heap.u32(psVar6) = heap.u32((pcVar10 + (__addr_DAT_00887462 + uVar5)));
+        heap.setU32(psVar6, (heap.u32((pcVar10 + (__addr_DAT_00887462 + uVar5)))) >>> 0);
         psVar6 = psVar6 + 1;
       }
       if (heap.u32((pcVar10 + (__addr_DAT_0088746a + uVar5))) != -1) {
-        heap.u32(psVar6) = heap.u32((pcVar10 + (__addr_DAT_0088746a + uVar5)));
+        heap.setU32(psVar6, (heap.u32((pcVar10 + (__addr_DAT_0088746a + uVar5)))) >>> 0);
         psVar6 = psVar6 + 1;
       }
       uVar5 = uVar5 + 1;
     } while (uVar5 < 4);
-    heap.u32(psVar6) = -1;
+    heap.setU32(psVar6, (-1) >>> 0);
     pcVar8 = pcVar10;
     for (puVar7 = __addr_DAT_006522f6; uVar2 = heap.u32(puVar7), uVar2 != 0xffff; puVar7 = puVar7 + 1) {
       pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((((uVar2 >>> 8) << 0xc | (uVar2 & 0xff) << 5) >>> 5 | (((uVar2 >>> 8) << 5) >>> 9) << 0xb)) * 4);

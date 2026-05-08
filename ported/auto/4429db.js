@@ -13,6 +13,7 @@ export function FUN_004429db(heap) {
   const __addr_DAT_0087c820 = __sp + 4;
   const __addr_DAT_00630828 = __sp + 8;
   try {
+  let piVar1 = 0;
   let uVar2 = 0;
   let unaff_EBX = 0;
   let bVar3 = 0;
@@ -33,7 +34,7 @@ export function FUN_004429db(heap) {
     }
     uVar2 = heap.u32(0x0099c167);
     piVar1 = (__addr_DAT_0087c820 + uVar2);
-    heap.u32(piVar1) = heap.u32(piVar1) - unaff_EBX;
+    heap.setU32(piVar1, (heap.u32(piVar1) - unaff_EBX) >>> 0);
     if ((heap.u32((__addr_DAT_00630828 + uVar2)) & 1) != 0) {
       heap.setU32(0x0087d304, (heap.u32(0x0087d304) - unaff_EBX) >>> 0);
     }

@@ -17,6 +17,7 @@ export function FUN_009b3000(heap) {
   try {
   let iVar1 = 0;
   let iVar2 = 0;
+  let piVar3 = 0;
   FUN_0042f239(heap);
   iVar1 = FUN_004080e0(heap, 0, 0, 0);
   if (iVar1 != 0) {
@@ -30,7 +31,7 @@ export function FUN_009b3000(heap) {
       piVar3 = __addr_DAT_008dc0b4;
       iVar2 = 0x95dd;
       do {
-        heap.u32(piVar3) = heap.u32(piVar3) + iVar1;
+        heap.setU32(piVar3, (heap.u32(piVar3) + iVar1) >>> 0);
         piVar3 = piVar3 + 4;
         iVar2 = iVar2 + -1;
       } while (iVar2 != 0);

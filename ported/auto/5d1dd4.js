@@ -17,6 +17,8 @@ export function FUN_005d1dd4(heap) {
   let extraout_CX_00 = 0;
   let extraout_DX = 0;
   let extraout_DX_00 = 0;
+  let unaff_ESI = 0;
+  let unaff_EDI = 0;
   let bVar3 = 0;
   if (heap.u32(0x00652288) == '\x03') {
     FUN_005d21fa(heap);

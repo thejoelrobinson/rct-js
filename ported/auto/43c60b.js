@@ -12,6 +12,7 @@ export function FUN_0043c60b(heap) {
   const __addr_PTR_DAT_0062d644 = __sp + 8;
   try {
   let bVar1 = 0;
+  let puVar2 = 0;
   let uVar3 = 0;
   let unaff_ESI = 0;
   if (heap.u32((unaff_ESI + 0x71)) < 0xfe) {
@@ -22,11 +23,11 @@ export function FUN_0043c60b(heap) {
   uVar3 = bVar1;
   if (bVar1 != heap.u32((unaff_ESI + 0x6e))) {
     FUN_005e53ca(heap);
-    heap.u32((unaff_ESI + 0x6e)) = bVar1;
+    heap.setU32((unaff_ESI + 0x6e), (bVar1) >>> 0);
     puVar2 = heap.u32((__addr_PTR_DAT_0062d644) + (heap.u32((unaff_ESI + 0x2d)) * 2) * 4);
-    heap.u32((unaff_ESI + 0x14)) = heap.u32(puVar2 + (uVar3 * 4) * 4);
-    heap.u32((unaff_ESI + 9)) = heap.u32(puVar2 + (uVar3 * 4 + 1) * 4);
-    heap.u32((unaff_ESI + 0x15)) = heap.u32(puVar2 + (uVar3 * 4 + 2) * 4);
+    heap.setU32((unaff_ESI + 0x14), (heap.u32(puVar2 + (uVar3 * 4) * 4)) >>> 0);
+    heap.setU32((unaff_ESI + 9), (heap.u32(puVar2 + (uVar3 * 4 + 1) * 4)) >>> 0);
+    heap.setU32((unaff_ESI + 0x15), (heap.u32(puVar2 + (uVar3 * 4 + 2) * 4)) >>> 0);
     FUN_005e53ca(heap);
   }
   return;

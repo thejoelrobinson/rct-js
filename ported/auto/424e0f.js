@@ -17,6 +17,7 @@ export function FUN_00424e0f(heap) {
   const __addr_DAT_00887420 = __sp + 4;
   const __addr_DAT_008ad1c0 = __sp + 8;
   try {
+  let pbVar1 = 0;
   let uVar2 = 0;
   let sVar3 = 0;
   let uVar4 = 0;
@@ -27,6 +28,10 @@ export function FUN_00424e0f(heap) {
   let uVar6 = 0;
   let bVar7 = 0;
   let iVar8 = 0;
+  let pbVar9 = 0;
+  let pcVar10 = 0;
+  let unaff_EDI = 0;
+  let pbVar11 = 0;
   let bVar12 = 0;
   code_r0x00424e0f: iVar8 = 10;
   LAB_00424e14: uVar6 = (((((((heap.u32(0x008d4228) >>> 1 & 1) != 0) << 1 | ((heap.u32(0x008d4228) >>> 3 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 5 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 7 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 9 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xb & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xd & 1) != 0);
@@ -66,27 +71,27 @@ export function FUN_00424e0f(heap) {
     if ((heap.u32(pbVar11 + (1) * 4) & 0x80) != 0) {
       pbVar1 = pbVar9 + 6;
       bVar5 = heap.u32(pbVar1);
-      heap.u32(pbVar1) = heap.u32(pbVar1) + 0x10;
+      heap.setU32(pbVar1, (heap.u32(pbVar1) + 0x10) >>> 0);
       if (bVar5 < 0xf0) {
         /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
       }
-      heap.u32(pbVar9 + (6) * 4) = heap.u32(pbVar9 + (6) * 4) ^ 8;
+      heap.setU32((pbVar9 + (6) * 4), (heap.u32(pbVar9 + (6) * 4) ^ 8) >>> 0);
       if ((heap.u32(pbVar9 + (6) * 4) & 8) != 0) {
         bVar5 = FUN_005df40c(heap);
-        heap.u32(pbVar9 + (6) * 4) = heap.u32(pbVar9 + (6) * 4) | bVar5 & 0x70;
+        heap.setU32((pbVar9 + (6) * 4), (heap.u32(pbVar9 + (6) * 4) | bVar5 & 0x70) >>> 0);
         uVar4 = extraout_CX_00;
         /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
       }
       if ((heap.u32(pbVar9 + (6) * 4) & 7) == 6) {
         /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
       }
-      heap.u32(pbVar9 + (6) * 4) = (heap.u32(pbVar9 + (6) * 4) & 7) + 1;
+      heap.setU32((pbVar9 + (6) * 4), ((heap.u32(pbVar9 + (6) * 4) & 7) + 1) >>> 0);
       /* goto LAB_00424f47 */ throw new Error("goto LAB_00424f47 not supported");
     }
   }
   LAB_00424f08: pbVar11 = unaff_EDI;
   if ((heap.u32(pbVar9 + (6) * 4) & 7) != 1) {
-    LAB_00424f13: heap.u32(pbVar9 + (6) * 4) = 1;
+    LAB_00424f13: heap.setU32((pbVar9 + (6) * 4), (1) >>> 0);
     LAB_00424f47: uVar2 = FUN_005e56d3(heap, pbVar9, pbVar11);
     uVar4 = extraout_CX_01;
   }

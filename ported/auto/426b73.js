@@ -15,12 +15,13 @@ export function FUN_00426b73(heap) {
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
+  let pbVar4 = 0;
   pbVar4 = __addr_DAT_00887420;
   uVar3 = 0;
   heap.setU32(0x0087d0c6, (0) >>> 0);
   do {
     if ((((heap.u32(pbVar4) != 0xff) && (heap.u32(pbVar4 + (0x21) * 4) == 1)) && ((heap.u32((pbVar4 + 2)) & 0x80) == 0)) && ((heap.u32((pbVar4 + 2)) & 0x400) == 0)) {
-      uVar3 = uVar3 + heap.u32((byte)(__addr_DAT_005f5d07) + (heap.u32(pbVar4) * 8) * 4);
+      uVar3 = uVar3 + heap.u32((__addr_DAT_005f5d07) + (heap.u32(pbVar4) * 8) * 4);
       if (heap.u32((pbVar4 + 0xf6)) != -1) {
         if (-1 < (heap.u32((pbVar4 + 0xf6)) - heap.u32((pbVar4 + 0xe8)))) {
           heap.setU32(0x0087d0c6, (heap.u32(0x0087d0c6) + (heap.u32((pbVar4 + 0xf6)) - heap.u32((pbVar4 + 0xe8))) * 2) >>> 0);

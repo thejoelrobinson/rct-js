@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { uRam00999fda } from "../../runtime/win32.js";
 import { CONCAT11 } from "../../runtime/ghidra-builtins.js";
 export function FUN_00420502(heap) {
   const __sp = heap.allocFrame(48);
@@ -31,6 +32,7 @@ export function FUN_00420502(heap) {
   let unaff_EBX = 0;
   let uVar7 = 0;
   let uVar8 = 0;
+  let pbVar9 = 0;
   let uVar10 = 0;
   uVar8 = heap.u32(0x00991f74) + heap.u32((__addr_DAT_005f4666 + heap.u32(0x00991f88) * 4));
   if (((heap.u32(0x00991f70) + heap.u32((__addr_DAT_005f4664 + heap.u32(0x00991f88) * 4))) < 0x1000) && (uVar8 < 0x1000)) {
@@ -65,7 +67,7 @@ export function FUN_00420502(heap) {
     if (bVar3 <= bVar6) {
       uVar5 = CONCAT11(bVar3, in_DL);
     }
-    bVar6 = (byte)(uVar5 >>> 8);
+    bVar6 = (uVar5 >>> 8);
     uVar10 = uVar5;
     if ((bVar6 != bVar2) && (bVar6 != bVar4)) {
       (heap.u32(heap.u32((__addr_PTR_LAB_00431bb8) + (heap.u32(0x00991f88)) * 4)))();
@@ -74,7 +76,7 @@ export function FUN_00420502(heap) {
     }
   }
   LAB_0042060e: do {
-    bVar6 = (byte)(uVar5 >>> 8);
+    bVar6 = (uVar5 >>> 8);
     if ((bVar2 <= bVar6) || (bVar4 <= bVar6)) {
       if ((bVar2 <= bVar6) && (bVar4 <= bVar6)) {
         return;
@@ -85,52 +87,52 @@ export function FUN_00420502(heap) {
     while (bVar6 != heap.u32(0x00999f9a)) {
       if (bVar6 <= heap.u32(0x00999f9a)) {
         (heap.u32(heap.u32((__addr_PTR_LAB_00431bb8) + (heap.u32(0x00991f88)) * 4)))();
-        uVar5 = (byte)(bVar6 + 1) << 8;
+        uVar5 = (bVar6 + 1) << 8;
         /* goto LAB_0042060e */ throw new Error("goto LAB_0042060e not supported");
       }
-      heap.u8(0x999f9a) = heap.u16(0x999f9c);
-      heap.u8(0x999f9b) = (byte)(heap.u16(0x999f9c) >>> 8);
-      heap.u16(0x999f9c) = heap.u32(0x00999f9e);
-      heap.u16(0x999f9e) = heap.u16(0x999fa0);
-      heap.u16(0x999fa0) = heap.u32(0x00999fa2);
-      heap.u16(0x999fa2) = heap.u16(0x999fa4);
-      heap.u16(0x999fa4) = heap.u32(0x00999fa6);
-      heap.u16(0x999fa6) = heap.u16(0x999fa8);
-      heap.u16(0x999fa8) = heap.u32(0x00999faa);
-      heap.u16(0x999faa) = heap.u16(0x999fac);
-      heap.u16(0x999fac) = heap.u32(0x00999fae);
-      heap.u16(0x999fae) = heap.u16(0x999fb0);
-      heap.u16(0x999fb0) = heap.u32(0x00999fb2);
-      heap.u16(0x999fb2) = heap.u16(0x999fb4);
-      heap.u16(0x999fb4) = heap.u32(0x00999fb6);
-      heap.u16(0x999fb6) = heap.u16(0x999fb8);
-      heap.u16(0x999fb8) = heap.u32(0x00999fba);
-      heap.u16(0x999fba) = heap.u16(0x999fbc);
-      heap.u16(0x999fbc) = heap.u32(0x00999fbe);
-      heap.u16(0x999fbe) = heap.u16(0x999fc0);
-      heap.u16(0x999fc0) = heap.u32(0x00999fc2);
-      heap.u16(0x999fc2) = heap.u16(0x999fc4);
-      heap.u16(0x999fc4) = heap.u32(0x00999fc6);
-      heap.u16(0x999fc6) = heap.u16(0x999fc8);
-      heap.u16(0x999fc8) = heap.u32(0x00999fca);
-      heap.u16(0x999fca) = heap.u16(0x999fcc);
-      heap.u16(0x999fcc) = heap.u32(0x00999fce);
-      heap.u16(0x999fce) = heap.u16(0x999fd0);
-      heap.u16(0x999fd0) = heap.u32(0x00999fd2);
-      heap.u16(0x999fd2) = heap.u16(0x999fd4);
-      heap.u16(0x999fd4) = heap.u32(0x00999fd6);
-      heap.u16(0x999fd6) = heap.u16(0x999fd8);
-      heap.u16(0x999fd8) = uRam00999fda;
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
     }
     uVar7 = heap.u8(0x999f9b);
     bVar3 = bVar6 + heap.u32((__addr_DAT_005f472e) + (uVar7 * 2) * 4);
     if ((bVar2 < bVar3) || (bVar4 < bVar3)) {
       iVar1 = uVar7 * 2;
-      heap.u8(0x999f9b) = heap.u32((__addr_DAT_005f475e) + (uVar7) * 4);
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
       uVar7 = heap.u8(0x999f9b);
       bVar3 = (bVar3 - heap.u32((__addr_DAT_005f472e) + (iVar1) * 4)) + heap.u32((__addr_DAT_005f472e) + (uVar7 * 2) * 4);
     }
-    heap.setU32(0x0099a4ec, ((byte)(bVar3 - heap.u32((__addr_DAT_005f472e) + (uVar7 * 2) * 4)) * 0x10 + heap.u32((__addr_DAT_005f4746 + uVar7 * 2))) >>> 0);
+    heap.setU32(0x0099a4ec, ((bVar3 - heap.u32((__addr_DAT_005f472e) + (uVar7 * 2) * 4)) * 0x10 + heap.u32((__addr_DAT_005f4746 + uVar7 * 2))) >>> 0);
     if (heap.u32(0x0099a4ec) < 0x10) {
       heap.setU32(0x0099a4ec, (heap.u32(0x0099a4ec) + 0x10) >>> 0);
     }
@@ -144,40 +146,40 @@ export function FUN_00420502(heap) {
     heap.setU32(0x0099a4e8, (0) >>> 0);
     heap.setU32(0x0099a4ea, (0x1f) >>> 0);
     (heap.u32(heap.u32((__addr_PTR_LAB_00432204) + (heap.u32(0x00991f88)) * 4)))();
-    uVar5 = (byte)(bVar6 + heap.u32((__addr_DAT_005f472e) + (heap.u8(0x999f9b) * 2) * 4)) << 8;
-    heap.u8(0x999f9a) = heap.u16(0x999f9c);
-    heap.u8(0x999f9b) = (byte)(heap.u16(0x999f9c) >>> 8);
-    heap.u16(0x999f9c) = heap.u32(0x00999f9e);
-    heap.u16(0x999f9e) = heap.u16(0x999fa0);
-    heap.u16(0x999fa0) = heap.u32(0x00999fa2);
-    heap.u16(0x999fa2) = heap.u16(0x999fa4);
-    heap.u16(0x999fa4) = heap.u32(0x00999fa6);
-    heap.u16(0x999fa6) = heap.u16(0x999fa8);
-    heap.u16(0x999fa8) = heap.u32(0x00999faa);
-    heap.u16(0x999faa) = heap.u16(0x999fac);
-    heap.u16(0x999fac) = heap.u32(0x00999fae);
-    heap.u16(0x999fae) = heap.u16(0x999fb0);
-    heap.u16(0x999fb0) = heap.u32(0x00999fb2);
-    heap.u16(0x999fb2) = heap.u16(0x999fb4);
-    heap.u16(0x999fb4) = heap.u32(0x00999fb6);
-    heap.u16(0x999fb6) = heap.u16(0x999fb8);
-    heap.u16(0x999fb8) = heap.u32(0x00999fba);
-    heap.u16(0x999fba) = heap.u16(0x999fbc);
-    heap.u16(0x999fbc) = heap.u32(0x00999fbe);
-    heap.u16(0x999fbe) = heap.u16(0x999fc0);
-    heap.u16(0x999fc0) = heap.u32(0x00999fc2);
-    heap.u16(0x999fc2) = heap.u16(0x999fc4);
-    heap.u16(0x999fc4) = heap.u32(0x00999fc6);
-    heap.u16(0x999fc6) = heap.u16(0x999fc8);
-    heap.u16(0x999fc8) = heap.u32(0x00999fca);
-    heap.u16(0x999fca) = heap.u16(0x999fcc);
-    heap.u16(0x999fcc) = heap.u32(0x00999fce);
-    heap.u16(0x999fce) = heap.u16(0x999fd0);
-    heap.u16(0x999fd0) = heap.u32(0x00999fd2);
-    heap.u16(0x999fd2) = heap.u16(0x999fd4);
-    heap.u16(0x999fd4) = heap.u32(0x00999fd6);
-    heap.u16(0x999fd6) = heap.u16(0x999fd8);
-    heap.u16(0x999fd8) = uRam00999fda;
+    uVar5 = (bVar6 + heap.u32((__addr_DAT_005f472e) + (heap.u8(0x999f9b) * 2) * 4)) << 8;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00420502"); })();
   } while (true);
 } finally {
     heap.freeFrame(48);

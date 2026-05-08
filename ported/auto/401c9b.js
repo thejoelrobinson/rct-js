@@ -16,6 +16,7 @@ export function FUN_00401c9b(heap) {
   let local_c4 = 0;
   let local_c0 = 0;
   let local_bc = 0;
+  let local_b8 = 0;
   let local_b4 = 0;
   let local_8 = 0;
   local_b8 = __addr_DAT_005f2420;
@@ -36,7 +37,7 @@ export function FUN_00401c9b(heap) {
           local_c4 = local_b4;
           local_c0 = local_8 + 0x40;
           do {
-            heap.u32(local_b8 + (local_cc) * 4) = 0;
+            heap.setU32((local_b8 + (local_cc) * 4), (0) >>> 0);
             local_cc = local_cc + 0x14;
             local_bc = local_b4 + 8;
             local_b4 = local_bc;

@@ -28,25 +28,25 @@ export function FUN_00431ad7(heap) {
     uVar6 = heap.u32((heap.u32(0x00981ef8) + 0xe));
     LOCK();
     uVar1 = heap.u32((heap.u32(0x00981ef8) + 0xe));
-    heap.u32((heap.u32(0x00981ef8) + 0xe)) = 0;
+    heap.setU32((heap.u32(0x00981ef8) + 0xe), (0) >>> 0);
     uVar8 = uVar1;
     UNLOCK();
     bVar7 = uVar1;
-    heap.u32((iVar10 + 4)) = heap.u32((iVar10 + 4)) >>> (bVar7 & 0x1f);
-    heap.u32((iVar10 + 6)) = heap.u32((iVar10 + 6)) >>> (bVar7 & 0x1f);
-    heap.u32((iVar10 + 8)) = heap.u32((iVar10 + 8)) >>> (bVar7 & 0x1f);
-    heap.u32((iVar10 + 10)) = heap.u32((iVar10 + 10)) >>> (bVar7 & 0x1f);
+    heap.setU32((iVar10 + 4), (heap.u32((iVar10 + 4)) >>> (bVar7 & 0x1f)) >>> 0);
+    heap.setU32((iVar10 + 6), (heap.u32((iVar10 + 6)) >>> (bVar7 & 0x1f)) >>> 0);
+    heap.setU32((iVar10 + 8), (heap.u32((iVar10 + 8)) >>> (bVar7 & 0x1f)) >>> 0);
+    heap.setU32((iVar10 + 10), (heap.u32((iVar10 + 10)) >>> (bVar7 & 0x1f)) >>> 0);
     do {
       FUN_00458bcf(heap, iVar9, iVar10, heap.u32((iVar9 + 8)), heap.u32((iVar9 + 6)), uVar8);
       heap.setU32(0x00971e84, (0xe0) >>> 0);
       FUN_009bafe6(heap);
       iVar9 = heap.u32((iVar9 + 2));
     } while (iVar9 != 0);
-    heap.u32((iVar10 + 0xe)) = uVar6;
-    heap.u32((iVar10 + 10)) = uVar5;
-    heap.u32((iVar10 + 8)) = uVar4;
-    heap.u32((iVar10 + 6)) = uVar3;
-    heap.u32((iVar10 + 4)) = uVar2;
+    heap.setU32((iVar10 + 0xe), (uVar6) >>> 0);
+    heap.setU32((iVar10 + 10), (uVar5) >>> 0);
+    heap.setU32((iVar10 + 8), (uVar4) >>> 0);
+    heap.setU32((iVar10 + 6), (uVar3) >>> 0);
+    heap.setU32((iVar10 + 4), (uVar2) >>> 0);
   }
   return;
 }

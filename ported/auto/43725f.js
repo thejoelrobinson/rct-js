@@ -13,16 +13,17 @@ export function FUN_0043725f(heap) {
   let bVar1 = 0;
   let in_EAX = 0;
   let in_EDX = 0;
+  let unaff_ESI = 0;
   bVar1 = heap.u32(unaff_ESI) & 0x3c;
   if (bVar1 == 0) {
     heap.setU32(0x00991efc, (0x3b7) >>> 0);
   } else {
     if (bVar1 == 8) {
-    heap.u16(0x971e86) = heap.u32((byte)(__addr_DAT_00887420) + (heap.u32(unaff_ESI + (7) * 4) * 0x260) * 4) + 0x101;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0043725f"); })();
     heap.setU32(0x00991efc, (0x5a4) >>> 0);
   } else {
     if (bVar1 == 0xc) {
-    heap.u16(0x971e86) = heap.u32((__addr_DAT_006e1ecc + heap.u32(unaff_ESI + (4) * 4) * 8));
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0043725f"); })();
     heap.setU32(0x00991efc, (0x5a4) >>> 0);
   } else {
     if (bVar1 == 4) {
@@ -45,7 +46,7 @@ export function FUN_0043725f(heap) {
     }
   } else {
     if (bVar1 == 0x18) {
-    heap.u16(0x971e86) = (heap.u32((unaff_ESI + 4)) & 0x3ff) + 0x7de;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0043725f"); })();
     heap.setU32(0x00991efc, (0x5a4) >>> 0);
   } else {
     heap.setU32(0x00991efc, (0x38a) >>> 0);

@@ -7,7 +7,7 @@
 export function FUN_00409736(heap, param_1, param_2) {
   if ((heap.u32((param_1 + 0xc)) != 0) && (heap.u32((param_1 + 0x80)) != 0)) {
     (heap.u32(heap.u32((heap.u32(heap.u32((param_1 + 0x80))) + 0x68))))(heap.u32((param_1 + 0x80)), param_2);
-    heap.u32((param_1 + 0xc)) = 0;
+    heap.setU32((param_1 + 0xc), (0) >>> 0);
   }
   return;
 }

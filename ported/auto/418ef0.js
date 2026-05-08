@@ -12,6 +12,6 @@ export function FUN_00418ef0(heap, param_1, param_2, param_3) {
   if ((uVar1 < param_1) || (uVar1 < param_2)) {
     uVar2 = 1;
   }
-  heap.u32(param_3) = uVar1;
+  heap.setU32(param_3, (uVar1) >>> 0);
   return uVar2;
 }

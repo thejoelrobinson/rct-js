@@ -29,8 +29,13 @@ export function FUN_009b30f1(heap) {
   let unaff_EBP = 0;
   let uVar12 = 0;
   let uVar13 = 0;
+  let puVar14 = 0;
+  let puVar15 = 0;
+  let pbVar16 = 0;
+  let puVar17 = 0;
   let iVar18 = 0;
   let iVar19 = 0;
+  let unaff_EDI = 0;
   let local_1a = 0;
   sVar9 = in_EAX;
   if (((((sVar9 <= unaff_BX) && (sVar7 = in_EDX, in_CX <= sVar7)) && (heap.u32(unaff_EDI + (1) * 4) <= unaff_BX)) && ((sVar9 < (heap.u32(unaff_EDI + (1) * 4) + heap.u32(unaff_EDI + (2) * 4)) && (heap.u32((unaff_EDI + 6)) <= sVar7)))) && (in_CX < (heap.u32((unaff_EDI + 6)) + heap.u32((unaff_EDI + 10))))) {
@@ -65,7 +70,7 @@ export function FUN_009b30f1(heap) {
         uVar6 = CONCAT22((uVar6 >>> 0x11) | ((((local_1a & 1) != 0) << 0x1f) >>> 0x10), sVar9 - uVar3);
         do {
           if ((uVar6 ^ 0x80000000) < 0) {
-            heap.u32(puVar15) = uVar1;
+            heap.setU32(puVar15, (uVar1) >>> 0);
           }
           puVar15 = puVar15 + 1;
           sVar5 = uVar6 + -1;
@@ -110,13 +115,13 @@ export function FUN_009b30f1(heap) {
           uVar12 = heap.u32(0x009aa034);
           if ((heap.u32(0x009aa03c) & 1) != 0) {
             uVar12 = heap.u32(0x009aa034) + 1;
-            heap.u32(puVar17) = heap.u32((heap.u32(0x009aa034) + iVar11));
+            heap.setU32(puVar17, (heap.u32((heap.u32(0x009aa034) + iVar11))) >>> 0);
             uVar12 = uVar12 & 0x3f;
             puVar17 = (puVar17 + 1);
           }
           for (; uVar6 != 0; uVar6 = uVar6 - 1) {
             uVar13 = uVar12 + 1 & 0x3f;
-            heap.u32(puVar17) = CONCAT11(heap.u32((uVar13 + iVar11)), heap.u32((uVar12 + iVar11)));
+            heap.setU32(puVar17, (CONCAT11(heap.u32((uVar13 + iVar11)), heap.u32((uVar12 + iVar11)))) >>> 0);
             puVar17 = puVar17 + 1;
             uVar12 = uVar13 + 1 & 0x3f;
           }
@@ -145,14 +150,14 @@ export function FUN_009b30f1(heap) {
         uVar12 = heap.u32(0x009aa034);
         if ((heap.u32(0x009aa03c) & 1) != 0) {
           uVar12 = heap.u32(0x009aa034) + 1;
-          heap.u32(puVar17) = heap.u32((heap.u32((heap.u32(0x009aa034) + iVar19)) + iVar11));
+          heap.setU32(puVar17, (heap.u32((heap.u32((heap.u32(0x009aa034) + iVar19)) + iVar11))) >>> 0);
           uVar12 = uVar12 & 0x3f;
           puVar17 = (puVar17 + 1);
         }
         for (; uVar6 != 0; uVar6 = uVar6 - 1) {
-          heap.u32(puVar17) = heap.u32((heap.u32((uVar12 + iVar19)) + iVar11));
+          heap.setU32(puVar17, (heap.u32((heap.u32((uVar12 + iVar19)) + iVar11))) >>> 0);
           uVar12 = uVar12 + 1 & 0x3f;
-          heap.u32((puVar17 + 1)) = heap.u32((heap.u32((uVar12 + iVar19)) + iVar11));
+          heap.setU32((puVar17 + 1), (heap.u32((heap.u32((uVar12 + iVar19)) + iVar11))) >>> 0);
           puVar17 = puVar17 + 1;
           uVar12 = uVar12 + 1 & 0x3f;
         }
@@ -197,7 +202,7 @@ export function FUN_009b30f1(heap) {
         uVar4 = uVar10;
         do {
           do {
-            heap.u32(pbVar16) = heap.u32((heap.u32(pbVar16) + iVar11));
+            heap.setU32(pbVar16, (heap.u32((heap.u32(pbVar16) + iVar11))) >>> 0);
             pbVar16 = pbVar16 + 1;
             uVar4 = uVar4 - 1;
           } while (uVar4 != 0);
@@ -215,7 +220,7 @@ export function FUN_009b30f1(heap) {
         uVar3 = uVar10;
         do {
           do {
-            heap.u32(pbVar16) = heap.u32((heap.u32(pbVar16) + iVar11));
+            heap.setU32(pbVar16, (heap.u32((heap.u32(pbVar16) + iVar11))) >>> 0);
             pbVar16 = pbVar16 + 1;
             uVar3 = uVar3 - 1;
           } while (uVar3 != 0);
@@ -234,7 +239,7 @@ export function FUN_009b30f1(heap) {
       uVar4 = uVar10;
       do {
         do {
-          heap.u32(pbVar16) = heap.u32((heap.u32(pbVar16) + iVar11));
+          heap.setU32(pbVar16, (heap.u32((heap.u32(pbVar16) + iVar11))) >>> 0);
           pbVar16 = pbVar16 + 1;
           uVar4 = uVar4 - 1;
         } while (uVar4 != 0);
@@ -250,16 +255,16 @@ export function FUN_009b30f1(heap) {
     iVar19 = heap.u32(unaff_EDI + (3) * 4);
     do {
       if ((uVar10 & 1) != 0) {
-        heap.u32(puVar14) = uVar1;
+        heap.setU32(puVar14, (uVar1) >>> 0);
         puVar14 = (puVar14 + 1);
       }
       uVar6 = (uVar10 >>> 2);
       if ((uVar10 >>> 1 & 1) != 0) {
-        heap.u32(puVar14) = uVar2;
+        heap.setU32(puVar14, (uVar2) >>> 0);
         puVar14 = (puVar14 + 2);
       }
       for (; uVar6 != 0; uVar6 = uVar6 - 1) {
-        heap.u32(puVar14) = uVar2;
+        heap.setU32(puVar14, (uVar2) >>> 0);
         puVar14 = puVar14 + 1;
       }
       puVar14 = (puVar14 + ((iVar11 + iVar19) - uVar10));

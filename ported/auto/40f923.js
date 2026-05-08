@@ -54,10 +54,10 @@ export function FUN_0040f923(heap) {
       FUN_00413c90(heap, __addr_DAT_005ec100, 0x005ec0ec, 799);
     }
     for (local_8 = 0; local_8 < 0x100; local_8 = local_8 + 1) {
-      heap.u32((__addr_DAT_005ef6a8) + (local_8 * 4) * 4) = local_8;
-      heap.u32((__addr_DAT_005ef6a9) + (local_8 * 4) * 4) = heap.u32((__addr_DAT_005ef6a8) + (local_8 * 4) * 4);
-      heap.u32((__addr_DAT_005ef6aa) + (local_8 * 4) * 4) = heap.u32((__addr_DAT_005ef6a9) + (local_8 * 4) * 4);
-      heap.u32((__addr_DAT_005ef6ab) + (local_8 * 4) * 4) = 0;
+      heap.setU32(((__addr_DAT_005ef6a8) + (local_8 * 4) * 4), (local_8) >>> 0);
+      heap.setU32(((__addr_DAT_005ef6a9) + (local_8 * 4) * 4), (heap.u32((__addr_DAT_005ef6a8) + (local_8 * 4) * 4)) >>> 0);
+      heap.setU32(((__addr_DAT_005ef6aa) + (local_8 * 4) * 4), (heap.u32((__addr_DAT_005ef6a9) + (local_8 * 4) * 4)) >>> 0);
+      heap.setU32(((__addr_DAT_005ef6ab) + (local_8 * 4) * 4), (0) >>> 0);
     }
     heap.setU32(0x005ec0d8, (FUN_0040f2f4(heap, __addr_DAT_005ef6a8, 0x100, __addr_DAT_005efaa8)) >>> 0);
     if (heap.u32(0x005ec0d8) == 0) {

@@ -9,9 +9,9 @@ export function FUN_0043c698(heap) {
   let in_AL = 0;
   let unaff_ESI = 0;
   if (in_AL != heap.u32((unaff_ESI + 0x6d))) {
-    heap.u32((unaff_ESI + 0x6d)) = in_AL;
+    heap.setU32((unaff_ESI + 0x6d), (in_AL) >>> 0);
     if (0xfd < heap.u32((unaff_ESI + 0x71))) {
-      heap.u32((unaff_ESI + 0x70)) = 0;
+      heap.setU32((unaff_ESI + 0x70), (0) >>> 0);
     }
     FUN_0043c60b(heap);
   }

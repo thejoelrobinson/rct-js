@@ -26,13 +26,14 @@ export function FUN_00421b78(heap) {
   let iVar8 = 0;
   let unaff_EBX = 0;
   let uVar10 = 0;
+  let pbVar11 = 0;
   let uVar12 = 0;
   let iVar13 = 0;
   let cVar2 = 0;
   let cVar4 = 0;
   let uVar9 = 0;
   uVar10 = heap.u32(0x00991f74) + heap.u32((__addr_DAT_005f4696 + heap.u32(0x00991f88) * 4));
-  uVar9 = (undefined2)(in_EDX >>> 0x10);
+  uVar9 = (in_EDX >>> 0x10);
   if (((heap.u32(0x00991f70) + heap.u32((__addr_DAT_005f4694 + heap.u32(0x00991f88) * 4))) < 0x1000) && (uVar10 < 0x1000)) {
     uVar10 = uVar10 * 0x80 | uVar10 >>> 9 | heap.u32(0x00991f70) + heap.u32((__addr_DAT_005f4694 + heap.u32(0x00991f88) * 4));
     pbVar11 = heap.u32((__addr_DAT_00971ef4) + ((uVar10 >>> 5 | uVar10 << 0xb)) * 4);
@@ -63,14 +64,14 @@ export function FUN_00421b78(heap) {
     if ((heap.u32(0x00991f8c) & 1) != 0) {
       heap.setU32(0x005f4724, (heap.u32(0x005f4770)) >>> 0);
     }
-    uVar9 = (undefined2)(uVar7 >>> 0x10);
+    uVar9 = (uVar7 >>> 0x10);
     iVar8 = CONCAT22(uVar9, CONCAT11(bVar6, cVar2));
     iVar13 = iVar8;
     if (bVar6 != bVar3) {
       if (bVar3 <= bVar6) {
         iVar8 = CONCAT22(uVar9, CONCAT11(bVar3, cVar2));
       }
-      bVar3 = (byte)(iVar8 >>> 8);
+      bVar3 = (iVar8 >>> 8);
       iVar13 = iVar8;
       if ((bVar3 != bVar1) && (bVar3 != bVar5)) {
         (heap.u32(heap.u32((__addr_PTR_LAB_00431bb8) + (heap.u32(0x00991f88)) * 4)))();
@@ -78,9 +79,9 @@ export function FUN_00421b78(heap) {
         iVar13 = iVar8;
       }
     }
-    while (bVar3 = (byte)(iVar8 >>> 8), bVar3 < bVar1 && (bVar3 < bVar5)) {
+    while (bVar3 = (iVar8 >>> 8), bVar3 < bVar1 && (bVar3 < bVar5)) {
       (heap.u32(heap.u32((__addr_PTR_LAB_00431bb8) + (heap.u32(0x00991f88)) * 4)))();
-      iVar8 = (byte)(bVar3 + 1) << 8;
+      iVar8 = (bVar3 + 1) << 8;
     }
     if ((bVar3 < bVar1) || (bVar3 < bVar5)) {
       (heap.u32(heap.u32((__addr_PTR_LAB_00431bb8) + (heap.u32(0x00991f88)) * 4)))(iVar13, unaff_EBX);

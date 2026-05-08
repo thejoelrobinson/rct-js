@@ -18,11 +18,12 @@ export function FUN_004500ad(heap) {
   let in_EDX = 0;
   let uVar2 = 0;
   let uVar4 = 0;
+  let puVar5 = 0;
   uVar2 = 0;
   do {
     uVar1 = heap.u32((__addr_DAT_00887462) + ((in_EDX & 0xff) * 0x130 + (uVar2 >>> 8)) * 4);
     if (uVar1 != 0xffff) {
-      uVar4 = heap.u32((byte)(__addr_DAT_00887452) + ((in_EDX & 0xff) * 0x260 + (uVar2 >>> 8)) * 4);
+      uVar4 = heap.u32((__addr_DAT_00887452) + ((in_EDX & 0xff) * 0x260 + (uVar2 >>> 8)) * 4);
       for (puVar5 = heap.u32((__addr_DAT_00971ef4) + ((((uVar1 >>> 8) << 0xc | (uVar1 & 0xff) << 5) >>> 5 | (((uVar1 >>> 8) << 5) >>> 9) << 0xb)) * 4); (uVar4 = CONCAT11(heap.u32(puVar5), uVar4) & 0x3cff, (uVar4 >>> 8) != '\x10' || (uVar4 != heap.u32(puVar5 + (2) * 4))); puVar5 = puVar5 + 8) {
       
       }

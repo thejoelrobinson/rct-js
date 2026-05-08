@@ -27,8 +27,8 @@ export function FUN_004062cb(heap) {
     hdc = GetDC(heap, 0x0);
     if (hdc != 0x0) {
       uVar3 = GetDeviceCaps(heap, hdc, 0x6a);
-      heap.u32((iVar1 + 8)) = ((uVar3 & 0xffff) >>> 1);
-      heap.u32((iVar1 + 10)) = heap.u32((iVar1 + 8));
+      heap.setU32((iVar1 + 8), (((uVar3 & 0xffff) >>> 1)) >>> 0);
+      heap.setU32((iVar1 + 10), (heap.u32((iVar1 + 8))) >>> 0);
       ReleaseDC(heap, 0x0, hdc);
     }
     uVar4 = FUN_0040f271(heap, 1);

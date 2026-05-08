@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT11, CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { FUN_005e4198 } from "./5e4198.js";
 export function FUN_0045163c(heap) {
@@ -40,9 +41,9 @@ export function FUN_0045163c(heap) {
       sVar7 = sVar7 + 1;
     }
     cStack_10 = uVar5;
-    uVar5 = CONCAT31((int3)(uVar4 >>> 8), cStack_10 + 1U);
-  } while ((byte)(cStack_10 + 1U) < 0x31);
-  heap.u32((__addr_DAT_00631d0d) + (heap.u32(0x00631d0c)) * 4) = (uVar4 >>> 8);
+    uVar5 = CONCAT31((int3)(uVar4 >>> 8), cStack_10 + 1);
+  } while ((cStack_10 + 1) < 0x31);
+  heap.setU32(((__addr_DAT_00631d0d) + (heap.u32(0x00631d0c)) * 4), ((uVar4 >>> 8)) >>> 0);
   sVar7 = 0;
   LAB_004516ad: uVar3 = (heap.u32(0x00631bac) - heap.u32(0x00631baa)) - 1;
   uVar6 = extraout_CX - uVar3;
@@ -53,7 +54,7 @@ export function FUN_0045163c(heap) {
   if (uVar6 < (sVar7 * 0x7a)) {
     uVar3 = uVar6;
   }
-  heap.u32((unaff_ESI + 0x36)) = uVar3;
+  heap.setU32((unaff_ESI + 0x36), (uVar3) >>> 0);
   FUN_005e4198(heap);
   return;
 } finally {

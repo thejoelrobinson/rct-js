@@ -17,10 +17,13 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   const __addr_param_1 = __sp + 8;
   heap.setU32(__addr_param_1, (param_1) >>> 0);
   try {
+  let psVar1 = 0;
   let uVar2 = 0;
   let cVar3 = 0;
   let uVar4 = 0;
   let iVar5 = 0;
+  let psVar6 = 0;
+  let psVar7 = 0;
   let iVar8 = 0;
   let sVar9 = 0;
   let iVar10 = 0;
@@ -56,55 +59,55 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   local_12 = 0xfb;
   local_11 = 0x3f;
   if ((param_3 & 0x8000) == 0) {
-    heap.u32((param_6 + 1)) = 0x20;
+    heap.setU32((param_6 + 1), (0x20) >>> 0);
   } else {
-    heap.u32((param_6 + 1)) = 0x2d;
+    heap.setU32((param_6 + 1), (0x2d) >>> 0);
   }
   if (((uVar4 == 0) && (param_2 == 0)) && (heap.u32(__addr_param_1) == 0)) {
-    heap.u32(param_6) = 0;
-    LAB_00419a8f: heap.u32((psVar1 + 1)) = 0x20;
-    heap.u32((psVar1 + 3)) = 1;
-    heap.u32((psVar1 + 2)) = 0x30;
-    heap.u32((psVar1 + 5)) = 0;
+    heap.setU32(param_6, (0) >>> 0);
+    LAB_00419a8f: heap.setU32((psVar1 + 1), (0x20) >>> 0);
+    heap.setU32((psVar1 + 3), (1) >>> 0);
+    heap.setU32((psVar1 + 2), (0x30) >>> 0);
+    heap.setU32((psVar1 + 5), (0) >>> 0);
     return 1;
   }
   if (uVar4 == 0x7fff) {
-    heap.u32(param_6) = 1;
+    heap.setU32(param_6, (1) >>> 0);
     if (((param_2 != 0x80000000) || (heap.u32(__addr_param_1) != 0)) && ((param_2 & 0x40000000) == 0)) {
-      heap.u32(param_6 + (2) * 4) = 0x2331;
-      heap.u32(param_6 + (3) * 4) = 0x4e53;
-      heap.u32(param_6 + (4) * 4) = 0x4e41;
-      heap.u32((param_6 + 3)) = 6;
-      heap.u32((param_6 + 5)) = 0;
+      heap.setU32((param_6 + (2) * 4), (0x2331) >>> 0);
+      heap.setU32((param_6 + (3) * 4), (0x4e53) >>> 0);
+      heap.setU32((param_6 + (4) * 4), (0x4e41) >>> 0);
+      heap.setU32((param_6 + 3), (6) >>> 0);
+      heap.setU32((param_6 + 5), (0) >>> 0);
       return 0;
     }
     if ((((param_3 & 0x8000) != 0) && (param_2 == 0xc0000000)) && (heap.u32(__addr_param_1) == 0)) {
-      heap.u32(param_6 + (2) * 4) = 0x2331;
-      heap.u32(param_6 + (3) * 4) = 0x4e49;
-      heap.u32((param_6 + 3)) = 5;
-      heap.u32(param_6 + (4) * 4) = 0x44;
+      heap.setU32((param_6 + (2) * 4), (0x2331) >>> 0);
+      heap.setU32((param_6 + (3) * 4), (0x4e49) >>> 0);
+      heap.setU32((param_6 + 3), (5) >>> 0);
+      heap.setU32((param_6 + (4) * 4), (0x44) >>> 0);
       return 0;
     }
     if ((param_2 == 0x80000000) && (heap.u32(__addr_param_1) == 0)) {
-      heap.u32(param_6 + (2) * 4) = 0x2331;
-      heap.u32(param_6 + (3) * 4) = 0x4e49;
-      heap.u32((param_6 + 3)) = 5;
-      heap.u32(param_6 + (4) * 4) = 0x46;
+      heap.setU32((param_6 + (2) * 4), (0x2331) >>> 0);
+      heap.setU32((param_6 + (3) * 4), (0x4e49) >>> 0);
+      heap.setU32((param_6 + 3), (5) >>> 0);
+      heap.setU32((param_6 + (4) * 4), (0x46) >>> 0);
       return 0;
     }
-    heap.u32(param_6 + (2) * 4) = 0x2331;
-    heap.u32(param_6 + (3) * 4) = 0x4e51;
-    heap.u32(param_6 + (4) * 4) = 0x4e41;
-    heap.u32((param_6 + 3)) = 6;
-    heap.u32((param_6 + 5)) = 0;
+    heap.setU32((param_6 + (2) * 4), (0x2331) >>> 0);
+    heap.setU32((param_6 + (3) * 4), (0x4e51) >>> 0);
+    heap.setU32((param_6 + (4) * 4), (0x4e41) >>> 0);
+    heap.setU32((param_6 + 3), (6) >>> 0);
+    heap.setU32((param_6 + 5), (0) >>> 0);
     return 0;
   }
   local_6 = uVar4;
   cStack_5 = (uVar4 >>> 8);
   uStack_a = param_2;
-  uStack_8 = (undefined2)(param_2 >>> 0x10);
+  uStack_8 = (param_2 >>> 0x10);
   uStack_e = heap.u32(__addr_param_1);
-  uStack_c = (undefined2)(heap.u32(__addr_param_1) >>> 0x10);
+  uStack_c = (heap.u32(__addr_param_1) >>> 0x10);
   heap.setU32(__addr_local_10, (0) >>> 0);
   sVar9 = (((uVar4 >>> 8) + (param_2 >>> 0x18) * 2) * 0x4d + -0x134312f4 + uVar4 * 0x4d10 >>> 0x10);
   FUN_00419f50(heap, __addr_local_10, -sVar9, 1);
@@ -112,10 +115,10 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
     sVar9 = sVar9 + 1;
     FUN_00419c90(heap, __addr_local_10, __addr_local_1c);
   }
-  heap.u32(psVar1) = sVar9;
+  heap.setU32(psVar1, (sVar9) >>> 0);
   iVar8 = param_4;
   if (((param_5 & 1) != 0) && (iVar8 = param_4 + sVar9, param_4 + sVar9 < 1)) {
-    heap.u32(psVar1) = 0;
+    heap.setU32(psVar1, (0) >>> 0);
     /* goto LAB_00419a8f */ throw new Error("goto LAB_00419a8f not supported");
   }
   if (0x15 < iVar8) {
@@ -149,7 +152,7 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
       FUN_00418f90(heap, __addr_local_10);
       cVar3 = cStack_5 + '0';
       cStack_5 = '\0';
-      heap.u32(psVar6) = cVar3;
+      heap.setU32(psVar6, (cVar3) >>> 0);
       psVar6 = (psVar6 + 1);
       iVar8 = iVar8 + -1;
     } while (iVar8 != 0);
@@ -167,11 +170,11 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
         /* goto LAB_00419be6 */ throw new Error("goto LAB_00419be6 not supported");
       }
     }
-    heap.u32(psVar1) = 0x30;
-    heap.u32(param_6) = 0;
-    heap.u32((param_6 + 1)) = 0x20;
-    heap.u32((param_6 + 3)) = 1;
-    heap.u32((param_6 + 5)) = 0;
+    heap.setU32(psVar1, (0x30) >>> 0);
+    heap.setU32(param_6, (0) >>> 0);
+    heap.setU32((param_6 + 1), (0x20) >>> 0);
+    heap.setU32((param_6 + 3), (1) >>> 0);
+    heap.setU32((param_6 + 5), (0) >>> 0);
     return 1;
   }
   if (psVar1 <= psVar7) {
@@ -179,20 +182,20 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
       if (heap.u32(psVar7) != '9') {
         break;
       }
-      heap.u32(psVar7) = 0x30;
+      heap.setU32(psVar7, (0x30) >>> 0);
       psVar7 = (psVar7 + -1);
     } while (psVar1 <= psVar7);
     if (psVar1 <= psVar7) {
-      heap.u32(psVar7) = heap.u32(psVar7) + '\x01';
+      heap.setU32(psVar7, (heap.u32(psVar7) + '\x01') >>> 0);
       /* goto LAB_00419be6 */ throw new Error("goto LAB_00419be6 not supported");
     }
   }
   psVar7 = (psVar7 + 1);
-  heap.u32(param_6) = heap.u32(param_6) + 1;
-  heap.u32(psVar7) = heap.u32(psVar7) + '\x01';
+  heap.setU32(param_6, (heap.u32(param_6) + 1) >>> 0);
+  heap.setU32(psVar7, (heap.u32(psVar7) + '\x01') >>> 0);
   LAB_00419be6: cVar3 = (psVar7 - param_6) + -3;
-  heap.u32((param_6 + 3)) = cVar3;
-  heap.u32((param_6 + cVar3 + 4)) = 0;
+  heap.setU32((param_6 + 3), (cVar3) >>> 0);
+  heap.setU32((param_6 + cVar3 + 4), (0) >>> 0);
   return 1;
 } finally {
     heap.freeFrame(12);

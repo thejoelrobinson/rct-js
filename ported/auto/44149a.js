@@ -33,12 +33,12 @@ export function FUN_0044149a(heap) {
     iVar3 = uVar2 * 0x100;
     if (((heap.u32((__addr_DAT_00743b9c) + (iVar3) * 4) == '\x04') && (heap.u32((__addr_DAT_00743bbf) + (iVar3) * 4) == '\b')) && (in_EDX == heap.u32((__addr_DAT_00743ba6) + (uVar2 * 0x80) * 4))) {
       FUN_0044142c(heap);
-      heap.u32((__addr_DAT_00743bbf) + (iVar3) * 4) = 5;
+      heap.setU32(((__addr_DAT_00743bbf) + (iVar3) * 4), (5) >>> 0);
       FUN_00441452(heap);
       uVar1 = heap.u32((__addr_DAT_00743ba4) + (uVar2 * 0x80) * 4);
-      heap.u32((__addr_DAT_00743bc6 + iVar3)) = (heap.u32((__addr_DAT_00743ba2) + (uVar2 * 0x80) * 4) & 0xffe0) + 0x10;
-      heap.u32((__addr_DAT_00743bc8 + iVar3)) = (uVar1 & 0xffe0) + 0x10;
-      heap.u32((__addr_DAT_00743bca) + (iVar3) * 4) = 5;
+      heap.setU32((__addr_DAT_00743bc6 + iVar3), ((heap.u32((__addr_DAT_00743ba2) + (uVar2 * 0x80) * 4) & 0xffe0) + 0x10) >>> 0);
+      heap.setU32((__addr_DAT_00743bc8 + iVar3), ((uVar1 & 0xffe0) + 0x10) >>> 0);
+      heap.setU32(((__addr_DAT_00743bca) + (iVar3) * 4), (5) >>> 0);
       FUN_0043c60b(heap);
     }
     uVar1 = heap.u32((__addr_DAT_00743b96) + (uVar2 * 0x80) * 4);

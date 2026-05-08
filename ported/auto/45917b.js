@@ -9,8 +9,9 @@ export function FUN_0045917b(heap) {
   let in_EAX = 0;
   let bVar2 = 0;
   let bVar3 = 0;
+  let unaff_EDI = 0;
   if (in_EAX < 0) {
-    heap.u32(unaff_EDI) = 0x2d;
+    heap.setU32(unaff_EDI, (0x2d) >>> 0);
     unaff_EDI = unaff_EDI + 1;
     in_EAX = -in_EAX;
   }
@@ -20,7 +21,7 @@ export function FUN_0045917b(heap) {
     in_EAX = in_EAX + 0xc4653600;
   }
   if ((bVar2 | 0x30) != 0x30) {
-    heap.u32(unaff_EDI) = bVar2;
+    heap.setU32(unaff_EDI, (bVar2) >>> 0);
     unaff_EDI = unaff_EDI + 1;
   }
   bVar3 = 0x30;
@@ -30,8 +31,8 @@ export function FUN_0045917b(heap) {
   }
   bVar2 = bVar2 | 0x30 | bVar3;
   if (bVar2 != 0x30) {
-    heap.u32(unaff_EDI) = bVar3;
-    heap.u32(unaff_EDI + (1) * 4) = 0x2c;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
+    heap.setU32((unaff_EDI + (1) * 4), (0x2c) >>> 0);
     unaff_EDI = unaff_EDI + 2;
   }
   bVar3 = 0x30;
@@ -41,7 +42,7 @@ export function FUN_0045917b(heap) {
   }
   bVar2 = bVar2 | bVar3;
   if (bVar2 != 0x30) {
-    heap.u32(unaff_EDI) = bVar3;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
     unaff_EDI = unaff_EDI + 1;
   }
   bVar3 = 0x30;
@@ -51,7 +52,7 @@ export function FUN_0045917b(heap) {
   }
   bVar2 = bVar2 | bVar3;
   if (bVar2 != 0x30) {
-    heap.u32(unaff_EDI) = bVar3;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
     unaff_EDI = unaff_EDI + 1;
   }
   bVar3 = 0x30;
@@ -61,8 +62,8 @@ export function FUN_0045917b(heap) {
   }
   bVar2 = bVar2 | bVar3;
   if (bVar2 != 0x30) {
-    heap.u32(unaff_EDI) = bVar3;
-    heap.u32(unaff_EDI + (1) * 4) = 0x2c;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
+    heap.setU32((unaff_EDI + (1) * 4), (0x2c) >>> 0);
     unaff_EDI = unaff_EDI + 2;
   }
   bVar3 = 0x30;
@@ -72,7 +73,7 @@ export function FUN_0045917b(heap) {
   }
   bVar2 = bVar2 | bVar3;
   if (bVar2 != 0x30) {
-    heap.u32(unaff_EDI) = bVar3;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
     unaff_EDI = unaff_EDI + 1;
   }
   bVar3 = 0x30;
@@ -85,7 +86,7 @@ export function FUN_0045917b(heap) {
     bVar3 = bVar3 + 1;
   }
   if ((bVar2 | bVar3) != 0x30) {
-    heap.u32(unaff_EDI) = bVar3;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
     unaff_EDI = unaff_EDI + 1;
   }
   bVar2 = 0x30;
@@ -96,8 +97,8 @@ export function FUN_0045917b(heap) {
     bVar2 = bVar2 + 1;
     uVar1 = uVar1 - 100;
   }
-  heap.u32(unaff_EDI) = bVar2;
-  heap.u32(unaff_EDI + (1) * 4) = 0x2e;
+  heap.setU32(unaff_EDI, (bVar2) >>> 0);
+  heap.setU32((unaff_EDI + (1) * 4), (0x2e) >>> 0);
   bVar2 = 0x30;
   while (true) {
     if (uVar1 < 10) {
@@ -106,7 +107,7 @@ export function FUN_0045917b(heap) {
     bVar2 = bVar2 + 1;
     uVar1 = uVar1 - 10;
   }
-  heap.u32(unaff_EDI + (2) * 4) = bVar2;
-  heap.u32((unaff_EDI + 3)) = uVar1 + 0x30;
+  heap.setU32((unaff_EDI + (2) * 4), (bVar2) >>> 0);
+  heap.setU32((unaff_EDI + 3), (uVar1 + 0x30) >>> 0);
   return;
 }

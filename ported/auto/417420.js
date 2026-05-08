@@ -15,7 +15,9 @@ export function FUN_00417420(heap, param_1) {
   let iVar1 = 0;
   let iVar2 = 0;
   let iVar3 = 0;
+  let pcVar4 = 0;
   let iVar5 = 0;
+  let puVar6 = 0;
   iVar2 = param_1;
   switch (param_1) {
     case 2:
@@ -65,7 +67,7 @@ export function FUN_00417420(heap, param_1) {
         iVar3 = (heap.u32(0x005ec35c) + heap.u32(0x005ec358)) - heap.u32(0x005ec358);
         puVar6 = (heap.u32(0x005ec358) * 0xc + 0x5ec2e8);
         do {
-          heap.u32(puVar6) = 0;
+          heap.setU32(puVar6, (0) >>> 0);
           puVar6 = puVar6 + 3;
           iVar3 = iVar3 + -1;
         } while (iVar3 != 0);
@@ -73,7 +75,7 @@ export function FUN_00417420(heap, param_1) {
       /* goto LAB_00417516 */ throw new Error("goto LAB_00417516 not supported");
     }
   }
-  heap.u32(puVar6) = 0;
+  heap.setU32(puVar6, (0) >>> 0);
   LAB_00417516: if (iVar2 == 8) {
     (heap.u32(pcVar4))(8, heap.u32(0x005ec364));
   } else {

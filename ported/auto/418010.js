@@ -34,13 +34,13 @@ export function FUN_00418010(heap, param_1) {
       }
     }
     uVar2 = heap.u32(__addr_param_1);
-    if ((heap.u32(heap.u32(0x005ee548) + ((uVar1 >>> 8 & 0xffU) * 2 + 1) * 4) & 0x80) == 0) {
-      (heap.u32(__addr_param_1) & 0xffff) = uVar1;
+    if ((heap.u32(heap.u32(0x005ee548) + ((uVar1 >>> 8 & 0xff) * 2 + 1) * 4) & 0x80) == 0) {
+      heap.setU16((__addr_param_1 + 0), (uVar1) & 0xffff);
       uVar3 = 1;
     } else {
-      (heap.u32(__addr_param_1) & 0xffff) = CONCAT11(uVar1, (uVar1 >>> 8));
-      (((heap.u32(__addr_param_1)) >>> 24) & 0xff) = SUB41(uVar2, 3);
-      (heap.u32(__addr_param_1) & 0xffffffff) = heap.u32(__addr_param_1);
+      heap.setU16((__addr_param_1 + 0), (CONCAT11(uVar1, (uVar1 >>> 8))) & 0xffff);
+      heap.setU8((__addr_param_1 + 3), (SUB41(uVar2, 3)) & 0xff);
+      heap.setU32((__addr_param_1 + 0), (heap.u32(__addr_param_1)) >>> 0);
       uVar3 = 2;
     }
     iVar4 = FUN_00416d00(heap, heap.u32(0x005f0270), 0x100, __addr_param_1, uVar3, __addr_local_8, 3, 0, 1);

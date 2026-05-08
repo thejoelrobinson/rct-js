@@ -10,6 +10,8 @@ export function FUN_00407b0c(heap) {
   const __addr_local_c = __sp + 0;
   try {
   let iVar1 = 0;
+  let local_10 = 0;
+  let local_8 = 0;
   local_10 = heap.u32(0x005ec054);
   while (local_10 != 0x0) {
     if (local_10 == heap.u32(0x005ec058)) {

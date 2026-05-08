@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT31, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 export function FUN_004238b4(heap) {
   const __sp = heap.allocFrame(44);
@@ -47,7 +48,7 @@ export function FUN_004238b4(heap) {
   uVar2 = (in_EDX - uVar6) >>> 4;
   uVar3 = uVar2;
   if ((heap.u32(0x00991f2a) & 0x20) == 0) {
-    uVar8 = (undefined2)(uVar7 >>> 0x10);
+    uVar8 = (uVar7 >>> 0x10);
     if ((heap.u32(0x00991f2a) & 0x10) == 0) {
       if ((heap.u32(0x00991f2a) & 0xf) == 0) {
         /* goto LAB_00423a9a */ throw new Error("goto LAB_00423a9a not supported");
@@ -96,8 +97,8 @@ export function FUN_004238b4(heap) {
     if (uVar4 == 0) {
       LAB_00423b53: iVar1 = heap.u32(0x00991f88);
       if (((in_EAX != 0) && (in_EAX = (in_EAX - 1), heap.u32((__addr_DAT_005f442c + unaff_EDI * 2)) != 0)) && (heap.u32((__addr_DAT_005f444b) + (in_EAX * 8) * 4) != '\0')) {
-        heap.setU32(0x0099a4e8, (heap.u32((byte)(__addr_DAT_005f4444) + (in_EAX * 8) * 4)) >>> 0);
-        heap.setU32(0x0099a4ea, (heap.u32((byte)(__addr_DAT_005f4445) + (in_EAX * 8) * 4)) >>> 0);
+        heap.setU32(0x0099a4e8, (heap.u32((__addr_DAT_005f4444) + (in_EAX * 8) * 4)) >>> 0);
+        heap.setU32(0x0099a4ea, (heap.u32((__addr_DAT_005f4445) + (in_EAX * 8) * 4)) >>> 0);
         heap.setU32(0x0099a4ec, (heap.u32((__addr_DAT_005f4446) + (in_EAX * 8) * 4) + uVar6) >>> 0);
         if ((heap.u32((__addr_DAT_005f444a) + (in_EAX * 8) * 4) == '\0') || (heap.u32(0x0099a4f0) == 0)) {
           in_EAX = (heap.u32(heap.u32((__addr_PTR_LAB_00432204) + (heap.u32(0x00991f88)) * 4)))(unaff_EBP, unaff_EDI, uVar3);
@@ -107,7 +108,7 @@ export function FUN_004238b4(heap) {
           bVar9 = false;
           in_EAX = (heap.u32(heap.u32((__addr_PTR_LAB_004328e0) + (heap.u32(0x00991f88)) * 4)))();
           if (!bVar9) {
-            heap.u32((heap.u32(0x0099a4f0) + 0x1c)) = iVar1;
+            heap.setU32((heap.u32(0x0099a4f0) + 0x1c), (iVar1) >>> 0);
           }
         }
       }

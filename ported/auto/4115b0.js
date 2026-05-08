@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { midiOutGetVolume } from "../../runtime/win32.js";
 import { FUN_0041174a } from "./41174a.js";
 export function FUN_004115b0(heap) {
   const __sp = heap.allocFrame(4);
@@ -11,7 +12,7 @@ export function FUN_004115b0(heap) {
   try {
   let MVar1 = 0;
   FUN_0041174a(heap);
-  MVar1 = midiOutGetVolume(0xffffffff, __addr_DAT_005f02e8);
+  MVar1 = midiOutGetVolume(heap, 0xffffffff, __addr_DAT_005f02e8);
   if (MVar1 == 0) {
     heap.setU32(0x005ec1d0, (1) >>> 0);
   }

@@ -13,6 +13,7 @@ export function FUN_00429502(heap) {
   const __addr_DAT_0087d73a = __sp + 4;
   const __addr_PTR_LAB_00429544 = __sp + 8;
   try {
+  let psVar1 = 0;
   let bVar2 = 0;
   let uVar3 = 0;
   if ((heap.u32(0x0087c3bc) & 1) == 0) {
@@ -20,7 +21,7 @@ export function FUN_00429502(heap) {
     do {
       if (heap.u32((__addr_DAT_0087d738) + (uVar3 * 2) * 4) != 0) {
         psVar1 = __addr_DAT_0087d738 + uVar3 * 2;
-        heap.u32(psVar1) = heap.u32(psVar1) + -1;
+        heap.setU32(psVar1, (heap.u32(psVar1) + -1) >>> 0);
         if (heap.u32(psVar1) == 0) {
           FUN_005e5301(heap);
         }
@@ -31,7 +32,7 @@ export function FUN_00429502(heap) {
   }
   do {
     bVar2 = FUN_005df40c(heap);
-    bVar2 = (byte)((bVar2 * (CONCAT11(7, bVar2) >>> 8)) >>> 8);
+    bVar2 = ((bVar2 * (CONCAT11(7, bVar2) >>> 8)) >>> 8);
     uVar3 = 0;
     while (heap.u32((__addr_DAT_0087d738) + (uVar3 * 2) * 4) == 0 || (bVar2 != heap.u32((__addr_DAT_0087d73a) + (uVar3 * 2) * 4))) {
       uVar3 = uVar3 + 1;

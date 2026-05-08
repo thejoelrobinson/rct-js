@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT11, CONCAT22, CONCAT31, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 export function FUN_00450d81(heap) {
   const __sp = heap.allocFrame(40);
@@ -30,7 +31,7 @@ export function FUN_00450d81(heap) {
   let iVar8 = 0;
   let iVar9 = 0;
   iVar8 = (in_EDX & 0xff) * 0x260;
-  if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (iVar8) * 4) * 8)) & 0x200) == 0) {
+  if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((__addr_DAT_00887420) + (iVar8) * 4) * 8)) & 0x200) == 0) {
     return CONCAT44(in_EDX, 0x5a5);
   }
   uVar3 = in_EDX & 0xff;
@@ -56,7 +57,7 @@ export function FUN_00450d81(heap) {
   uVar5 = uVar5 & 0xff;
   uVar3 = 0xffffffff;
   do {
-    bVar7 = (byte)(uVar5 >>> 8);
+    bVar7 = (uVar5 >>> 8);
     if (heap.u32((__addr_DAT_008ae9c6) + ((uVar5 >>> 8) * 0x12c3) * 4) <= uVar3) {
       uVar3 = heap.u32((__addr_DAT_008ae9c6) + ((uVar5 >>> 8) * 0x12c3) * 4);
       in_CL = bVar7;
@@ -67,23 +68,23 @@ export function FUN_00450d81(heap) {
   } while (bVar7 < 8);
   uVar5 = CONCAT11(in_CL, uVar4);
   iVar9 = in_CL * 0x4b0c;
-  heap.u32((__addr_DAT_008874a4) + (heap.u32((byte)(__addr_DAT_008ae9c4) + (iVar9) * 4) * 0x260) * 4) = 0xff;
+  heap.setU32(((__addr_DAT_008874a4) + (heap.u32((__addr_DAT_008ae9c4) + (iVar9) * 4) * 0x260) * 4), (0xff) >>> 0);
   LAB_00450e27: uVar3 = uVar5;
-  heap.u32((__addr_DAT_008ae9c4) + (iVar9) * 4) = uVar5;
-  heap.u32((__addr_DAT_008874a4) + (iVar8) * 4) = (uVar5 >>> 8);
-  heap.u32((__addr_DAT_008ae9c5) + (iVar9) * 4) = 0;
-  if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (iVar8) * 4) * 8)) & 0x80) != 0) {
-    heap.u32((__addr_DAT_008ae9c5) + (iVar9) * 4) = heap.u32((__addr_DAT_008ae9c5) + (iVar9) * 4) | 4;
+  heap.setU32(((__addr_DAT_008ae9c4) + (iVar9) * 4), (uVar5) >>> 0);
+  heap.setU32(((__addr_DAT_008874a4) + (iVar8) * 4), ((uVar5 >>> 8)) >>> 0);
+  heap.setU32(((__addr_DAT_008ae9c5) + (iVar9) * 4), (0) >>> 0);
+  if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((__addr_DAT_00887420) + (iVar8) * 4) * 8)) & 0x80) != 0) {
+    heap.setU32(((__addr_DAT_008ae9c5) + (iVar9) * 4), (heap.u32((__addr_DAT_008ae9c5) + (iVar9) * 4) | 4) >>> 0);
   }
-  heap.u32((__addr_DAT_008ae9ca + iVar9)) = 0;
-  heap.u32((__addr_DAT_008ae9cc + iVar9)) = 0;
+  heap.setU32((__addr_DAT_008ae9ca + iVar9), (0) >>> 0);
+  heap.setU32((__addr_DAT_008ae9cc + iVar9), (0) >>> 0);
   LAB_00450e67: uVar1 = heap.u32(0x006e3b84);
-  heap.u32((__addr_DAT_008ae9c6 + iVar9)) = heap.u32(0x006e3b84);
+  heap.setU32((__addr_DAT_008ae9c6 + iVar9), (heap.u32(0x006e3b84)) >>> 0);
   if ((heap.u32((__addr_DAT_008ae9c5) + (iVar9) * 4) & 1) != 0) {
     return CONCAT44(in_EDX, CONCAT31((int3)(uVar1 >>> 8), (uVar3 >>> 8)));
   }
-  heap.u16(0x971e86) = heap.u32((__addr_DAT_005f5802 + heap.u32((byte)(__addr_DAT_00887420) + (iVar8) * 4) * 8));
-  heap.u16(0x971e88) = heap.u32((__addr_DAT_005f5806 + heap.u32((byte)(__addr_DAT_00887420) + (iVar8) * 4) * 8));
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00450d81"); })();
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00450d81"); })();
   return CONCAT44(in_EDX, CONCAT22((uVar1 >>> 0x10), 0x5a6));
 } finally {
     heap.freeFrame(40);

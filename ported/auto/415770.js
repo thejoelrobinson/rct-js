@@ -11,7 +11,16 @@ export function FUN_00415770(heap, param_1) {
   const __sp = heap.allocFrame(4);
   const __addr_PTR_LOOP_005ec500 = __sp + 0;
   try {
+  let ppuVar1 = 0;
+  let ppuVar2 = 0;
+  let piVar3 = 0;
+  let piVar4 = 0;
+  let piVar5 = 0;
+  let puVar6 = 0;
+  let ppuVar7 = 0;
+  let ppuVar8 = 0;
   let iVar9 = 0;
+  let piVar10 = 0;
   let bVar11 = 0;
   piVar10 = heap.u32(0x005ee520);
   do {
@@ -23,11 +32,11 @@ export function FUN_00415770(heap, param_1) {
           piVar3 = FUN_004159b0(heap, iVar9, heap.u32(piVar5), param_1);
           if (piVar3 != 0x0) {
             PTR_LOOP_005ee520 = piVar10;
-            heap.u32(piVar5) = heap.u32(piVar5) - param_1;
-            heap.u32(piVar10 + (2) * 4) = piVar5;
+            heap.setU32(piVar5, (heap.u32(piVar5) - param_1) >>> 0);
+            heap.setU32((piVar10 + (2) * 4), (piVar5) >>> 0);
             return piVar3;
           }
-          heap.u32(piVar5 + (1) * 4) = param_1;
+          heap.setU32((piVar5 + (1) * 4), (param_1) >>> 0);
         }
         iVar9 = iVar9 + 0x1000;
       }
@@ -38,11 +47,11 @@ export function FUN_00415770(heap, param_1) {
           piVar4 = FUN_004159b0(heap, iVar9, heap.u32(piVar5), param_1);
           if (piVar4 != 0x0) {
             PTR_LOOP_005ee520 = piVar10;
-            heap.u32(piVar5) = heap.u32(piVar5) - param_1;
-            heap.u32(piVar10 + (2) * 4) = piVar5;
+            heap.setU32(piVar5, (heap.u32(piVar5) - param_1) >>> 0);
+            heap.setU32((piVar10 + (2) * 4), (piVar5) >>> 0);
             return piVar4;
           }
-          heap.u32(piVar5 + (1) * 4) = param_1;
+          heap.setU32((piVar5 + (1) * 4), (param_1) >>> 0);
         }
         iVar9 = iVar9 + 0x1000;
       }
@@ -58,11 +67,11 @@ export function FUN_00415770(heap, param_1) {
         return 0x0;
       }
       piVar10 = heap.u32((puVar6 + 0x10));
-      heap.u32((piVar10 + 2)) = param_1;
+      heap.setU32((piVar10 + 2), (param_1) >>> 0);
       PTR_LOOP_005ee520 = puVar6;
-      heap.u32(piVar10) = piVar10 + param_1 + 8;
-      heap.u32(piVar10 + (1) * 4) = 0xf0 - param_1;
-      heap.u32((puVar6 + 0x18)) = heap.u32((puVar6 + 0x18)) - (param_1 & 0xff);
+      heap.setU32(piVar10, (piVar10 + param_1 + 8) >>> 0);
+      heap.setU32((piVar10 + (1) * 4), (0xf0 - param_1) >>> 0);
+      heap.setU32((puVar6 + 0x18), (heap.u32((puVar6 + 0x18)) - (param_1 & 0xff)) >>> 0);
       return piVar10 + 0x40;
     }
   }
@@ -82,11 +91,11 @@ export function FUN_00415770(heap, param_1) {
   if (0 < iVar9) {
     piVar5 = piVar10 + 1;
     do {
-      heap.u32(piVar5) = 0xf0;
-      heap.u32(piVar5 + (-1) * 4) = (piVar5 + 1);
-      heap.u32((piVar5 + 0x3d)) = 0xff;
-      heap.u32(ppuVar7) = 0xf0;
-      heap.u32(ppuVar7 + (1) * 4) = 0xf1;
+      heap.setU32(piVar5, (0xf0) >>> 0);
+      heap.setU32((piVar5 + (-1) * 4), ((piVar5 + 1)) >>> 0);
+      heap.setU32((piVar5 + 0x3d), (0xff) >>> 0);
+      heap.setU32(ppuVar7, (0xf0) >>> 0);
+      heap.setU32((ppuVar7 + (1) * 4), (0xf1) >>> 0);
       piVar5 = piVar5 + 0x400;
       ppuVar7 = ppuVar7 + 2;
       iVar9 = iVar9 + -1;
@@ -104,12 +113,12 @@ export function FUN_00415770(heap, param_1) {
     bVar11 = ppuVar7 < ppuVar1;
   }
   PTR_LOOP_005ee520 = ppuVar8;
-  heap.u32(ppuVar8 + (3) * 4) = (-bVar11 & ppuVar7);
-  heap.u32((piVar10 + 2)) = param_1;
-  heap.u32(ppuVar8 + (2) * 4) = ppuVar2;
-  heap.u32(ppuVar2) = heap.u32(ppuVar2) + -param_1;
-  heap.u32(piVar10 + (1) * 4) = heap.u32(piVar10 + (1) * 4) - param_1;
-  heap.u32(piVar10) = piVar10 + param_1 + 8;
+  heap.setU32((ppuVar8 + (3) * 4), ((-bVar11 & ppuVar7)) >>> 0);
+  heap.setU32((piVar10 + 2), (param_1) >>> 0);
+  heap.setU32((ppuVar8 + (2) * 4), (ppuVar2) >>> 0);
+  heap.setU32(ppuVar2, (heap.u32(ppuVar2) + -param_1) >>> 0);
+  heap.setU32((piVar10 + (1) * 4), (heap.u32(piVar10 + (1) * 4) - param_1) >>> 0);
+  heap.setU32(piVar10, (piVar10 + param_1 + 8) >>> 0);
   return piVar10 + 0x40;
 } finally {
     heap.freeFrame(4);

@@ -25,12 +25,12 @@ export function FUN_0040fbdd(heap, param_1, param_2, param_3) {
       param_3 = heap.u32(0x005ec0e0) - param_2;
     }
     for (local_10 = param_2; local_10 < (param_3 + param_2); local_10 = local_10 + 1) {
-      heap.u32((__addr_DAT_005ef6aa) + (local_10 * 4) * 4) = heap.u32((param_1 + 2 + local_10 * 4));
-      heap.u32((__addr_DAT_005efaac) + (local_10 * 4) * 4) = heap.u32((__addr_DAT_005ef6aa) + (local_10 * 4) * 4);
-      heap.u32((__addr_DAT_005ef6a9) + (local_10 * 4) * 4) = heap.u32((param_1 + 1 + local_10 * 4));
-      heap.u32((__addr_DAT_005efaad) + (local_10 * 4) * 4) = heap.u32((__addr_DAT_005ef6a9) + (local_10 * 4) * 4);
-      heap.u32((__addr_DAT_005ef6a8) + (local_10 * 4) * 4) = heap.u32((param_1 + local_10 * 4));
-      heap.u32((__addr_DAT_005efaae) + (local_10 * 4) * 4) = heap.u32((__addr_DAT_005ef6a8) + (local_10 * 4) * 4);
+      heap.setU32(((__addr_DAT_005ef6aa) + (local_10 * 4) * 4), (heap.u32((param_1 + 2 + local_10 * 4))) >>> 0);
+      heap.setU32(((__addr_DAT_005efaac) + (local_10 * 4) * 4), (heap.u32((__addr_DAT_005ef6aa) + (local_10 * 4) * 4)) >>> 0);
+      heap.setU32(((__addr_DAT_005ef6a9) + (local_10 * 4) * 4), (heap.u32((param_1 + 1 + local_10 * 4))) >>> 0);
+      heap.setU32(((__addr_DAT_005efaad) + (local_10 * 4) * 4), (heap.u32((__addr_DAT_005ef6a9) + (local_10 * 4) * 4)) >>> 0);
+      heap.setU32(((__addr_DAT_005ef6a8) + (local_10 * 4) * 4), (heap.u32((param_1 + local_10 * 4))) >>> 0);
+      heap.setU32(((__addr_DAT_005efaae) + (local_10 * 4) * 4), (heap.u32((__addr_DAT_005ef6a8) + (local_10 * 4) * 4)) >>> 0);
     }
     hdc = GetDC(heap, heap.u32(0x005e916c));
     hPal = SelectPalette(heap, hdc, heap.u32(0x005ec0d8), 0);

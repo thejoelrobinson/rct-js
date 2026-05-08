@@ -12,11 +12,13 @@ export function FUN_005e6a55(heap) {
   let bVar1 = 0;
   let in_EAX = 0;
   let in_EDX = 0;
+  let pbVar2 = 0;
+  let pbVar3 = 0;
   pbVar2 = __addr_DAT_009a0018;
   pbVar3 = __addr_DAT_009a0018;
   while (true) {
     bVar1 = heap.u32(pbVar2);
-    heap.u32(pbVar3) = bVar1;
+    heap.setU32(pbVar3, (bVar1) >>> 0);
     if (bVar1 == 0) {
       break;
     }

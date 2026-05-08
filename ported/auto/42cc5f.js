@@ -16,7 +16,7 @@ export function FUN_0042cc5f(heap) {
   if (extraout_DX < uVar1) {
     sVar2 = 0;
   }
-  heap.u32((unaff_ESI + 0x3e)) = sVar2;
+  heap.setU32((unaff_ESI + 0x3e), (sVar2) >>> 0);
   FUN_005e4198(heap);
   return;
 }

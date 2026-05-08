@@ -1,14 +1,15 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/0.c
+// Source: decompiled/c/4134c0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-export function _strncpy(heap, _Dest, _Source, _Count) {
+export function FUN_004134c0(heap, _Dest, _Source, _Count) {
   let uVar1 = 0;
   let uVar2 = 0;
   let cVar3 = 0;
   let uVar4 = 0;
+  let puVar5 = 0;
   if (_Count == 0) {
     return _Dest;
   }
@@ -17,7 +18,7 @@ export function _strncpy(heap, _Dest, _Source, _Count) {
     while (true) {
       uVar4 = heap.u32(_Source);
       _Source = (_Source + 1);
-      heap.u32(puVar5) = uVar4;
+      heap.setU32(puVar5, (uVar4) >>> 0);
       puVar5 = (puVar5 + 1);
       _Count = _Count - 1;
       if (_Count == 0) {
@@ -40,7 +41,7 @@ export function _strncpy(heap, _Dest, _Source, _Count) {
         }
         /* goto LAB_004135a9 */ throw new Error("goto LAB_004135a9 not supported");
       }
-      heap.u32(puVar5) = '\0';
+      heap.setU32(puVar5, ('\0') >>> 0);
       puVar5 = (puVar5 + 1);
       _Count = _Count - 1;
     } while (_Count != 0);
@@ -54,14 +55,14 @@ export function _strncpy(heap, _Dest, _Source, _Count) {
       _Source = (_Source + 4);
       if (((uVar1 ^ 0xffffffff ^ uVar1 + 0x7efefeff) & 0x81010100) != 0) {
         if (uVar2 == '\0') {
-          heap.u32(puVar5) = 0;
+          heap.setU32(puVar5, (0) >>> 0);
           joined_r0x004135a5: while (true) {
             uVar4 = uVar4 - 1;
             puVar5 = puVar5 + 1;
             if (uVar4 == 0) {
               break;
             }
-            LAB_004135a9: heap.u32(puVar5) = 0;
+            LAB_004135a9: heap.setU32(puVar5, (0) >>> 0);
           }
           cVar3 = '\0';
           _Count = _Count & 3;
@@ -71,22 +72,22 @@ export function _strncpy(heap, _Dest, _Source, _Count) {
           return _Dest;
         }
         if ((uVar2 >>> 8) == '\0') {
-          heap.u32(puVar5) = uVar2 & 0xff;
+          heap.setU32(puVar5, (uVar2 & 0xff) >>> 0);
           /* goto joined_r0x004135a5 */ throw new Error("goto joined_r0x004135a5 not supported");
         }
         if ((uVar2 & 0xff0000) == 0) {
-          heap.u32(puVar5) = uVar2 & 0xffff;
+          heap.setU32(puVar5, (uVar2 & 0xffff) >>> 0);
           /* goto joined_r0x004135a5 */ throw new Error("goto joined_r0x004135a5 not supported");
         }
         if ((uVar2 & 0xff000000) == 0) {
-          heap.u32(puVar5) = uVar2;
+          heap.setU32(puVar5, (uVar2) >>> 0);
           /* goto joined_r0x004135a5 */ throw new Error("goto joined_r0x004135a5 not supported");
         }
       }
-      heap.u32(puVar5) = uVar2;
+      heap.setU32(puVar5, (uVar2) >>> 0);
       puVar5 = puVar5 + 1;
       uVar4 = uVar4 - 1;
-      joined_r0x004134fe: 
+      joined_r0x004134fe: ;
     } while (uVar4 != 0);
     _Count = _Count & 3;
     if (_Count == 0) {
@@ -96,11 +97,11 @@ export function _strncpy(heap, _Dest, _Source, _Count) {
   do {
     cVar3 = heap.u32(_Source);
     _Source = (_Source + 1);
-    heap.u32(puVar5) = cVar3;
+    heap.setU32(puVar5, (cVar3) >>> 0);
     puVar5 = (puVar5 + 1);
     if (cVar3 == '\0') {
       while (_Count = _Count - 1, _Count != 0) {
-        LAB_0041353b: heap.u32(puVar5) = cVar3;
+        LAB_0041353b: heap.setU32(puVar5, (cVar3) >>> 0);
         puVar5 = (puVar5 + 1);
       }
       return _Dest;

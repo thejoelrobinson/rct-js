@@ -7,7 +7,7 @@
 export function FUN_00448d15(heap) {
   let in_DL = 0;
   if (in_DL != -1) {
-    heap.u32(heap.u32(0x00630bdc)) = in_DL;
+    heap.setU32(heap.u32(0x00630bdc), (in_DL) >>> 0);
     heap.setU32(0x00630bdc, (heap.u32(0x00630bdc) + 1) >>> 0);
   }
   return;

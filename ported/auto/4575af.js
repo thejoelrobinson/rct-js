@@ -26,7 +26,7 @@ export function FUN_004575af(heap) {
     iVar6 = (uVar3 + 0x74) * 0x80;
     uVar2 = 0;
     do {
-      heap.u32((__addr_DAT_008d422a + uVar2 * 4 + iVar6)) = 0;
+      heap.setU32((__addr_DAT_008d422a + uVar2 * 4 + iVar6), (0) >>> 0);
       uVar2 = uVar2 + 1;
       uVar4 = heap.u32(0x0087c398);
     } while (uVar2 < 0x20);
@@ -36,7 +36,7 @@ export function FUN_004575af(heap) {
         bVar1 = heap.u32((__addr_DAT_00743c59) + (iVar5) * 4);
         uVar2 = 0;
         do {
-          heap.u32((__addr_DAT_008d422a + uVar2 * 4 + iVar6)) = heap.u32((__addr_DAT_008d422a + uVar2 * 4 + iVar6)) | heap.u32((__addr_DAT_008d422a + uVar2 * 4 + bVar1 * 0x80));
+          heap.setU32((__addr_DAT_008d422a + uVar2 * 4 + iVar6), (heap.u32((__addr_DAT_008d422a + uVar2 * 4 + iVar6)) | heap.u32((__addr_DAT_008d422a + uVar2 * 4 + bVar1 * 0x80))) >>> 0);
           uVar2 = uVar2 + 1;
         } while (uVar2 < 0x20);
       }

@@ -14,32 +14,32 @@ export function FUN_0040f2f4(heap, param_1, param_2, param_3) {
   UVar1 = GetSystemPaletteUse(heap, hdc);
   if (UVar1 == 2) {
     for (local_8 = 0; local_8 < param_2; local_8 = local_8 + 1) {
-      heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4)) = heap.u32((param_1 + 2 + local_8 * 4));
-      heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1)) = heap.u32((param_1 + 1 + local_8 * 4));
-      heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2)) = heap.u32((param_1 + local_8 * 4));
-      heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\x01';
+      heap.setU8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4), (heap.u32((param_1 + 2 + local_8 * 4))) & 0xff);
+      heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1), (heap.u32((param_1 + 1 + local_8 * 4))) & 0xff);
+      heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2), (heap.u32((param_1 + local_8 * 4))) & 0xff);
+      heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\x01') & 0xff);
     }
     for (; local_8 < 0x100; local_8 = local_8 + 1) {
-      heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\x01';
+      heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\x01') & 0xff);
     }
-    heap.u32(heap.u32(param_3 + (0x80) * 4)) = 0xff;
-    heap.u32((heap.u32(param_3 + (0x80) * 4) + 1)) = 0xff;
-    heap.u32((heap.u32(param_3 + (0x80) * 4) + 2)) = 0xff;
-    heap.u32(((heap.u32(param_3 + (0x80) * 4) + 2) + 1)) = 0;
-    heap.u8(heap.u32(heap.u32((param_3 + 4)) + (0) * 4)) = '\0';
-    heap.u8((heap.u32(heap.u32((param_3 + 4)) + (0) * 4) + 1)) = '\0';
-    heap.u8((heap.u32(heap.u32((param_3 + 4)) + (0) * 4) + 2)) = '\0';
-    heap.u8((heap.u32(heap.u32((param_3 + 4)) + (0) * 4) + 3)) = '\0';
+    heap.setU32(heap.u32(param_3 + (0x80) * 4), (0xff) >>> 0);
+    heap.setU32((heap.u32(param_3 + (0x80) * 4) + 1), (0xff) >>> 0);
+    heap.setU32((heap.u32(param_3 + (0x80) * 4) + 2), (0xff) >>> 0);
+    heap.setU32(((heap.u32(param_3 + (0x80) * 4) + 2) + 1), (0) >>> 0);
+    heap.setU8(heap.u32(heap.u32((param_3 + 4)) + (0) * 4), ('\0') & 0xff);
+    heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (0) * 4) + 1), ('\0') & 0xff);
+    heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (0) * 4) + 2), ('\0') & 0xff);
+    heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (0) * 4) + 3), ('\0') & 0xff);
     heap.setU32(0x005ec0dc, (1) >>> 0);
     heap.setU32(0x005ec0e0, (0xfe) >>> 0);
   } else {
     iVar2 = GetDeviceCaps(heap, hdc, 0x18);
     if (iVar2 < 1) {
       for (local_8 = 0; local_8 < param_2; local_8 = local_8 + 1) {
-        heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4)) = heap.u32((param_1 + 2 + local_8 * 4));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1)) = heap.u32((param_1 + 1 + local_8 * 4));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2)) = heap.u32((param_1 + local_8 * 4));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\x01';
+        heap.setU8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4), (heap.u32((param_1 + 2 + local_8 * 4))) & 0xff);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1), (heap.u32((param_1 + 1 + local_8 * 4))) & 0xff);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2), (heap.u32((param_1 + local_8 * 4))) & 0xff);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\x01') & 0xff);
       }
       heap.setU32(0x005ec0dc, (0) >>> 0);
       heap.setU32(0x005ec0e0, (0x100) >>> 0);
@@ -49,32 +49,32 @@ export function FUN_0040f2f4(heap, param_1, param_2, param_3) {
       heap.setU32(0x005ec0e0, (param_2 - iVar2) >>> 0);
       GetSystemPaletteEntries(heap, hdc, 0, UVar1, heap.u32((param_3 + 4)));
       for (local_8 = 0; local_8 < UVar1; local_8 = local_8 + 1) {
-        heap.u32((param_1 + 2 + local_8 * 4)) = heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4));
-        heap.u32((param_1 + 1 + local_8 * 4)) = heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1));
-        heap.u32((param_1 + local_8 * 4)) = heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\0';
+        heap.setU32((param_1 + 2 + local_8 * 4), (heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4))) >>> 0);
+        heap.setU32((param_1 + 1 + local_8 * 4), (heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1))) >>> 0);
+        heap.setU32((param_1 + local_8 * 4), (heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2))) >>> 0);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\0') & 0xff);
       }
       for (; local_8 < ((param_2 - iVar2) + UVar1); local_8 = local_8 + 1) {
-        heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4)) = heap.u32((param_1 + 2 + local_8 * 4));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1)) = heap.u32((param_1 + 1 + local_8 * 4));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2)) = heap.u32((param_1 + local_8 * 4));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\x01';
+        heap.setU8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4), (heap.u32((param_1 + 2 + local_8 * 4))) & 0xff);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1), (heap.u32((param_1 + 1 + local_8 * 4))) & 0xff);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2), (heap.u32((param_1 + local_8 * 4))) & 0xff);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\x01') & 0xff);
       }
       for (; local_8 < (0x100 - UVar1); local_8 = local_8 + 1) {
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\x01';
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\x01') & 0xff);
       }
       GetSystemPaletteEntries(heap, hdc, 0x100 - UVar1, UVar1, (param_3 + (0x100 - UVar1) * 4 + 4));
       for (local_8 = 0x100 - UVar1; local_8 < 0x100; local_8 = local_8 + 1) {
-        heap.u32((param_1 + 2 + local_8 * 4)) = heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4));
-        heap.u32((param_1 + 1 + local_8 * 4)) = heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1));
-        heap.u32((param_1 + local_8 * 4)) = heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2));
-        heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3)) = '\0';
+        heap.setU32((param_1 + 2 + local_8 * 4), (heap.u8(heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4))) >>> 0);
+        heap.setU32((param_1 + 1 + local_8 * 4), (heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 1))) >>> 0);
+        heap.setU32((param_1 + local_8 * 4), (heap.u8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 2))) >>> 0);
+        heap.setU8((heap.u32(heap.u32((param_3 + 4)) + (local_8) * 4) + 3), ('\0') & 0xff);
       }
     }
   }
   ReleaseDC(heap, 0x0, hdc);
-  heap.u16((param_3 + 2)) = 0x100;
-  heap.u16(param_3) = 0x300;
+  heap.setU16((param_3 + 2), (0x100) & 0xffff);
+  heap.setU16(param_3, (0x300) & 0xffff);
   CreatePalette(heap, param_3);
   return;
 }

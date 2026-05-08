@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { InterlockedExchange, Sleep } from "../../runtime/win32.js";
+import { InterlockedExchange, Sleep, timeEndPeriod, timeKillEvent } from "../../runtime/win32.js";
 import { FUN_0040d575 } from "./40d575.js";
 export function FUN_0040d3a0(heap) {
   const __sp = heap.allocFrame(4);
@@ -16,8 +16,8 @@ export function FUN_0040d3a0(heap) {
     FUN_0040d575(heap, local_8);
   }
   if (heap.u32(0x005ebfdc) != 0) {
-    timeKillEvent(heap.u32(0x005ebfd8));
-    timeEndPeriod(0x32);
+    timeKillEvent(heap, heap.u32(0x005ebfd8));
+    timeEndPeriod(heap, 0x32);
     while (true) {
       LVar1 = InterlockedExchange(heap, __addr_DAT_005ebfe4, 1);
       if (LVar1 == 0) {

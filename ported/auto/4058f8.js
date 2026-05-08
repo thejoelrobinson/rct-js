@@ -11,8 +11,8 @@ export function FUN_004058f8(heap, param_1, param_2) {
   try {
   let BVar1 = 0;
   BVar1 = GetCursorPos(heap, __addr_local_10);
-  heap.u32(param_1) = heap.u32(__addr_local_10);
-  heap.u32(param_2) = heap.u32((__addr_local_10 + 4));
+  heap.setU32(param_1, (heap.u32(__addr_local_10)) >>> 0);
+  heap.setU32(param_2, (heap.u32((__addr_local_10 + 4))) >>> 0);
   return BVar1;
 } finally {
     heap.freeFrame(128);

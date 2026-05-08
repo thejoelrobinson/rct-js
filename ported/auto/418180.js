@@ -9,8 +9,9 @@ export function FUN_00418180(heap, param_1, param_2) {
   let bVar1 = 0;
   let iVar2 = 0;
   let iVar3 = 0;
-  bVar1 = (byte)(param_2 >>> 0x1f);
-  iVar3 = (param_2 + (param_2 >>> 0x1f & 0x1fU)) >>> 5;
+  let puVar4 = 0;
+  bVar1 = (param_2 >>> 0x1f);
+  iVar3 = (param_2 + (param_2 >>> 0x1f & 0x1f)) >>> 5;
   iVar2 = FUN_00418ef0(heap, heap.u32((param_1 + iVar3 * 4)), 1 << (0x1f - (((param_2 ^ bVar1) - bVar1 & 0x1f ^ bVar1) - bVar1) & 0x1f), param_1 + iVar3 * 4);
   iVar3 = iVar3 + -1;
   if (-1 < iVar3) {

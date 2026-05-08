@@ -88,10 +88,10 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
     } else {
       if (param_2 < 0x25) {
       if (param_2 == 0x24) {
-        heap.u32((param_4 + 0x18)) = heap.u32(0x005f1a04);
-        heap.u32((param_4 + 0x1c)) = heap.u32(0x005f139c);
-        heap.u32((param_4 + 0x20)) = heap.u32(0x005f1fc0);
-        heap.u32((param_4 + 0x24)) = heap.u32(0x005f1b28);
+        heap.setU32((param_4 + 0x18), (heap.u32(0x005f1a04)) >>> 0);
+        heap.setU32((param_4 + 0x1c), (heap.u32(0x005f139c)) >>> 0);
+        heap.setU32((param_4 + 0x20), (heap.u32(0x005f1fc0)) >>> 0);
+        heap.setU32((param_4 + 0x24), (heap.u32(0x005f1b28)) >>> 0);
         return 0x0;
       }
       if (param_2 == 0x20) {
@@ -153,7 +153,7 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
           return 0x0;
         case 0x102:
           heap.setU32(0x005f1fdc, (param_3) >>> 0);
-          heap.u32((__addr_DAT_005f15e4 + heap.u32(0x005e91d8) * 8)) = param_3;
+          heap.setU32((__addr_DAT_005f15e4 + heap.u32(0x005e91d8) * 8), (param_3) >>> 0);
           return 0x0;
         case 0x104:
           if (param_3 == 0x0) {
@@ -189,7 +189,7 @@ export function FUN_00403d79(heap, param_1, param_2, param_3, param_4) {
         DragQueryFileA(heap, param_3, 0, __addr_DAT_005f1900, 0x104);
         return 0x0;
       }
-      switch (param_2 - 0x200) {
+      switch ((param_2 - 0x200)) {
         case 0x0:
           if (heap.u32(0x005ebe40) == 0) {
             return (param_2 - 0x200);

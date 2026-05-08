@@ -13,13 +13,13 @@ export function FUN_004400eb(heap) {
   let in_AX = 0;
   let unaff_ESI = 0;
   FUN_005e3c3c(heap);
-  heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_00628cf0;
-  heap.u32((unaff_ESI + 0xc)) = heap.u32(0x00629180);
-  heap.u32((unaff_ESI + 0x30)) = in_AX;
-  heap.u32((unaff_ESI + 0x164)) = 0;
-  heap.u32((unaff_ESI + 0x15c)) = 0;
-  heap.u32((unaff_ESI + 0x168)) = 0;
-  heap.u32((unaff_ESI + 0x16a)) = 0;
+  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_00628cf0) >>> 0);
+  heap.setU32((unaff_ESI + 0xc), (heap.u32(0x00629180)) >>> 0);
+  heap.setU32((unaff_ESI + 0x30), (in_AX) >>> 0);
+  heap.setU32((unaff_ESI + 0x164), (0) >>> 0);
+  heap.setU32((unaff_ESI + 0x15c), (0) >>> 0);
+  heap.setU32((unaff_ESI + 0x168), (0) >>> 0);
+  heap.setU32((unaff_ESI + 0x16a), (0) >>> 0);
   FUN_0043fe80(heap);
   return;
 } finally {

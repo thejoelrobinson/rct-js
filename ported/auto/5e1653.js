@@ -11,6 +11,8 @@ export function FUN_005e1653(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_009a013c = __sp + 0;
   try {
+  let puVar1 = 0;
+  let puVar2 = 0;
   if (heap.u32(0x00971ef0) != '\0') {
     FUN_005e1210(heap);
     for (puVar1 = __addr_DAT_009a013c; puVar1 < heap.u32(0x009a1164); puVar1 = puVar1 + 0x178) {
@@ -29,7 +31,7 @@ export function FUN_005e1653(heap) {
       }
     }
     while (puVar2 = puVar1, puVar1 = puVar2 + -0x178, 0x9a013b < puVar1) {
-      if (((heap.u32((puVar2 + -0x146)) & 0x600) != 0) && (heap.u32((puVar2 + -0x146)) = heap.u32((puVar2 + -0x146)) + -0x200, (heap.u32((puVar2 + -0x146)) & 0x600) == 0)) {
+      if (((heap.u32((puVar2 + -0x146)) & 0x600) != 0) && (heap.setU32((puVar2 + -0x146), (heap.u32((puVar2 + -0x146)) + -0x200) >>> 0), (heap.u32((puVar2 + -0x146)) & 0x600) == 0)) {
         FUN_005e43de(heap);
       }
     }

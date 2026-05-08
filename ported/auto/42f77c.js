@@ -52,7 +52,7 @@ export function FUN_0042f77c(heap) {
     return;
   }
   if (in_AL != heap.u32(heap.u32(0x005f8cb0))) {
-    heap.u32(heap.u32(0x005f8cb0) + (1) * 4) = in_AL;
+    heap.setU32((heap.u32(0x005f8cb0) + (1) * 4), (in_AL) >>> 0);
     heap.setU32(0x005f8cb0, (heap.u32(0x005f8cb0) + 1) >>> 0);
     heap.setU32(0x005f8d34, (heap.u32(0x005f8d34) + 1) >>> 0);
     return;

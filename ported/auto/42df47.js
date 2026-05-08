@@ -10,16 +10,17 @@ import { FUN_00444bd4 } from "./444bd4.js";
 export function FUN_0042df47(heap) {
   let in_EAX = 0;
   let in_EDX = 0;
+  let unaff_ESI = 0;
   let in_ZF = 0;
   FUN_00444bd4(heap);
   if (!in_ZF) {
-    heap.u32(unaff_ESI + (0x14) * 4) = 0x2c;
-    heap.u32(unaff_ESI + (9) * 4) = 0x20;
-    heap.u32(unaff_ESI + (0x15) * 4) = 0x22;
-    heap.u32(unaff_ESI) = 2;
+    heap.setU32((unaff_ESI + (0x14) * 4), (0x2c) >>> 0);
+    heap.setU32((unaff_ESI + (9) * 4), (0x20) >>> 0);
+    heap.setU32((unaff_ESI + (0x15) * 4), (0x22) >>> 0);
+    heap.setU32(unaff_ESI, (2) >>> 0);
     FUN_00444927(heap);
-    heap.u32(unaff_ESI + (1) * 4) = 3;
-    heap.u32((unaff_ESI + 0x26)) = 0;
+    heap.setU32((unaff_ESI + (1) * 4), (3) >>> 0);
+    heap.setU32((unaff_ESI + 0x26), (0) >>> 0);
   }
   return CONCAT44(in_EDX, in_EAX);
 }

@@ -20,33 +20,34 @@ export function FUN_005e429d(heap) {
   let sVar2 = 0;
   let unaff_EBX = 0;
   let unaff_ESI = 0;
+  let piVar3 = 0;
   piVar3 = __addr_DAT_009a1168;
   do {
     if (heap.u32(piVar3) == 0) {
-      heap.u32(piVar3 + (1) * 4) = in_EAX;
-      heap.u32(piVar3) = unaff_EBX;
+      heap.setU32((piVar3 + (1) * 4), (in_EAX) >>> 0);
+      heap.setU32(piVar3, (unaff_EBX) >>> 0);
       if ((in_EDX >>> 0x1e & 1) == 0) {
         in_CL = 0;
       }
-      heap.u32(piVar3 + (3) * 4) = unaff_EBX << (in_CL & 0x1f);
-      heap.u32((piVar3 + 4)) = in_CL;
-      heap.u32((piVar3 + 0x12)) = 0;
+      heap.setU32((piVar3 + (3) * 4), (unaff_EBX << (in_CL & 0x1f)) >>> 0);
+      heap.setU32((piVar3 + 4), (in_CL) >>> 0);
+      heap.setU32((piVar3 + 0x12), (0) >>> 0);
       if (heap.u32(0x005f8d5c) == '\x01') {
-        heap.u32((piVar3 + 0x12)) = heap.u32((piVar3 + 0x12)) | 0x100;
+        heap.setU32((piVar3 + 0x12), (heap.u32((piVar3 + 0x12)) | 0x100) >>> 0);
       }
-      heap.u32((unaff_ESI + 8)) = piVar3;
+      heap.setU32((unaff_ESI + 8), (piVar3) >>> 0);
       if ((in_EDX & 0x80000000) == 0) {
         sVar2 = ((in_EDX & 0xbfffffff) >>> 0x10);
-        heap.u32((unaff_ESI + 0x16e)) = 0xffff;
+        heap.setU32((unaff_ESI + 0x16e), (0xffff) >>> 0);
       } else {
-        heap.u32((unaff_ESI + 0x16e)) = (in_EDX & 0xbfffffff);
+        heap.setU32((unaff_ESI + 0x16e), ((in_EDX & 0xbfffffff)) >>> 0);
         sVar2 = heap.u32((__addr_DAT_00743ba4) + ((in_EDX & 0xffff) * 0x80) * 4);
       }
       sVar1 = FUN_005e4355(heap);
-      heap.u32((unaff_ESI + 0x170)) = sVar1;
-      heap.u32((unaff_ESI + 0x172)) = sVar2;
-      heap.u32((piVar3 + 2)) = sVar1;
-      heap.u32((piVar3 + 10)) = sVar2;
+      heap.setU32((unaff_ESI + 0x170), (sVar1) >>> 0);
+      heap.setU32((unaff_ESI + 0x172), (sVar2) >>> 0);
+      heap.setU32((piVar3 + 2), (sVar1) >>> 0);
+      heap.setU32((piVar3 + 10), (sVar2) >>> 0);
       FUN_005e6a83(heap);
       return;
     }

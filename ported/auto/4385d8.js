@@ -78,6 +78,7 @@ export function FUN_004385d8(heap) {
   try {
   let uVar1 = 0;
   let uVar2 = 0;
+  let puVar3 = 0;
   let uVar4 = 0;
   let iVar5 = 0;
   let sVar6 = 0;

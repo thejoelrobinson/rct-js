@@ -13,10 +13,10 @@ export function FUN_00418c80(heap, param_1, param_2) {
   } else {
     if ((heap.u32(param_2 + (3) * 4) & 0x1000) != 0) {
     FUN_00417140(heap, param_2);
-    heap.u32(param_2 + (6) * 4) = 0;
-    heap.u32(param_2 + (3) * 4) = heap.u32(param_2 + (3) * 4) & 0xffffeeff;
-    heap.u32(param_2) = 0;
-    heap.u32(param_2 + (2) * 4) = 0;
+    heap.setU32((param_2 + (6) * 4), (0) >>> 0);
+    heap.setU32((param_2 + (3) * 4), (heap.u32(param_2 + (3) * 4) & 0xffffeeff) >>> 0);
+    heap.setU32(param_2, (0) >>> 0);
+    heap.setU32((param_2 + (2) * 4), (0) >>> 0);
     return;
   }
   }

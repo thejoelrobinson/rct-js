@@ -17,12 +17,14 @@ export function FUN_0042f283(heap) {
   const __addr_DAT_0099a988 = __sp + 16;
   try {
   let cVar1 = 0;
+  let pcVar2 = 0;
+  let pcVar3 = 0;
   FUN_00458bcf(heap);
   pcVar2 = __addr_DAT_005f8ea4;
   pcVar3 = __addr_DAT_0099aa88;
   do {
     cVar1 = heap.u32(pcVar2);
-    heap.u32(pcVar3) = cVar1;
+    heap.setU32(pcVar3, (cVar1) >>> 0);
     pcVar2 = pcVar2 + 1;
     pcVar3 = pcVar3 + 1;
   } while (cVar1 != '\0');

@@ -5,7 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0040330f(heap, param_1, param_2, param_3) {
-  heap.u32(param_2) = param_1 >>> 3;
-  heap.u32(param_3) = (1 << (param_1 & 7));
+  heap.setU32(param_2, (param_1 >>> 3) >>> 0);
+  heap.setU32(param_3, ((1 << (param_1 & 7))) >>> 0);
   return;
 }

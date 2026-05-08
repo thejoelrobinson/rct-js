@@ -8,6 +8,7 @@ import { FUN_0042f3a2 } from "./42f3a2.js";
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e68e2 } from "./5e68e2.js";
 export function FUN_0042b5a1(heap) {
+  let puVar1 = 0;
   let uVar2 = 0;
   let iVar3 = 0;
   let in_AX = 0;
@@ -21,7 +22,7 @@ export function FUN_0042b5a1(heap) {
     FUN_005e68e2(heap);
     if (!bVar4) {
       puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 1;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 1) >>> 0);
       FUN_005e43de(heap);
     }
     return;
@@ -35,7 +36,7 @@ export function FUN_0042b5a1(heap) {
       heap.setU32(0x005f8d5c, (0) >>> 0);
       puVar1 = (iVar3 + 0x12);
       uVar2 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 0x100;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 0x100) >>> 0);
       if ((uVar2 >>> 8 & 1) == 0) {
         heap.setU32(0x005f8d5c, (1) >>> 0);
       }
@@ -48,7 +49,7 @@ export function FUN_0042b5a1(heap) {
     FUN_005e68e2(heap);
     if (!bVar4) {
       puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 2;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 2) >>> 0);
       FUN_005e43de(heap);
     }
     return;
@@ -58,7 +59,7 @@ export function FUN_0042b5a1(heap) {
     FUN_005e68e2(heap);
     if (!bVar4) {
       puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 4;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 4) >>> 0);
       FUN_005e43de(heap);
     }
     return;
@@ -68,7 +69,7 @@ export function FUN_0042b5a1(heap) {
     FUN_005e68e2(heap);
     if (!bVar4) {
       puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 8;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 8) >>> 0);
       FUN_005e43de(heap);
     }
     return;
@@ -78,7 +79,7 @@ export function FUN_0042b5a1(heap) {
     FUN_005e68e2(heap);
     if (!bVar4) {
       puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 0x1000;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 0x1000) >>> 0);
       FUN_005e43de(heap);
     }
     return;
@@ -90,7 +91,7 @@ export function FUN_0042b5a1(heap) {
       FUN_005e68e2(heap);
       if (!bVar4) {
         puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-        heap.u32(puVar1) = heap.u32(puVar1) ^ 0x20;
+        heap.setU32(puVar1, (heap.u32(puVar1) ^ 0x20) >>> 0);
         FUN_005e43de(heap);
       }
       return;
@@ -104,7 +105,7 @@ export function FUN_0042b5a1(heap) {
       FUN_005e68e2(heap);
       if (!bVar4) {
         puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-        heap.u32(puVar1) = heap.u32(puVar1) ^ 0x80;
+        heap.setU32(puVar1, (heap.u32(puVar1) ^ 0x80) >>> 0);
         FUN_005e43de(heap);
       }
       return;
@@ -112,7 +113,7 @@ export function FUN_0042b5a1(heap) {
     FUN_005e68e2(heap);
     if (!bVar4) {
       puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-      heap.u32(puVar1) = heap.u32(puVar1) ^ 0x40;
+      heap.setU32(puVar1, (heap.u32(puVar1) ^ 0x40) >>> 0);
       FUN_005e43de(heap);
     }
     return;
@@ -120,7 +121,7 @@ export function FUN_0042b5a1(heap) {
   FUN_005e68e2(heap);
   if (!bVar4) {
     puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-    heap.u32(puVar1) = heap.u32(puVar1) ^ 0x10;
+    heap.setU32(puVar1, (heap.u32(puVar1) ^ 0x10) >>> 0);
     FUN_005e43de(heap);
   }
   return;

@@ -5,10 +5,10 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_005df208(heap) {
-  heap.u8(0x5f8d62) = 8;
-  heap.u8(0x5f8d63) = 0;
-  heap.u8(0x5f8d64) = 8;
-  heap.u8(0x5f8d65) = 1;
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_005df208"); })();
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_005df208"); })();
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_005df208"); })();
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_005df208"); })();
   heap.setU32(0x005f8d66, (0x1b) >>> 0);
   heap.setU32(0x005f8d67, (0) >>> 0);
   heap.setU32(0x005f8d68, (0x13) >>> 0);

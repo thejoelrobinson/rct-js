@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GlobalAlloc, GlobalFree, GlobalHandle, GlobalLock, GlobalUnlock } from "../../runtime/win32.js";
+import { GlobalAlloc, GlobalFree, GlobalHandle, GlobalLock, GlobalUnlock, mmioAscend, mmioCreateChunk, mmioRead, mmioWrite } from "../../runtime/win32.js";
 export function FUN_00412a85(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(128);
   const __addr_local_1c = __sp + 0;
@@ -19,10 +19,10 @@ export function FUN_00412a85(heap, param_1, param_2, param_3) {
   if (local_8 == 0x0) {
     uVar2 = 0;
   } else {
-    heap.u32(__addr_local_1c) = heap.u32(param_3);
-    heap.u32((__addr_local_1c + 4)) = heap.u32(param_3 + (1) * 4);
-    MVar3 = mmioCreateChunk(param_2, __addr_local_1c, 0);
-    if ((((MVar3 == 0) && (FVar4 = mmioRead(param_1, local_8, heap.u32(param_3 + (1) * 4)), FVar4 == heap.u32(param_3 + (1) * 4))) && (FVar4 = mmioWrite(param_2, local_8, heap.u32(param_3 + (1) * 4)), FVar4 == heap.u32(param_3 + (1) * 4))) && (MVar3 = mmioAscend(param_2, __addr_local_1c, 0), MVar3 == 0)) {
+    heap.setU32(__addr_local_1c, (heap.u32(param_3)) >>> 0);
+    heap.setU32((__addr_local_1c + 4), (heap.u32(param_3 + (1) * 4)) >>> 0);
+    MVar3 = mmioCreateChunk(heap, param_2, __addr_local_1c, 0);
+    if ((((MVar3 == 0) && (FVar4 = mmioRead(heap, param_1, local_8, heap.u32(param_3 + (1) * 4)), FVar4 == heap.u32(param_3 + (1) * 4))) && (FVar4 = mmioWrite(heap, param_2, local_8, heap.u32(param_3 + (1) * 4)), FVar4 == heap.u32(param_3 + (1) * 4))) && (MVar3 = mmioAscend(heap, param_2, __addr_local_1c, 0), MVar3 == 0)) {
       if (local_8 != 0x0) {
         pvVar1 = GlobalHandle(heap, local_8);
         GlobalUnlock(heap, pvVar1);

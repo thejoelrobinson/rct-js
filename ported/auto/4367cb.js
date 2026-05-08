@@ -24,13 +24,13 @@ export function FUN_004367cb(heap) {
     heap.setU32(0x00991f28, (0xffff) >>> 0);
     heap.setU32(0x00991f2c, (0xffff) >>> 0);
     heap.setU32(0x0099c165, (0) >>> 0);
-    heap.u8(0x999f9a) = 0xff;
-    heap.u8(0x999fdc) = 0xff;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
     heap.setU32(0x0099a01e, (0xff) >>> 0);
     heap.setU32(0x00991f72, (in_AX) >>> 0);
     heap.setU32(0x00991f76, (in_CX) >>> 0);
-    heap.u16(0x991f7c) = in_AX;
-    heap.u16(0x991f7e) = in_CX;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
     (heap.u32(heap.u32((__addr_PTR_LAB_004368c8) + (heap.u32(0x00991f88)) * 4)))();
     return;
   }

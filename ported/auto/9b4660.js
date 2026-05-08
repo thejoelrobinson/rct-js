@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT31 } from "../../runtime/ghidra-builtins.js";
 export function FUN_009b4660(heap) {
   let uVar1 = 0;
@@ -18,9 +19,13 @@ export function FUN_009b4660(heap) {
   let in_EDX = 0;
   let unaff_EBX = 0;
   let unaff_EBP = 0;
+  let unaff_ESI = 0;
+  let pbVar9 = 0;
+  let unaff_EDI = 0;
+  let pbVar10 = 0;
   uVar1 = heap.u32(0x009a2028);
   iVar2 = heap.u32(0x009a200c);
-  bVar3 = (byte)(in_EAX >>> 8);
+  bVar3 = (in_EAX >>> 8);
   if ((unaff_EBX & 0x20000000) != 0) {
     if ((heap.u32(0x009a201c) & 1) == 0) {
       return;
@@ -29,16 +34,16 @@ export function FUN_009b4660(heap) {
     if (heap.u32(0x009a2028) == 4) {
       do {
         if (heap.u32((heap.u32(unaff_ESI) + iVar2)) != 0) {
-          heap.u32(unaff_EDI) = heap.u32((heap.u32(unaff_ESI) + iVar2));
+          heap.setU32(unaff_EDI, (heap.u32((heap.u32(unaff_ESI) + iVar2))) >>> 0);
         }
         if (heap.u32((heap.u32(unaff_ESI + (1) * 4) + iVar2)) != 0) {
-          heap.u32(unaff_EDI + (1) * 4) = heap.u32((heap.u32(unaff_ESI + (1) * 4) + iVar2));
+          heap.setU32((unaff_EDI + (1) * 4), (heap.u32((heap.u32(unaff_ESI + (1) * 4) + iVar2))) >>> 0);
         }
         if (heap.u32((heap.u32(unaff_ESI + (2) * 4) + iVar2)) != 0) {
-          heap.u32(unaff_EDI + (2) * 4) = heap.u32((heap.u32(unaff_ESI + (2) * 4) + iVar2));
+          heap.setU32((unaff_EDI + (2) * 4), (heap.u32((heap.u32(unaff_ESI + (2) * 4) + iVar2))) >>> 0);
         }
         if (heap.u32((heap.u32(unaff_ESI + (3) * 4) + iVar2)) != 0) {
-          heap.u32(unaff_EDI + (3) * 4) = heap.u32((heap.u32(unaff_ESI + (3) * 4) + iVar2));
+          heap.setU32((unaff_EDI + (3) * 4), (heap.u32((heap.u32(unaff_ESI + (3) * 4) + iVar2))) >>> 0);
         }
         unaff_EDI = unaff_EDI + unaff_EBP + 4;
         unaff_ESI = unaff_ESI + in_EDX + 4;
@@ -50,10 +55,10 @@ export function FUN_009b4660(heap) {
       iVar7 = CONCAT22((iVar7 >>> 0x10), heap.u32(0x009a2028));
       do {
         if (heap.u32((heap.u32(unaff_ESI) + iVar2)) != 0) {
-          heap.u32(unaff_EDI) = heap.u32((heap.u32(unaff_ESI) + iVar2));
+          heap.setU32(unaff_EDI, (heap.u32((heap.u32(unaff_ESI) + iVar2))) >>> 0);
         }
         sVar5 = iVar7;
-        uVar8 = (undefined2)(iVar7 >>> 0x10);
+        uVar8 = (iVar7 >>> 0x10);
         iVar7 = CONCAT22(uVar8, sVar5 + -1);
         pbVar9 = unaff_ESI + 1;
         pbVar10 = unaff_EDI + 1;
@@ -62,7 +67,7 @@ export function FUN_009b4660(heap) {
         }
         bVar3 = heap.u32((heap.u32(unaff_ESI + (1) * 4) + iVar2));
         if (bVar3 != 0) {
-          heap.u32(unaff_EDI + (1) * 4) = bVar3;
+          heap.setU32((unaff_EDI + (1) * 4), (bVar3) >>> 0);
         }
         iVar7 = CONCAT22(uVar8, sVar5 + -2);
         pbVar9 = unaff_ESI + 2;
@@ -73,7 +78,7 @@ export function FUN_009b4660(heap) {
         pbVar9 = unaff_ESI + 3;
         bVar3 = heap.u32((heap.u32(unaff_ESI + (2) * 4) + iVar2));
         if (bVar3 != 0) {
-          heap.u32(unaff_EDI + (2) * 4) = bVar3;
+          heap.setU32((unaff_EDI + (2) * 4), (bVar3) >>> 0);
         }
         iVar7 = CONCAT22(uVar8, sVar5 + -3);
         pbVar10 = unaff_EDI + 3;
@@ -83,7 +88,7 @@ export function FUN_009b4660(heap) {
         unaff_ESI = unaff_ESI + 4;
         bVar3 = heap.u32((heap.u32(pbVar9) + iVar2));
         if (bVar3 != 0) {
-          heap.u32(unaff_EDI + (3) * 4) = bVar3;
+          heap.setU32((unaff_EDI + (3) * 4), (bVar3) >>> 0);
         }
         unaff_EDI = unaff_EDI + 4;
         iVar7 = CONCAT22(uVar8, sVar5 + -4);
@@ -103,7 +108,7 @@ export function FUN_009b4660(heap) {
     if ((heap.u32(0x009a201c) & 1) == 0) {
       do {
         for (uVar6 = uVar1; uVar6 != 0; uVar6 = uVar6 - 1) {
-          heap.u32(unaff_EDI) = heap.u32(unaff_ESI);
+          heap.setU32(unaff_EDI, (heap.u32(unaff_ESI)) >>> 0);
           unaff_ESI = unaff_ESI + 1;
           unaff_EDI = unaff_EDI + 1;
         }
@@ -117,21 +122,21 @@ export function FUN_009b4660(heap) {
     LAB_009b4732: do {
       iVar2 = in_EAX;
       if (heap.u32(unaff_ESI) != 0) {
-        heap.u32(unaff_EDI) = heap.u32(unaff_ESI);
+        heap.setU32(unaff_EDI, (heap.u32(unaff_ESI)) >>> 0);
       }
       pbVar9 = unaff_ESI + 1;
       pbVar10 = unaff_EDI + 1;
       if (uVar4 != 1) {
         bVar3 = heap.u32(unaff_ESI + (1) * 4);
         if (bVar3 != 0) {
-          heap.u32(unaff_EDI + (1) * 4) = bVar3;
+          heap.setU32((unaff_EDI + (1) * 4), (bVar3) >>> 0);
         }
         pbVar9 = unaff_ESI + 2;
         pbVar10 = unaff_EDI + 2;
         if (uVar4 != 2) {
           bVar3 = heap.u32(unaff_ESI + (2) * 4);
           if (bVar3 != 0) {
-            heap.u32(unaff_EDI + (2) * 4) = bVar3;
+            heap.setU32((unaff_EDI + (2) * 4), (bVar3) >>> 0);
           }
           pbVar9 = unaff_ESI + 3;
           pbVar10 = unaff_EDI + 3;
@@ -139,7 +144,7 @@ export function FUN_009b4660(heap) {
             bVar3 = heap.u32(unaff_ESI + (3) * 4);
             unaff_ESI = unaff_ESI + 4;
             if (bVar3 != 0) {
-              heap.u32(unaff_EDI + (3) * 4) = bVar3;
+              heap.setU32((unaff_EDI + (3) * 4), (bVar3) >>> 0);
             }
             unaff_EDI = unaff_EDI + 4;
             uVar4 = uVar4 - 4;
@@ -165,18 +170,18 @@ export function FUN_009b4660(heap) {
       iVar7 = CONCAT22((iVar7 >>> 0x10), heap.u32(0x009a2028));
       do {
         if (heap.u32(unaff_ESI) != 0) {
-          heap.u32(unaff_EDI) = heap.u32((heap.u32(unaff_EDI) + iVar2));
+          heap.setU32(unaff_EDI, (heap.u32((heap.u32(unaff_EDI) + iVar2))) >>> 0);
         }
         pbVar10 = unaff_EDI + 1;
         sVar5 = iVar7;
-        uVar8 = (undefined2)(iVar7 >>> 0x10);
+        uVar8 = (iVar7 >>> 0x10);
         iVar7 = CONCAT22(uVar8, sVar5 + -1);
         pbVar9 = unaff_ESI + 1;
         if ((sVar5 + -1) == 0) {
           break;
         }
         if (heap.u32(unaff_ESI + (1) * 4) != 0) {
-          heap.u32(pbVar10) = heap.u32((heap.u32(pbVar10) + iVar2));
+          heap.setU32(pbVar10, (heap.u32((heap.u32(pbVar10) + iVar2))) >>> 0);
         }
         pbVar10 = unaff_EDI + 2;
         iVar7 = CONCAT22(uVar8, sVar5 + -2);
@@ -186,7 +191,7 @@ export function FUN_009b4660(heap) {
         }
         pbVar9 = unaff_ESI + 3;
         if (heap.u32(unaff_ESI + (2) * 4) != 0) {
-          heap.u32(pbVar10) = heap.u32((heap.u32(pbVar10) + iVar2));
+          heap.setU32(pbVar10, (heap.u32((heap.u32(pbVar10) + iVar2))) >>> 0);
         }
         pbVar10 = unaff_EDI + 3;
         iVar7 = CONCAT22(uVar8, sVar5 + -3);
@@ -195,7 +200,7 @@ export function FUN_009b4660(heap) {
         }
         unaff_ESI = unaff_ESI + 4;
         if (heap.u32(pbVar9) != 0) {
-          heap.u32(pbVar10) = heap.u32((heap.u32(pbVar10) + iVar2));
+          heap.setU32(pbVar10, (heap.u32((heap.u32(pbVar10) + iVar2))) >>> 0);
         }
         unaff_EDI = unaff_EDI + 4;
         iVar7 = CONCAT22(uVar8, sVar5 + -4);

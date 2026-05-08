@@ -15,12 +15,12 @@ export function FUN_0040857b(heap, param_1, param_2) {
   let local_8 = 0;
   GetCurrentDirectoryA(heap, 0x117, __addr_local_120);
   uVar1 = FUN_00413700(heap, heap.u32(__addr_local_120 + (0) * 4));
-  heap.u32(param_2) = uVar1;
+  heap.setU32(param_2, (uVar1) >>> 0);
   GetLogicalDriveStringsA(heap, 0x117, __addr_local_120);
   local_8 = 0;
   for (local_124 = 0; local_124 < 8; local_124 = local_124 + 1) {
     uVar1 = FUN_00413700(heap, heap.u32(__addr_local_120 + (local_8) * 4));
-    heap.u32((local_124 + param_1)) = uVar1;
+    heap.setU32((local_124 + param_1), (uVar1) >>> 0);
     if (heap.u32(__addr_local_120 + (local_8) * 4) != '\0') {
       for (; heap.u32(__addr_local_120 + (local_8) * 4) != '\0'; local_8 = local_8 + 1) {
       
@@ -28,7 +28,7 @@ export function FUN_0040857b(heap, param_1, param_2) {
       local_8 = local_8 + 1;
     }
   }
-  heap.u32((param_1 + 8)) = 0;
+  heap.setU32((param_1 + 8), (0) >>> 0);
   return;
 } finally {
     heap.freeFrame(280);

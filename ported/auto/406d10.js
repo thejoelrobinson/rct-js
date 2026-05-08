@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DirectInputCreateA, GetKeyboardType, GetSystemMetrics, SystemParametersInfoA } from "../../runtime/win32.js";
+import { DirectInputCreateA, GetKeyboardType, GetSystemMetrics, SystemParametersInfoA, _memset } from "../../runtime/win32.js";
 import { FUN_00406fca } from "./406fca.js";
 import { FUN_0040704d } from "./40704d.js";
 export function FUN_00406d10(heap) {
@@ -26,7 +26,7 @@ export function FUN_00406d10(heap) {
   let local_c = 0;
   let local_8 = 0;
   for (local_14 = 0; local_14 < 0x100; local_14 = local_14 + 1) {
-    heap.u32((__addr_DAT_005f1180) + (local_14) * 4) = 0;
+    heap.setU32(((__addr_DAT_005f1180) + (local_14) * 4), (0) >>> 0);
   }
   SystemParametersInfoA(heap, 3, 0, __addr_local_10, 0);
   heap.setU32(0x005f1148, (heap.u32(__addr_local_10)) >>> 0);
@@ -43,7 +43,7 @@ export function FUN_00406d10(heap) {
   heap.setU32(0x005ebee8, (0) >>> 0);
   heap.setU32(0x005f1140, (0) >>> 0);
   heap.setU32(0x005f1154, (0) >>> 0);
-  _memset(__addr_DAT_005f1284, 4, 0);
+  _memset(heap, __addr_DAT_005f1284, 4, 0);
   heap.setU32(0x005f1288, (0) >>> 0);
   iVar1 = DirectInputCreateA(heap, heap.u32(0x005f1398), 0x500, __addr_DAT_005ebef8, 0);
   if (iVar1 == 0) {

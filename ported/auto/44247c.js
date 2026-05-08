@@ -21,6 +21,7 @@ export function FUN_0044247c(heap) {
   const __addr_DAT_00743c04 = __sp + 32;
   const __addr_DAT_00743b98 = __sp + 36;
   try {
+  let puVar1 = 0;
   let in_AX = 0;
   let unaff_EBX = 0;
   let uVar2 = 0;
@@ -33,16 +34,16 @@ export function FUN_0044247c(heap) {
     if ((heap.u32((__addr_DAT_00743bc2) + (iVar4) * 4) == '\0') && (heap.u32((__addr_DAT_00743bbe) + (iVar4) * 4) == '\0')) {
       puVar1 = (__addr_DAT_00743c5e + iVar4);
       uVar2 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xfffe;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xfffe) >>> 0);
       if (((uVar2 & 1) != 0) && (in_AX = heap.u32((__addr_DAT_00743ba2) + (uVar3 * 0x80) * 4), in_AX != -0x8000)) {
         unaff_EBX = unaff_EBX & 0xffff0000;
         in_AX = FUN_0042dfd1(heap);
-        heap.u32((__addr_DAT_00743bd9) + (iVar4) * 4) = heap.u32((__addr_DAT_00743bd9) + (iVar4) * 4) | 8;
+        heap.setU32(((__addr_DAT_00743bd9) + (iVar4) * 4), (heap.u32((__addr_DAT_00743bd9) + (iVar4) * 4) | 8) >>> 0);
       }
-      if (((heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) == '\x05') || (heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) == '\x06')) && (0xfd < heap.u32((byte)(__addr_DAT_00743c05) + (iVar4) * 4))) {
-        heap.u32((__addr_DAT_00743c05) + (iVar4) * 4) = 0x1a;
-        heap.u32((__addr_DAT_00743c06) + (iVar4) * 4) = 0;
-        heap.u32((__addr_DAT_00743c04) + (iVar4) * 4) = 0;
+      if (((heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) == '\x05') || (heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) == '\x06')) && (0xfd < heap.u32((__addr_DAT_00743c05) + (iVar4) * 4))) {
+        heap.setU32(((__addr_DAT_00743c05) + (iVar4) * 4), (0x1a) >>> 0);
+        heap.setU32(((__addr_DAT_00743c06) + (iVar4) * 4), (0) >>> 0);
+        heap.setU32(((__addr_DAT_00743c04) + (iVar4) * 4), (0) >>> 0);
         FUN_0043c60b(heap);
         in_AX = FUN_005e53ca(heap);
       }

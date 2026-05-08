@@ -9,8 +9,8 @@ import { FUN_00415770 } from "./415770.js";
 export function FUN_00413430(heap, param_1) {
   let iVar1 = 0;
   let dwBytes = 0;
-  dwBytes = param_1 + 0xfU & 0xfffffff0;
-  if ((dwBytes <= heap.u32(0x005ee524)) && (iVar1 = FUN_00415770(heap, param_1 + 0xfU >>> 4), iVar1 != 0)) {
+  dwBytes = param_1 + 0xf & 0xfffffff0;
+  if ((dwBytes <= heap.u32(0x005ee524)) && (iVar1 = FUN_00415770(heap, param_1 + 0xf >>> 4), iVar1 != 0)) {
     return;
   }
   HeapAlloc(heap, heap.u32(0x005f3e44), 0, dwBytes);

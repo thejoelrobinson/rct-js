@@ -23,11 +23,11 @@ export function FUN_004167c0(heap, param_1) {
     } while (uVar4 != 0);
   }
   cVar2 = heap.u32(param_1);
-  heap.u32(param_1) = heap.u32(0x005ee758);
+  heap.setU32(param_1, (heap.u32(0x005ee758)) >>> 0);
   do {
     param_1 = param_1 + 1;
     cVar1 = heap.u32(param_1);
-    heap.u32(param_1) = cVar2;
+    heap.setU32(param_1, (cVar2) >>> 0);
     cVar2 = cVar1;
   } while (heap.u32(param_1) != '\0');
   return;

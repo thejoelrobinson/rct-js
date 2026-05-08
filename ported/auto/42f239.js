@@ -13,8 +13,11 @@ export function FUN_0042f239(heap) {
   const __addr_PTR_s_Data_CSG1_DAT_005f8174 = __sp + 16;
   try {
   let cVar1 = 0;
+  let pcVar2 = 0;
   let in_EAX = 0;
   let unaff_EBX = 0;
+  let pcVar3 = 0;
+  let pcVar4 = 0;
   pcVar3 = __addr_DAT_005f8648;
   if (heap.u32((__addr_DAT_005f851c) + (unaff_EBX) * 4) != '\0') {
     pcVar3 = __addr_DAT_005f874c;
@@ -23,18 +26,18 @@ export function FUN_0042f239(heap) {
   do {
     pcVar4 = pcVar2;
     cVar1 = heap.u32(pcVar3);
-    heap.u32(pcVar4) = cVar1;
+    heap.setU32(pcVar4, (cVar1) >>> 0);
     pcVar3 = pcVar3 + 1;
     pcVar2 = pcVar4 + 1;
   } while (cVar1 != '\0');
   pcVar3 = heap.u32((__addr_PTR_s_Data_CSG1_DAT_005f8174) + (unaff_EBX) * 4);
   if (heap.u32(pcVar4 + (-1) * 4) != '\\') {
-    heap.u32(pcVar4) = '\\';
+    heap.setU32(pcVar4, ('\\') >>> 0);
     pcVar4 = pcVar4 + 1;
   }
   do {
     cVar1 = heap.u32(pcVar3);
-    heap.u32(pcVar4) = cVar1;
+    heap.setU32(pcVar4, (cVar1) >>> 0);
     pcVar3 = pcVar3 + 1;
     pcVar4 = pcVar4 + 1;
   } while (cVar1 != '\0');

@@ -12,6 +12,8 @@ export function FUN_0041069d(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_005ec118 = __sp + 0;
   try {
+  let puVar1 = 0;
+  let local_8 = 0;
   if (heap.u32(0x005ec0d8) != 0x0) {
     DeleteObject(heap, heap.u32(0x005ec0d8));
     heap.setU32(0x005ec0d8, (0x0) >>> 0);

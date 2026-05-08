@@ -34,7 +34,7 @@ export function FUN_005e1210(heap) {
       uVar4 = uVar3;
       do {
         do {
-          heap.u32((__addr_DAT_0099ad63) + (uVar2 + uVar4) * 4) = 0;
+          heap.setU32(((__addr_DAT_0099ad63) + (uVar2 + uVar4) * 4), (0) >>> 0);
           uVar2 = uVar2 + 1;
         } while (uVar2 <= uVar1);
         uVar4 = uVar4 + heap.u32(0x00971ee6);

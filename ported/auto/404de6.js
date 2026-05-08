@@ -10,10 +10,10 @@ export function FUN_00404de6(heap) {
   const __addr_local_5c = __sp + 0;
   try {
   if (heap.u32(0x005e93fc) != 0) {
-    heap.u32(__addr_local_5c) = 0x58;
-    heap.u32((__addr_local_5c + 4)) = heap.u32(0x005e916c);
-    heap.u32((__addr_local_5c + 8)) = 1;
-    heap.u32((__addr_local_5c + 12)) = 0;
+    heap.setU32(__addr_local_5c, (0x58) >>> 0);
+    heap.setU32((__addr_local_5c + 4), (heap.u32(0x005e916c)) >>> 0);
+    heap.setU32((__addr_local_5c + 8), (1) >>> 0);
+    heap.setU32((__addr_local_5c + 12), (0) >>> 0);
     Shell_NotifyIconA(heap, 2, __addr_local_5c);
     heap.setU32(0x005e93fc, (0) >>> 0);
   }

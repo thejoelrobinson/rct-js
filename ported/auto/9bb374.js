@@ -17,7 +17,17 @@ export function FUN_009bb374(heap) {
   let iVar5 = 0;
   let uVar6 = 0;
   let unaff_SI = 0;
+  let puVar7 = 0;
+  let puVar8 = 0;
+  let puVar9 = 0;
+  let puVar10 = 0;
+  let puVar11 = 0;
   let unaff_DI = 0;
+  let puVar12 = 0;
+  let puVar13 = 0;
+  let puVar14 = 0;
+  let puVar15 = 0;
+  let puVar16 = 0;
   if (unaff_SI < 0) {
     LAB_009bb42e: FUN_009bb355(heap);
     uVar6 = heap.u32(0x0099fb84) + heap.u32(0x0099fb88);
@@ -39,16 +49,16 @@ export function FUN_009bb374(heap) {
       if ((uVar2 & 1) != 0) {
         puVar16 = (puVar15 + 1);
         puVar11 = (puVar10 + 1);
-        heap.u32(puVar15) = heap.u32(puVar10);
+        heap.setU32(puVar15, (heap.u32(puVar10)) >>> 0);
       }
       uVar3 = (uVar2 >>> 2);
       if ((uVar2 >>> 1 & 1) != 0) {
-        heap.u32(puVar16) = heap.u32(puVar11);
+        heap.setU32(puVar16, (heap.u32(puVar11)) >>> 0);
         puVar11 = (puVar11 + 2);
         puVar16 = (puVar16 + 2);
       }
       for (; uVar3 != 0; uVar3 = uVar3 - 1) {
-        heap.u32(puVar16) = heap.u32(puVar11);
+        heap.setU32(puVar16, (heap.u32(puVar11)) >>> 0);
         puVar11 = puVar11 + 1;
         puVar16 = puVar16 + 1;
       }
@@ -86,7 +96,7 @@ export function FUN_009bb374(heap) {
     if ((uVar2 & 1) != 0) {
       puVar13 = puVar12 + -1;
       puVar8 = puVar7 + -1;
-      heap.u32(puVar12) = heap.u32(puVar7);
+      heap.setU32(puVar12, (heap.u32(puVar7)) >>> 0);
     }
     uVar3 = (uVar2 >>> 2);
     puVar9 = (puVar8 + -1);
@@ -94,12 +104,12 @@ export function FUN_009bb374(heap) {
     if ((uVar2 >>> 1 & 1) != 0) {
       puVar14 = (puVar13 + -3);
       puVar9 = (puVar8 + -3);
-      heap.u32((puVar13 + -1)) = heap.u32((puVar8 + -1));
+      heap.setU32((puVar13 + -1), (heap.u32((puVar8 + -1))) >>> 0);
     }
     puVar10 = (puVar9 + -1);
     puVar15 = (puVar14 + -1);
     for (; uVar3 != 0; uVar3 = uVar3 - 1) {
-      heap.u32(puVar15) = heap.u32(puVar10);
+      heap.setU32(puVar15, (heap.u32(puVar10)) >>> 0);
       puVar10 = puVar10 + -1;
       puVar15 = puVar15 + -1;
     }

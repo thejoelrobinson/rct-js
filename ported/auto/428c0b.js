@@ -9,6 +9,7 @@ import { FUN_00428cc9 } from "./428cc9.js";
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e6a83 } from "./5e6a83.js";
 export function FUN_00428c0b(heap) {
+  let puVar1 = 0;
   let uVar2 = 0;
   let iVar3 = 0;
   let extraout_ECX = 0;
@@ -33,20 +34,20 @@ export function FUN_00428c0b(heap) {
       }
       LOCK();
       puVar1 = heap.u32((unaff_ESI + 8));
-      heap.u32((unaff_ESI + 8)) = 0;
+      heap.setU32((unaff_ESI + 8), (0) >>> 0);
       UNLOCK();
-      heap.u32(puVar1) = 0;
+      heap.setU32(puVar1, (0) >>> 0);
       uVar2 = FUN_005e6a83(heap);
       iVar3 = extraout_ECX;
       uVar4 = extraout_EDX;
     }
-    heap.u32((unaff_ESI + 0x15c)) = uVar4;
-    heap.u32((unaff_ESI + 0x160)) = iVar3;
+    heap.setU32((unaff_ESI + 0x15c), (uVar4) >>> 0);
+    heap.setU32((unaff_ESI + 0x160), (iVar3) >>> 0);
     if (uVar4 != 0xffff) {
       FUN_00428cc9(heap);
     }
     if (heap.u32((unaff_ESI + 8)) != 0) {
-      heap.u32((heap.u32((unaff_ESI + 8)) + 0x12)) = uVar2;
+      heap.setU32((heap.u32((unaff_ESI + 8)) + 0x12), (uVar2) >>> 0);
     }
     FUN_005e43de(heap);
   }

@@ -27,6 +27,31 @@ export function FUN_00458c14(heap) {
   let uVar2 = 0;
   let bVar3 = 0;
   let uVar4 = 0;
+  let in_ECX = 0;
+  let extraout_ECX = 0;
+  let extraout_ECX_00 = 0;
+  let extraout_ECX_01 = 0;
+  let extraout_ECX_02 = 0;
+  let extraout_ECX_03 = 0;
+  let extraout_ECX_04 = 0;
+  let extraout_ECX_05 = 0;
+  let extraout_ECX_06 = 0;
+  let extraout_ECX_07 = 0;
+  let extraout_ECX_08 = 0;
+  let extraout_ECX_09 = 0;
+  let extraout_ECX_10 = 0;
+  let extraout_ECX_11 = 0;
+  let extraout_ECX_12 = 0;
+  let extraout_ECX_13 = 0;
+  let extraout_ECX_14 = 0;
+  let extraout_ECX_15 = 0;
+  let ppuVar5 = 0;
+  let pcVar6 = 0;
+  let pbVar7 = 0;
+  let unaff_ESI = 0;
+  let pbVar8 = 0;
+  let pbVar9 = 0;
+  let unaff_EDI = 0;
   code_r0x00458c14: while (true) {
     bVar3 = heap.u32(unaff_ESI);
     pbVar8 = unaff_ESI + 1;
@@ -34,31 +59,31 @@ export function FUN_00458c14(heap) {
       break;
     }
     if (bVar3 == 0) {
-      heap.u32(unaff_EDI) = 0;
+      heap.setU32(unaff_EDI, (0) >>> 0);
       return;
     }
     if (bVar3 < 5) {
-      LAB_00458c4a: heap.u32(unaff_EDI) = bVar3;
+      LAB_00458c4a: heap.setU32(unaff_EDI, (bVar3) >>> 0);
       unaff_EDI = unaff_EDI + 1;
       bVar3 = heap.u32(pbVar8);
       pbVar8 = pbVar8 + 1;
     } else {
       if (0x10 < bVar3) {
       if (0x16 < bVar3) {
-        heap.u32(unaff_EDI) = bVar3;
-        heap.u32(unaff_EDI + (1) * 4) = heap.u32(pbVar8);
+        heap.setU32(unaff_EDI, (bVar3) >>> 0);
+        heap.setU32((unaff_EDI + (1) * 4), (heap.u32(pbVar8)) >>> 0);
         unaff_EDI = unaff_EDI + 2;
         bVar3 = heap.u32(unaff_ESI + (2) * 4);
         pbVar8 = unaff_ESI + 3;
       }
-      heap.u32(unaff_EDI) = bVar3;
+      heap.setU32(unaff_EDI, (bVar3) >>> 0);
       unaff_EDI = unaff_EDI + 1;
       bVar3 = heap.u32(pbVar8);
       pbVar8 = pbVar8 + 1;
       /* goto LAB_00458c4a */ throw new Error("goto LAB_00458c4a not supported");
     }
     }
-    heap.u32(unaff_EDI) = bVar3;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
     unaff_EDI = unaff_EDI + 1;
     unaff_ESI = pbVar8;
   }
@@ -115,7 +140,7 @@ export function FUN_00458c14(heap) {
       do {
         unaff_EDI = pbVar7;
         bVar3 = heap.u32(pbVar9);
-        heap.u32(unaff_EDI) = bVar3;
+        heap.setU32(unaff_EDI, (bVar3) >>> 0);
         pbVar9 = pbVar9 + 1;
         unaff_ESI = pbVar8;
         pbVar7 = unaff_EDI + 1;
@@ -160,7 +185,7 @@ export function FUN_00458c14(heap) {
         do {
           unaff_EDI = pbVar9;
           bVar3 = heap.u32(pbVar7);
-          heap.u32(unaff_EDI) = bVar3;
+          heap.setU32(unaff_EDI, (bVar3) >>> 0);
           pbVar7 = pbVar7 + 1;
           pbVar9 = unaff_EDI + 1;
         } while (bVar3 != 0);
@@ -183,7 +208,7 @@ export function FUN_00458c14(heap) {
         do {
           unaff_EDI = pbVar9;
           bVar3 = heap.u32(pcVar6);
-          heap.u32(unaff_EDI) = bVar3;
+          heap.setU32(unaff_EDI, (bVar3) >>> 0);
           pcVar6 = pcVar6 + 1;
           pbVar9 = unaff_EDI + 1;
         } while (bVar3 != 0);
@@ -207,10 +232,10 @@ export function FUN_00458c14(heap) {
       }
       break;
     case 0x8d:
-      heap.u32(unaff_EDI) = 0x17;
+      heap.setU32(unaff_EDI, (0x17) >>> 0);
       uVar1 = heap.u32(in_ECX);
       in_ECX = in_ECX + 2;
-      heap.u32((unaff_EDI + 1)) = uVar1;
+      heap.setU32((unaff_EDI + 1), (uVar1) >>> 0);
       unaff_EDI = unaff_EDI + 5;
       unaff_ESI = pbVar8;
       /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");
@@ -220,13 +245,13 @@ export function FUN_00458c14(heap) {
   do {
     unaff_EDI = pbVar9;
     bVar3 = heap.u32(ppuVar5);
-    heap.u32(unaff_EDI) = bVar3;
+    heap.setU32(unaff_EDI, (bVar3) >>> 0);
     ppuVar5 = (ppuVar5 + 1);
     unaff_ESI = pbVar8;
     pbVar9 = unaff_EDI + 1;
   } while (bVar3 != 0);
   /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");
-  switchD_00458c5d_default: heap.u32(unaff_EDI) = bVar3;
+  switchD_00458c5d_default: heap.setU32(unaff_EDI, (bVar3) >>> 0);
   unaff_EDI = unaff_EDI + 1;
   unaff_ESI = pbVar8;
   /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");

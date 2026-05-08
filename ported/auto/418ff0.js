@@ -11,14 +11,15 @@ export function FUN_00418ff0(heap, param_1, param_2, param_3) {
   const __addr_local_c = __sp + 0;
   try {
   let uVar1 = 0;
+  let puVar2 = 0;
   let sVar3 = 0;
   let local_8 = 0;
   let local_4 = 0;
   puVar2 = param_3;
   sVar3 = 0x404e;
-  heap.u32(param_3) = 0;
-  heap.u32(param_3 + (1) * 4) = 0;
-  heap.u32(param_3 + (2) * 4) = 0;
+  heap.setU32(param_3, (0) >>> 0);
+  heap.setU32((param_3 + (1) * 4), (0) >>> 0);
+  heap.setU32((param_3 + (2) * 4), (0) >>> 0);
   if (param_2 != 0) {
     param_3 = param_2;
     do {
@@ -40,10 +41,10 @@ export function FUN_00418ff0(heap, param_1, param_2, param_3) {
   uVar1 = heap.u32(puVar2 + (2) * 4);
   while (uVar1 == 0) {
     sVar3 = sVar3 + -0x10;
-    heap.u32(puVar2 + (2) * 4) = heap.u32(puVar2 + (1) * 4) >>> 0x10;
+    heap.setU32((puVar2 + (2) * 4), (heap.u32(puVar2 + (1) * 4) >>> 0x10) >>> 0);
     uVar1 = heap.u32(puVar2 + (2) * 4);
-    heap.u32(puVar2 + (1) * 4) = heap.u32(puVar2) >>> 0x10 | heap.u32(puVar2 + (1) * 4) << 0x10;
-    heap.u32(puVar2) = heap.u32(puVar2) << 0x10;
+    heap.setU32((puVar2 + (1) * 4), (heap.u32(puVar2) >>> 0x10 | heap.u32(puVar2 + (1) * 4) << 0x10) >>> 0);
+    heap.setU32(puVar2, (heap.u32(puVar2) << 0x10) >>> 0);
   }
   uVar1 = heap.u32(puVar2 + (2) * 4);
   while ((uVar1 & 0x8000) == 0) {
@@ -51,7 +52,7 @@ export function FUN_00418ff0(heap, param_1, param_2, param_3) {
     sVar3 = sVar3 + -1;
     uVar1 = heap.u32(puVar2 + (2) * 4);
   }
-  heap.u32((puVar2 + 10)) = sVar3;
+  heap.setU32((puVar2 + 10), (sVar3) >>> 0);
   return;
 } finally {
     heap.freeFrame(4);

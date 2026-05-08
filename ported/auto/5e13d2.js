@@ -4,8 +4,8 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FUN_005e13d2 } from "./5e13d2.js";
 export function FUN_005e13d2(heap) {
+  let puVar1 = 0;
   let iVar2 = 0;
   let sVar3 = 0;
   let sVar4 = 0;
@@ -18,6 +18,9 @@ export function FUN_005e13d2(heap) {
   let in_DX = 0;
   let unaff_BX = 0;
   let unaff_BP = 0;
+  let unaff_ESI = 0;
+  let puVar10 = 0;
+  let puVar11 = 0;
   puVar10 = unaff_ESI;
   while (puVar11 = puVar10, sVar7 = heap.u32(0x0099fb98), sVar6 = heap.u32(0x0099fb96), sVar5 = heap.u32(0x0099fb94), sVar4 = heap.u32(0x0099fb92), sVar3 = heap.u32(0x0099fb90), iVar2 = heap.u32(0x0099fb8c), puVar10 = puVar11 + 0x5e, puVar10 < heap.u32(0x009a1164)) {
     if ((((heap.u32((puVar11 + 0x66)) < in_DX) && (heap.u32((puVar11 + 0x19a)) < unaff_BP)) && (in_AX < (heap.u32((puVar11 + 0x66)) + heap.u32((puVar11 + 0x67))))) && ((unaff_BX < (heap.u32((puVar11 + 0x19a)) + heap.u32((puVar11 + 0x19e))) && ((heap.u32((puVar11 + 0x1aa)) & 0x10) == 0)))) {

@@ -45,7 +45,7 @@ export function FUN_004543bd(heap) {
         uVar3 = 0x78;
       }
       iVar5 = -(uVar3 - 0x78) * -(uVar3 - 0x78);
-      iVar5 = -0x96 - (-((0xc5c1000U - iVar5 * iVar5 >>> (heap.u32((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + 0xf3a3f000) >>> 0x10);
+      iVar5 = -0x96 - (-((0xc5c1000 - iVar5 * iVar5 >>> (heap.u32((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + 0xf3a3f000) >>> 0x10);
       if (heap.u32(0x00632978) == 1) {
         FUN_0042f239(heap);
         iVar1 = FUN_0040d432(heap, 2, 3, 0);

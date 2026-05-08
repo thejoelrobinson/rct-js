@@ -6,7 +6,11 @@
 
 import { FUN_00417016 } from "./417016.js";
 export function FUN_00413c10(heap, param_1, param_2) {
+  let pcVar1 = 0;
+  let pcVar2 = 0;
   let cVar3 = 0;
+  let pcVar4 = 0;
+  let pcVar5 = 0;
   if (heap.u32(param_2) == '\0') {
     return param_1;
   }

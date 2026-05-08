@@ -13,6 +13,7 @@ export function FUN_005e5f51(heap) {
   let iVar3 = 0;
   let sVar4 = 0;
   let sVar5 = 0;
+  let puVar6 = 0;
   puVar6 = __addr_DAT_009a013c;
   sVar5 = 8;
   do {
@@ -30,14 +31,14 @@ export function FUN_005e5f51(heap) {
     } else {
       LAB_005e5f90: sVar4 = heap.u32((puVar6 + 0x20));
       sVar1 = heap.u32((puVar6 + 0x22));
-      heap.u32((puVar6 + 0x20)) = sVar5;
-      heap.u32((puVar6 + 0x22)) = sVar5 + 0x1e;
+      heap.setU32((puVar6 + 0x20), (sVar5) >>> 0);
+      heap.setU32((puVar6 + 0x22), (sVar5 + 0x1e) >>> 0);
       sVar5 = sVar5 + 8;
       iVar3 = heap.u32((puVar6 + 8));
       if (iVar3 != 0) {
         sVar2 = heap.u32((puVar6 + 0x22));
-        heap.u32((iVar3 + 4)) = heap.u32((iVar3 + 4)) - (sVar4 - heap.u32((puVar6 + 0x20)));
-        heap.u32((iVar3 + 6)) = heap.u32((iVar3 + 6)) - (sVar1 - sVar2);
+        heap.setU32((iVar3 + 4), (heap.u32((iVar3 + 4)) - (sVar4 - heap.u32((puVar6 + 0x20)))) >>> 0);
+        heap.setU32((iVar3 + 6), (heap.u32((iVar3 + 6)) - (sVar1 - sVar2)) >>> 0);
       }
     }
     puVar6 = puVar6 + 0x178;

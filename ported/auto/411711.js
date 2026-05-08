@@ -4,8 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { mciSendStringA } from "../../runtime/win32.js";
 export function FUN_00411711(heap) {
   let MVar1 = 0;
-  MVar1 = mciSendStringA(0x005ec228, 0x0, 0, heap.u32(0x005e916c));
+  MVar1 = mciSendStringA(heap, 0x005ec228, 0x0, 0, heap.u32(0x005e916c));
   return MVar1 == 0;
 }

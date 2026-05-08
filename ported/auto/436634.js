@@ -18,12 +18,14 @@ export function FUN_00436634(heap) {
   const __addr_DAT_00971ef4 = __sp + 0;
   const __addr_DAT_006e3b90 = __sp + 4;
   try {
+  let pbVar1 = 0;
   let iVar2 = 0;
   let in_EAX = 0;
   let iVar3 = 0;
   let uVar4 = 0;
   let iVar5 = 0;
   let uVar7 = 0;
+  let puVar8 = 0;
   let iVar6 = 0;
   heap.setU32(0x00991f34, (4) >>> 0);
   FUN_00404ba4(heap, heap.u32(0x009a1560));
@@ -48,7 +50,7 @@ export function FUN_00436634(heap) {
   FUN_00408387(heap, iVar3);
   puVar8 = __addr_DAT_006e3b90;
   for (iVar3 = 0x18000; iVar3 != 0; iVar3 = iVar3 + -1) {
-    heap.u32(puVar8) = 0;
+    heap.setU32(puVar8, (0) >>> 0);
     puVar8 = puVar8 + 1;
   }
   iVar3 = FUN_004083b5(heap, 0x00628af7);

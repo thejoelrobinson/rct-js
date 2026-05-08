@@ -8,6 +8,7 @@ export function FUN_004035c1(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_005f15e0 = __sp + 0;
   try {
+  let puVar1 = 0;
   if (heap.u32(0x005e91d4) == heap.u32(0x005e91d0)) {
     puVar1 = 0x0;
   } else {

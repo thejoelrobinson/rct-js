@@ -22,7 +22,7 @@ export function FUN_0040d432(heap, param_1, param_2, param_3) {
     }
     iVar2 = FUN_0040cd89(heap, param_1, param_2, param_3);
     if (iVar2 == 0) {
-      heap.u32((__addr_DAT_005f03a4 + param_1 * 0x16c)) = 0;
+      heap.setU32((__addr_DAT_005f03a4 + param_1 * 0x16c), (0) >>> 0);
       uVar1 = 1;
     } else {
       uVar1 = 0;

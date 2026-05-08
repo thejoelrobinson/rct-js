@@ -25,7 +25,7 @@ export function FUN_005d5003(heap) {
     if (heap.u32(0x00652288) == '\b') {
       uVar1 = uVar1 | 0x100;
     }
-    heap.u32((unaff_ESI + 0x14)) = uVar1;
+    heap.setU32((unaff_ESI + 0x14), (uVar1) >>> 0);
     FUN_005e43de(heap);
   }
   return CONCAT44(in_EDX, in_EAX);

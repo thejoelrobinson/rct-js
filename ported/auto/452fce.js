@@ -17,9 +17,11 @@ export function FUN_00452fce(heap) {
   let in_CX = 0;
   let uVar2 = 0;
   let in_DX = 0;
+  let pbVar3 = 0;
   let unaff_EBX = 0;
   let iVar4 = 0;
   let unaff_BP = 0;
+  let psVar5 = 0;
   if ((heap.u32(0x006326bd) & 1) != 0) {
     heap.setU32(0x00632405, (0) >>> 0);
     if (unaff_EBX == 0x8001) {
@@ -39,7 +41,7 @@ export function FUN_00452fce(heap) {
     bVar1 = 0;
     do {
       if (heap.u32(psVar5) == -1) {
-        heap.u32(psVar5) = in_AX;
+        heap.setU32(psVar5, (in_AX) >>> 0);
         psVar5 = psVar5 + 1;
         if (unaff_EBX == 0x8000) {
           iVar4 = 0;

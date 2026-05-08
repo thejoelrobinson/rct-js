@@ -13,7 +13,7 @@ export function FUN_00416d00(heap, param_1, param_2, param_3, param_4, param_5, 
   let iVar2 = 0;
   let lpWideCharStr = 0;
   if (heap.u32(0x005f0264) == 0) {
-    iVar1 = LCMapStringW(heap, 0, 0x100, L"", 1, 0x0, 0);
+    iVar1 = LCMapStringW(heap, 0, 0x100, "", 1, 0x0, 0);
     if (iVar1 == 0) {
       iVar1 = LCMapStringA(heap, 0, 0x100, "", 1, 0x0, 0);
       if (iVar1 == 0) {

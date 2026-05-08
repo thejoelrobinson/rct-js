@@ -19,18 +19,19 @@ export function FUN_005e5301(heap) {
   let unaff_EBX = 0;
   let unaff_EBP = 0;
   let unaff_ESI = 0;
+  let puVar2 = 0;
   let unaff_EDI = 0;
   let uStack_4 = 0;
   let uStack_2 = 0;
   uStack_4 = unaff_ESI;
-  uStack_2 = (undefined2)(unaff_ESI >>> 0x10);
+  uStack_2 = (unaff_ESI >>> 0x10);
   if (in_EAX < '\0') {
     uVar1 = in_EAX & 0xffffff7f;
     heap.setU32(__addr_uStack_6, (uStack_4) >>> 0);
     uStack_4 = uStack_2;
     uStack_2 = in_EAX;
     for (puVar2 = __addr_DAT_009a013c; puVar2 < heap.u32(0x009a1164); puVar2 = puVar2 + 0x178) {
-      if (((uVar1 == heap.u32(puVar2 + (0x174) * 4)) && (unaff_EBX == heap.u32((puVar2 + 0x30)))) && (heap.u32((heap.u32((puVar2 + 0x1c)) + ((byte)(uVar1 >>> 8) * 0x10) + 2)) != -2)) {
+      if (((uVar1 == heap.u32(puVar2 + (0x174) * 4)) && (unaff_EBX == heap.u32((puVar2 + 0x30)))) && (heap.u32((heap.u32((puVar2 + 0x1c)) + ((uVar1 >>> 8) * 0x10) + 2)) != -2)) {
         FUN_005e117d(heap, unaff_EDI, puVar2, unaff_EBP, __addr_uStack_6, unaff_EBX, in_EDX, in_ECX);
       }
     }

@@ -6,6 +6,7 @@
 
 export function FUN_009b40aa(heap) {
   let unaff_EBX = 0;
+  let unaff_ESI = 0;
   if ((unaff_EBX & 0x20000000) == 0) {
     if ((unaff_EBX & 0x40000000) != 0) {
       return;

@@ -14,10 +14,10 @@ export function FUN_00450b21(heap) {
   let in_DL = 0;
   LOCK();
   bVar1 = heap.u32((__addr_DAT_008874a4) + (in_DL * 0x260) * 4);
-  heap.u32((__addr_DAT_008874a4) + (in_DL * 0x260) * 4) = 0xff;
+  heap.setU32(((__addr_DAT_008874a4) + (in_DL * 0x260) * 4), (0xff) >>> 0);
   UNLOCK();
   if (bVar1 != 0xff) {
-    heap.u32((__addr_DAT_008ae9c4) + (bVar1 * 0x4b0c) * 4) = 0xff;
+    heap.setU32(((__addr_DAT_008ae9c4) + (bVar1 * 0x4b0c) * 4), (0xff) >>> 0);
   }
   return;
 } finally {

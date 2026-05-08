@@ -4,15 +4,16 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { _memset } from "../../runtime/win32.js";
 export function FUN_00408e82(heap, param_1, param_2) {
   let uVar1 = 0;
   if ((param_2 < 0) || (heap.u32(0x005f12b4) <= param_2)) {
     uVar1 = 0;
   } else {
-    _memset(param_1, 0, 0xa8);
-    _memset((param_1 + 0x14), 0, 0x6c);
-    heap.u32((param_1 + 0x14)) = 0x6c;
-    heap.u32((param_1 + 0x80)) = heap.u32((heap.u32(0x005ebf38) + param_2 * 4));
+    _memset(heap, param_1, 0, 0xa8);
+    _memset(heap, (param_1 + 0x14), 0, 0x6c);
+    heap.setU32((param_1 + 0x14), (0x6c) >>> 0);
+    heap.setU32((param_1 + 0x80), (heap.u32((heap.u32(0x005ebf38) + param_2 * 4))) >>> 0);
     uVar1 = 1;
   }
   return uVar1;

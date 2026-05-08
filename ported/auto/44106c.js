@@ -26,10 +26,10 @@ export function FUN_0044106c(heap) {
           break;
         }
         for (; uVar3 < 4; uVar3 = uVar3 + 1) {
-          heap.u32((unaff_ESI + 0xb0 + uVar3 * 4)) = heap.u32((unaff_ESI + 0xb4 + uVar3 * 4));
+          heap.setU32((unaff_ESI + 0xb0 + uVar3 * 4), (heap.u32((unaff_ESI + 0xb4 + uVar3 * 4))) >>> 0);
         }
-        heap.u32((unaff_ESI + 0xb0 + uVar3 * 4)) = 0xff;
-        heap.u32((unaff_ESI + 0x45)) = heap.u32((unaff_ESI + 0x45)) | 1;
+        heap.setU32((unaff_ESI + 0xb0 + uVar3 * 4), (0xff) >>> 0);
+        heap.setU32((unaff_ESI + 0x45), (heap.u32((unaff_ESI + 0x45)) | 1) >>> 0);
       }
       uVar2 = uVar2 + 1;
     } while (uVar2 < 5);

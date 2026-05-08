@@ -11,6 +11,7 @@ export function FUN_005e39ff(heap) {
   let sVar3 = 0;
   let uVar4 = 0;
   let unaff_ESI = 0;
+  let pcVar5 = 0;
   uVar2 = 0xffff;
   if ((((heap.u32(0x00991f36) == '\x05') || (heap.u32(0x00991f36) == '\x02')) && (heap.u32(0x00991f37) == heap.u32((unaff_ESI + 0x174)))) && ((heap.u32(0x00991f38) == heap.u32((unaff_ESI + 0x30)) && ((heap.u32(0x00991f30) & 1) != 0)))) {
     uVar2 = heap.u32(0x00991f3c);

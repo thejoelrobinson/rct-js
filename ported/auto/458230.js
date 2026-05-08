@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { FUN_009b438b } from "./9b438b.js";
 export function FUN_00458230(heap) {
@@ -22,6 +23,10 @@ export function FUN_00458230(heap) {
   let uVar5 = 0;
   let uVar6 = 0;
   let uVar7 = 0;
+  let puVar8 = 0;
+  let pcVar9 = 0;
+  let puVar10 = 0;
+  let local_10 = 0;
   let local_c = 0;
   let local_a = 0;
   let local_8 = 0;
@@ -36,7 +41,7 @@ export function FUN_00458230(heap) {
     if ((0x5a78 < uVar5) && (uVar5 < 0x5a9d)) {
       cVar1 = '\0';
     }
-    heap.u32(pcVar9) = cVar1;
+    heap.setU32(pcVar9, (cVar1) >>> 0);
     pcVar9 = pcVar9 + 1;
     uVar6 = (uVar5 + 1);
   } while ((uVar5 + 1) < 0x5afe);
@@ -47,7 +52,7 @@ export function FUN_00458230(heap) {
     if ((0x5b58 < uVar5) && (uVar5 < 0x5b7d)) {
       cVar1 = '\0';
     }
-    heap.u32(pcVar9) = cVar1;
+    heap.setU32(pcVar9, (cVar1) >>> 0);
     pcVar9 = pcVar9 + 1;
     uVar6 = (uVar5 + 1);
   } while ((uVar5 + 1) < 0x5bde);
@@ -58,7 +63,7 @@ export function FUN_00458230(heap) {
     if ((0x5c38 < uVar5) && (uVar5 < 0x5c5d)) {
       cVar1 = '\0';
     }
-    heap.u32(pcVar9) = cVar1;
+    heap.setU32(pcVar9, (cVar1) >>> 0);
     pcVar9 = pcVar9 + 1;
     uVar6 = (uVar5 + 1);
   } while ((uVar5 + 1) < 0x5cbe);
@@ -69,7 +74,7 @@ export function FUN_00458230(heap) {
     if ((0x5d18 < uVar5) && (uVar5 < 0x5d3d)) {
       cVar1 = '\0';
     }
-    heap.u32(pcVar9) = cVar1;
+    heap.setU32(pcVar9, (cVar1) >>> 0);
     pcVar9 = pcVar9 + 1;
     uVar6 = (uVar5 + 1);
   } while ((uVar5 + 1) < 0x5d9e);
@@ -84,7 +89,7 @@ export function FUN_00458230(heap) {
   do {
     puVar8 = local_10;
     for (iVar4 = 0x10; iVar4 != 0; iVar4 = iVar4 + -1) {
-      heap.u32(puVar8) = 0;
+      heap.setU32(puVar8, (0) >>> 0);
       puVar8 = puVar8 + 1;
     }
     FUN_009b438b(heap);
@@ -99,7 +104,7 @@ export function FUN_00458230(heap) {
         pcVar9 = pcVar9 + 8;
         iVar4 = iVar4 + -1;
       } while (iVar4 != 0);
-      heap.u32((__addr_DAT_006432d8) + (uVar6 * 8 + uVar7) * 4) = (uVar3 >>> 0x18);
+      heap.setU32(((__addr_DAT_006432d8) + (uVar6 * 8 + uVar7) * 4), ((uVar3 >>> 0x18)) >>> 0);
       uVar7 = uVar7 + 1;
     } while (uVar7 < 8);
     uVar6 = uVar6 + 1;
@@ -108,11 +113,11 @@ export function FUN_00458230(heap) {
   puVar10 = __addr_DAT_006439ea;
   iVar4 = 0x10;
   do {
-    heap.u32(puVar8) = puVar10;
-    heap.u32((puVar8 + 1)) = 0x40;
-    heap.u32((puVar8 + 6)) = 0x20;
-    heap.u32(puVar10) = 0xffff;
-    heap.u32((puVar10 + 7)) = 0;
+    heap.setU32(puVar8, (puVar10) >>> 0);
+    heap.setU32((puVar8 + 1), (0x40) >>> 0);
+    heap.setU32((puVar8 + 6), (0x20) >>> 0);
+    heap.setU32(puVar10, (0xffff) >>> 0);
+    heap.setU32((puVar10 + 7), (0) >>> 0);
     puVar8 = puVar8 + 4;
     puVar10 = puVar10 + 0x409;
     iVar4 = iVar4 + -1;

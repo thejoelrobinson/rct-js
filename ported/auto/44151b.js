@@ -17,7 +17,7 @@ export function FUN_0044151b(heap) {
     FUN_0043e792(heap);
   }
   FUN_0044142c(heap);
-  heap.u32((unaff_ESI + 0x2b)) = 1;
+  heap.setU32((unaff_ESI + 0x2b), (1) >>> 0);
   FUN_00441452(heap);
   FUN_0043c698(heap);
   return CONCAT44(in_EDX, in_EAX);

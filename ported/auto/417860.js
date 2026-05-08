@@ -16,7 +16,7 @@ export function FUN_00417860(heap, param_1, param_2, param_3, param_4, param_5, 
   let lpWideCharStr = 0;
   lpWideCharStr = 0x0;
   if (heap.u32(0x005f02ac) == 0) {
-    BVar1 = GetStringTypeW(heap, 1, L"", 1, __addr_local_2);
+    BVar1 = GetStringTypeW(heap, 1, "", 1, __addr_local_2);
     if (BVar1 == 0) {
       BVar1 = GetStringTypeA(heap, 0, 1, "", 1, __addr_local_2);
       if (BVar1 == 0) {

@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetModuleFileNameA, GetStdHandle, WriteFile } from "../../runtime/win32.js";
+import { GetModuleFileNameA, GetStdHandle, WriteFile, _strncpy } from "../../runtime/win32.js";
 import { FUN_004175f0 } from "./4175f0.js";
 export function FUN_00415210(heap, param_1) {
   const __sp = heap.allocFrame(432);
@@ -16,12 +16,17 @@ export function FUN_00415210(heap, param_1) {
   const __addr_local_104 = __sp + 172;
   try {
   let cVar1 = 0;
+  let ppuVar2 = 0;
   let DVar3 = 0;
   let hFile = 0;
   let iVar4 = 0;
   let uVar5 = 0;
   let uVar6 = 0;
+  let pcVar7 = 0;
   let iVar8 = 0;
+  let pcVar9 = 0;
+  let pCVar10 = 0;
+  let pcVar11 = 0;
   ppuVar2 = __addr_DAT_005ec470;
   iVar8 = 0;
   do {
@@ -55,12 +60,12 @@ export function FUN_00415210(heap, param_1) {
         pcVar7 = "<program name unknown>";
         pCVar10 = __addr_local_104;
         for (iVar4 = 5; iVar4 != 0; iVar4 = iVar4 + -1) {
-          heap.u32(pCVar10) = heap.u32(pcVar7);
+          heap.setU32(pCVar10, (heap.u32(pcVar7)) >>> 0);
           pcVar7 = pcVar7 + 4;
           pCVar10 = pCVar10 + 4;
         }
-        heap.u32(pCVar10) = heap.u32(pcVar7);
-        heap.u32(pCVar10 + (2) * 4) = heap.u32(pcVar7 + (2) * 4);
+        heap.setU32(pCVar10, (heap.u32(pcVar7)) >>> 0);
+        heap.setU32((pCVar10 + (2) * 4), (heap.u32(pcVar7 + (2) * 4)) >>> 0);
       }
       uVar5 = 0xffffffff;
       pcVar7 = __addr_local_104;
@@ -85,16 +90,16 @@ export function FUN_00415210(heap, param_1) {
           pcVar7 = pcVar7 + 1;
         } while (cVar1 != '\0');
         pcVar7 = __addr_acStack_140 + ~uVar5;
-        _strncpy(pcVar7, "...", 3);
+        _strncpy(heap, pcVar7, "...", 3);
       }
       pcVar9 = "Runtime Error!\n\nProgram: ";
       pcVar11 = __addr_local_1a4;
       for (iVar4 = 6; iVar4 != 0; iVar4 = iVar4 + -1) {
-        heap.u32(pcVar11) = heap.u32(pcVar9);
+        heap.setU32(pcVar11, (heap.u32(pcVar9)) >>> 0);
         pcVar9 = pcVar9 + 4;
         pcVar11 = pcVar11 + 4;
       }
-      heap.u32(pcVar11) = heap.u32(pcVar9);
+      heap.setU32(pcVar11, (heap.u32(pcVar9)) >>> 0);
       uVar5 = 0xffffffff;
       do {
         pcVar9 = pcVar7;
@@ -122,12 +127,12 @@ export function FUN_00415210(heap, param_1) {
       pcVar7 = pcVar9 + -uVar5;
       pcVar9 = pcVar11 + -1;
       for (uVar6 = uVar5 >>> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
-        heap.u32(pcVar9) = heap.u32(pcVar7);
+        heap.setU32(pcVar9, (heap.u32(pcVar7)) >>> 0);
         pcVar7 = pcVar7 + 4;
         pcVar9 = pcVar9 + 4;
       }
       for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
-        heap.u32(pcVar9) = heap.u32(pcVar7);
+        heap.setU32(pcVar9, (heap.u32(pcVar7)) >>> 0);
         pcVar7 = pcVar7 + 1;
         pcVar9 = pcVar9 + 1;
       }
@@ -159,12 +164,12 @@ export function FUN_00415210(heap, param_1) {
       pcVar7 = pcVar9 + -uVar5;
       pcVar9 = pcVar11 + -1;
       for (uVar6 = uVar5 >>> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
-        heap.u32(pcVar9) = heap.u32(pcVar7);
+        heap.setU32(pcVar9, (heap.u32(pcVar7)) >>> 0);
         pcVar7 = pcVar7 + 4;
         pcVar9 = pcVar9 + 4;
       }
       for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
-        heap.u32(pcVar9) = heap.u32(pcVar7);
+        heap.setU32(pcVar9, (heap.u32(pcVar7)) >>> 0);
         pcVar7 = pcVar7 + 1;
         pcVar9 = pcVar9 + 1;
       }
@@ -196,12 +201,12 @@ export function FUN_00415210(heap, param_1) {
       pcVar7 = pcVar9 + -uVar5;
       pcVar9 = pcVar11 + -1;
       for (uVar6 = uVar5 >>> 2; uVar6 != 0; uVar6 = uVar6 - 1) {
-        heap.u32(pcVar9) = heap.u32(pcVar7);
+        heap.setU32(pcVar9, (heap.u32(pcVar7)) >>> 0);
         pcVar7 = pcVar7 + 4;
         pcVar9 = pcVar9 + 4;
       }
       for (uVar5 = uVar5 & 3; uVar5 != 0; uVar5 = uVar5 - 1) {
-        heap.u32(pcVar9) = heap.u32(pcVar7);
+        heap.setU32(pcVar9, (heap.u32(pcVar7)) >>> 0);
         pcVar7 = pcVar7 + 1;
         pcVar9 = pcVar9 + 1;
       }

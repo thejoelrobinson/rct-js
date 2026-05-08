@@ -13,14 +13,15 @@ export function FUN_009b3d13(heap) {
   let sVar5 = 0;
   let sVar6 = 0;
   let uVar7 = 0;
+  let puVar8 = 0;
   let unaff_ESI = 0;
   if ((heap.u32(0x009a2000) & 0x20000000) != 0) {
     puVar8 = (heap.u32((unaff_ESI + heap.u32(0x009a2020) * 2)) + unaff_ESI);
     do {
       uVar1 = heap.u32(puVar8);
       heap.setU32(0x009aa032, (uVar1) >>> 0);
-      bVar4 = (byte)((uVar1 & 0xffffff7f) >>> 8);
-      uVar2 = (byte)(uVar1 & 0xffffff7f);
+      bVar4 = ((uVar1 & 0xffffff7f) >>> 8);
+      uVar2 = (uVar1 & 0xffffff7f);
       uVar7 = bVar4;
       puVar8 = (puVar8 + uVar2 + 2);
       if ((uVar1 & 0x100) == 0) {
@@ -55,8 +56,8 @@ export function FUN_009b3d13(heap) {
     do {
       uVar1 = heap.u32(puVar8);
       heap.setU32(0x009aa032, (uVar1) >>> 0);
-      bVar4 = (byte)((uVar1 & 0xffffff7f) >>> 8);
-      uVar2 = (byte)(uVar1 & 0xffffff7f);
+      bVar4 = ((uVar1 & 0xffffff7f) >>> 8);
+      uVar2 = (uVar1 & 0xffffff7f);
       uVar7 = bVar4;
       puVar8 = (puVar8 + uVar2 + 2);
       if ((uVar1 & 0x100) == 0) {
@@ -90,8 +91,8 @@ export function FUN_009b3d13(heap) {
   do {
     uVar1 = heap.u32(puVar8);
     heap.setU32(0x009aa032, (uVar1) >>> 0);
-    bVar4 = (byte)((uVar1 & 0xffffff7f) >>> 8);
-    uVar2 = (byte)(uVar1 & 0xffffff7f);
+    bVar4 = ((uVar1 & 0xffffff7f) >>> 8);
+    uVar2 = (uVar1 & 0xffffff7f);
     uVar7 = bVar4;
     puVar8 = (puVar8 + uVar2 + 2);
     if ((uVar1 & 0x100) == 0) {

@@ -13,7 +13,7 @@ export function FUN_005e5fcb(heap) {
   let in_ZF = 0;
   uVar1 = FUN_005e3b2b(heap);
   if (!in_ZF) {
-    heap.u32((unaff_ESI + 0x32)) = heap.u32((unaff_ESI + 0x32)) | 0x600;
+    heap.setU32((unaff_ESI + 0x32), (heap.u32((unaff_ESI + 0x32)) | 0x600) >>> 0);
     FUN_005e43de(heap);
     FUN_005e5c36(heap);
   }

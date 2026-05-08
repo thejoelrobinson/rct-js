@@ -41,7 +41,7 @@ export function FUN_0040179d(heap) {
   heap.setU32(0x005e9154, (0) >>> 0);
   heap.setU32(0x005e9158, (0) >>> 0);
   for (local_c = 0; local_c < 0xa00; local_c = local_c + 1) {
-    heap.u32((__addr_DAT_005f2420) + (local_c) * 4) = 0;
+    heap.setU32(((__addr_DAT_005f2420) + (local_c) * 4), (0) >>> 0);
   }
   if (heap.u32(0x005e914c) != 0) {
     FUN_00402b77(heap);

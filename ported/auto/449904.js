@@ -23,9 +23,9 @@ export function FUN_00449904(heap) {
     if (heap.u32(0x00630b21) == 2) {
       FUN_0043642b(heap);
       heap.setU32(0x0099a020, (heap.u32(0x0099a020) | 10) >>> 0);
-      heap.u16(0x99a02c) = FUN_004490cb(heap);
-      heap.u16(0x99a030) = 0xffff;
-      heap.u16(0x99a02e) = extraout_CX;
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00449904"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00449904"); })();
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00449904"); })();
       FUN_0043642b(heap);
     }
     uVar2 = heap.u32((unaff_ESI + 0x14)) & 0xfff887ff;
@@ -42,8 +42,8 @@ export function FUN_00449904(heap) {
         uVar3 = ~(1 << (heap.u32(0x00630b26) + heap.u32(0x00991f88) & 3) + 0xb) & 0x7800;
       }
     }
-    heap.u32((unaff_ESI + 0x14)) = uVar2;
-    heap.u32((unaff_ESI + 0x10)) = uVar3;
+    heap.setU32((unaff_ESI + 0x14), (uVar2) >>> 0);
+    heap.setU32((unaff_ESI + 0x10), (uVar3) >>> 0);
     FUN_005e43de(heap);
   }
   return CONCAT44(in_EDX, in_EAX);

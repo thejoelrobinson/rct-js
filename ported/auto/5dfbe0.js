@@ -10,6 +10,8 @@ export function FUN_005dfbe0(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_009a013c = __sp + 0;
   try {
+  let puVar1 = 0;
+  let puVar2 = 0;
   FUN_005e5b80(heap);
   puVar2 = heap.u32(0x009a1164);
   do {

@@ -13,6 +13,7 @@ export function FUN_00413620(heap, param_1, param_2) {
   try {
   let uVar1 = 0;
   let local_1c = 0;
+  let local_18 = 0;
   let local_14 = 0;
   local_18 = param_1;
   heap.setU32(__addr_local_20, (param_1) >>> 0);
@@ -21,7 +22,7 @@ export function FUN_00413620(heap, param_1, param_2) {
   uVar1 = FUN_00415c60(heap, __addr_local_20, param_2, __addr_stack0x0000000c);
   local_1c = local_1c + -1;
   if (-1 < local_1c) {
-    heap.u32(heap.u32(__addr_local_20)) = 0;
+    heap.setU32(heap.u32(__addr_local_20), (0) >>> 0);
     return uVar1;
   }
   FUN_00415b30(heap, 0, __addr_local_20);

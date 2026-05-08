@@ -18,6 +18,8 @@ export function FUN_005cfc50(heap) {
   const __addr_DAT_00653efd = __sp + 32;
   const __addr_DAT_00653eff = __sp + 36;
   try {
+  let pbVar1 = 0;
+  let puVar2 = 0;
   let uVar3 = 0;
   let in_EAX = 0;
   let uVar5 = 0;
@@ -27,13 +29,15 @@ export function FUN_005cfc50(heap) {
   let sVar7 = 0;
   let bVar8 = 0;
   let uVar9 = 0;
+  let unaff_ESI = 0;
+  let pbVar10 = 0;
   let iVar11 = 0;
   heap.setU32(0x00652470, (heap.u32(unaff_ESI + (7) * 4)) >>> 0);
   uVar9 = heap.u32((unaff_ESI + 5)) & 0xf;
   puVar2 = heap.u32((__addr_PTR_DAT_00652498) + (heap.u32(unaff_ESI + (4) * 4)) * 4);
   iVar11 = heap.u32(unaff_ESI + (4) * 4) * 10;
   sVar7 = in_EAX;
-  uVar5 = (undefined2)(in_EAX >>> 0x10);
+  uVar5 = (in_EAX >>> 0x10);
   switch (heap.u32(unaff_ESI) & 3) {
     case 0:
       uVar4 = CONCAT22(uVar5, sVar7 - heap.u32((puVar2 + uVar9 * 10 + 1)));
@@ -54,7 +58,7 @@ export function FUN_005cfc50(heap) {
   sVar7 = (heap.u32(unaff_ESI + (2) * 4) * 4 - heap.u32((puVar2 + uVar9 * 10 + 5))) + heap.u32((__addr_DAT_00653ef9 + iVar11));
   uVar3 = CONCAT11(heap.u32((__addr_DAT_00653ef7) + (iVar11) * 4), heap.u32((__addr_DAT_00653ef7) + (iVar11) * 4)) & 0x4ff;
   uVar9 = CONCAT11((uVar3 >>> 8), uVar3 + heap.u32(unaff_ESI)) & 0xffffff03;
-  heap.setU32(0x00652471, (uVar9 | (byte)(uVar9 >>> 8)) >>> 0);
+  heap.setU32(0x00652471, (uVar9 | (uVar9 >>> 8)) >>> 0);
   bVar8 = heap.u32(0x00652471) ^ 2;
   if ((bVar8 & 4) == 0) {
     uVar4 = CONCAT22((uVar4 >>> 0x10), uVar4 + heap.u32((__addr_DAT_00652478) + (bVar8 * 2) * 4));
@@ -68,7 +72,7 @@ export function FUN_005cfc50(heap) {
       iVar11 = heap.u32(pbVar10 + (4) * 4) * 10;
       uVar6 = CONCAT11(heap.u32((__addr_DAT_00653ef8) + (iVar11) * 4), heap.u32((__addr_DAT_00653ef8) + (iVar11) * 4)) & 0x4ff;
       uVar9 = CONCAT11((uVar6 >>> 8), uVar6 + heap.u32(pbVar10)) & 0xffffff03;
-      if (((byte)(uVar9 | (byte)(uVar9 >>> 8)) == heap.u32(0x00652471)) && ((heap.u32(pbVar10 + (2) * 4) * 4 + (heap.u32((__addr_DAT_00653efb + iVar11)) - heap.u32((heap.u32((__addr_PTR_DAT_00652498) + (heap.u32(pbVar10 + (4) * 4)) * 4) + (heap.u32(pbVar10 + (5) * 4) & 0xf) * 10 + 5)))) == sVar7)) {
+      if (((uVar9 | (uVar9 >>> 8)) == heap.u32(0x00652471)) && ((heap.u32(pbVar10 + (2) * 4) * 4 + (heap.u32((__addr_DAT_00653efb + iVar11)) - heap.u32((heap.u32((__addr_PTR_DAT_00652498) + (heap.u32(pbVar10 + (4) * 4)) * 4) + (heap.u32(pbVar10 + (5) * 4) & 0xf) * 10 + 5)))) == sVar7)) {
         switch (heap.u32(pbVar10) & 3) {
           case 0:
             sVar7 = uVar3 - heap.u32((__addr_DAT_00653efd + heap.u32(pbVar10 + (4) * 4) * 10));

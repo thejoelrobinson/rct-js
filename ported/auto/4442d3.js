@@ -16,11 +16,13 @@ export function FUN_004442d3(heap) {
   let in_EAX = 0;
   let uVar2 = 0;
   let in_EDX = 0;
+  let pbVar3 = 0;
+  let puVar4 = 0;
   pbVar3 = __addr_DAT_00887420;
   uVar2 = 0;
   do {
     if ((heap.u32(pbVar3) != 0xff) && (heap.u32((__addr_DAT_005f5e88) + (heap.u32(pbVar3) * 4) * 4) != 0xff)) {
-      uVar2 = uVar2 | 1 << (heap.u32((byte)(__addr_DAT_005f5e88) + (heap.u32(pbVar3) * 4) * 4) & 0xf);
+      uVar2 = uVar2 | 1 << (heap.u32((__addr_DAT_005f5e88) + (heap.u32(pbVar3) * 4) * 4) & 0xf);
     }
     pbVar3 = pbVar3 + 0x260;
   } while (pbVar3 < __addr_DAT_008ad1c0);
@@ -36,11 +38,11 @@ export function FUN_004442d3(heap) {
     if (uVar2 == 0) {
       break;
     }
-    heap.u32(puVar4) = uVar1;
+    heap.setU32(puVar4, (uVar1) >>> 0);
     puVar4 = puVar4 + 1;
     uVar2 = uVar2 & ~(1 << (uVar1 & 0xf));
   }
-  heap.u32(puVar4) = 0xff;
+  heap.setU32(puVar4, (0xff) >>> 0);
   return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(16);

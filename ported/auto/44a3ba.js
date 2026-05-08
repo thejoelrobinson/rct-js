@@ -18,13 +18,18 @@ export function FUN_0044a3ba(heap) {
   const __addr_DAT_00743bd2 = __sp + 4;
   const __addr_DAT_0088747e = __sp + 8;
   try {
+  let puVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
   let uVar4 = 0;
+  let in_EDX = 0;
+  let puVar5 = 0;
   let extraout_EDX = 0;
+  let psVar6 = 0;
   let uVar7 = 0;
   let sVar8 = 0;
   let uVar9 = 0;
+  let unaff_ESI = 0;
   let bVar10 = 0;
   let uVar11 = 0;
   puVar1 = in_EDX;
@@ -81,20 +86,20 @@ export function FUN_0044a3ba(heap) {
     }
   }
   FUN_0044b9db(heap);
-  heap.u32(unaff_ESI + (0x57) * 4) = 0xffffffff;
-  LAB_0044a489: heap.u32((unaff_ESI + 0x59)) = 0;
-  heap.u32((unaff_ESI + 9)) = 0x100;
-  heap.u32((unaff_ESI + 0x26)) = 0xc6;
+  heap.setU32((unaff_ESI + (0x57) * 4), (0xffffffff) >>> 0);
+  LAB_0044a489: heap.setU32((unaff_ESI + 0x59), (0) >>> 0);
+  heap.setU32((unaff_ESI + 9), (0x100) >>> 0);
+  heap.setU32((unaff_ESI + 0x26), (0xc6) >>> 0);
   FUN_005e43de(heap);
-  heap.u32(unaff_ESI + (7) * 4) = heap.u32(0x00631bcc);
-  heap.u32(unaff_ESI + (3) * 4) = heap.u32(0x00631c2c);
-  heap.u32(unaff_ESI + (6) * 4) = heap.u32(0x00631c4c);
-  heap.u32(unaff_ESI) = heap.u32(0x00631bec);
-  heap.u32(unaff_ESI + (1) * 4) = heap.u32(0x00631c0c);
-  heap.u32(unaff_ESI + (5) * 4) = 0;
+  heap.setU32((unaff_ESI + (7) * 4), (heap.u32(0x00631bcc)) >>> 0);
+  heap.setU32((unaff_ESI + (3) * 4), (heap.u32(0x00631c2c)) >>> 0);
+  heap.setU32((unaff_ESI + (6) * 4), (heap.u32(0x00631c4c)) >>> 0);
+  heap.setU32(unaff_ESI, (heap.u32(0x00631bec)) >>> 0);
+  heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00631c0c)) >>> 0);
+  heap.setU32((unaff_ESI + (5) * 4), (0) >>> 0);
   FUN_0044ba3c(heap);
   FUN_005e412c(heap);
-  heap.u32((unaff_ESI + 0x15a)) = sVar8;
+  heap.setU32((unaff_ESI + 0x15a), (sVar8) >>> 0);
   FUN_0044c464(heap);
   return;
 } finally {

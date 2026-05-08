@@ -14,6 +14,7 @@ export function FUN_00414690(heap) {
   const __addr_local_4 = __sp + 8;
   try {
   let iVar1 = 0;
+  let pcVar2 = 0;
   GetModuleFileNameA(heap, 0x0, __addr_DAT_005eff10, 0x104);
   heap.setU32(0x005efef8, (__addr_DAT_005eff10) >>> 0);
   pcVar2 = heap.u32(0x005f3f70);

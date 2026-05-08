@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { FUN_00423677 } from "./423677.js";
 export function FUN_00442290(heap) {
@@ -15,6 +16,7 @@ export function FUN_00442290(heap) {
   const __addr_DAT_00743ba4 = __sp + 16;
   const __addr_DAT_00743b98 = __sp + 20;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let uVar3 = 0;
   let iVar4 = 0;
@@ -24,6 +26,7 @@ export function FUN_00442290(heap) {
   let uVar7 = 0;
   let in_DX = 0;
   let iVar8 = 0;
+  let pbVar9 = 0;
   let uVar10 = 0;
   let uVar11 = 0;
   let uVar12 = 0;

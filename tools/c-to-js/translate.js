@@ -63,6 +63,10 @@ const WIN32_TYPE_NAMES = [
   "UINT", "WPARAM", "LPARAM", "LRESULT", "HRESULT", "FARPROC", "size_t",
   "uint", "ushort", "uchar", "uint16_t", "uint32_t", "int32_t", "int16_t",
   "int8_t", "uint8_t", "long", "ulong",
+  // C primitives that tree-sitter doesn't already special-case as casts
+  "short", "byte", "char", "int", "signed", "unsigned", "float", "double",
+  // Ghidra's "I don't know the type" pseudo-types
+  "undefined", "undefined1", "undefined2", "undefined4", "undefined8",
   // HANDLE-like (each its own typedef)
   "HACCEL", "HBITMAP", "HBRUSH", "HCURSOR", "HDC", "HFILE", "HFONT", "HGDIOBJ",
   "HGLOBAL", "HICON", "HINSTANCE", "HKEY", "HMENU", "HMMIO", "HMODULE",
@@ -70,26 +74,49 @@ const WIN32_TYPE_NAMES = [
   // Pointer-to-type
   "LPMSG", "LPRECT", "LPPOINT", "LPPALETTEENTRY", "LPSYSTEM_INFO",
   "LPOPENFILENAMEA", "LPSECURITY_ATTRIBUTES", "LPOVERLAPPED",
+  "PEXCEPTION_RECORD",
   // Multimedia
   "MMRESULT", "TIMERPROC", "WNDPROC", "DLGPROC",
   // Structured (rarely used as casts but harmless to include)
   "PHKEY", "PFILETIME",
 ];
 
-const CAST_REGEX = new RegExp(
-  // Match `(<type>[*]?[ ]*)<expr>` — strip the parenthesized type prefix.
-  "\\((?:(?:" + WIN32_TYPE_NAMES.join("|") + ")\\s*\\*?\\s*)\\)",
+// Replace any standalone Win32/Ghidra type name with `int` so tree-sitter-c
+// treats both casts (LPBOOL)x → (int)x and declarations LPBOOL p; → int p;
+// as parseable. Stripping (the previous strategy) broke declarations because
+// `*p;` parses as an expression-statement, not a declaration.
+const TYPE_REPLACE_REGEX = new RegExp(
+  "\\b(" + WIN32_TYPE_NAMES.join("|") + ")\\b",
   "g",
 );
+function normalizeTypes(source) {
+  return source.replace(TYPE_REPLACE_REGEX, "int");
+}
 
-function stripWin32Casts(source) {
-  return source.replace(CAST_REGEX, "");
+// C integer-literal suffixes (U, L, UL, LL, ULL) that JS doesn't understand.
+// Ghidra emits these on hex/decimal constants; strip them.
+const INT_SUFFIX_REGEX = /\b(0[xX][0-9a-fA-F]+|\d+)(?:[uU](?:[lL][lL]?)?|[lL][lL]?[uU]?)\b/g;
+function stripIntSuffixes(source) {
+  return source.replace(INT_SUFFIX_REGEX, "$1");
+}
+
+// C wide-string prefix L"..." — strip the leading L (handle both single- and
+// double-quoted forms; preserve quote and content).
+function stripWideStringPrefix(source) {
+  return source.replace(/\bL("(?:[^"\\]|\\.)*")/g, "$1")
+               .replace(/\bL('(?:[^'\\]|\\.)*')/g, "$1");
 }
 
 // Parse a single Ghidra C function and return { js, info } where info contains
 // metadata (function name, addr, imports, called functions).
-export async function translateFunction(source) {
-  source = stripWin32Casts(source);
+//
+// `forceAddr` (optional): an integer RVA. When set, the translator forces
+// the function name to FUN_<padded-hex> regardless of what Ghidra called it.
+// The batch driver passes this from the file basename so functions named
+// like Win32 imports (RtlUnwind, _strlen, etc.) don't collide with their
+// runtime counterparts.
+export async function translateFunction(source, forceAddr) {
+  source = stripWideStringPrefix(stripIntSuffixes(normalizeTypes(source)));
   const parser = await getParser();
   const tree = parser.parse(source);
   const ctx = {
@@ -97,6 +124,7 @@ export async function translateFunction(source) {
     imports: new Set(),     // Win32 imports referenced
     builtins: new Set(),    // Ghidra pseudo-fns referenced (CONCAT*, CARRY*, ...)
     callsFun: new Set(),    // FUN_xxx referenced
+    forceAddr: forceAddr,
     locals: new Set(),      // names declared as locals (so we don't mistake for DAT)
     paramNames: new Set(),
     // Heap-backed locals (those whose address is taken or that are arrays).
@@ -113,6 +141,16 @@ export async function translateFunction(source) {
       out += emitFunction(child, ctx);
     }
     // Skip top-level comments / WARNING blocks
+  }
+  // Tree-sitter-c sometimes parses Ghidra's output as one big ERROR node
+  // (constructs we haven't fixed up). Emit a placeholder export so dependent
+  // modules still resolve their imports — calling it throws loudly.
+  if (out === "" && typeof forceAddr === "number") {
+    ctx.funcName = `FUN_${forceAddr.toString(16).padStart(8, "0")}`;
+    ctx.funcAddr = forceAddr;
+    out = `export function ${ctx.funcName}(heap, ...args) {\n` +
+          `  throw new Error("c-to-js: parse failed for ${ctx.funcName} — function not translated");\n` +
+          `}\n`;
   }
   const header = renderHeader(ctx);
   return {
@@ -230,6 +268,8 @@ function renderHeader(ctx) {
   if (ctx.callsFun.size > 0) {
     const calls = [...ctx.callsFun].sort();
     for (const c of calls) {
+      // Skip self-references — the function is already defined in this file.
+      if (c === ctx.funcName) continue;
       // Each callee lives in ported/<addr>.js (one-per-file convention).
       // Strip leading zeros to match decompiled/c/<unpadded>.c naming.
       const addr = parseInt(c.replace(/^FUN_/, ""), 16).toString(16);
@@ -247,11 +287,20 @@ function emitFunction(node, ctx) {
   const body = node.childForFieldName("body");
   const fnDeclarator = findChild(declarator, "function_declarator") || declarator;
   const nameNode = fnDeclarator.childForFieldName("declarator");
-  const name = text(nameNode, ctx);
+  const ghidraName = text(nameNode, ctx);
+  // Force-name to FUN_<padded-hex> when caller provided an address. This
+  // prevents collisions with Win32 / Ghidra-builtin names that Ghidra picked
+  // up as function identifiers (RtlUnwind, _strlen, etc.).
+  let name;
+  if (typeof ctx.forceAddr === "number") {
+    ctx.funcAddr = ctx.forceAddr;
+    name = `FUN_${ctx.forceAddr.toString(16).padStart(8, "0")}`;
+  } else {
+    name = ghidraName;
+    const m = /^FUN_([0-9a-fA-F]+)$/.exec(name);
+    if (m) ctx.funcAddr = parseInt(m[1], 16);
+  }
   ctx.funcName = name;
-  // FUN_<hex> → numeric addr
-  const m = /^FUN_([0-9a-fA-F]+)$/.exec(name);
-  if (m) ctx.funcAddr = parseInt(m[1], 16);
   // Collect param names (so we recognize them as local references)
   const params = fnDeclarator.childForFieldName("parameters");
   const paramList = collectParams(params, ctx);
@@ -291,7 +340,9 @@ function emitFunction(node, ctx) {
   }
   ctx.frameSize = offset;
 
-  const sig = `export function ${name}(heap${paramList.length ? ", " + paramList.join(", ") : ""}) `;
+  // Function signature uses our (possibly forced) FUN_<addr> name. Keep
+  // the original parameter names — those came from Ghidra and don't collide.
+  const sig = `export function ${ctx.funcName}(heap${paramList.length ? ", " + paramList.join(", ") : ""}) `;
   const bodyJs = emitBlock(body, ctx);
   if (ctx.frameSize === 0) {
     return sig + bodyJs + "\n";
@@ -449,11 +500,15 @@ function emitStatement(node, ctx) {
     case "labeled_statement": {
       // `label: stmt` — JS supports labels too. The label is always the first
       // named child (a statement_identifier); the wrapped statement follows.
+      // Tree-sitter-c will produce an EMPTY expression_statement child when
+      // the label sits at the end of a block. Detect that and emit a no-op.
       const children = node.namedChildren.filter(c => c.type !== "comment");
       const labelNode = children[0];
       const stmtNode = children[1];
       const labelText = labelNode ? text(labelNode, ctx) : "L";
-      return `${labelText}: ${stmtNode ? emitStatement(stmtNode, ctx) : ""}`;
+      let inner = stmtNode ? emitStatement(stmtNode, ctx) : "";
+      if (!inner || inner === ";" || /^\s*$/.test(inner)) inner = ";";
+      return `${labelText}: ${inner}`;
     }
     case "goto_statement": {
       const labelNode = node.childForFieldName("label") || node.namedChildren[0];
@@ -474,9 +529,15 @@ function emitStatement(node, ctx) {
 }
 
 function emitDeclaration(node, ctx) {
-  // declaration: type init_declarator (',' init_declarator)* ';'
+  // declaration: type [pointer_declarator | init_declarator | identifier]+ ';'
   const decls = [];
   for (const child of node.namedChildren) {
+    // Tree-sitter-c shapes:
+    //   `int x;`      → primitive_type, identifier
+    //   `int x = 1;`  → primitive_type, init_declarator { declarator, value }
+    //   `int *p;`     → primitive_type, pointer_declarator { identifier }
+    //   `int p[5];`   → primitive_type, array_declarator { declarator, size }
+    //   `int (*fp)();`→ primitive_type, pointer_declarator { function_declarator }
     if (child.type === "init_declarator") {
       const decl = child.childForFieldName("declarator");
       const value = child.childForFieldName("value");
@@ -484,8 +545,6 @@ function emitDeclaration(node, ctx) {
       if (id) {
         const name = text(id, ctx);
         ctx.locals.add(name);
-        // Heap-backed local — its address slot was already declared in the
-        // function prelude; if there's an initializer, emit a heap write.
         if (ctx.heapLocals.has(name)) {
           if (value) {
             decls.push(`heap.setU32(__addr_${name}, (${emitExpr(value, ctx)}) >>> 0);`);
@@ -494,15 +553,19 @@ function emitDeclaration(node, ctx) {
           decls.push(`let ${name} = ${value ? emitExpr(value, ctx) : "0"};`);
         }
       }
-    } else if (child.type === "identifier") {
-      // bare `int foo;` style declaration
-      const name = text(child, ctx);
-      ctx.locals.add(name);
-      if (!ctx.heapLocals.has(name)) {
-        decls.push(`let ${name} = 0;`);
+    } else if (child.type === "identifier"
+            || child.type === "pointer_declarator"
+            || child.type === "array_declarator") {
+      const id = child.type === "identifier" ? child : findIdentifier(child);
+      if (id) {
+        const name = text(id, ctx);
+        ctx.locals.add(name);
+        if (!ctx.heapLocals.has(name)) {
+          decls.push(`let ${name} = 0;`);
+        }
       }
     }
-    // skip type qualifiers, primitive_type, etc.
+    // skip type qualifiers, primitive_type, sized_type_specifier, etc.
   }
   return decls.join("\n");
 }
@@ -598,8 +661,12 @@ function emitIdentifier(node, ctx) {
     ctx.builtins.add(name);
     return name;
   }
-  // Otherwise assume it's a Win32 import (bare CamelCase identifier).
-  if (/^[A-Z][A-Za-z0-9_]*$/.test(name)) {
+  // Otherwise assume it's a Win32 import. Win32 names can be:
+  //   - CamelCase: MessageBoxA, RegOpenKeyA
+  //   - lowercase: timeGetTime, wsprintfA, mmioOpen
+  //   - underscore-prefixed: _strlen, _mbsupr, _stricmp
+  // Recognise any identifier that isn't a known local/param/builtin.
+  if (/^_?[A-Za-z][A-Za-z0-9_]*$/.test(name)) {
     ctx.imports.add(name);
     return name;
   }
@@ -686,8 +753,71 @@ function emitAssignment(node, ctx) {
     // Local / param assignment — plain JS, but wrap for 32-bit semantics on numeric ops
     return `${name} ${op} ${right}`;
   }
-  // Pointer/array LHS → fall back to general expr (might fail for now; will iterate)
-  return `${emitExpr(left, ctx)} ${op} ${right}`;
+  // Pointer dereference LHS: *expr = value  →  heap.setU32(expr, value)
+  if (left.type === "pointer_expression" && left.firstChild && left.firstChild.text === "*") {
+    const inner = left.namedChildren[0];
+    const addrJs = emitExpr(inner, ctx);
+    if (op === "=") return `heap.setU32(${addrJs}, (${right}) >>> 0)`;
+    const binop = op.slice(0, op.length - 1);
+    const opMap = { ">>": ">>>" };
+    const finalOp = opMap[binop] || binop;
+    return `heap.setU32(${addrJs}, ((heap.u32(${addrJs})) ${finalOp} (${right})) >>> 0)`;
+  }
+
+  // Subscript LHS: a[i] = v → heap.setU32(a + i*4, v)
+  if (left.type === "subscript_expression") {
+    const arr = left.childForFieldName("argument");
+    const idx = left.childForFieldName("index");
+    const addrJs = `(${emitExpr(arr, ctx)} + (${emitExpr(idx, ctx)}) * 4)`;
+    if (op === "=") return `heap.setU32(${addrJs}, (${right}) >>> 0)`;
+    const binop = op.slice(0, op.length - 1);
+    const opMap = { ">>": ">>>" };
+    const finalOp = opMap[binop] || binop;
+    return `heap.setU32(${addrJs}, ((heap.u32(${addrJs})) ${finalOp} (${right})) >>> 0)`;
+  }
+
+  // Field-expression LHS: local.field = v   or   ptr->field = v
+  if (left.type === "field_expression") {
+    const fnode = left.childForFieldName("field");
+    const fieldName = fnode ? text(fnode, ctx) : "";
+    const arg = left.childForFieldName("argument");
+    const opNode = left.children.find(c => c.text === "." || c.text === "->");
+
+    // _<off>_<width>_ slice on a heap-backed local: write through the slot.
+    const fieldMatch = /^_(\d+)_(\d+)_$/.exec(fieldName);
+    if (fieldMatch && arg.type === "identifier") {
+      const argName = text(arg, ctx);
+      if (ctx.heapLocals.has(argName)) {
+        const offset = parseInt(fieldMatch[1], 10);
+        const width = parseInt(fieldMatch[2], 10);
+        const addr = `(__addr_${argName} + ${offset})`;
+        if (width === 1) return `heap.setU8(${addr}, (${right}) & 0xff)`;
+        if (width === 2) return `heap.setU16(${addr}, (${right}) & 0xffff)`;
+        return `heap.setU32(${addr}, (${right}) >>> 0)`;
+      }
+    }
+
+    // Named struct field write
+    const STRUCT = (typeof STRUCT_FIELDS !== "undefined") ? STRUCT_FIELDS : null;
+    const info = STRUCT && STRUCT[fieldName];
+    if (info) {
+      let baseJs;
+      if (opNode && opNode.text === "->") baseJs = emitExpr(arg, ctx);
+      else if (arg.type === "identifier" && ctx.heapLocals.has(text(arg, ctx))) {
+        baseJs = `__addr_${text(arg, ctx)}`;
+      } else {
+        baseJs = emitExpr(arg, ctx);
+      }
+      const eff = info.offset === 0 ? baseJs : `(${baseJs} + ${info.offset})`;
+      if (info.width === 1) return `heap.setU8(${eff}, (${right}) & 0xff)`;
+      if (info.width === 2) return `heap.setU16(${eff}, (${right}) & 0xffff)`;
+      return `heap.setU32(${eff}, (${right}) >>> 0)`;
+    }
+  }
+
+  // Fallback for unhandled LHS forms — emit a runtime throw so the file
+  // parses but flags itself loudly when called.
+  return `(function(){ throw new Error("c-to-js: unhandled LHS form ${left.type} in ${ctx.funcName}"); })()`;
 }
 
 function emitCall(node, ctx) {
@@ -709,7 +839,7 @@ function emitCall(node, ctx) {
       return `${name}(${args.join(", ")})`;
     }
     // Win32 import — pass heap as first arg too (the runtime wrapper accepts it)
-    if (/^[A-Z][A-Za-z0-9_]*$/.test(name)) {
+    if (/^_?[A-Za-z][A-Za-z0-9_]*$/.test(name)) {
       ctx.imports.add(name);
       return `${name}(heap${args.length ? ", " + args.join(", ") : ""})`;
     }

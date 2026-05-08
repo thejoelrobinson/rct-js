@@ -15,6 +15,7 @@ export function FUN_00431510(heap) {
   const __addr_DAT_005f96d0 = __sp + 4;
   try {
   let bVar1 = 0;
+  let psVar2 = 0;
   let sVar3 = 0;
   let sVar4 = 0;
   let in_DX = 0;

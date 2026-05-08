@@ -5,6 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0040aa7f(heap) {
+  let local_8 = 0;
   if (heap.u32(0x005ebf44) != 0) {
     if (heap.u32(0x005f0950) == 1) {
       local_8 = heap.u32(0x005ebf34);

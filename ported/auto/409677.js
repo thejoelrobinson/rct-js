@@ -12,7 +12,7 @@ export function FUN_00409677(heap, param_1) {
   try {
   let iVar1 = 0;
   if (((heap.u32((param_1 + 0xc)) == 0) && (heap.u32((param_1 + 0x80)) != 0)) && (iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32((param_1 + 0x80))) + 0x44))))(heap.u32((param_1 + 0x80)), __addr_local_8), iVar1 == 0)) {
-    heap.u32((param_1 + 0xc)) = 1;
+    heap.setU32((param_1 + 0xc), (1) >>> 0);
     if ((heap.u32(0x005ebf54) == 0) && (heap.u32((param_1 + 0x80)) == heap.u32(0x005ebf34))) {
       GetClientRect(heap, heap.u32(0x005e916c), __addr_local_18);
       ClientToScreen(heap, heap.u32(0x005e916c), __addr_local_18);

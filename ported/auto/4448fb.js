@@ -13,6 +13,7 @@ export function FUN_004448fb(heap) {
   try {
   let in_EAX = 0;
   let in_EDX = 0;
+  let pcVar1 = 0;
   pcVar1 = __addr_DAT_00743b94;
   do {
     if (heap.u32(pcVar1) != -1) {

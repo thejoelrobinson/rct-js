@@ -11,12 +11,14 @@ export function FUN_005e0650(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_00971ef4 = __sp + 0;
   try {
+  let pbVar1 = 0;
   let in_EAX = 0;
   let in_CX = 0;
   let in_EDX = 0;
   let sVar2 = 0;
   let sVar3 = 0;
   let uVar4 = 0;
+  let pbVar5 = 0;
   uVar4 = in_CX << 7 | in_CX >>> 9 | in_EAX;
   pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
   do {

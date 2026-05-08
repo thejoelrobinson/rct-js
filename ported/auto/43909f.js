@@ -12,6 +12,7 @@ export function FUN_0043909f(heap) {
   const __addr_DAT_008ad1c0 = __sp + 4;
   try {
   let uVar1 = 0;
+  let pcVar2 = 0;
   uVar1 = FUN_005df40c(heap);
   if (uVar1 < 0x42) {
     pcVar2 = __addr_DAT_00887420;

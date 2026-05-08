@@ -15,16 +15,16 @@ export function FUN_00416f60(heap, param_1, param_2) {
   let uVar1 = 0;
   let iVar2 = 0;
   iVar2 = heap.u32(__addr_param_1);
-  if (heap.u32(__addr_param_1) + 1U < 0x101) {
+  if (heap.u32(__addr_param_1) + 1 < 0x101) {
     return heap.u32((heap.u32(0x005ee548) + heap.u32(__addr_param_1) * 2)) & param_2;
   }
-  if ((heap.u32(heap.u32(0x005ee548) + ((heap.u32(__addr_param_1) >>> 8 & 0xffU) * 2 + 1) * 4) & 0x80) == 0) {
-    (heap.u32(__addr_param_1) & 0xffff) = heap.u32(__addr_param_1);
+  if ((heap.u32(heap.u32(0x005ee548) + ((heap.u32(__addr_param_1) >>> 8 & 0xff) * 2 + 1) * 4) & 0x80) == 0) {
+    heap.setU16((__addr_param_1 + 0), (heap.u32(__addr_param_1)) & 0xffff);
     uVar1 = 1;
   } else {
-    (heap.u32(__addr_param_1) & 0xffff) = CONCAT11(heap.u32(__addr_param_1), (heap.u32(__addr_param_1) >>> 8));
-    (((heap.u32(__addr_param_1)) >>> 24) & 0xff) = SUB41(iVar2, 3);
-    (heap.u32(__addr_param_1) & 0xffffffff) = heap.u32(__addr_param_1);
+    heap.setU16((__addr_param_1 + 0), (CONCAT11(heap.u32(__addr_param_1), (heap.u32(__addr_param_1) >>> 8))) & 0xffff);
+    heap.setU8((__addr_param_1 + 3), (SUB41(iVar2, 3)) & 0xff);
+    heap.setU32((__addr_param_1 + 0), (heap.u32(__addr_param_1)) >>> 0);
     uVar1 = 2;
   }
   iVar2 = FUN_00417860(heap, 1, __addr_param_1, uVar1, __addr_local_4, 0, 0, 1);

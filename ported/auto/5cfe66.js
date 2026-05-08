@@ -12,6 +12,7 @@ export function FUN_005cfe66(heap) {
   const __addr_PTR_DAT_00652498 = __sp + 4;
   const __addr_switchD_005cff4c = __sp + 8;
   try {
+  let puVar1 = 0;
   let uVar2 = 0;
   let in_EAX = 0;
   let uVar5 = 0;
@@ -31,7 +32,10 @@ export function FUN_005cfe66(heap) {
   let unaff_BP = 0;
   let uVar12 = 0;
   let iVar13 = 0;
+  let puVar14 = 0;
   let uVar15 = 0;
+  let pbVar16 = 0;
+  let puVar17 = 0;
   let uVar9 = 0;
   heap.setU32(0x006522f0, (unaff_BP) >>> 0);
   uVar2 = in_EAX;
@@ -40,7 +44,7 @@ export function FUN_005cfe66(heap) {
   puVar17 = 0x0;
   puVar14 = heap.u32((__addr_DAT_00971ef4) + ((uVar12 >>> 5 | uVar12 << 0xb)) * 4);
   do {
-    if ((((uVar8 == heap.u32(puVar14 + (1) * 4)) && (uVar8 = CONCAT22((uVar8 >>> 0x10), CONCAT11(heap.u32(puVar14), uVar8)) & 0xffff3cff, (uVar8 >>> 8) == '\b')) && (uVar8 = CONCAT22((uVar8 >>> 0x10), CONCAT11(heap.u32(puVar14), uVar8)) & 0xffff03ff, (byte)(uVar8 >>> 8) == unaff_BH)) && ((unaff_BL == heap.u32(puVar14 + (2) * 4) && (puVar17 = puVar14, (heap.u32((puVar14 + 5)) & 0xf) == 0)))) {
+    if ((((uVar8 == heap.u32(puVar14 + (1) * 4)) && (uVar8 = CONCAT22((uVar8 >>> 0x10), CONCAT11(heap.u32(puVar14), uVar8)) & 0xffff3cff, (uVar8 >>> 8) == '\b')) && (uVar8 = CONCAT22((uVar8 >>> 0x10), CONCAT11(heap.u32(puVar14), uVar8)) & 0xffff03ff, (uVar8 >>> 8) == unaff_BH)) && ((unaff_BL == heap.u32(puVar14 + (2) * 4) && (puVar17 = puVar14, (heap.u32((puVar14 + 5)) & 0xf) == 0)))) {
       /* goto LAB_005cfec3 */ throw new Error("goto LAB_005cfec3 not supported");
     }
     uVar12 = heap.u32(puVar14);
@@ -50,11 +54,11 @@ export function FUN_005cfe66(heap) {
   if (puVar17 == 0x0) {
     return CONCAT44(uVar8, in_EAX);
   }
-  LAB_005cfec3: uVar11 = (undefined2)(uVar8 >>> 0x10);
+  LAB_005cfec3: uVar11 = (uVar8 >>> 0x10);
   puVar1 = heap.u32((__addr_PTR_DAT_00652498) + (unaff_BL) * 4);
   iVar13 = (heap.u32((puVar14 + 5)) & 0xf) * 10;
   uVar15 = heap.u32(puVar14) & 3;
-  uVar5 = (undefined2)(in_EAX >>> 0x10);
+  uVar5 = (in_EAX >>> 0x10);
   switch (uVar15) {
     case 0:
       uVar3 = CONCAT22(uVar5, uVar2 - heap.u32((puVar1 + iVar13 + 1)));
@@ -96,10 +100,10 @@ export function FUN_005cfe66(heap) {
       heap.setU32(0x006522f2, (pbVar16) >>> 0);
     }
     if ((heap.u32(0x006522f0) & 1) != 0) {
-      heap.u32(pbVar16) = heap.u32(pbVar16) & 0xbf;
+      heap.setU32(pbVar16, (heap.u32(pbVar16) & 0xbf) >>> 0);
     }
     if ((heap.u32(0x006522f0) & 2) != 0) {
-      heap.u32(pbVar16) = heap.u32(pbVar16) | 0x40;
+      heap.setU32(pbVar16, (heap.u32(pbVar16) | 0x40) >>> 0);
     }
   }
   return CONCAT44(uVar9, uVar3);

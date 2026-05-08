@@ -27,7 +27,7 @@ export function FUN_005e4198(heap) {
     if (uVar3 != 0) {
       sVar5 = (uVar1 / uVar3);
     }
-    heap.u32((unaff_EBX + 0x3a + unaff_ESI)) = sVar5 + 0xb;
+    heap.setU32((unaff_EBX + 0x3a + unaff_ESI), (sVar5 + 0xb) >>> 0);
     sVar5 = heap.u32((unaff_EDI + 4)) - heap.u32((unaff_EDI + 2));
     sVar2 = sVar5 + -2;
     if ((heap.u32((unaff_EBX + 0x34 + unaff_ESI)) & 0x10) != 0) {
@@ -41,7 +41,7 @@ export function FUN_005e4198(heap) {
     if ((uVar6 + 10) < (uVar3 + 0xb)) {
       sVar5 = uVar6 + 10;
     }
-    heap.u32((unaff_EBX + 0x3c + unaff_ESI)) = sVar5;
+    heap.setU32((unaff_EBX + 0x3c + unaff_ESI), (sVar5) >>> 0);
   }
   if ((heap.u32((unaff_EBX + 0x34 + unaff_ESI)) & 0x10) != 0) {
     sVar5 = heap.u32((unaff_EDI + 8)) - heap.u32((unaff_EDI + 6));
@@ -55,7 +55,7 @@ export function FUN_005e4198(heap) {
     if (uVar3 != 0) {
       sVar5 = (uVar1 / uVar3);
     }
-    heap.u32((unaff_EBX + 0x42 + unaff_ESI)) = sVar5 + 0xb;
+    heap.setU32((unaff_EBX + 0x42 + unaff_ESI), (sVar5 + 0xb) >>> 0);
     sVar5 = heap.u32((unaff_EDI + 8)) - heap.u32((unaff_EDI + 6));
     sVar2 = sVar5 + -2;
     if ((heap.u32((unaff_EBX + 0x34 + unaff_ESI)) & 1) != 0) {
@@ -69,7 +69,7 @@ export function FUN_005e4198(heap) {
     if ((uVar6 + 10) < (uVar3 + 0xb)) {
       uVar4 = uVar6 + 10;
     }
-    heap.u32((unaff_EBX + 0x44 + unaff_ESI)) = uVar4;
+    heap.setU32((unaff_EBX + 0x44 + unaff_ESI), (uVar4) >>> 0);
   }
   return in_EAX;
 }

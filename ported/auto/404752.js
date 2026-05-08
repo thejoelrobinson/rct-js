@@ -21,7 +21,7 @@ export function FUN_00404752(heap) {
   let local_a4 = 0;
   let local_a2 = 0;
   let local_8 = 0;
-  heap.u32(__addr_local_a0) = 0x94;
+  heap.setU32(__addr_local_a0, (0x94) >>> 0);
   BVar1 = GetVersionExA(heap, __addr_local_a0);
   if (BVar1 == 0) {
     heap.setU32(0x005f14e0, (0xffffffff) >>> 0);

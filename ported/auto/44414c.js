@@ -26,7 +26,11 @@ export function FUN_0044414c(heap) {
   let bVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
+  let extraout_ECX = 0;
+  let pbVar4 = 0;
   let unaff_ESI = 0;
+  let pbVar5 = 0;
+  let pbVar6 = 0;
   let uVar7 = 0;
   let bVar8 = 0;
   bVar8 = true;
@@ -38,27 +42,27 @@ export function FUN_0044414c(heap) {
     uVar3 = FUN_005e5bd8(heap);
   }
   FUN_005e3c3c(heap);
-  heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_00630774;
-  heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x734;
-  heap.u32((unaff_ESI + 0x18)) = heap.u32((unaff_ESI + 0x18)) | 0x300;
+  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_00630774) >>> 0);
+  heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x734) >>> 0);
+  heap.setU32((unaff_ESI + 0x18), (heap.u32((unaff_ESI + 0x18)) | 0x300) >>> 0);
   FUN_005e412c(heap);
-  heap.u32((unaff_ESI + 0x15a)) = uVar3;
+  heap.setU32((unaff_ESI + 0x15a), (uVar3) >>> 0);
   heap.setU32(0x0063078e, (CONCAT22((uVar3 >>> 0x10), uVar3 + 0x982)) >>> 0);
-  heap.u32((unaff_ESI + 0x15c)) = 2;
-  heap.u32((unaff_ESI + 0x15e)) = 0xffff;
+  heap.setU32((unaff_ESI + 0x15c), (2) >>> 0);
+  heap.setU32((unaff_ESI + 0x15e), (0xffff) >>> 0);
   heap.setU32(0x00630880, (0xffff) >>> 0);
   pbVar5 = __addr_DAT_00887420;
   bVar1 = 0;
   pbVar4 = __addr_DAT_00630880;
   do {
     if ((heap.u32(pbVar5) != 0xff) && ((heap.u32((__addr_DAT_005f5b78 + heap.u32(pbVar5) * 8)) & 0x3820000) == 0)) {
-      heap.u32(pbVar4) = bVar1;
+      heap.setU32(pbVar4, (bVar1) >>> 0);
       pbVar4 = pbVar4 + 1;
     }
     pbVar5 = pbVar5 + 0x260;
     bVar1 = bVar1 + 1;
   } while (bVar1 != 0xff);
-  heap.u32(pbVar4) = 0xff;
+  heap.setU32(pbVar4, (0xff) >>> 0);
   pbVar5 = extraout_ECX;
   for (; __addr_DAT_006308a8 < pbVar4; pbVar4 = pbVar4 + -1) {
     pbVar6 = __addr_DAT_00630880;
@@ -71,7 +75,7 @@ export function FUN_0044414c(heap) {
       pbVar6 = pbVar6 + 1;
     } while (pbVar6 < pbVar4);
     do {
-      heap.u32(pbVar5) = heap.u32(pbVar5 + (1) * 4);
+      heap.setU32(pbVar5, (heap.u32(pbVar5 + (1) * 4)) >>> 0);
       pbVar5 = pbVar5 + 1;
     } while (pbVar5 < pbVar4);
   }
@@ -93,9 +97,9 @@ export function FUN_0044414c(heap) {
       }
       LOCK();
       bVar1 = heap.u32(pbVar5);
-      heap.u32(pbVar5) = heap.u32(pbVar6);
+      heap.setU32(pbVar5, (heap.u32(pbVar6)) >>> 0);
       UNLOCK();
-      heap.u32(pbVar6) = bVar1;
+      heap.setU32(pbVar6, (bVar1) >>> 0);
       pbVar5 = pbVar6;
     }
     pbVar4 = pbVar4 + 1;

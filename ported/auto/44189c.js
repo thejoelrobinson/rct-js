@@ -5,7 +5,6 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT11 } from "../../runtime/ghidra-builtins.js";
-import { FUN_0044189c } from "./44189c.js";
 export function FUN_0044189c(heap) {
   const __sp = heap.allocFrame(16);
   const __addr_DAT_00652478 = __sp + 0;
@@ -13,6 +12,7 @@ export function FUN_0044189c(heap) {
   const __addr_DAT_00971ef4 = __sp + 8;
   const __addr_DAT_00630e58 = __sp + 12;
   try {
+  let pbVar1 = 0;
   let uVar2 = 0;
   let in_AX = 0;
   let in_CX = 0;
@@ -24,6 +24,7 @@ export function FUN_0044189c(heap) {
   let unaff_EBP = 0;
   let uVar7 = 0;
   let uVar8 = 0;
+  let pbVar9 = 0;
   let unaff_DI = 0;
   code_r0x0044189c: in_AX = in_AX + heap.u32((__addr_DAT_00652478) + (unaff_EBP * 2) * 4);
   in_CX = in_CX + heap.u32((__addr_DAT_0065247a) + (unaff_EBP * 2) * 4);
@@ -88,9 +89,9 @@ export function FUN_0044189c(heap) {
   uVar6 = uVar6 & ~(1 << (unaff_EBP & 0x1f));
   if (uVar6 != 0) {
     if (heap.u16(0x6293c6) != 0) {
-      heap.u8(0x6293c4) = heap.u32(0x006293c4) + -1;
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0044189c"); })();
     }
-    heap.u8(0x6293c4) = heap.u32(0x006293c4) + -1;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0044189c"); })();
     uVar2 = heap.u32(0x006293c4);
     if (heap.u32(0x006293c4) < '\0') {
       return;
@@ -112,7 +113,7 @@ export function FUN_0044189c(heap) {
   if (((heap.u32(pbVar9 + (4) * 4) & 4) != 0) && ((heap.u32(pbVar9 + (4) * 4) & 3) == unaff_EBP)) {
     in_DX = CONCAT11(bVar3, heap.u32(pbVar9 + (2) * 4) + 4);
   }
-  heap.u16(0x6293c6) = heap.u16(0x6293c6) + 1;
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0044189c"); })();
   /* goto code_r0x0044189c */ throw new Error("goto code_r0x0044189c not supported");
 } finally {
     heap.freeFrame(16);

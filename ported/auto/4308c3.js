@@ -16,12 +16,15 @@ export function FUN_004308c3(heap) {
   const __addr_DAT_005f888e = __sp + 16;
   try {
   let cVar1 = 0;
+  let pcVar2 = 0;
+  let pcVar3 = 0;
+  let pcVar4 = 0;
   pcVar2 = __addr_DAT_00000016;
   FUN_0042f239(heap);
   pcVar3 = __addr_DAT_0099aa88;
   do {
     cVar1 = heap.u32(pcVar2);
-    heap.u32(pcVar3) = cVar1;
+    heap.setU32(pcVar3, (cVar1) >>> 0);
     pcVar2 = pcVar2 + 1;
     pcVar3 = pcVar3 + 1;
   } while (cVar1 != '\0');
@@ -30,14 +33,14 @@ export function FUN_004308c3(heap) {
   do {
     pcVar4 = pcVar2;
     cVar1 = heap.u32(pcVar3);
-    heap.u32(pcVar4) = cVar1;
+    heap.setU32(pcVar4, (cVar1) >>> 0);
     pcVar3 = pcVar3 + 1;
     pcVar2 = pcVar4 + 1;
   } while (cVar1 != '*');
   pcVar2 = __addr_DAT_005f888e;
   do {
     cVar1 = heap.u32(pcVar2);
-    heap.u32(pcVar4) = cVar1;
+    heap.setU32(pcVar4, (cVar1) >>> 0);
     pcVar2 = pcVar2 + 1;
     pcVar4 = pcVar4 + 1;
   } while (cVar1 != '\0');

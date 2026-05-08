@@ -11,14 +11,17 @@ export function FUN_005e3ace(heap) {
   const __addr_DAT_009a013c = __sp + 0;
   const __addr_stack0x00000000 = __sp + 4;
   try {
+  let puVar1 = 0;
   let in_EAX = 0;
   let in_ECX = 0;
   let extraout_ECX = 0;
   let sVar2 = 0;
   let unaff_EBX = 0;
   let unaff_EBP = 0;
+  let puVar3 = 0;
   let unaff_EDI = 0;
   let uVar5 = 0;
+  let puVar4 = 0;
   puVar1 = heap.u32(0x009a1164);
   LAB_005e3ad4: do {
     do {

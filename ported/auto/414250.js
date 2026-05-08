@@ -14,6 +14,8 @@ export function FUN_00414250(heap, param_1, param_2, param_3) {
   const __addr_DAT_005e9024 = __sp + 12;
   try {
   let hProcess = 0;
+  let puVar1 = 0;
+  let puVar2 = 0;
   let uExitCode = 0;
   if (heap.u32(0x005eff08) == 1) {
     uExitCode = param_1;

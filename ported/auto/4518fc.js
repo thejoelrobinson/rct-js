@@ -13,7 +13,7 @@ export function FUN_004518fc(heap) {
   try {
   let in_EAX = 0;
   let in_EDX = 0;
-  heap.u16(0x971e86) = heap.u32((__addr_DAT_00887442) + ((in_EDX & 0xff) * 0x130) * 4);
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004518fc"); })();
   unique0x00017200 = heap.u32((__addr_DAT_00887444) + ((in_EDX & 0xff) * 0x98) * 4);
   FUN_0042c711(heap);
   return CONCAT44(in_EDX, in_EAX);

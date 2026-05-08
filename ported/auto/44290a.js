@@ -12,15 +12,16 @@ export function FUN_0044290a(heap) {
   const __addr_DAT_00743bbf = __sp + 12;
   const __addr_DAT_00743c89 = __sp + 16;
   try {
+  let pcVar1 = 0;
   let uVar2 = 0;
   let iVar3 = 0;
   for (uVar2 = heap.u32(0x0087c398); uVar2 != 0xffff; uVar2 = heap.u32((__addr_DAT_00743b98) + (uVar2 * 0x80) * 4)) {
     iVar3 = uVar2 * 0x100;
     if (((heap.u32((__addr_DAT_00743bc2) + (iVar3) * 4) == '\0') && (heap.u32((__addr_DAT_00743bbe) + (iVar3) * 4) == '\0')) && (heap.u32((__addr_DAT_00743bbf) + (iVar3) * 4) == '\x06')) {
       pcVar1 = __addr_DAT_00743c89 + iVar3;
-      heap.u32(pcVar1) = heap.u32(pcVar1) + '\x01';
+      heap.setU32(pcVar1, (heap.u32(pcVar1) + '\x01') >>> 0);
       if (heap.u32(pcVar1) == '\0') {
-        heap.u32((__addr_DAT_00743c89) + (iVar3) * 4) = heap.u32((__addr_DAT_00743c89) + (iVar3) * 4) + -1;
+        heap.setU32(((__addr_DAT_00743c89) + (iVar3) * 4), (heap.u32((__addr_DAT_00743c89) + (iVar3) * 4) + -1) >>> 0);
       }
     }
   }

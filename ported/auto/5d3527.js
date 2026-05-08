@@ -21,12 +21,12 @@ export function FUN_005d3527(heap) {
   iVar1 = heap.u32(0x00652289) * 0x260;
   if (heap.u32((__addr_DAT_00887420) + (iVar1) * 4) != '\x14') {
     FUN_005e3f31(heap);
-    heap.u32((iVar1 + 0x1c)) = __addr_DAT_00651d90;
-    heap.u32((iVar1 + 0xc)) = heap.u32((iVar1 + 0xc)) | 0xdffef84;
-    heap.u32((iVar1 + 0xc)) = heap.u32((iVar1 + 0xc)) | 0x60001041;
-    heap.u32((iVar1 + 0xc)) = heap.u32((iVar1 + 0xc)) | 0x82000000;
+    heap.setU32((iVar1 + 0x1c), (__addr_DAT_00651d90) >>> 0);
+    heap.setU32((iVar1 + 0xc), (heap.u32((iVar1 + 0xc)) | 0xdffef84) >>> 0);
+    heap.setU32((iVar1 + 0xc), (heap.u32((iVar1 + 0xc)) | 0x60001041) >>> 0);
+    heap.setU32((iVar1 + 0xc), (heap.u32((iVar1 + 0xc)) | 0x82000000) >>> 0);
     FUN_005e412c(heap);
-    heap.u32((iVar1 + 0x30)) = heap.u32(0x00652289);
+    heap.setU32((iVar1 + 0x30), (heap.u32(0x00652289)) >>> 0);
     FUN_005e6bcd(heap);
     FUN_005e0c2f(heap);
     FUN_00424db7(heap);
@@ -38,11 +38,11 @@ export function FUN_005d3527(heap) {
     return;
   }
   FUN_005e3f31(heap);
-  heap.u32((iVar1 + 0x1c)) = __addr_DAT_00651fa4;
-  heap.u32((iVar1 + 0xc)) = heap.u32((iVar1 + 0xc)) | 0xf000004;
-  heap.u32((iVar1 + 0xc)) = heap.u32((iVar1 + 0xc)) | 0x600001c0;
+  heap.setU32((iVar1 + 0x1c), (__addr_DAT_00651fa4) >>> 0);
+  heap.setU32((iVar1 + 0xc), (heap.u32((iVar1 + 0xc)) | 0xf000004) >>> 0);
+  heap.setU32((iVar1 + 0xc), (heap.u32((iVar1 + 0xc)) | 0x600001c0) >>> 0);
   FUN_005e412c(heap);
-  heap.u32((iVar1 + 0x30)) = heap.u32(0x00652289);
+  heap.setU32((iVar1 + 0x30), (heap.u32(0x00652289)) >>> 0);
   FUN_005e6bcd(heap);
   FUN_005e0c2f(heap);
   FUN_00424db7(heap);

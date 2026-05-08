@@ -9,16 +9,18 @@ export function FUN_005e6a83(heap) {
   const __addr_DAT_009a121c = __sp + 0;
   const __addr_DAT_009a1168 = __sp + 4;
   try {
+  let psVar1 = 0;
+  let puVar2 = 0;
   puVar2 = __addr_DAT_009a121c;
   psVar1 = __addr_DAT_009a1168;
   do {
     if (heap.u32(psVar1) != 0) {
-      heap.u32(puVar2) = psVar1;
+      heap.setU32(puVar2, (psVar1) >>> 0);
       puVar2 = puVar2 + 1;
     }
     psVar1 = psVar1 + 10;
   } while (psVar1 < __addr_DAT_009a121c);
-  heap.u32(puVar2) = 0;
+  heap.setU32(puVar2, (0) >>> 0);
   return;
 } finally {
     heap.freeFrame(8);

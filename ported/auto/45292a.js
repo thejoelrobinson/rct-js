@@ -17,9 +17,9 @@ export function FUN_0045292a(heap) {
   FUN_005e5fcb(heap);
   if (bVar1) {
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_00632984;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x36ff4;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x6d80000;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_00632984) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x36ff4) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x6d80000) >>> 0);
     FUN_005e412c(heap);
   }
   return;

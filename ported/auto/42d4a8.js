@@ -21,6 +21,7 @@ export function FUN_0042d4a8(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_0043091b = __sp + 0;
   try {
+  let pcVar1 = 0;
   let iVar2 = 0;
   FUN_0042f239(heap);
   iVar2 = FUN_004083b5(heap, 0x13);

@@ -14,6 +14,7 @@ export function FUN_00411e74(heap, param_1, param_2) {
   let local_80 = 0;
   let local_7c = 0;
   let local_74 = 0;
+  let local_4c = 0;
   let local_1c = 0;
   local_7c = 0xffffffff;
   if (param_2 != 0xffffffff) {
@@ -24,7 +25,7 @@ export function FUN_00411e74(heap, param_1, param_2) {
       (heap.u32(heap.u32((heap.u32(param_1) + 0x68))))(param_1, heap.u32(__addr_local_78));
     }
   }
-  heap.u32(__addr_local_70 + (0) * 4) = 0x6c;
+  heap.setU32((__addr_local_70 + (0) * 4), (0x6c) >>> 0);
   while (true) {
     local_74 = (heap.u32(heap.u32((heap.u32(param_1) + 100))))(param_1, 0, __addr_local_70, 0, 0);
     if (local_74 != -0x7789fde4) {
@@ -33,7 +34,7 @@ export function FUN_00411e74(heap, param_1, param_2) {
     local_74 = 0x8876021c;
   }
   if (local_74 == 0) {
-    local_7c = heap.u32(local_4c) & (1 << (local_1c & 0x1f)) - 1U;
+    local_7c = heap.u32(local_4c) & (1 << (local_1c & 0x1f)) - 1;
     (heap.u32(heap.u32((heap.u32(param_1) + 0x80))))(param_1, 0);
   }
   if (param_2 != 0xffffffff) {

@@ -12,6 +12,7 @@ export function FUN_00453ed8(heap) {
   try {
   let in_EAX = 0;
   let in_EDX = 0;
+  let pcVar1 = 0;
   let uVar2 = 0;
   if ((heap.u32(0x006323f8) & 1) != 0) {
     pcVar1 = __addr_DAT_006325f0;
@@ -19,7 +20,7 @@ export function FUN_00453ed8(heap) {
     do {
       if (heap.u32(pcVar1) != -1) {
         FUN_0040d575(heap, uVar2);
-        heap.u32(pcVar1) = -1;
+        heap.setU32(pcVar1, (-1) >>> 0);
       }
       pcVar1 = pcVar1 + 8;
       uVar2 = uVar2 + 1;

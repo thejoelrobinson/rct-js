@@ -18,22 +18,23 @@ export function FUN_00440072(heap) {
   const __addr_DAT_00743bbf = __sp + 0;
   try {
   let in_EDX = 0;
+  let unaff_ESI = 0;
   let bVar1 = 0;
   bVar1 = heap.u32((in_EDX + 0x2e)) == '\x01';
   if (!bVar1) {
     FUN_005e5fcb(heap);
     if (bVar1) {
       FUN_004400eb(heap);
-      heap.u32(unaff_ESI + (0x57) * 4) = 0xffffffff;
+      heap.setU32((unaff_ESI + (0x57) * 4), (0xffffffff) >>> 0);
     }
-    heap.u32((unaff_ESI + 0x59)) = 0;
+    heap.setU32((unaff_ESI + 0x59), (0) >>> 0);
     FUN_005e43de(heap);
-    heap.u32(unaff_ESI + (7) * 4) = heap.u32(0x00629138);
-    heap.u32(unaff_ESI + (3) * 4) = heap.u32(0x00629180);
-    heap.u32(unaff_ESI + (6) * 4) = heap.u32(0x00629198);
-    heap.u32(unaff_ESI) = heap.u32(0x00629150);
-    heap.u32(unaff_ESI + (1) * 4) = heap.u32(0x00629168);
-    heap.u32(unaff_ESI + (5) * 4) = 0;
+    heap.setU32((unaff_ESI + (7) * 4), (heap.u32(0x00629138)) >>> 0);
+    heap.setU32((unaff_ESI + (3) * 4), (heap.u32(0x00629180)) >>> 0);
+    heap.setU32((unaff_ESI + (6) * 4), (heap.u32(0x00629198)) >>> 0);
+    heap.setU32(unaff_ESI, (heap.u32(0x00629150)) >>> 0);
+    heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00629168)) >>> 0);
+    heap.setU32((unaff_ESI + (5) * 4), (0) >>> 0);
     FUN_0043fe80(heap);
     FUN_005e412c(heap);
     FUN_0043fecb(heap);
@@ -42,16 +43,16 @@ export function FUN_00440072(heap) {
   FUN_005e5fcb(heap);
   if (bVar1) {
     FUN_00455c5b(heap);
-    heap.u32(unaff_ESI + (0x57) * 4) = 0xffffffff;
+    heap.setU32((unaff_ESI + (0x57) * 4), (0xffffffff) >>> 0);
   }
-  heap.u32((unaff_ESI + 0x59)) = 0;
+  heap.setU32((unaff_ESI + 0x59), (0) >>> 0);
   FUN_005e43de(heap);
-  heap.u32(unaff_ESI + (7) * 4) = heap.u32(0x00632d8c);
-  heap.u32(unaff_ESI + (3) * 4) = heap.u32(0x00632db0);
-  heap.u32(unaff_ESI + (6) * 4) = heap.u32(0x00632dbc);
-  heap.u32(unaff_ESI) = heap.u32(0x00632d98);
-  heap.u32(unaff_ESI + (1) * 4) = heap.u32(0x00632da4);
-  heap.u32(unaff_ESI + (5) * 4) = 0;
+  heap.setU32((unaff_ESI + (7) * 4), (heap.u32(0x00632d8c)) >>> 0);
+  heap.setU32((unaff_ESI + (3) * 4), (heap.u32(0x00632db0)) >>> 0);
+  heap.setU32((unaff_ESI + (6) * 4), (heap.u32(0x00632dbc)) >>> 0);
+  heap.setU32(unaff_ESI, (heap.u32(0x00632d98)) >>> 0);
+  heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00632da4)) >>> 0);
+  heap.setU32((unaff_ESI + (5) * 4), (0) >>> 0);
   FUN_00455a66(heap);
   FUN_005e412c(heap);
   FUN_00455ade(heap);

@@ -6,6 +6,6 @@
 
 export function FUN_00443e92(heap) {
   let unaff_ESI = 0;
-  heap.u32((unaff_ESI + 0x10)) = 0;
+  heap.setU32((unaff_ESI + 0x10), (0) >>> 0);
   return;
 }

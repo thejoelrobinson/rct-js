@@ -17,6 +17,7 @@ export function FUN_00456603(heap) {
   let uVar3 = 0;
   let uVar4 = 0;
   let unaff_ESI = 0;
+  let pbVar5 = 0;
   if (((heap.u32((unaff_ESI + 0xc6)) & 8) != 0) && (0xb < heap.u32((unaff_ESI + 0xe2)))) {
     if ((heap.u32((unaff_ESI + 0x29)) & 0x18) == 0) {
       uVar3 = heap.u32((unaff_ESI + 0x26)) << 7 | heap.u32((unaff_ESI + 0x26)) >>> 9 | heap.u32((unaff_ESI + 0x24));

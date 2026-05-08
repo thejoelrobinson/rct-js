@@ -11,9 +11,11 @@ export function FUN_00557966(heap, param_1) {
   const __addr_DAT_00743b94 = __sp + 8;
   const __addr_PTR_LAB_00557a38 = __sp + 12;
   try {
+  let puVar1 = 0;
   let in_AL = 0;
   let in_CL = 0;
   let in_DX = 0;
+  let puVar2 = 0;
   let unaff_EDI = 0;
   puVar1 = heap.u32(0x00991f80);
   heap.setU32(0x0099a4ec, (in_DX + 2) >>> 0);
@@ -22,7 +24,7 @@ export function FUN_00557966(heap, param_1) {
     puVar2 = heap.u32((__addr_DAT_0088747e + heap.u32((param_1 + 7)) * 0x260));
     if (puVar2 != 0xffffffff) {
       puVar2 = __addr_DAT_00743b94 + heap.u32((__addr_DAT_0088747e + heap.u32((param_1 + 7)) * 0x260)) * 0x100;
-      heap.u8(0x991f78) = 2;
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00557966"); })();
       heap.setU32(0x00991f80, (puVar2) >>> 0);
     }
   }

@@ -11,6 +11,7 @@ export function FUN_004359d5(heap) {
   const __addr_DAT_005f4970 = __sp + 0;
   try {
   let sVar1 = 0;
+  let extraout_EDX = 0;
   let unaff_BL = 0;
   FUN_00431510(heap);
   if ((unaff_BL == '\x03') && ((heap.u32(extraout_EDX) & 0x3c) == 0x10)) {

@@ -21,15 +21,15 @@ export function FUN_0043e792(heap) {
   iVar4 = heap.u32((unaff_ESI + 0x68)) * 0x260;
   uVar3 = heap.u32((unaff_ESI + 0x69));
   uVar1 = heap.u32((unaff_ESI + 10));
-  heap.u32((__addr_DAT_0088747a) + (iVar4 + uVar3) * 4) = heap.u32((__addr_DAT_0088747a) + (iVar4 + uVar3) * 4) + -1;
+  heap.setU32(((__addr_DAT_0088747a) + (iVar4 + uVar3) * 4), (heap.u32((__addr_DAT_0088747a) + (iVar4 + uVar3) * 4) + -1) >>> 0);
   uVar2 = heap.u32((__addr_DAT_00887472 + uVar3 * 2 + iVar4));
   if (uVar1 == uVar2) {
-    heap.u32((__addr_DAT_00887472 + uVar3 * 2 + iVar4)) = heap.u32((unaff_ESI + 0x74));
+    heap.setU32((__addr_DAT_00887472 + uVar3 * 2 + iVar4), (heap.u32((unaff_ESI + 0x74))) >>> 0);
   } else {
     while (iVar4 = uVar2 * 0x100, uVar1 != heap.u32((__addr_DAT_00743c08 + iVar4))) {
       uVar2 = heap.u32((__addr_DAT_00743c08 + iVar4));
     }
-    heap.u32((__addr_DAT_00743c08 + iVar4)) = heap.u32((unaff_ESI + 0x74));
+    heap.setU32((__addr_DAT_00743c08 + iVar4), (heap.u32((unaff_ESI + 0x74))) >>> 0);
   }
   return CONCAT44(in_EDX, in_EAX);
 } finally {

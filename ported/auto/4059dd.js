@@ -10,6 +10,9 @@ export function FUN_004059dd(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(1024);
   const __addr_local_404 = __sp + 0;
   try {
+  let piVar1 = 0;
+  let pcVar2 = 0;
+  let local_408 = 0;
   local_408 = 0x005e9408;
   do {
     if (heap.u32((local_408 + 0x30)) == param_1) {

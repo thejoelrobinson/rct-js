@@ -7,7 +7,7 @@
 import { DeleteDC, ReleaseDC, SelectObject, SelectPalette, SetBkColor, SetBkMode, SetTextColor } from "../../runtime/win32.js";
 export function FUN_0040e63e(heap, param_1, param_2) {
   if (heap.u32((param_1 + 0xc)) != 0) {
-    heap.u32((param_1 + 0xc)) = 0;
+    heap.setU32((param_1 + 0xc), (0) >>> 0);
     SetTextColor(heap, param_2, heap.u32((param_1 + 0x98)));
     SetBkColor(heap, param_2, heap.u32((param_1 + 0x9c)));
     SetBkMode(heap, param_2, heap.u32((param_1 + 0xa4)));

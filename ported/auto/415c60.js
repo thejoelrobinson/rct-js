@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { register0x00000010, ulonglong } from "../../runtime/win32.js";
 import { CONCAT31, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { FUN_004165f0 } from "./4165f0.js";
 import { FUN_00416640 } from "./416640.js";
@@ -28,13 +29,19 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
   let sVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
+  let piVar4 = 0;
+  let psVar5 = 0;
   let iVar6 = 0;
   let iVar7 = 0;
   let cVar8 = 0;
+  let puVar9 = 0;
+  let puVar10 = 0;
+  let pcVar11 = 0;
   let iVar12 = 0;
   let uVar13 = 0;
   let lVar14 = 0;
   let local_24c = 0;
+  let local_248 = 0;
   let local_244 = 0;
   let local_239 = 0;
   let local_238 = 0;
@@ -153,7 +160,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
             }
           case 'c':
             if ((local_24c & 0x810) == 0) {
-              heap.u32(__addr_local_200 + (0) * 4) = FUN_004166c0(heap, __addr_param_3);
+              heap.setU32((__addr_local_200 + (0) * 4), (FUN_004166c0(heap, __addr_param_3)) >>> 0);
               puVar10 = 0x1;
             } else {
               uVar3 = FUN_00416700(heap, __addr_param_3);
@@ -276,10 +283,10 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
             piVar4 = FUN_004166c0(heap, __addr_param_3);
             if ((local_24c & 0x20) == 0) {
               local_228 = 1;
-              heap.u32(piVar4) = heap.u32(__addr_local_240);
+              heap.setU32(piVar4, (heap.u32(__addr_local_240)) >>> 0);
             } else {
               local_228 = 1;
-              heap.u32(piVar4) = heap.u32(__addr_local_240);
+              heap.setU32(piVar4, (heap.u32(__addr_local_240)) >>> 0);
             }
             break;
           case 'o':
@@ -355,7 +362,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
               if (0x39 < iVar6) {
                 iVar6 = iVar6 + local_224;
               }
-              heap.u32(psVar5) = iVar6;
+              heap.setU32(psVar5, (iVar6) >>> 0);
               local_244 = iVar7;
               local_248 = psVar5;
             }
@@ -363,7 +370,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
             local_244 = iVar7;
             if (((local_24c & 0x200) != 0) && ((heap.u32(local_248) != '0' || (puVar10 == 0x0)))) {
               puVar10 = __addr_stack0x00000000 + -psVar5;
-              heap.u32(psVar5) = '0';
+              heap.setU32(psVar5, ('0') >>> 0);
               local_248 = psVar5;
             }
             break;

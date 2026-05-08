@@ -15,6 +15,7 @@ export function FUN_004571c1(heap) {
   const __addr_DAT_00743c0e = __sp + 24;
   const __addr_DAT_00743b98 = __sp + 28;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
@@ -43,18 +44,18 @@ export function FUN_004571c1(heap) {
           if (heap.u32((__addr_DAT_00743bbf) + (iVar6) * 4) == '\x05') {
             pbVar1 = __addr_DAT_00743bcf + iVar6;
             bVar2 = heap.u32(pbVar1);
-            heap.u32(pbVar1) = heap.u32(pbVar1) + 4;
+            heap.setU32(pbVar1, (heap.u32(pbVar1) + 4) >>> 0);
             if (0xfb < bVar2) {
-              heap.u32((__addr_DAT_00743bcf) + (iVar6) * 4) = 0xff;
+              heap.setU32(((__addr_DAT_00743bcf) + (iVar6) * 4), (0xff) >>> 0);
             }
           } else {
             if (heap.u32((__addr_DAT_00743bbf) + (iVar6) * 4) == '\x06') {
-            heap.u32((__addr_DAT_00743c0e + iVar6)) = heap.u32((__addr_DAT_00743c0e + iVar6)) + -200;
+            heap.setU32((__addr_DAT_00743c0e + iVar6), (heap.u32((__addr_DAT_00743c0e + iVar6)) + -200) >>> 0);
             pbVar1 = __addr_DAT_00743bcf + iVar6;
             bVar2 = heap.u32(pbVar1);
-            heap.u32(pbVar1) = heap.u32(pbVar1) + 3;
+            heap.setU32(pbVar1, (heap.u32(pbVar1) + 3) >>> 0);
             if (0xfc < bVar2) {
-              heap.u32((__addr_DAT_00743bcf) + (iVar6) * 4) = 0xff;
+              heap.setU32(((__addr_DAT_00743bcf) + (iVar6) * 4), (0xff) >>> 0);
             }
           }
           }

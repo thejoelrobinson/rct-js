@@ -31,9 +31,11 @@ export function FUN_0042e062(heap) {
   let uVar4 = 0;
   let unaff_EBX = 0;
   let unaff_BP = 0;
+  let pbVar5 = 0;
   let iVar7 = 0;
   let bVar8 = 0;
   let uVar9 = 0;
+  let pbVar6 = 0;
   uVar2 = in_EAX + (heap.u32((__addr_DAT_00652478) + ((unaff_EBX >>> 3) * 2) * 4) >>> 3);
   uVar3 = in_CX + (heap.u32((__addr_DAT_0065247a) + ((unaff_EBX >>> 3) * 2) * 4) >>> 3);
   bVar8 = false;
@@ -71,15 +73,15 @@ export function FUN_0042e062(heap) {
       FUN_00444bd4(heap);
       if (!uVar9) {
         FUN_00444c74(heap, extraout_ECX);
-        heap.u32(pbVar5 + (0x1e) * 4) = unaff_EBX;
-        heap.u32(pbVar5 + (0x14) * 4) = 6;
-        heap.u32(pbVar5 + (9) * 4) = 6;
-        heap.u32(pbVar5 + (0x15) * 4) = 3;
-        heap.u32(pbVar5) = 3;
-        heap.u32(pbVar5 + (1) * 4) = unaff_BP;
+        heap.setU32((pbVar5 + (0x1e) * 4), (unaff_EBX) >>> 0);
+        heap.setU32((pbVar5 + (0x14) * 4), (6) >>> 0);
+        heap.setU32((pbVar5 + (9) * 4), (6) >>> 0);
+        heap.setU32((pbVar5 + (0x15) * 4), (3) >>> 0);
+        heap.setU32(pbVar5, (3) >>> 0);
+        heap.setU32((pbVar5 + (1) * 4), (unaff_BP) >>> 0);
         FUN_00444927(heap);
         FUN_005e5496(heap);
-        heap.u32((pbVar5 + 0x24)) = heap.u32(0x006e3b84);
+        heap.setU32((pbVar5 + 0x24), (heap.u32(0x006e3b84)) >>> 0);
       }
       break;
     }

@@ -16,16 +16,16 @@ export function FUN_00405f2c(heap) {
   if (local_8 == 0x0) {
     local_8 = LoadIconA(heap, 0x0, 0x7f00);
   }
-  heap.u32((__addr_local_30 + 4)) = 0;
-  heap.u32((__addr_local_30 + 8)) = FUN_00403d79;
-  heap.u32((__addr_local_30 + 16)) = 0;
-  heap.u32((__addr_local_30 + 12)) = 0;
-  heap.u32((__addr_local_30 + 20)) = heap.u32(0x005f1398);
-  heap.u32((__addr_local_30 + 32)) = LoadCursorA(heap, 0x0, 0x7f00);
-  heap.u32((__addr_local_30 + 16)) = local_8;
-  heap.u32((__addr_local_30 + 36)) = 0x005e9030;
-  heap.u32((__addr_local_30 + 36)) = GetStockObject(heap, 4);
-  heap.u32((__addr_local_30 + 40)) = 0x005e9030;
+  heap.setU32((__addr_local_30 + 4), (0) >>> 0);
+  heap.setU32((__addr_local_30 + 8), (FUN_00403d79) >>> 0);
+  heap.setU32((__addr_local_30 + 16), (0) >>> 0);
+  heap.setU32((__addr_local_30 + 12), (0) >>> 0);
+  heap.setU32((__addr_local_30 + 20), (heap.u32(0x005f1398)) >>> 0);
+  heap.setU32((__addr_local_30 + 32), (LoadCursorA(heap, 0x0, 0x7f00)) >>> 0);
+  heap.setU32((__addr_local_30 + 16), (local_8) >>> 0);
+  heap.setU32((__addr_local_30 + 36), (0x005e9030) >>> 0);
+  heap.setU32((__addr_local_30 + 36), (GetStockObject(heap, 4)) >>> 0);
+  heap.setU32((__addr_local_30 + 40), (0x005e9030) >>> 0);
   AVar1 = RegisterClassA(heap, __addr_local_30);
   return AVar1 != 0;
 } finally {

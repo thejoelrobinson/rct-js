@@ -11,25 +11,26 @@ import { FUN_005e412c } from "./5e412c.js";
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e5fcb } from "./5e5fcb.js";
 export function FUN_0044a4e8(heap) {
+  let unaff_ESI = 0;
   let in_ZF = 0;
   FUN_005e5fcb(heap);
   if (in_ZF) {
     FUN_0044b9db(heap);
-    heap.u32(unaff_ESI + (0x57) * 4) = 0xffffffff;
+    heap.setU32((unaff_ESI + (0x57) * 4), (0xffffffff) >>> 0);
   }
-  heap.u32((unaff_ESI + 0x59)) = 0;
-  heap.u32((unaff_ESI + 9)) = 0x100;
-  heap.u32((unaff_ESI + 0x26)) = 0xc6;
+  heap.setU32((unaff_ESI + 0x59), (0) >>> 0);
+  heap.setU32((unaff_ESI + 9), (0x100) >>> 0);
+  heap.setU32((unaff_ESI + 0x26), (0xc6) >>> 0);
   FUN_005e43de(heap);
-  heap.u32(unaff_ESI + (7) * 4) = heap.u32(0x00631bcc);
-  heap.u32(unaff_ESI + (3) * 4) = heap.u32(0x00631c2c);
-  heap.u32(unaff_ESI + (6) * 4) = heap.u32(0x00631c4c);
-  heap.u32(unaff_ESI) = heap.u32(0x00631bec);
-  heap.u32(unaff_ESI + (1) * 4) = heap.u32(0x00631c0c);
-  heap.u32(unaff_ESI + (5) * 4) = 0;
+  heap.setU32((unaff_ESI + (7) * 4), (heap.u32(0x00631bcc)) >>> 0);
+  heap.setU32((unaff_ESI + (3) * 4), (heap.u32(0x00631c2c)) >>> 0);
+  heap.setU32((unaff_ESI + (6) * 4), (heap.u32(0x00631c4c)) >>> 0);
+  heap.setU32(unaff_ESI, (heap.u32(0x00631bec)) >>> 0);
+  heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00631c0c)) >>> 0);
+  heap.setU32((unaff_ESI + (5) * 4), (0) >>> 0);
   FUN_0044ba3c(heap);
   FUN_005e412c(heap);
-  heap.u32((unaff_ESI + 0x15a)) = 0;
+  heap.setU32((unaff_ESI + 0x15a), (0) >>> 0);
   FUN_0044c464(heap);
   return;
 }

@@ -17,6 +17,8 @@ export function FUN_0042cb29(heap) {
   try {
   let in_EAX = 0;
   let in_EDX = 0;
+  let puVar1 = 0;
+  let pcVar2 = 0;
   if (heap.u32(__addr_DAT_008d7eb8) != '\0') {
     pcVar2 = __addr_DAT_008d8a3c;
     do {
@@ -27,22 +29,22 @@ export function FUN_0042cb29(heap) {
     } while (pcVar2 < __addr_DAT_008dbe94);
     pcVar2 = __addr_DAT_008d8a3c;
     do {
-      heap.u32(pcVar2) = heap.u32((pcVar2 + 0x10c));
+      heap.setU32(pcVar2, (heap.u32((pcVar2 + 0x10c))) >>> 0);
       pcVar2 = pcVar2 + 2;
     } while (pcVar2 < __addr_DAT_008dbd88);
     LAB_0042cb65: puVar1 = __addr_DAT_008d7eb8;
     do {
-      heap.u32(pcVar2) = heap.u32(puVar1);
+      heap.setU32(pcVar2, (heap.u32(puVar1)) >>> 0);
       puVar1 = puVar1 + 1;
       pcVar2 = pcVar2 + 2;
     } while (puVar1 < __addr_DAT_008d7fc4);
     if (pcVar2 < __addr_DAT_008dbe94) {
-      heap.u32(pcVar2) = '\0';
+      heap.setU32(pcVar2, ('\0') >>> 0);
     }
     FUN_005e5301(heap);
     puVar1 = __addr_DAT_008d7eb8;
     do {
-      heap.u32(puVar1) = heap.u32(puVar1 + (0x86) * 4);
+      heap.setU32(puVar1, (heap.u32(puVar1 + (0x86) * 4)) >>> 0);
       puVar1 = puVar1 + 1;
     } while (puVar1 < __addr_DAT_008d8930);
   }

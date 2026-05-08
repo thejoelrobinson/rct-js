@@ -1,13 +1,14 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/0.c
+// Source: decompiled/c/4135c0.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-export function _memset(heap, _Dst, _Val, _Size) {
+export function FUN_004135c0(heap, _Dst, _Val, _Size) {
   let uVar1 = 0;
   let uVar2 = 0;
   let sVar3 = 0;
+  let puVar4 = 0;
   if (_Size == 0) {
     return _Dst;
   }
@@ -19,7 +20,7 @@ export function _memset(heap, _Dst, _Val, _Size) {
     if (uVar2 != 0) {
       sVar3 = _Size - uVar2;
       do {
-        heap.u32(puVar4) = _Val;
+        heap.setU32(puVar4, (_Val) >>> 0);
         puVar4 = (puVar4 + 1);
         uVar2 = uVar2 - 1;
       } while (uVar2 != 0);
@@ -29,7 +30,7 @@ export function _memset(heap, _Dst, _Val, _Size) {
     uVar2 = sVar3 >>> 2;
     if (uVar2 != 0) {
       for (; uVar2 != 0; uVar2 = uVar2 - 1) {
-        heap.u32(puVar4) = uVar1;
+        heap.setU32(puVar4, (uVar1) >>> 0);
         puVar4 = puVar4 + 1;
       }
       if (_Size == 0) {
@@ -38,7 +39,7 @@ export function _memset(heap, _Dst, _Val, _Size) {
     }
   }
   do {
-    heap.u32(puVar4) = uVar1;
+    heap.setU32(puVar4, (uVar1) >>> 0);
     puVar4 = (puVar4 + 1);
     _Size = _Size - 1;
   } while (_Size != 0);

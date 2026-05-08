@@ -17,11 +17,11 @@ export function FUN_004304dd(heap) {
   FUN_005e5fcb(heap);
   if (bVar1) {
     FUN_005e3f31(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_005f8130;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 4;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_005f8130) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 4) >>> 0);
     FUN_005e412c(heap);
-    heap.u32((unaff_ESI + 0x15a)) = 0xffff;
-    heap.u32((unaff_ESI + 0x15c)) = 0xffff;
+    heap.setU32((unaff_ESI + 0x15a), (0xffff) >>> 0);
+    heap.setU32((unaff_ESI + 0x15c), (0xffff) >>> 0);
   }
   return;
 } finally {

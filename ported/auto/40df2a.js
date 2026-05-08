@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { midiOutGetDevCapsA, midiOutGetNumDevs } from "../../runtime/win32.js";
 import { FUN_00413c10 } from "./413c10.js";
 export function FUN_0040df2a(heap) {
   const __sp = heap.allocFrame(132);
@@ -14,10 +15,10 @@ export function FUN_0040df2a(heap) {
   let local_10 = 0;
   let local_c = 0;
   let local_8 = 0;
-  local_c = midiOutGetNumDevs();
+  local_c = midiOutGetNumDevs(heap);
   local_8 = 0;
   for (local_10 = 0xffffffff; local_10 != local_c; local_10 = local_10 + 1) {
-    midiOutGetDevCapsA(local_10, __addr_local_44, 0x34);
+    midiOutGetDevCapsA(heap, local_10, __addr_local_44, 0x34);
     if (((((heap.u32(__addr_local_44)) >>> 320) & 0xffffffff) & 0xffff) == 2) {
       iVar1 = FUN_00413c10(heap, heap.u8((__addr_local_44 + 16)), __addr_PTR_LAB_005ec070);
       if (iVar1 == 0) {

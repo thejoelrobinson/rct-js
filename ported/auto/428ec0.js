@@ -27,6 +27,7 @@ export function FUN_00428ec0(heap) {
   let in_EDX = 0;
   let sVar7 = 0;
   let iVar8 = 0;
+  let pcVar9 = 0;
   let local_1c = 0;
   uVar4 = (in_EAX >>> 0x10);
   uVar2 = heap.u32(0x0087c81c);
@@ -38,10 +39,10 @@ export function FUN_00428ec0(heap) {
   for (uVar6 = heap.u32(0x0087c398); uVar6 != 0xffff; uVar6 = heap.u32((__addr_DAT_00743b98) + (uVar6 * 0x80) * 4)) {
     iVar8 = uVar6 * 0x100;
     if ((heap.u32((__addr_DAT_00743bc2) + (iVar8) * 4) == '\0') && (heap.u32((__addr_DAT_00743bbe) + (iVar8) * 4) == '\0')) {
-      if (0x80 < heap.u32((byte)(__addr_DAT_00743bce) + (iVar8) * 4)) {
+      if (0x80 < heap.u32((__addr_DAT_00743bce) + (iVar8) * 4)) {
         uVar5 = uVar5 + 1;
       }
-      if (((heap.u32((__addr_DAT_00743c5c + iVar8)) & 1) != 0) && (heap.u32((byte)(__addr_DAT_00743c5a) + (iVar8) * 4) < 0x5a)) {
+      if (((heap.u32((__addr_DAT_00743c5c + iVar8)) & 1) != 0) && (heap.u32((__addr_DAT_00743c5a) + (iVar8) * 4) < 0x5a)) {
         sVar7 = sVar7 + 1;
       }
     }

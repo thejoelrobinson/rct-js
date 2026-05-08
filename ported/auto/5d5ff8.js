@@ -23,8 +23,14 @@ export function FUN_005d5ff8(heap) {
   let cVar1 = 0;
   let uVar2 = 0;
   let in_EAX = 0;
+  let pHVar3 = 0;
   let uVar4 = 0;
+  let pHVar5 = 0;
   let in_EDX = 0;
+  let pcVar6 = 0;
+  let pcVar7 = 0;
+  let pcVar8 = 0;
+  let pcVar9 = 0;
   let bVar10 = 0;
   let local_24 = 0;
   pHVar3 = FUN_0040844b(heap, __addr_DAT_005f90c5, __addr_DAT_0065d900);
@@ -36,14 +42,14 @@ export function FUN_005d5ff8(heap) {
     do {
       pcVar9 = pcVar8;
       cVar1 = heap.u32(pcVar7);
-      heap.u32(pcVar9) = cVar1;
+      heap.setU32(pcVar9, (cVar1) >>> 0);
       pcVar7 = pcVar7 + 1;
       pcVar8 = pcVar9 + 1;
     } while (cVar1 != '*');
     pcVar8 = __addr_DAT_0065d92c;
     do {
       cVar1 = heap.u32(pcVar8);
-      heap.u32(pcVar9) = cVar1;
+      heap.setU32(pcVar9, (cVar1) >>> 0);
       pcVar8 = pcVar8 + 1;
       pcVar9 = pcVar9 + 1;
       bVar10 = false;
@@ -61,7 +67,7 @@ export function FUN_005d5ff8(heap) {
             }
           }
           if (uVar4 == 0) {
-            if ((heap.u32((byte)(__addr_DAT_0087c3fc) + (((heap.u32(0x00656b35) & 0x1f) >>> 3) + (heap.u32(0x00656b35) >>> 5) * 4) * 4) >>> (heap.u32(0x00656b35) & 7) & 1) != 0) {
+            if ((heap.u32((__addr_DAT_0087c3fc) + (((heap.u32(0x00656b35) & 0x1f) >>> 3) + (heap.u32(0x00656b35) >>> 5) * 4) * 4) >>> (heap.u32(0x00656b35) & 7) & 1) != 0) {
               pcVar7 = __addr_DAT_0065d92c;
               uVar4 = 0;
               pcVar8 = pcVar6;
@@ -75,11 +81,11 @@ export function FUN_005d5ff8(heap) {
     }
     /* goto LAB_005d60c6 */ throw new Error("goto LAB_005d60c6 not supported");
   }
-  LAB_005d60f4: heap.u32(pcVar6) = '\0';
+  LAB_005d60f4: heap.setU32(pcVar6, ('\0') >>> 0);
   return CONCAT44(in_EDX, in_EAX);
   while (cVar1 != '\0') {
     LAB_005d6095: cVar1 = heap.u32(pcVar7);
-    heap.u32(pcVar8) = cVar1;
+    heap.setU32(pcVar8, (cVar1) >>> 0);
     uVar4 = uVar4 + 1;
     pcVar7 = pcVar7 + 1;
     pcVar8 = pcVar8 + 1;
@@ -92,7 +98,7 @@ export function FUN_005d5ff8(heap) {
     pcVar8 = pcVar6;
     do {
       cVar1 = heap.u32(pcVar7);
-      heap.u32(pcVar8) = cVar1;
+      heap.setU32(pcVar8, (cVar1) >>> 0);
       pcVar7 = pcVar7 + 1;
       pcVar8 = pcVar8 + 1;
     } while (cVar1 != '\0');

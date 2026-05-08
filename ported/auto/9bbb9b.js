@@ -27,14 +27,18 @@ export function FUN_009bbb9b(heap) {
   let sVar7 = 0;
   let cVar8 = 0;
   let uVar9 = 0;
+  let pcVar10 = 0;
+  let puVar11 = 0;
+  let pcVar12 = 0;
+  let puVar13 = 0;
   sVar2 = 1;
   while (true) {
     pcVar12 = __addr_DAT_0099a888;
     pcVar10 = __addr_DAT_005f8da3;
-    heap.u16(0x971e86) = sVar2;
+    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_009bbb9b"); })();
     do {
       cVar1 = heap.u32(pcVar10);
-      heap.u32(pcVar12) = cVar1;
+      heap.setU32(pcVar12, (cVar1) >>> 0);
       pcVar10 = pcVar10 + 1;
       pcVar12 = pcVar12 + 1;
     } while (cVar1 != '\0');
@@ -52,7 +56,7 @@ export function FUN_009bbb9b(heap) {
     sVar7 = 0x80;
     heap.setU32(0x009a2004, (iVar4) >>> 0);
     do {
-      heap.u32(puVar11) = 0;
+      heap.setU32(puVar11, (0) >>> 0);
       puVar11 = puVar11 + 1;
       sVar7 = sVar7 + -1;
     } while (sVar7 != 0);
@@ -94,11 +98,11 @@ export function FUN_009bbb9b(heap) {
             uVar9 = uVar9 - 1;
             cVar8 = cVar8 + '\x01';
           }
-          heap.u32(pcVar12) = cVar8;
-          heap.u32(pcVar12 + (1) * 4) = cVar1;
+          heap.setU32(pcVar12, (cVar8) >>> 0);
+          heap.setU32((pcVar12 + (1) * 4), (cVar1) >>> 0);
           pcVar12 = pcVar12 + 2;
         } else {
-          heap.u32(pcVar12) = cVar1;
+          heap.setU32(pcVar12, (cVar1) >>> 0);
           pcVar12 = pcVar12 + 1;
         }
       }
@@ -113,9 +117,9 @@ export function FUN_009bbb9b(heap) {
       puVar11 = __addr_DAT_005f2000;
       sVar7 = 0x100;
       do {
-        heap.u32(puVar13 + (2) * 4) = heap.u32(puVar11);
-        heap.u32(puVar13 + (1) * 4) = heap.u32(puVar11 + (1) * 4);
-        heap.u32(puVar13) = heap.u32(puVar11 + (2) * 4);
+        heap.setU32((puVar13 + (2) * 4), (heap.u32(puVar11)) >>> 0);
+        heap.setU32((puVar13 + (1) * 4), (heap.u32(puVar11 + (1) * 4)) >>> 0);
+        heap.setU32(puVar13, (heap.u32(puVar11 + (2) * 4)) >>> 0);
         puVar11 = puVar11 + 4;
         puVar13 = puVar13 + 3;
         sVar7 = sVar7 + -1;
@@ -124,7 +128,7 @@ export function FUN_009bbb9b(heap) {
       if (iVar4 != -1) {
         iVar4 = FUN_00408387(heap, heap.u32(0x009a2004));
         if (iVar4 != -1) {
-          uVar6 = (undefined2)(iVar4 >>> 0x10);
+          uVar6 = (iVar4 >>> 0x10);
           /* goto LAB_009bbdbf */ throw new Error("goto LAB_009bbdbf not supported");
         }
         /* goto LAB_009bbdbe */ throw new Error("goto LAB_009bbdbe not supported");
@@ -132,7 +136,7 @@ export function FUN_009bbb9b(heap) {
     }
     LAB_009bbdb0: iVar4 = FUN_00408387(heap, heap.u32(0x009a2004));
   }
-  LAB_009bbdbe: uVar6 = (undefined2)(iVar4 >>> 0x10);
+  LAB_009bbdbe: uVar6 = (iVar4 >>> 0x10);
   LAB_009bbdbf: return CONCAT22(uVar6, sVar2);
 } finally {
     heap.freeFrame(20);

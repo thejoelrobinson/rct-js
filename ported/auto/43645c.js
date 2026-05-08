@@ -14,20 +14,21 @@ export function FUN_0043645c(heap) {
   const __addr_DAT_006e3b90 = __sp + 0;
   try {
   let iVar1 = 0;
+  let puVar2 = 0;
   FUN_0045aaf8(heap);
   heap.setU32(0x008ae938, (0) >>> 0);
   heap.setU32(0x00743b90, (0) >>> 0);
   puVar2 = __addr_DAT_006e3b90;
   iVar1 = 0x4000;
   do {
-    heap.u32(puVar2) = 0;
-    heap.u32((puVar2 + 1)) = 0x80;
-    heap.u32((puVar2 + 2)) = 4;
-    heap.u32((puVar2 + 3)) = 0;
-    heap.u32((puVar2 + 1)) = 0;
-    heap.u32((puVar2 + 5)) = 0;
-    heap.u32((puVar2 + 6)) = 1;
-    heap.u32((puVar2 + 7)) = 0;
+    heap.setU32(puVar2, (0) >>> 0);
+    heap.setU32((puVar2 + 1), (0x80) >>> 0);
+    heap.setU32((puVar2 + 2), (4) >>> 0);
+    heap.setU32((puVar2 + 3), (0) >>> 0);
+    heap.setU32((puVar2 + 1), (0) >>> 0);
+    heap.setU32((puVar2 + 5), (0) >>> 0);
+    heap.setU32((puVar2 + 6), (1) >>> 0);
+    heap.setU32((puVar2 + 7), (0) >>> 0);
     puVar2 = puVar2 + 2;
     iVar1 = iVar1 + -1;
   } while (iVar1 != 0);

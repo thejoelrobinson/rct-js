@@ -9,6 +9,8 @@ export function FUN_0045389c(heap) {
   const __addr_DAT_006325b4 = __sp + 0;
   const __addr_DAT_009a013c = __sp + 4;
   try {
+  let puVar1 = 0;
+  let puVar2 = 0;
   heap.setU32(0x006325b0, (__addr_DAT_006325b4) >>> 0);
   puVar2 = heap.u32(0x009a1164);
   do {

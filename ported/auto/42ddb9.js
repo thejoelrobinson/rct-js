@@ -15,6 +15,8 @@ export function FUN_0042ddb9(heap) {
   let in_EAX = 0;
   let in_CX = 0;
   let in_EDX = 0;
+  let pbVar2 = 0;
+  let unaff_ESI = 0;
   let bVar3 = 0;
   pbVar2 = heap.u32((__addr_DAT_00971ef4) + ((((in_CX & 0xffe0) << 7 | in_CX >>> 9 | in_EAX & 0xffe0) >>> 5 | (in_CX >>> 9) << 0xb)) * 4);
   bVar1 = heap.u32(pbVar2);
@@ -24,14 +26,14 @@ export function FUN_0042ddb9(heap) {
   }
   bVar3 = in_EDX == (heap.u32(pbVar2 + (2) * 4) * 4);
   if (((heap.u32(pbVar2 + (2) * 4) * 4) < in_EDX) && (FUN_00444bd4(heap), !bVar3)) {
-    heap.u32(unaff_ESI + (0x14) * 4) = 0x14;
-    heap.u32(unaff_ESI + (9) * 4) = 0x12;
-    heap.u32(unaff_ESI + (0x15) * 4) = 0x10;
-    heap.u32(unaff_ESI) = 2;
+    heap.setU32((unaff_ESI + (0x14) * 4), (0x14) >>> 0);
+    heap.setU32((unaff_ESI + (9) * 4), (0x12) >>> 0);
+    heap.setU32((unaff_ESI + (0x15) * 4), (0x10) >>> 0);
+    heap.setU32(unaff_ESI, (2) >>> 0);
     FUN_00444927(heap);
-    heap.u32(unaff_ESI + (1) * 4) = 0;
-    heap.u32((unaff_ESI + 0x26)) = 0x100;
-    heap.u32((unaff_ESI + 0x24)) = 0;
+    heap.setU32((unaff_ESI + (1) * 4), (0) >>> 0);
+    heap.setU32((unaff_ESI + 0x26), (0x100) >>> 0);
+    heap.setU32((unaff_ESI + 0x24), (0) >>> 0);
   }
   return CONCAT44(in_EDX, in_EAX);
 } finally {

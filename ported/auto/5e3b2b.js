@@ -11,6 +11,7 @@ export function FUN_005e3b2b(heap) {
   let bVar1 = 0;
   let in_CX = 0;
   let in_DX = 0;
+  let puVar2 = 0;
   puVar2 = __addr_DAT_009a013c;
   bVar1 = in_CX & 0x7f;
   if ((in_CX >>> 7 & 1) == 0) {

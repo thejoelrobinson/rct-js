@@ -13,10 +13,12 @@ export function FUN_00444d1f(heap) {
   const __addr_DAT_00743b96 = __sp + 8;
   try {
   let uVar1 = 0;
+  let unaff_ESI = 0;
   let uVar2 = 0;
+  let puVar3 = 0;
   uVar1 = FUN_00444c74(heap);
   FUN_0045a930(heap);
-  heap.u32(unaff_ESI) = 0xff;
+  heap.setU32(unaff_ESI, (0xff) >>> 0);
   if (heap.u32((unaff_ESI + 0xe)) == 0x8000) {
     uVar2 = 0x4000;
   } else {
@@ -26,7 +28,7 @@ export function FUN_00444d1f(heap) {
   while (__addr_DAT_00743b94 + heap.u32(puVar3) * 0x100 != unaff_ESI) {
     puVar3 = __addr_DAT_00743b96 + heap.u32(puVar3) * 0x80;
   }
-  heap.u32(puVar3) = heap.u32((unaff_ESI + 2));
+  heap.setU32(puVar3, (heap.u32((unaff_ESI + 2))) >>> 0);
   return uVar1;
 } finally {
     heap.freeFrame(12);

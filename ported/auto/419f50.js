@@ -11,6 +11,7 @@ export function FUN_00419f50(heap, param_1, param_2, param_3) {
   const __addr_local_c = __sp + 0;
   try {
   let uVar1 = 0;
+  let puVar2 = 0;
   let iVar3 = 0;
   let uStack_a = 0;
   let uStack_6 = 0;
@@ -22,7 +23,7 @@ export function FUN_00419f50(heap, param_1, param_2, param_3) {
       iVar3 = 0x5eec78;
     }
     if (param_3 == 0) {
-      heap.u32(param_1) = 0;
+      heap.setU32(param_1, (0) >>> 0);
     }
     while (param_2 != 0) {
       iVar3 = iVar3 + 0x54;
@@ -31,10 +32,10 @@ export function FUN_00419f50(heap, param_1, param_2, param_3) {
       if (uVar1 != 0) {
         puVar2 = (iVar3 + uVar1 * 0xc);
         if (0x7fff < heap.u32((iVar3 + uVar1 * 0xc))) {
-          heap.setU32(__addr_local_c, ((undefined2) * puVar2) >>> 0);
-          (uStack_a & 0xffff) = (undefined2)(heap.u32(puVar2) >>> 0x10);
-          (((uStack_a) >>> 16) & 0xffff) = heap.u32(puVar2 + (1) * 4);
-          uStack_6 = (undefined2)(heap.u32(puVar2 + (1) * 4) >>> 0x10);
+          heap.setU32(__addr_local_c, (heap.u32(puVar2)) >>> 0);
+          (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00419f50"); })();
+          (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00419f50"); })();
+          uStack_6 = (heap.u32(puVar2 + (1) * 4) >>> 0x10);
           local_4 = heap.u32(puVar2 + (2) * 4);
           uStack_a = CONCAT22((((uStack_a) >>> 16) & 0xffff), uStack_a) + -1;
           puVar2 = __addr_local_c;

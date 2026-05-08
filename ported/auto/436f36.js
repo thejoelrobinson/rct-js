@@ -9,6 +9,7 @@ export function FUN_00436f36(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_00971ef4 = __sp + 0;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let in_EAX = 0;
   let in_CX = 0;
@@ -26,7 +27,7 @@ export function FUN_00436f36(heap) {
       bVar3 = 2;
     }
   }
-  bVar2 = (byte)(in_EDX >>> 2);
+  bVar2 = (in_EDX >>> 2);
   iVar4 = heap.u32((__addr_DAT_00971ef4) + ((((in_CX & 0xffe0) << 7 | in_CX >>> 9 | in_EAX & 0xffe0) >>> 5 | (in_CX >>> 9) << 0xb)) * 4);
   while ((bVar2 < heap.u32((iVar4 + 2)) || (heap.u32((iVar4 + 3)) <= bVar2)) || ((heap.u32((iVar4 + 1)) & bVar3) == 0)) {
     pbVar1 = (iVar4 + 1);

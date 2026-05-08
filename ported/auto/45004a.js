@@ -18,7 +18,7 @@ export function FUN_0045004a(heap) {
   let uVar1 = 0;
   let uVar2 = 0;
   uVar2 = in_EDX & 0xff;
-  if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((byte)(__addr_DAT_00887420) + (uVar2 * 0x260) * 4) * 8)) & 0x20000) == 0) {
+  if ((heap.u32((__addr_DAT_005f5b78 + heap.u32((__addr_DAT_00887420) + (uVar2 * 0x260) * 4) * 8)) & 0x20000) == 0) {
     uVar1 = 0;
     do {
       if (heap.u32((__addr_DAT_0088744a) + (uVar2 * 0x130 + uVar1) * 4) != -1) {

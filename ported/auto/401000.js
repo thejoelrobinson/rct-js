@@ -26,6 +26,8 @@ export function FUN_00401000(heap) {
   let iVar3 = 0;
   let uVar4 = 0;
   let uVar5 = 0;
+  let pBVar6 = 0;
+  let pBVar7 = 0;
   let local_1 = 0;
   FUN_00402bd5(heap);
   FUN_00401120(heap, 0);
@@ -61,12 +63,12 @@ export function FUN_00401000(heap) {
       pBVar6 = pBVar7 + -uVar4;
       pBVar7 = __addr_DAT_005eee40;
       for (uVar5 = uVar4 >>> 2; uVar5 != 0; uVar5 = uVar5 - 1) {
-        heap.u32(pBVar7) = heap.u32(pBVar6);
+        heap.setU32(pBVar7, (heap.u32(pBVar6)) >>> 0);
         pBVar6 = pBVar6 + 4;
         pBVar7 = pBVar7 + 4;
       }
       for (uVar4 = uVar4 & 3; uVar4 != 0; uVar4 = uVar4 - 1) {
-        heap.u32(pBVar7) = heap.u32(pBVar6);
+        heap.setU32(pBVar7, (heap.u32(pBVar6)) >>> 0);
         pBVar6 = pBVar6 + 1;
         pBVar7 = pBVar7 + 1;
       }

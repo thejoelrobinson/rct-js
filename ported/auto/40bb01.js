@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { _memset } from "../../runtime/win32.js";
 import { FUN_00408d5d } from "./408d5d.js";
 export function FUN_0040bb01(heap, param_1, param_2) {
   const __sp = heap.allocFrame(4);
@@ -15,8 +16,8 @@ export function FUN_0040bb01(heap, param_1, param_2) {
   let local_60 = 0;
   let local_4c = 0;
   if ((heap.u32(0x005ebf64) == 0) && (heap.u32(0x005ebf34) != 0x0)) {
-    _memset(__addr_local_70, 0, 0x6c);
-    heap.u32(__addr_local_70 + (0) * 4) = 0x6c;
+    _memset(heap, __addr_local_70, 0, 0x6c);
+    heap.setU32((__addr_local_70 + (0) * 4), (0x6c) >>> 0);
     do {
       iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf34)) + 100))))(heap.u32(0x005ebf34), 0, __addr_local_70, 1, 0);
       if ((iVar1 == -0x7789fe3e) && (iVar2 = FUN_00408d5d(heap), iVar2 == 0)) {
@@ -24,8 +25,8 @@ export function FUN_0040bb01(heap, param_1, param_2) {
       }
     } while (iVar1 == -0x7789fe3e);
     if (iVar1 == 0) {
-      heap.u32(param_1) = local_4c;
-      heap.u32(param_2) = local_60;
+      heap.setU32(param_1, (local_4c) >>> 0);
+      heap.setU32(param_2, (local_60) >>> 0);
       heap.setU32(0x005ebf64, (1) >>> 0);
       uVar3 = 1;
     } else {

@@ -18,10 +18,12 @@ export function FUN_0055203e(heap, param_1) {
   const __addr_DAT_00743c47 = __sp + 32;
   const __addr_PTR_LAB_00432e90 = __sp + 36;
   try {
+  let puVar1 = 0;
   let in_EAX = 0;
   let in_ECX = 0;
   let uVar2 = 0;
   let in_EDX = 0;
+  let puVar4 = 0;
   let iVar5 = 0;
   let uVar6 = 0;
   let iVar7 = 0;
@@ -40,9 +42,9 @@ export function FUN_0055203e(heap, param_1) {
     if (puVar4 != 0xffffffff) {
       iVar5 = heap.u32((__addr_DAT_0088747e + iVar7)) * 0x100;
       puVar4 = __addr_DAT_00743b94 + iVar5;
-      heap.u8(0x991f78) = 2;
+      (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0055203e"); })();
       heap.setU32(0x00991f80, (puVar4) >>> 0);
-      if ((((heap.u32((__addr_DAT_00887422) + (uVar6 * 0x130) * 4) & 0xc0) != 0) && (heap.u32((__addr_DAT_0088755c) + (iVar7) * 4) == '\a')) && (0x7f < heap.u32((byte)(__addr_DAT_0088757c) + (iVar7) * 4))) {
+      if ((((heap.u32((__addr_DAT_00887422) + (uVar6 * 0x130) * 4) & 0xc0) != 0) && (heap.u32((__addr_DAT_0088755c) + (iVar7) * 4) == '\a')) && (0x7f < heap.u32((__addr_DAT_0088757c) + (iVar7) * 4))) {
         uVar3 = (uVar2 + heap.u32((__addr_DAT_00651be8 + (heap.u32((__addr_DAT_00743be0 + iVar5)) >>> 1 & 7) * 2)));
       }
     }
@@ -97,7 +99,7 @@ export function FUN_0055203e(heap, param_1) {
     }
   }
   heap.setU32(0x00991f80, (puVar1) >>> 0);
-  heap.u8(0x991f78) = 3;
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0055203e"); })();
   return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(40);

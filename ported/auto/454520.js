@@ -12,11 +12,11 @@ export function FUN_00454520(heap) {
   let uVar1 = 0;
   uVar1 = 0;
   do {
-    heap.u32((__addr_DAT_008d7e2a) + (uVar1) * 4) = 0;
+    heap.setU32(((__addr_DAT_008d7e2a) + (uVar1) * 4), (0) >>> 0);
     uVar1 = uVar1 + 1;
   } while (uVar1 < 0x74);
   do {
-    heap.u32((__addr_DAT_008d7e2a) + (uVar1) * 4) = 1;
+    heap.setU32(((__addr_DAT_008d7e2a) + (uVar1) * 4), (1) >>> 0);
     uVar1 = uVar1 + 1;
   } while (uVar1 < 0x78);
   FUN_004575af(heap);

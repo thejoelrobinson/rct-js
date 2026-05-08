@@ -29,12 +29,14 @@ export function FUN_005dcfee(heap) {
   let uVar3 = 0;
   let uVar4 = 0;
   let sVar5 = 0;
+  let piVar6 = 0;
+  let unaff_ESI = 0;
   let uVar7 = 0;
   let iVar8 = 0;
   uVar4 = (heap.u32((unaff_ESI + 0x36)) >>> 2);
   sVar1 = in_EAX;
   sVar5 = (heap.u32((unaff_ESI + 0x44)) * 0x1e >>> 9);
-  if (((((sVar1 - sVar5) < (heap.u32((byte)(__addr_DAT_006567f4) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x38)))) || ((in_CX - sVar5) < (heap.u32((byte)(__addr_DAT_006567f5) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x3a))))) || ((heap.u32((byte)(__addr_DAT_006567f6) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x38))) < (sVar1 + sVar5))) || ((heap.u32((byte)(__addr_DAT_006567f7) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x3a))) < (in_CX + sVar5))) {
+  if (((((sVar1 - sVar5) < (heap.u32((__addr_DAT_006567f4) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x38)))) || ((in_CX - sVar5) < (heap.u32((__addr_DAT_006567f5) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x3a))))) || ((heap.u32((__addr_DAT_006567f6) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x38))) < (sVar1 + sVar5))) || ((heap.u32((__addr_DAT_006567f7) + (uVar4 * 4) * 4) + heap.u32((unaff_ESI + 0x3a))) < (in_CX + sVar5))) {
     return CONCAT44(in_EDX, in_EAX);
   }
   uVar4 = (((in_EAX & 0xfe0) << 2) | in_CX >>> 5 & 0x7f);

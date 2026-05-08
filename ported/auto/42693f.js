@@ -12,12 +12,15 @@ export function FUN_0042693f(heap) {
   const __addr_DAT_00652478 = __sp + 4;
   const __addr_DAT_00971ef4 = __sp + 8;
   try {
+  let pbVar1 = 0;
   let in_EAX = 0;
   let in_CX = 0;
   let in_EDX = 0;
   let uVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
+  let unaff_ESI = 0;
+  let puVar5 = 0;
   uVar3 = heap.u32(unaff_ESI) & 3;
   uVar4 = (in_CX + heap.u32((__addr_DAT_0065247a) + (uVar3 * 2) * 4)) * 0x80 | (in_CX + heap.u32((__addr_DAT_0065247a) + (uVar3 * 2) * 4)) >>> 9 | in_EAX + heap.u32((__addr_DAT_00652478) + (uVar3 * 2) * 4);
   puVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
@@ -33,11 +36,11 @@ export function FUN_0042693f(heap) {
       LAB_004269ce: return CONCAT44(in_EDX, in_EAX);
     }
   }
-  uVar2 = (byte)(uVar4 * '\x04' + 9);
+  uVar2 = (uVar4 * '\x04' + 9);
   uVar4 = uVar2 & 0xf;
-  heap.u32(puVar5 + ((uVar4 >>> 3) + 5) * 4) = heap.u32(puVar5 + ((uVar4 >>> 3) + 5) * 4) | '\x01' << (uVar2 & 7);
-  uVar4 = (byte)(uVar4 + 3);
-  heap.u32(puVar5 + (((uVar4 & 0xf) >>> 3) + 5) * 4) = heap.u32(puVar5 + (((uVar4 & 0xf) >>> 3) + 5) * 4) | '\x01' << (uVar4 & 7);
+  heap.setU32((puVar5 + ((uVar4 >>> 3) + 5) * 4), (heap.u32(puVar5 + ((uVar4 >>> 3) + 5) * 4) | '\x01' << (uVar2 & 7)) >>> 0);
+  uVar4 = (uVar4 + 3);
+  heap.setU32((puVar5 + (((uVar4 & 0xf) >>> 3) + 5) * 4), (heap.u32(puVar5 + (((uVar4 & 0xf) >>> 3) + 5) * 4) | '\x01' << (uVar4 & 7)) >>> 0);
   FUN_005e56d3(heap, puVar5);
   /* goto LAB_004269ce */ throw new Error("goto LAB_004269ce not supported");
 } finally {

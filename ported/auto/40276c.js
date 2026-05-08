@@ -13,6 +13,7 @@ export function FUN_0040276c(heap) {
   let local_c4 = 0;
   let local_c0 = 0;
   let local_bc = 0;
+  let local_b8 = 0;
   let local_b4 = 0;
   let local_8 = 0;
   local_b8 = __addr_DAT_005f2420;
@@ -28,7 +29,7 @@ export function FUN_0040276c(heap) {
         local_c4 = local_b4;
         local_bc = local_b4 + 8;
         for (; (local_8 < 0x500 && (heap.u32(local_b8) != '\0')); local_b8 = local_b8 + 1) {
-          heap.u32(local_b8) = '\0';
+          heap.setU32(local_b8, ('\0') >>> 0);
           local_8 = local_8 + 0x40;
         }
         local_c0 = local_8;

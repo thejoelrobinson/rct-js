@@ -32,7 +32,7 @@ export function FUN_005d1ef6(heap) {
       return;
     }
     uVar5 = FUN_005cfc50(heap);
-    heap.setU32(0x0065228e, ((undefined2)(uVar5 >>> 0x20)) >>> 0);
+    heap.setU32(0x0065228e, ((uVar5 >>> 0x20)) >>> 0);
     uVar2 = extraout_ECX_00;
     heap.setU32(0x00652290, (uVar3) >>> 0);
     if (bVar4) {
@@ -47,9 +47,9 @@ export function FUN_005d1ef6(heap) {
       FUN_005d13e2(heap);
       return;
     }
-    LAB_005d1f86: heap.setU32(0x0065228e, ((undefined2)(uVar5 >>> 0x20)) >>> 0);
-    heap.setU32(0x0065228a, ((undefined2)(uVar5 >>> 0x10)) >>> 0);
-    heap.setU32(0x0065228c, ((undefined2)(uVar2 >>> 0x10)) >>> 0);
+    LAB_005d1f86: heap.setU32(0x0065228e, ((uVar5 >>> 0x20)) >>> 0);
+    heap.setU32(0x0065228a, ((uVar5 >>> 0x10)) >>> 0);
+    heap.setU32(0x0065228c, ((uVar2 >>> 0x10)) >>> 0);
     heap.setU32(0x00652291, (heap.u32((unaff_EDI + 4))) >>> 0);
     heap.setU32(0x00652292, (0) >>> 0);
     heap.setU32(0x00652293, (0) >>> 0);

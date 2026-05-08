@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT31, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_005e3b2b } from "./5e3b2b.js";
 import { FUN_005e43de } from "./5e43de.js";
@@ -11,15 +12,17 @@ import { FUN_005e6a83 } from "./5e6a83.js";
 export function FUN_005e5bd8(heap) {
   let in_ECX = 0;
   let uVar1 = 0;
+  let unaff_ESI = 0;
+  let puVar2 = 0;
   if (unaff_ESI != 0x0) {
     (heap.u32(heap.u32((unaff_ESI + 2))))(CONCAT22(CONCAT31((int3)(in_ECX >>> 8), heap.u32((unaff_ESI + 0xba))), heap.u32(unaff_ESI + (0x18) * 4)));
     FUN_005e3b2b(heap);
     LOCK();
     puVar2 = heap.u32((unaff_ESI + 4));
-    heap.u32((unaff_ESI + 4)) = 0;
+    heap.setU32((unaff_ESI + 4), (0) >>> 0);
     UNLOCK();
     if (puVar2 != 0x0) {
-      heap.u32(puVar2) = 0;
+      heap.setU32(puVar2, (0) >>> 0);
     }
     FUN_005e43de(heap);
     heap.setU32(0x009a1164, (heap.u32(0x009a1164) + -0x178) >>> 0);
@@ -27,7 +30,7 @@ export function FUN_005e5bd8(heap) {
       uVar1 = (heap.u32(0x009a1164) - unaff_ESI) >>> 1;
       puVar2 = unaff_ESI + 0xbc;
       for (; uVar1 != 0; uVar1 = uVar1 - 1) {
-        heap.u32(unaff_ESI) = heap.u32(puVar2);
+        heap.setU32(unaff_ESI, (heap.u32(puVar2)) >>> 0);
         puVar2 = puVar2 + 1;
         unaff_ESI = unaff_ESI + 1;
       }

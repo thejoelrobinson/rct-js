@@ -10,9 +10,11 @@ export function FUN_004508fd(heap) {
   const __addr_DAT_00652478 = __sp + 4;
   const __addr_DAT_00971ef4 = __sp + 8;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let uVar3 = 0;
   let unaff_EBX = 0;
+  let pbVar4 = 0;
   let unaff_ESI = 0;
   uVar3 = heap.u32(0x008ae93e) + heap.u32((__addr_DAT_0065247a) + (unaff_EBX * 2) * 4);
   if (((heap.u32(0x008ae93c) + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4)) < 0x1000) && (uVar3 < 0x1000)) {

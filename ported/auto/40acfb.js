@@ -7,8 +7,10 @@
 import { DestroyWindow, GetDC, ReleaseDC, SetSystemPaletteUse } from "../../runtime/win32.js";
 import { FUN_00413470 } from "./413470.js";
 export function FUN_0040acfb(heap) {
+  let puVar1 = 0;
   let hdc = 0;
   let local_10 = 0;
+  let local_8 = 0;
   local_8 = heap.u32(0x005ebf48);
   while (local_8 != 0x0) {
     puVar1 = heap.u32(local_8 + (2) * 4);

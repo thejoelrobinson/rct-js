@@ -10,12 +10,14 @@ export function FUN_009bb717(heap) {
   const __addr_DAT_005f2000 = __sp + 0;
   try {
   let uVar1 = 0;
+  let puVar2 = 0;
+  let puVar3 = 0;
   puVar3 = (__addr_DAT_005f2000 + heap.u32(0x008dff1c) * 4);
   uVar1 = heap.u32(0x008dff18);
   puVar2 = heap.u32(0x008dff14);
   do {
-    heap.u32(puVar3) = heap.u32(puVar2);
-    heap.u32((puVar3 + 1)) = heap.u32((puVar2 + 1));
+    heap.setU32(puVar3, (heap.u32(puVar2)) >>> 0);
+    heap.setU32((puVar3 + 1), (heap.u32((puVar2 + 1))) >>> 0);
     puVar2 = (puVar2 + 3);
     puVar3 = puVar3 + 2;
     uVar1 = uVar1 - 1;

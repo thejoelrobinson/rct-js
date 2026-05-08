@@ -18,6 +18,7 @@ export function FUN_004316f3(heap) {
   const __addr_DAT_00628a3c = __sp + 8;
   try {
   let bVar1 = 0;
+  let piVar2 = 0;
   let in_AX = 0;
   let uVar3 = 0;
   let uVar4 = 0;
@@ -31,6 +32,8 @@ export function FUN_004316f3(heap) {
   let unaff_ESI = 0;
   let iVar9 = 0;
   let iVar10 = 0;
+  let unaff_EDI = 0;
+  let piVar11 = 0;
   heap.setU32(0x00991f8c, (heap.u32((unaff_ESI + 0x12))) >>> 0);
   heap.setU32(0x005f96ce, (heap.u32((unaff_ESI + 0x10))) >>> 0);
   uVar8 = -1 << (heap.u32((unaff_ESI + 0x10)) & 0x1f);
@@ -65,10 +68,10 @@ export function FUN_004316f3(heap) {
       iVar9 = iVar9 - iVar10;
       sVar7 = sVar7 + (iVar10 >>> (heap.u32(0x005f96ce) & 0x1f));
     }
-    heap.u32((piVar11 + 1)) = uVar3;
-    heap.u32((piVar11 + 2)) = iVar9 - uVar3;
-    heap.u32(piVar11) = iVar5;
-    heap.u32((piVar11 + 3)) = sVar7;
+    heap.setU32((piVar11 + 1), (uVar3) >>> 0);
+    heap.setU32((piVar11 + 2), (iVar9 - uVar3) >>> 0);
+    heap.setU32(piVar11, (iVar5) >>> 0);
+    heap.setU32((piVar11 + 3), (sVar7) >>> 0);
     if ((heap.u32(0x00991f8c) & 1) != 0) {
       FUN_009b30bc(heap);
     }

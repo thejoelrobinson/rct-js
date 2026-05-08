@@ -17,11 +17,11 @@ export function FUN_0040dd0c(heap, param_1) {
     }
     if (heap.u32(0x005ec058) == param_1) {
       heap.setU32(0x005ec058, (local_8) >>> 0);
-      heap.u32((local_8 + 0x10)) = 0;
+      heap.setU32((local_8 + 0x10), (0) >>> 0);
     } else {
-      heap.u32((local_8 + 0x10)) = heap.u32((param_1 + 0x10));
+      heap.setU32((local_8 + 0x10), (heap.u32((param_1 + 0x10))) >>> 0);
     }
   }
-  heap.u32((param_1 + 0x10)) = 0;
+  heap.setU32((param_1 + 0x10), (0) >>> 0);
   return;
 }

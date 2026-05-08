@@ -4,9 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FUN_009bc041 } from "./9bc041.js";
 export function FUN_009bc041(heap) {
   let sVar1 = 0;
+  let psVar2 = 0;
   let in_AX = 0;
   let in_DX = 0;
   let unaff_BX = 0;

@@ -16,6 +16,8 @@ export function FUN_00458897(heap) {
   let in_DX = 0;
   let unaff_BX = 0;
   let unaff_BP = 0;
+  let pbVar2 = 0;
+  let pbVar3 = 0;
   let sVar4 = 0;
   let uVar5 = 0;
   let uStack_8 = 0;
@@ -33,7 +35,7 @@ export function FUN_00458897(heap) {
   pbVar2 = __addr_DAT_0099a888;
   do {
     uVar5 = SUB42(pbVar2, 0);
-    uStack_8 = (undefined2)(pbVar2 >>> 0x10);
+    uStack_8 = (pbVar2 >>> 0x10);
     FUN_009ba943(heap, uVar5, in_DX);
     pbVar2 = CONCAT22(uStack_8, uVar5);
     while (true) {

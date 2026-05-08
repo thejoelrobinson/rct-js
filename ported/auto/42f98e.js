@@ -8,9 +8,10 @@ import { FUN_0042f999 } from "./42f999.js";
 export function FUN_0042f98e(heap) {
   let uVar1 = 0;
   let extraout_ECX = 0;
+  let unaff_ESI = 0;
   do {
     uVar1 = FUN_0042f999(heap);
-    heap.u32(unaff_ESI) = uVar1;
+    heap.setU32(unaff_ESI, (uVar1) >>> 0);
     unaff_ESI = unaff_ESI + 1;
   } while (extraout_ECX != 1);
   return;

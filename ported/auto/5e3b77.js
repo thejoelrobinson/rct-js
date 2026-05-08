@@ -12,6 +12,7 @@ export function FUN_005e3b77(heap) {
   let in_CX = 0;
   let in_DX = 0;
   let unaff_BX = 0;
+  let puVar1 = 0;
   if ((((-(unaff_BX >>> 2) <= in_DX) && (in_DX <= ((unaff_BX >>> 2) * -2 + heap.u32(0x00971ed6)))) && (0x1d < in_AX)) && (in_AX <= (heap.u32(0x00971ed8) - (in_CX >>> 2)))) {
     puVar1 = __addr_DAT_009a013c;
     while (true) {

@@ -10,14 +10,18 @@ import { FUN_00413470 } from "./413470.js";
 export function FUN_00414940(heap) {
   let cVar1 = 0;
   let WVar2 = 0;
+  let pWVar3 = 0;
   let iVar5 = 0;
   let cbMultiByte = 0;
   let lpMultiByteStr = 0;
   let pCVar6 = 0;
+  let pCVar7 = 0;
   let uVar8 = 0;
   let pCVar9 = 0;
   let lpWideCharStr = 0;
   let pCVar10 = 0;
+  let pCVar11 = 0;
+  let pWVar4 = 0;
   lpWideCharStr = 0x0;
   pCVar9 = 0x0;
   if (heap.u32(0x005f0018) == 0) {
@@ -36,11 +40,11 @@ export function FUN_00414940(heap) {
     if ((lpWideCharStr != 0x0) || (lpWideCharStr = GetEnvironmentStringsW(heap), lpWideCharStr != 0x0)) {
       WVar2 = heap.u32(lpWideCharStr);
       pWVar3 = lpWideCharStr;
-      while (WVar2 != L'\0') {
+      while (WVar2 != '\0') {
         do {
           pWVar4 = pWVar3;
           pWVar3 = pWVar4 + 1;
-        } while (heap.u32(pWVar3) != L'\0');
+        } while (heap.u32(pWVar3) != '\0');
         pWVar3 = pWVar4 + 2;
         WVar2 = heap.u32(pWVar3);
       }
@@ -76,12 +80,12 @@ export function FUN_00414940(heap) {
       pCVar10 = pCVar9;
       pCVar11 = pCVar7;
       for (uVar8 = pCVar6 >>> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
-        heap.u32(pCVar11) = heap.u32(pCVar10);
+        heap.setU32(pCVar11, (heap.u32(pCVar10)) >>> 0);
         pCVar10 = pCVar10 + 4;
         pCVar11 = pCVar11 + 4;
       }
       for (uVar8 = pCVar6 & 3; uVar8 != 0; uVar8 = uVar8 - 1) {
-        heap.u32(pCVar11) = heap.u32(pCVar10);
+        heap.setU32(pCVar11, (heap.u32(pCVar10)) >>> 0);
         pCVar10 = pCVar10 + 1;
         pCVar11 = pCVar11 + 1;
       }

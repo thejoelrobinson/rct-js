@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { int3 } from "../../runtime/win32.js";
 import { CONCAT11, CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { FUN_0042c711 } from "./42c711.js";
 import { FUN_00451f42 } from "./451f42.js";
@@ -16,18 +17,22 @@ export function FUN_00451d6e(heap) {
   const __addr_DAT_0065247a = __sp + 16;
   const __addr_DAT_00652478 = __sp + 20;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
   let uVar5 = 0;
   let uVar6 = 0;
   let uVar7 = 0;
+  let pbVar8 = 0;
+  let pbVar9 = 0;
+  let pbVar10 = 0;
   let bVar11 = 0;
   pbVar8 = __addr_DAT_00887420;
   heap.setU32(0x00631d55, (0) >>> 0);
   LAB_00451d7a: if (heap.u32(pbVar8) != 0xff) {
     if (heap.u32(pbVar8 + (0x15f) * 4) != 0) {
-      heap.u32(pbVar8 + (0x15f) * 4) = heap.u32(pbVar8 + (0x15f) * 4) - 1;
+      heap.setU32((pbVar8 + (0x15f) * 4), (heap.u32(pbVar8 + (0x15f) * 4) - 1) >>> 0);
     }
     if ((heap.u32(pbVar8 + (0x21) * 4) == 1) && (heap.u32(pbVar8 + (0x15f) * 4) == 0)) {
       if ((heap.u32((__addr_DAT_005f5b78 + heap.u32(pbVar8) * 8)) & 0x20000) == 0) {
@@ -47,10 +52,10 @@ export function FUN_00451d6e(heap) {
           pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((((uVar5 >>> 8) << 0xc | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
           do {
             uVar6 = CONCAT31((int3)(uVar6 >>> 8), heap.u32(pbVar9)) & 0xffffff3c;
-            if ((uVar6 == '\b') && ((byte)(uVar6 >>> 8) == heap.u32(pbVar9 + (7) * 4))) {
-              bVar2 = (byte)((heap.u32((byte)(__addr_DAT_006559d8) + (heap.u32(pbVar9 + (4) * 4) * 0x10) * 4) & 0xf) << (heap.u32(pbVar9) & 3));
+            if ((uVar6 == '\b') && ((uVar6 >>> 8) == heap.u32(pbVar9 + (7) * 4))) {
+              bVar2 = ((heap.u32((__addr_DAT_006559d8) + (heap.u32(pbVar9 + (4) * 4) * 0x10) * 4) & 0xf) << (heap.u32(pbVar9) & 3));
               uVar6 = CONCAT11(bVar2 >>> 4, bVar2) & 0xffffff0f;
-              uVar6 = (byte)(uVar6 | (byte)(uVar6 >>> 8));
+              uVar6 = (uVar6 | (uVar6 >>> 8));
               heap.setU32(0x00631d56, ('\0') >>> 0);
               /* goto LAB_00451e85 */ throw new Error("goto LAB_00451e85 not supported");
             }
@@ -99,10 +104,10 @@ export function FUN_00451d6e(heap) {
     /* goto LAB_00451e85 */ throw new Error("goto LAB_00451e85 not supported");
   }
   if (heap.u32(0x00631d56) == '\0') {
-    LAB_00451f1a: heap.u16(0x971e86) = heap.u32((pbVar8 + 0x22));
+    LAB_00451f1a: (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_00451d6e"); })();
     unique0x00017200 = heap.u32((pbVar8 + 0x24));
     FUN_0042c711(heap);
-    heap.u32(pbVar8 + (0x15f) * 4) = 3;
+    heap.setU32((pbVar8 + (0x15f) * 4), (3) >>> 0);
     return;
   }
   LAB_00451de9: pbVar8 = pbVar8 + 0x260;

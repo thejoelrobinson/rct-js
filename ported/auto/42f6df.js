@@ -19,8 +19,8 @@ export function FUN_0042f6df(heap) {
     heap.setU32(0x005f88a8, (__addr_DAT_005f88b0) >>> 0);
     heap.setU32(0x005f88ac, (0) >>> 0);
   }
-  heap.u32(heap.u32(0x005f88a8)) = in_AL;
-  heap.u8(0x5f8d36) = heap.u32(0x005f8d36) + in_AL;
+  heap.setU32(heap.u32(0x005f88a8), (in_AL) >>> 0);
+  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0042f6df"); })();
   heap.setU32(0x005f8d36, (heap.u32(0x005f8d36) << 3 | ((((heap.u32(0x005f8d36)) >>> 8) & 0xffffffff) >>> 0x15)) >>> 0);
   heap.setU32(0x005f88a8, (heap.u32(0x005f88a8) + 1) >>> 0);
   heap.setU32(0x005f88ac, (heap.u32(0x005f88ac) + 1) >>> 0);

@@ -7,6 +7,7 @@
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e68e2 } from "./5e68e2.js";
 export function FUN_0042540e(heap) {
+  let puVar1 = 0;
   let uVar2 = 0;
   let unaff_ESI = 0;
   let in_CF = 0;
@@ -14,7 +15,7 @@ export function FUN_0042540e(heap) {
   if ((heap.u32(0x005f494b) == '\0') && (FUN_005e68e2(heap), !in_CF)) {
     puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
     uVar2 = heap.u32(puVar1);
-    heap.u32(puVar1) = heap.u32(puVar1) & 0xfbff;
+    heap.setU32(puVar1, (heap.u32(puVar1) & 0xfbff) >>> 0);
     if ((uVar2 >>> 10 & 1) != 0) {
       FUN_005e43de(heap);
     }

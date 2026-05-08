@@ -19,6 +19,7 @@ export function FUN_009bb9f5(heap) {
   let uVar1 = 0;
   let iVar2 = 0;
   let uVar3 = 0;
+  let puVar4 = 0;
   if ((heap.u32(0x005e9178) == 0) && ((heap.u32(0x005e9174) != 0 || (heap.u32(0x005f8d5b) == '\0')))) {
     if (heap.u32(0x005e9184) != 0) {
       FUN_005e698a(heap);
@@ -65,7 +66,7 @@ export function FUN_009bb9f5(heap) {
       heap.setU32(0x00971eda, (uVar1) >>> 0);
       heap.setU32(0x00971edc, (uVar3) >>> 0);
       for (iVar2 = 0x1400; iVar2 != 0; iVar2 = iVar2 + -1) {
-        heap.u32(puVar4) = 0xff;
+        heap.setU32(puVar4, (0xff) >>> 0);
         puVar4 = puVar4 + 1;
       }
       FUN_00429aff(heap);

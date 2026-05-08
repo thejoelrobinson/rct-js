@@ -14,12 +14,15 @@ export function FUN_00448bbc(heap) {
   const __addr_DAT_00887452 = __sp + 12;
   const __addr_DAT_00971ef4 = __sp + 16;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let bVar3 = 0;
   let uVar4 = 0;
   let in_EAX = 0;
   let in_EDX = 0;
   let uVar5 = 0;
+  let pbVar6 = 0;
+  let pbVar7 = 0;
   let iVar8 = 0;
   for (pbVar6 = __addr_DAT_00630be0; pbVar6 < heap.u32(0x00630bdc); pbVar6 = pbVar6 + 1) {
     bVar2 = heap.u32(pbVar6);

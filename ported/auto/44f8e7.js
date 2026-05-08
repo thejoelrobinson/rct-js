@@ -8,6 +8,7 @@ export function FUN_0044f8e7(heap) {
   let cVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
+  let unaff_ESI = 0;
   uVar3 = 0;
   uVar2 = 0;
   do {

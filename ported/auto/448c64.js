@@ -13,6 +13,7 @@ export function FUN_00448c64(heap) {
   let extraout_ECX = 0;
   let uVar2 = 0;
   let in_EDX = 0;
+  let unaff_ESI = 0;
   if ((heap.u32(unaff_ESI) & 0x3c) == 0x10) {
     if (heap.u32(unaff_ESI + (4) * 4) == 0) {
       FUN_00448d15(heap);
@@ -34,7 +35,7 @@ export function FUN_00448c64(heap) {
     if ((heap.u32(unaff_ESI + (6) * 4) & 8) != 0) {
       FUN_00448a45(heap, unaff_ESI, uVar2, uVar1);
     }
-    heap.u32(unaff_ESI + (7) * 4) = 0xff;
+    heap.setU32((unaff_ESI + (7) * 4), (0xff) >>> 0);
   }
   }
   return CONCAT44(in_EDX, in_EAX);

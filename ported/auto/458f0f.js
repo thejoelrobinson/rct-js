@@ -10,10 +10,12 @@ export function FUN_00458f0f(heap) {
   try {
   let cVar1 = 0;
   let in_EAX = 0;
+  let pcVar2 = 0;
+  let unaff_EDI = 0;
   pcVar2 = heap.u32((__addr_PTR_s_March_006432ac) + (in_EAX & 7) * 4);
   do {
     cVar1 = heap.u32(pcVar2);
-    heap.u32(unaff_EDI) = cVar1;
+    heap.setU32(unaff_EDI, (cVar1) >>> 0);
     pcVar2 = pcVar2 + 1;
     unaff_EDI = unaff_EDI + 1;
   } while (cVar1 != '\0');

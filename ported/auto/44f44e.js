@@ -11,15 +11,17 @@ export function FUN_0044f44e(heap) {
   const __addr_PTR_DAT_005f5f4c = __sp + 0;
   const __addr_DAT_00887420 = __sp + 4;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let in_EAX = 0;
   let iVar3 = 0;
   let extraout_ECX = 0;
   let extraout_DL = 0;
   let in_EDX = 0;
+  let pcVar4 = 0;
   let unaff_ESI = 0;
   let uVar5 = 0;
-  heap.u32((unaff_ESI + 5)) = 0;
+  heap.setU32((unaff_ESI + 5), (0) >>> 0);
   pbVar1 = heap.u32((__addr_PTR_DAT_005f5f4c) + (in_EDX & 0xff) * 4);
   iVar3 = 200;
   while (iVar3 != 1) {
@@ -34,8 +36,8 @@ export function FUN_0044f44e(heap) {
     }
   }
   uVar5 = 0;
-  LAB_0044f4a3: heap.u32((unaff_ESI + 0x1e)) = heap.u32((pbVar1 + uVar5 + 1));
-  heap.u32((unaff_ESI + 0x20)) = heap.u32(pbVar1 + (uVar5 + 3) * 4);
+  LAB_0044f4a3: heap.setU32((unaff_ESI + 0x1e), (heap.u32((pbVar1 + uVar5 + 1))) >>> 0);
+  heap.setU32((unaff_ESI + 0x20), (heap.u32(pbVar1 + (uVar5 + 3) * 4)) >>> 0);
   return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(8);

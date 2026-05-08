@@ -11,12 +11,12 @@ export function FUN_00434081(heap) {
   let unaff_ESI = 0;
   iVar2 = heap.u32((unaff_ESI + 8));
   if ((iVar2 != 0) && (heap.u32((iVar2 + 0x10)) != '\0')) {
-    heap.u32((iVar2 + 0x10)) = heap.u32((iVar2 + 0x10)) + -1;
-    heap.u32((iVar2 + 0xc)) = heap.u32((iVar2 + 0xc)) >>> 1;
-    heap.u32((iVar2 + 0xe)) = heap.u32((iVar2 + 0xe)) >>> 1;
+    heap.setU32((iVar2 + 0x10), (heap.u32((iVar2 + 0x10)) + -1) >>> 0);
+    heap.setU32((iVar2 + 0xc), (heap.u32((iVar2 + 0xc)) >>> 1) >>> 0);
+    heap.setU32((iVar2 + 0xe), (heap.u32((iVar2 + 0xe)) >>> 1) >>> 0);
     uVar1 = heap.u32((iVar2 + 0xe));
-    heap.u32((unaff_ESI + 0x170)) = heap.u32((unaff_ESI + 0x170)) + (heap.u32((iVar2 + 0xc)) >>> 1);
-    heap.u32((unaff_ESI + 0x172)) = heap.u32((unaff_ESI + 0x172)) + (uVar1 >>> 1);
+    heap.setU32((unaff_ESI + 0x170), (heap.u32((unaff_ESI + 0x170)) + (heap.u32((iVar2 + 0xc)) >>> 1)) >>> 0);
+    heap.setU32((unaff_ESI + 0x172), (heap.u32((unaff_ESI + 0x172)) + (uVar1 >>> 1)) >>> 0);
     FUN_005e43de(heap);
   }
   return;

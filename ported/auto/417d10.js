@@ -20,7 +20,7 @@ export function FUN_00417d10(heap, param_1, param_2) {
   }
   if (heap.u32(0x005f0270) == 0) {
     if (heap.u32(__addr_param_2) < 0x100) {
-      heap.u32(heap.u32(__addr_param_1)) = heap.u32(__addr_param_2);
+      heap.setU32(heap.u32(__addr_param_1), (heap.u32(__addr_param_2)) >>> 0);
       return 1;
     }
   } else {

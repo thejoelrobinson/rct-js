@@ -26,7 +26,7 @@ export function FUN_005db5d7(heap) {
   if (!in_ZF) {
     iVar4 = bVar1 * 0x260;
     iVar3 = heap.u32((unaff_ESI + 0x15a)) - 1;
-    if (((-1 < iVar3) && (iVar3 < heap.u32((byte)(__addr_DAT_00887498) + (iVar4) * 4))) && (sVar2 == heap.u32((__addr_DAT_0088747e + iVar3 * 2 + iVar4)))) {
+    if (((-1 < iVar3) && (iVar3 < heap.u32((__addr_DAT_00887498) + (iVar4) * 4))) && (sVar2 == heap.u32((__addr_DAT_0088747e + iVar3 * 2 + iVar4)))) {
       FUN_005e43de(heap);
     }
   }

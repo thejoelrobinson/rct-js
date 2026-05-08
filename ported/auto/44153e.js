@@ -21,7 +21,7 @@ export function FUN_0044153e(heap) {
   FUN_005e5b80(heap);
   FUN_005e5301(heap);
   if (heap.u32((unaff_ESI + 0x2e)) == '\x01') {
-    heap.u32((__addr_DAT_008d7e2a) + (heap.u32((unaff_ESI + 0xc5))) * 4) = 0;
+    heap.setU32(((__addr_DAT_008d7e2a) + (heap.u32((unaff_ESI + 0xc5))) * 4), (0) >>> 0);
     FUN_004575af(heap);
   }
   FUN_0042cbb0(heap);

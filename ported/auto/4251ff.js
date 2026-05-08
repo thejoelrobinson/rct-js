@@ -9,11 +9,15 @@ export function FUN_004251ff(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_00971ef4 = __sp + 0;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let in_AX = 0;
   let in_CX = 0;
   let bVar3 = 0;
   let uVar4 = 0;
+  let pbVar5 = 0;
+  let unaff_EDI = 0;
+  let pbVar6 = 0;
   if ((in_AX < 0x1000) && (in_CX < 0x1000)) {
     uVar4 = in_CX << 7 | in_CX >>> 9 | in_AX;
     pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((uVar4 >>> 5 | uVar4 << 0xb)) * 4);
@@ -88,7 +92,7 @@ export function FUN_004251ff(heap) {
     LAB_00425371: if (bVar3 != heap.u32(pbVar5 + (7) * 4)) {
       FUN_005e56d3(heap, pbVar5, unaff_EDI);
     }
-    heap.u32(pbVar5 + (7) * 4) = bVar3;
+    heap.setU32((pbVar5 + (7) * 4), (bVar3) >>> 0);
   }
   return;
 } finally {

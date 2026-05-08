@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { GetTickCount } from "../../runtime/win32.js";
+import { GetTickCount, _memset } from "../../runtime/win32.js";
 import { FUN_004110f6 } from "./4110f6.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_00410d3d(heap, param_1) {
@@ -26,7 +26,7 @@ export function FUN_00410d3d(heap, param_1) {
   if ((heap.u32(0x005ec158) == 0x0) || (heap.u32(0x005ec160) != 0)) {
     uVar4 = 0;
   } else {
-    _memset(__addr_local_80, 0, 0x7c);
+    _memset(heap, __addr_local_80, 0, 0x7c);
     heap.setU32(__addr_local_80, (0x7c) >>> 0);
     local_7c = heap.u32(0x005e9048);
     local_78 = heap.u32(0x005e904c);

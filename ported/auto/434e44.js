@@ -9,6 +9,7 @@ export function FUN_00434e44(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_PTR_LAB_00434e98 = __sp + 0;
   try {
+  let psVar1 = 0;
   let sVar2 = 0;
   let uVar3 = 0;
   let unaff_BX = 0;

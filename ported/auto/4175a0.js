@@ -8,6 +8,9 @@ export function FUN_004175a0(heap, param_1) {
   const __sp = heap.allocFrame(4);
   const __addr_DAT_005ec2e0 = __sp + 0;
   try {
+  let piVar1 = 0;
+  let puVar2 = 0;
+  let puVar3 = 0;
   puVar2 = __addr_DAT_005ec2e0;
   if (heap.u32(0x005ec2e4) != param_1) {
     puVar3 = puVar2;

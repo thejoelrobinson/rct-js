@@ -16,7 +16,7 @@ export function FUN_005e5ca6(heap) {
   if (in_EAX != heap.u32((unaff_ESI + 0x10))) {
     LOCK();
     uVar3 = heap.u32((unaff_ESI + 0x10));
-    heap.u32((unaff_ESI + 0x10)) = in_EAX;
+    heap.setU32((unaff_ESI + 0x10), (in_EAX) >>> 0);
     UNLOCK();
     bVar1 = 0;
     do {

@@ -8,8 +8,11 @@ import { VirtualFree } from "../../runtime/win32.js";
 import { FUN_00415580 } from "./415580.js";
 export function FUN_004155e0(heap, param_1) {
   let BVar1 = 0;
+  let piVar2 = 0;
   let iVar3 = 0;
   let iVar4 = 0;
+  let puVar5 = 0;
+  let puVar6 = 0;
   puVar5 = heap.u32(0x005ec504);
   do {
     puVar6 = puVar5;
@@ -21,10 +24,10 @@ export function FUN_004155e0(heap, param_1) {
         if (heap.u32(piVar2) == 0xf0) {
           BVar1 = VirtualFree(heap, (heap.u32((puVar5 + 0x10)) + iVar3), 0x1000, 0x4000);
           if (BVar1 != 0) {
-            heap.u32(piVar2) = -1;
+            heap.setU32(piVar2, (-1) >>> 0);
             heap.setU32(0x005f024c, (heap.u32(0x005f024c) + -1) >>> 0);
             if ((heap.u32((puVar5 + 0xc)) == 0x0) || (piVar2 < heap.u32((puVar5 + 0xc)))) {
-              heap.u32((puVar5 + 0xc)) = piVar2;
+              heap.setU32((puVar5 + 0xc), (piVar2) >>> 0);
             }
             iVar4 = iVar4 + 1;
             param_1 = param_1 + -1;

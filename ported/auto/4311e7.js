@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { func_0x00430934 } from "../../runtime/win32.js";
 import { CONCAT44, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_004311e7(heap) {
@@ -17,6 +18,10 @@ export function FUN_004311e7(heap) {
   try {
   let iVar1 = 0;
   let iVar2 = 0;
+  let piVar3 = 0;
+  let unaff_EBP = 0;
+  let piVar4 = 0;
+  let piVar5 = 0;
   let uVar6 = 0;
   let bVar7 = 0;
   let uVar8 = 0;
@@ -39,35 +44,35 @@ export function FUN_004311e7(heap) {
         iVar2 = heap.u32(piVar5);
         piVar5 = (piVar5 + 5);
       } while (iVar2 != -2);
-      heap.u32(piVar3) = heap.u32((piVar4 + 5));
-      heap.u32(unaff_EBP) = iVar1;
+      heap.setU32(piVar3, (heap.u32((piVar4 + 5))) >>> 0);
+      heap.setU32(unaff_EBP, (iVar1) >>> 0);
       LOCK();
       iVar1 = heap.u32(unaff_EBP + (1) * 4);
-      heap.u32((unaff_EBP + 1)) = heap.u32(piVar3 + (1) * 4);
+      heap.setU32((unaff_EBP + 1), (heap.u32(piVar3 + (1) * 4)) >>> 0);
       UNLOCK();
-      heap.u32((piVar3 + 1)) = iVar1;
+      heap.setU32((piVar3 + 1), (iVar1) >>> 0);
     }
     uVar8 = CONCAT44(piVar3, uVar8 >>> 1 | bVar7 << 0x1f);
   }
   uVar6 = 0;
   do {
-    heap.u32((__addr_DAT_0087c3dc) + (uVar6) * 4) = 0;
-    heap.u32((__addr_DAT_0087c3fc + uVar6 * 4)) = 0;
+    heap.setU32(((__addr_DAT_0087c3dc) + (uVar6) * 4), (0) >>> 0);
+    heap.setU32((__addr_DAT_0087c3fc + uVar6 * 4), (0) >>> 0);
     uVar6 = uVar6 + 1;
   } while (uVar6 < 8);
   heap.setU32(0x0087d7a2, (0) >>> 0);
   uVar6 = 0;
   do {
-    heap.u32((__addr_DAT_0087c41c) + (uVar6) * 4) = heap.u32((__addr_DAT_005f5594) + (uVar6) * 4);
+    heap.setU32(((__addr_DAT_0087c41c) + (uVar6) * 4), (heap.u32((__addr_DAT_005f5594) + (uVar6) * 4)) >>> 0);
     uVar6 = uVar6 + 1;
   } while (uVar6 < 0x100);
   uVar6 = 0;
   do {
-    heap.u32((__addr_DAT_0087cba5 + uVar6 * 4 + 3)) = 0;
+    heap.setU32((__addr_DAT_0087cba5 + uVar6 * 4 + 3), (0) >>> 0);
     uVar6 = uVar6 + 1;
   } while (uVar6 < 0x38);
   for (piVar4 = __addr_DAT_0087ccd0; heap.u32(piVar4) != -1; piVar4 = (piVar4 + 5)) {
-    func_0x00430934();
+    func_0x00430934(heap);
   }
   heap.setU32(0x0087cccc, (0xffffffff) >>> 0);
   heap.setU32(0x0087cccb, (0) >>> 0);

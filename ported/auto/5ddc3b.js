@@ -11,23 +11,26 @@ export function FUN_005ddc3b(heap) {
   const __addr_PTR_DAT_005f6cb8 = __sp + 0;
   const __addr_DAT_00887420 = __sp + 4;
   try {
+  let pbVar1 = 0;
   let bVar2 = 0;
   let in_EAX = 0;
   let iVar3 = 0;
   let extraout_ECX = 0;
   let in_EDX = 0;
+  let pcVar4 = 0;
+  let unaff_ESI = 0;
   let uVar5 = 0;
   pbVar1 = heap.u32((__addr_PTR_DAT_005f6cb8) + (heap.u32(unaff_ESI + (1) * 4)) * 4);
   if (heap.u32(pbVar1) == 0xff) {
-    heap.u32(unaff_ESI + (5) * 4) = '\x01';
+    heap.setU32((unaff_ESI + (5) * 4), ('\x01') >>> 0);
     uVar5 = 0;
     do {
-      heap.u32((unaff_ESI + uVar5 * 2 + 6)) = heap.u32((pbVar1 + uVar5 * 2 + 1));
+      heap.setU32((unaff_ESI + uVar5 * 2 + 6), (heap.u32((pbVar1 + uVar5 * 2 + 1))) >>> 0);
       uVar5 = uVar5 + 1;
     } while (uVar5 < 0xc);
     return CONCAT44(in_EDX, in_EAX);
   }
-  heap.u32(unaff_ESI + (5) * 4) = '\0';
+  heap.setU32((unaff_ESI + (5) * 4), ('\0') >>> 0);
   iVar3 = 200;
   while (iVar3 != 1) {
     bVar2 = FUN_005df40c(heap);
@@ -41,7 +44,7 @@ export function FUN_005ddc3b(heap) {
     }
   }
   uVar5 = 0;
-  LAB_005ddc9b: heap.u32((unaff_ESI + 6)) = heap.u32((pbVar1 + uVar5 + 1));
+  LAB_005ddc9b: heap.setU32((unaff_ESI + 6), (heap.u32((pbVar1 + uVar5 + 1))) >>> 0);
   return CONCAT44(in_EDX, in_EAX);
 } finally {
     heap.freeFrame(8);

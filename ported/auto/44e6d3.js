@@ -17,15 +17,15 @@ export function FUN_0044e6d3(heap) {
   FUN_005e5fcb(heap);
   if (bVar1) {
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_00631a00;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x1dc;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_00631a00) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x1dc) >>> 0);
     FUN_005e412c(heap);
-    heap.u32((unaff_ESI + 0x158)) = 0;
-    heap.u32((unaff_ESI + 0x159)) = 0xff;
-    heap.u32((unaff_ESI + 0x168)) = 0;
+    heap.setU32((unaff_ESI + 0x158), (0) >>> 0);
+    heap.setU32((unaff_ESI + 0x159), (0xff) >>> 0);
+    heap.setU32((unaff_ESI + 0x168), (0) >>> 0);
   }
   heap.setU32(0x00631d54, (0) >>> 0);
-  heap.u32((unaff_ESI + 0x16a)) = 0;
+  heap.setU32((unaff_ESI + 0x16a), (0) >>> 0);
   return;
 } finally {
     heap.freeFrame(4);

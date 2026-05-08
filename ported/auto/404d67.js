@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { Shell_NotifyIconA } from "../../runtime/win32.js";
+import { Shell_NotifyIconA, _strncpy } from "../../runtime/win32.js";
 export function FUN_00404d67(heap, param_1, param_2) {
   const __sp = heap.allocFrame(128);
   const __addr_local_5c = __sp + 0;
@@ -13,15 +13,15 @@ export function FUN_00404d67(heap, param_1, param_2) {
   if (heap.u32(0x005e93fc) == 0) {
     BVar1 = 0;
   } else {
-    heap.u32(__addr_local_5c) = 0x58;
-    heap.u32((__addr_local_5c + 4)) = heap.u32(0x005e916c);
-    heap.u32((__addr_local_5c + 8)) = 1;
-    heap.u32((__addr_local_5c + 12)) = 2;
-    heap.u32((__addr_local_5c + 16)) = param_1;
+    heap.setU32(__addr_local_5c, (0x58) >>> 0);
+    heap.setU32((__addr_local_5c + 4), (heap.u32(0x005e916c)) >>> 0);
+    heap.setU32((__addr_local_5c + 8), (1) >>> 0);
+    heap.setU32((__addr_local_5c + 12), (2) >>> 0);
+    heap.setU32((__addr_local_5c + 16), (param_1) >>> 0);
     if (param_2 != 0x0) {
-      _strncpy(heap.u8((__addr_local_5c + 24)), param_2, 0x3f);
-      heap.u32(heap.u8((__addr_local_5c + 24)) + (0x3f) * 4) = '\0';
-      heap.u32((__addr_local_5c + 12)) = heap.u32((__addr_local_5c + 12)) | 4;
+      _strncpy(heap, heap.u8((__addr_local_5c + 24)), param_2, 0x3f);
+      heap.setU32((heap.u8((__addr_local_5c + 24)) + (0x3f) * 4), ('\0') >>> 0);
+      heap.setU32((__addr_local_5c + 12), (heap.u32((__addr_local_5c + 12)) | 4) >>> 0);
     }
     BVar1 = Shell_NotifyIconA(heap, 1, __addr_local_5c);
     heap.setU32(0x005e93fc, (BVar1) >>> 0);

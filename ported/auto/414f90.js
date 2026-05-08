@@ -13,10 +13,14 @@ export function FUN_00414f90(heap) {
   const __addr_DAT_005f3e60 = __sp + 132;
   try {
   let bVar1 = 0;
+  let puVar2 = 0;
   let DVar3 = 0;
   let hFile = 0;
   let iVar4 = 0;
+  let pbVar5 = 0;
+  let piVar6 = 0;
   let uVar7 = 0;
+  let pUVar8 = 0;
   let local_48 = 0;
   puVar2 = FUN_004133c0(heap, 0x100);
   if (puVar2 == 0x0) {
@@ -26,9 +30,9 @@ export function FUN_00414f90(heap) {
   heap.setU32(0x005f3e60, (puVar2) >>> 0);
   if (puVar2 < puVar2 + 0x40) {
     do {
-      heap.u32((puVar2 + 1)) = 0;
-      heap.u32(puVar2) = 0xffffffff;
-      heap.u32((puVar2 + 5)) = 10;
+      heap.setU32((puVar2 + 1), (0) >>> 0);
+      heap.setU32(puVar2, (0xffffffff) >>> 0);
+      heap.setU32((puVar2 + 5), (10) >>> 0);
       puVar2 = puVar2 + 2;
     } while (puVar2 < heap.u32(__addr_DAT_005f3e60) + 0x40);
   }
@@ -48,13 +52,13 @@ export function FUN_00414f90(heap) {
           local_48 = heap.u32(0x005f3f60);
           break;
         }
-        heap.u32(piVar6) = puVar2;
+        heap.setU32(piVar6, (puVar2) >>> 0);
         heap.setU32(0x005f3f60, (heap.u32(0x005f3f60) + 0x20) >>> 0);
         if (puVar2 < puVar2 + 0x40) {
           do {
-            heap.u32((puVar2 + 1)) = 0;
-            heap.u32(puVar2) = 0xffffffff;
-            heap.u32((puVar2 + 5)) = 10;
+            heap.setU32((puVar2 + 1), (0) >>> 0);
+            heap.setU32(puVar2, (0xffffffff) >>> 0);
+            heap.setU32((puVar2 + 5), (10) >>> 0);
             puVar2 = puVar2 + 2;
           } while (puVar2 < (heap.u32(piVar6) + 0x100));
         }
@@ -66,8 +70,8 @@ export function FUN_00414f90(heap) {
       do {
         if (((heap.u32(pbVar5) != 0xffffffff) && ((heap.u32(pUVar8) & 1) != 0)) && (((heap.u32(pUVar8) & 8) != 0 || (DVar3 = GetFileType(heap, heap.u32(pbVar5)), DVar3 != 0)))) {
           iVar4 = heap.u32((__addr_DAT_005f3e60) + (uVar7 >>> 5) * 4);
-          heap.u32((iVar4 + (uVar7 & 0x1f) * 8)) = heap.u32(pbVar5);
-          heap.u32((iVar4 + (uVar7 & 0x1f) * 8 + 4)) = (byte) * pUVar8;
+          heap.setU32((iVar4 + (uVar7 & 0x1f) * 8), (heap.u32(pbVar5)) >>> 0);
+          heap.setU32((iVar4 + (uVar7 & 0x1f) * 8 + 4), (heap.u32(pUVar8)) >>> 0);
         }
         uVar7 = uVar7 + 1;
         pUVar8 = (pUVar8 + 1);
@@ -79,7 +83,7 @@ export function FUN_00414f90(heap) {
   do {
     puVar2 = heap.u32(__addr_DAT_005f3e60) + iVar4 * 2;
     if (heap.u32(heap.u32(__addr_DAT_005f3e60) + (iVar4 * 2) * 4) == -1) {
-      heap.u32((puVar2 + 1)) = 0x81;
+      heap.setU32((puVar2 + 1), (0x81) >>> 0);
       if (iVar4 == 0) {
         DVar3 = 0xfffffff6;
       } else {
@@ -90,7 +94,7 @@ export function FUN_00414f90(heap) {
         bVar1 = heap.u32((puVar2 + 1)) | 0x40;
         /* goto LAB_0041516b */ throw new Error("goto LAB_0041516b not supported");
       }
-      heap.u32(puVar2) = hFile;
+      heap.setU32(puVar2, (hFile) >>> 0);
       if ((DVar3 & 0xff) == 2) {
         bVar1 = heap.u32((puVar2 + 1)) | 0x40;
         /* goto LAB_0041516b */ throw new Error("goto LAB_0041516b not supported");
@@ -101,7 +105,7 @@ export function FUN_00414f90(heap) {
       }
     } else {
       bVar1 = heap.u32((puVar2 + 1)) | 0x80;
-      LAB_0041516b: heap.u32((puVar2 + 1)) = bVar1;
+      LAB_0041516b: heap.setU32((puVar2 + 1), (bVar1) >>> 0);
     }
     iVar4 = iVar4 + 1;
     if (2 < iVar4) {

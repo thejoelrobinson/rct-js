@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { EndDialog, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA } from "../../runtime/win32.js";
+import { EndDialog, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA, _strlen } from "../../runtime/win32.js";
 export function FUN_00403625(heap, param_1, param_2, param_3) {
   const __sp = heap.allocFrame(8);
   const __addr_DAT_005e91f0 = __sp + 0;
@@ -24,7 +24,7 @@ export function FUN_00403625(heap, param_1, param_2, param_3) {
     SetDlgItemTextA(heap, param_1, 0x3ea, heap.u32(0x005f1fc8));
     SetDlgItemTextA(heap, param_1, 1, __addr_DAT_005e91f0);
     SetDlgItemTextA(heap, param_1, 2, __addr_DAT_005e92f8);
-    sVar1 = _strlen(heap.u32(0x005f1390));
+    sVar1 = _strlen(heap, heap.u32(0x005f1390));
     if (sVar1 != 0) {
       SetDlgItemTextA(heap, param_1, 1000, heap.u32(0x005f1390));
     }

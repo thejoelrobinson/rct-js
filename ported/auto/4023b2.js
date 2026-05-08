@@ -13,8 +13,11 @@ export function FUN_004023b2(heap) {
   try {
   let iVar1 = 0;
   let uVar2 = 0;
+  let puVar3 = 0;
+  let puVar4 = 0;
   let iVar5 = 0;
   let local_fc = 0;
+  let local_cc = 0;
   let local_c0 = 0;
   let local_b6 = 0;
   let local_ac = 0;
@@ -46,7 +49,7 @@ export function FUN_004023b2(heap) {
               local_c0 = local_c0 + 8;
             } else {
               do {
-                heap.u32(local_cc + (local_fc) * 4) = 0;
+                heap.setU32((local_cc + (local_fc) * 4), (0) >>> 0);
                 local_fc = local_fc + 0x14;
                 local_c0 = local_c0 + 8;
                 if (heap.u32(0x005f1b34) <= local_c0) {
@@ -61,7 +64,7 @@ export function FUN_004023b2(heap) {
               iVar5 = local_14;
               do {
                 for (; iVar1 != 0; iVar1 = iVar1 + -1) {
-                  heap.u32(puVar4) = heap.u32(puVar3);
+                  heap.setU32(puVar4, (heap.u32(puVar3)) >>> 0);
                   puVar3 = puVar3 + 1;
                   puVar4 = puVar4 + 1;
                 }

@@ -16,9 +16,9 @@ export function FUN_00405a70(heap, param_1) {
   uVar2 = heap.u32((param_1 + 8));
   if (heap.u32(0x005f1290) < 0x20) {
     if (iVar1 != 0) {
-      heap.u32((__addr_DAT_005f12c0 + heap.u32(0x005f1290) * 6)) = heap.u32((param_1 + 0xc));
-      heap.u32((__addr_DAT_005f12c2 + heap.u32(0x005f1290) * 6)) = uVar2;
-      heap.u32((__addr_DAT_005f12c4 + heap.u32(0x005f1290) * 6)) = iVar1;
+      heap.setU32((__addr_DAT_005f12c0 + heap.u32(0x005f1290) * 6), (heap.u32((param_1 + 0xc))) >>> 0);
+      heap.setU32((__addr_DAT_005f12c2 + heap.u32(0x005f1290) * 6), (uVar2) >>> 0);
+      heap.setU32((__addr_DAT_005f12c4 + heap.u32(0x005f1290) * 6), (iVar1) >>> 0);
       heap.setU32(0x005f1290, (heap.u32(0x005f1290) + 1) >>> 0);
     }
     uVar2 = 1;

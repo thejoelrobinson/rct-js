@@ -39,7 +39,7 @@ export function FUN_005e0e07(heap) {
     }
     return;
   }
-  uVar1 = heap.u32((byte)(__addr_DAT_009a147c) + (unaff_EBP) * 4) | 0x2000000;
+  uVar1 = heap.u32((__addr_DAT_009a147c) + (unaff_EBP) * 4) | 0x2000000;
   if ((unaff_SI & 8) == 0) {
     if ((unaff_SI & 0x20) == 0) {
       FUN_009b30f1(heap, uVar1);

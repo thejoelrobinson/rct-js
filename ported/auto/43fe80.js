@@ -23,6 +23,6 @@ export function FUN_0043fe80(heap) {
   }
   }
   uVar1 = FUN_005e43de(heap);
-  LAB_0043feb2: heap.u32((unaff_ESI + 0x10)) = uVar1;
+  LAB_0043feb2: heap.setU32((unaff_ESI + 0x10), (uVar1) >>> 0);
   return;
 }

@@ -19,6 +19,7 @@ export function FUN_005d33da(heap) {
   let uVar2 = 0;
   let in_EDX = 0;
   let bVar3 = 0;
+  let unaff_ESI = 0;
   let in_CF = 0;
   let bVar4 = 0;
   let in_ZF = 0;

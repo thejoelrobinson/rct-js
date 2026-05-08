@@ -38,7 +38,7 @@ export function FUN_0042e48a(heap) {
     }
     uVar1 = in_EAX;
     uVar7 = FUN_005df40c(heap);
-    uVar2 = (undefined4)(uVar7 >>> 0x20);
+    uVar2 = (uVar7 >>> 0x20);
     uVar4 = uVar7 & 3;
     uVar6 = extraout_ECX_00;
     FUN_0042e276(heap, 4, uVar2, extraout_ECX_00, uVar4, uVar1);
@@ -47,7 +47,7 @@ export function FUN_0042e48a(heap) {
   }
   uVar2 = in_EAX;
   uVar7 = FUN_005df40c(heap);
-  uVar3 = (undefined4)(uVar7 >>> 0x20);
+  uVar3 = (uVar7 >>> 0x20);
   uVar5 = uVar7 & 1;
   uVar6 = 2;
   uVar1 = extraout_ECX;

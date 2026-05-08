@@ -15,18 +15,19 @@ export function FUN_0042e94d(heap) {
   let extraout_CX = 0;
   let in_EDX = 0;
   let uVar3 = 0;
+  let unaff_ESI = 0;
   let in_ZF = 0;
   sVar1 = FUN_00444bd4(heap);
   if (!in_ZF) {
-    heap.u32(unaff_ESI) = 2;
-    heap.u32(unaff_ESI + (1) * 4) = 8;
-    heap.u32(unaff_ESI + (0x14) * 4) = 9;
-    heap.u32(unaff_ESI + (9) * 4) = 0xc;
-    heap.u32(unaff_ESI + (0x15) * 4) = 9;
+    heap.setU32(unaff_ESI, (2) >>> 0);
+    heap.setU32((unaff_ESI + (1) * 4), (8) >>> 0);
+    heap.setU32((unaff_ESI + (0x14) * 4), (9) >>> 0);
+    heap.setU32((unaff_ESI + (9) * 4), (0xc) >>> 0);
+    heap.setU32((unaff_ESI + (0x15) * 4), (9) >>> 0);
     uVar2 = FUN_005df40c(heap);
     uVar3 = (uVar2 >>> 8) & 0x1e;
-    heap.u32((unaff_ESI + 0x30)) = sVar1 + uVar3;
-    heap.u32((unaff_ESI + 0x32)) = extraout_CX + uVar3;
+    heap.setU32((unaff_ESI + 0x30), (sVar1 + uVar3) >>> 0);
+    heap.setU32((unaff_ESI + 0x32), (extraout_CX + uVar3) >>> 0);
     switch (uVar2 & 3) {
       case 0:
         break;
@@ -36,10 +37,10 @@ export function FUN_0042e94d(heap) {
         break;
       case 3:
     }
-    heap.u32(unaff_ESI + (0x1e) * 4) = (uVar2 & 3) << 3;
+    heap.setU32((unaff_ESI + (0x1e) * 4), ((uVar2 & 3) << 3) >>> 0);
     FUN_00444927(heap);
-    heap.u32(unaff_ESI + (0x48) * 4) = 0;
-    heap.u32((unaff_ESI + 0x26)) = 0;
+    heap.setU32((unaff_ESI + (0x48) * 4), (0) >>> 0);
+    heap.setU32((unaff_ESI + 0x26), (0) >>> 0);
   }
   return CONCAT44(in_EDX, in_EAX);
 }

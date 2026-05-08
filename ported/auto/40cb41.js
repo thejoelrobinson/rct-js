@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { _memset } from "../../runtime/win32.js";
 import { FUN_0040c93f } from "./40c93f.js";
 import { FUN_004122a3 } from "./4122a3.js";
 export function FUN_0040cb41(heap, param_1) {
@@ -31,9 +32,9 @@ export function FUN_0040cb41(heap, param_1) {
   if (local_8 == 0) {
     if ((heap.u32(__addr_local_10) != 0) && (local_14 = FUN_004122a3(heap, heap.u32((__addr_DAT_005f04c0 + param_1 * 0x16c)), heap.u32(__addr_local_10), heap.u32(__addr_local_20), param_1 * 0x16c + 0x5f04c4, __addr_local_c), heap.u32(__addr_local_c) < heap.u32(__addr_local_10))) {
       if (heap.u32((__addr_DAT_005f0504 + param_1 * 0x16c)) == 0) {
-        heap.u32((__addr_DAT_005f0508 + param_1 * 0x16c)) = 1;
-        heap.u32((__addr_DAT_005f04fc + param_1 * 0x16c)) = heap.u32(__addr_local_c);
-        _memset((heap.u32(__addr_local_c) + heap.u32(__addr_local_20)), (-(heap.u32((heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c)) + 0xe)) == 8) & 0x80), heap.u32(__addr_local_10) - heap.u32(__addr_local_c));
+        heap.setU32((__addr_DAT_005f0508 + param_1 * 0x16c), (1) >>> 0);
+        heap.setU32((__addr_DAT_005f04fc + param_1 * 0x16c), (heap.u32(__addr_local_c)) >>> 0);
+        _memset(heap, (heap.u32(__addr_local_c) + heap.u32(__addr_local_20)), (-(heap.u32((heap.u32((__addr_DAT_005f04bc + param_1 * 0x16c)) + 0xe)) == 8) & 0x80), heap.u32(__addr_local_10) - heap.u32(__addr_local_c));
       } else {
         local_24 = heap.u32(__addr_local_20);
         local_28 = heap.u32(__addr_local_10);
@@ -46,8 +47,8 @@ export function FUN_0040cb41(heap, param_1) {
       }
     }
     (heap.u32(heap.u32((heap.u32(heap.u32((__addr_DAT_005ebfe8 + param_1 * 4))) + 0x4c))))(heap.u32((__addr_DAT_005ebfe8 + param_1 * 4)), heap.u32(__addr_local_20), heap.u32(__addr_local_10), heap.u32(__addr_local_18), 0);
-    heap.u32((__addr_DAT_005f04f8 + param_1 * 0x16c)) = 0;
-    heap.u32((__addr_DAT_005f04f4 + param_1 * 0x16c)) = heap.u32((__addr_DAT_005f04f8 + param_1 * 0x16c));
+    heap.setU32((__addr_DAT_005f04f8 + param_1 * 0x16c), (0) >>> 0);
+    heap.setU32((__addr_DAT_005f04f4 + param_1 * 0x16c), (heap.u32((__addr_DAT_005f04f8 + param_1 * 0x16c))) >>> 0);
   }
   return;
 } finally {

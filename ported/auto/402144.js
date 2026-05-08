@@ -14,7 +14,10 @@ export function FUN_00402144(heap) {
   let iVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
+  let puVar4 = 0;
+  let puVar5 = 0;
   let uVar6 = 0;
+  let local_cc = 0;
   let local_c0 = 0;
   let local_b6 = 0;
   let local_ac = 0;
@@ -46,7 +49,7 @@ export function FUN_00402144(heap) {
             } else {
               local_14 = 8;
               for (; (local_8 < 0x500 && (heap.u32(local_cc) != '\0')); local_cc = local_cc + 1) {
-                heap.u32(local_cc) = '\0';
+                heap.setU32(local_cc, ('\0') >>> 0);
                 local_8 = local_8 + 0x40;
               }
               uVar3 = local_8 - iVar1;
@@ -57,7 +60,7 @@ export function FUN_00402144(heap) {
               iVar1 = local_14;
               do {
                 for (; uVar6 != 0; uVar6 = uVar6 - 1) {
-                  heap.u32(puVar5) = heap.u32(puVar4);
+                  heap.setU32(puVar5, (heap.u32(puVar4)) >>> 0);
                   puVar4 = puVar4 + 1;
                   puVar5 = puVar5 + 1;
                 }

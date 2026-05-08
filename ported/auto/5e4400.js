@@ -11,6 +11,7 @@ export function FUN_005e4400(heap) {
   const __addr_PTR_LAB_005e452c = __sp + 0;
   try {
   let sVar1 = 0;
+  let pbVar2 = 0;
   let unaff_ESI = 0;
   let unaff_EDI = 0;
   if (((heap.u32((unaff_ESI + 0x32)) & 0x10) != 0) && ((heap.u32((unaff_ESI + 0x32)) & 0x20) == 0)) {

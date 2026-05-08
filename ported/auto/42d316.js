@@ -13,6 +13,7 @@ export function FUN_0042d316(heap) {
   let iVar1 = 0;
   let in_CX = 0;
   let in_DX = 0;
+  let pbVar2 = 0;
   pbVar2 = __addr_DAT_008d8a3c;
   iVar1 = 0;
   while (true) {

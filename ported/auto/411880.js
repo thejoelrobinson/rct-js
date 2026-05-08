@@ -4,7 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { DeleteObject, GetModuleHandleA, GetObjectA, LoadImageA } from "../../runtime/win32.js";
+import { DeleteObject, GetModuleHandleA, GetObjectA, LoadImageA, _memset } from "../../runtime/win32.js";
 import { FUN_00411a34 } from "./411a34.js";
 export function FUN_00411880(heap, param_1, param_2, param_3, param_4) {
   const __sp = heap.allocFrame(12);
@@ -39,7 +39,7 @@ export function FUN_00411880(heap, param_1, param_2, param_3, param_4) {
     heap.setU32(__addr_local_90, (0) >>> 0);
   } else {
     GetObjectA(heap, local_8c, 0x18, __addr_local_88);
-    _memset(__addr_local_70, 0, 0x6c);
+    _memset(heap, __addr_local_70, 0, 0x6c);
     heap.setU32(__addr_local_70, (0x6c) >>> 0);
     local_6c = 7;
     local_8 = 0x40;

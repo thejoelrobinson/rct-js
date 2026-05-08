@@ -40,7 +40,11 @@ for (const file of files) {
     continue;
   }
   try {
-    const { js, info } = await translateFunction(source);
+    // Derive RVA from the file name; pass to the translator so it forces
+    // the function name to FUN_<padded-hex>, avoiding collisions with
+    // Win32 / Ghidra-builtin names Ghidra may have used.
+    const addrFromFile = parseInt(file.replace(/\.c$/, ""), 16);
+    const { js, info } = await translateFunction(source, addrFromFile);
     writeFileSync(outputPath, js);
     ok.push({ file, addr: info.funcAddr, name: info.funcName });
   } catch (e) {

@@ -15,16 +15,16 @@ export function FUN_004413c5(heap) {
   let bVar1 = 0;
   let unaff_BL = 0;
   let unaff_EDI = 0;
-  heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4) = heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4) + unaff_BL;
-  heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4) = heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4) + '\x01';
-  if (0x13 < heap.u32((byte)(__addr_DAT_0088751b) + (unaff_EDI) * 4)) {
+  heap.setU32(((__addr_DAT_0088751c) + (unaff_EDI) * 4), (heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4) + unaff_BL) >>> 0);
+  heap.setU32(((__addr_DAT_0088751b) + (unaff_EDI) * 4), (heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4) + '\x01') >>> 0);
+  if (0x13 < heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4)) {
     LOCK();
     bVar1 = heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4);
-    heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4) = 0;
+    heap.setU32(((__addr_DAT_0088751c) + (unaff_EDI) * 4), (0) >>> 0);
     UNLOCK();
-    heap.u32((__addr_DAT_0088751a) + (unaff_EDI) * 4) = bVar1 >>> 2;
-    heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4) = 0;
-    heap.u32((__addr_DAT_0088751d) + (unaff_EDI) * 4) = heap.u32((__addr_DAT_0088751d) + (unaff_EDI) * 4) | 1;
+    heap.setU32(((__addr_DAT_0088751a) + (unaff_EDI) * 4), (bVar1 >>> 2) >>> 0);
+    heap.setU32(((__addr_DAT_0088751b) + (unaff_EDI) * 4), (0) >>> 0);
+    heap.setU32(((__addr_DAT_0088751d) + (unaff_EDI) * 4), (heap.u32((__addr_DAT_0088751d) + (unaff_EDI) * 4) | 1) >>> 0);
   }
   return;
 } finally {

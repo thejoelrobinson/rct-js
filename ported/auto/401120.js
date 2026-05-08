@@ -15,6 +15,7 @@ export function FUN_00401120(heap, param_1) {
   let hRgn = 0;
   let iVar1 = 0;
   let DVar2 = 0;
+  let puVar3 = 0;
   let uVar4 = 0;
   if (param_1 == 0x0) {
     heap.setU32(0x005e9154, (1) >>> 0);
@@ -26,7 +27,7 @@ export function FUN_00401120(heap, param_1) {
         FUN_004015f0(heap, heap.u32(param_1), heap.u32(param_1 + (1) * 4), heap.u32(param_1 + (2) * 4), heap.u32(param_1 + (3) * 4));
       } else {
         if (iVar1 == 3) {
-        heap.u32(heap.u32(__addr_local_120)) = 0x20;
+        heap.setU32(heap.u32(__addr_local_120), (0x20) >>> 0);
         DVar2 = GetRegionData(heap, hRgn, 0x120, __addr_local_120);
         if ((DVar2 != 0) && (uVar4 = 0, heap.u32((heap.u32(__addr_local_120) + 4)) != 0)) {
           puVar3 = __addr_local_fc + 1;

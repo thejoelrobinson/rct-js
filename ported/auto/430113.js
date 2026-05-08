@@ -20,20 +20,23 @@ export function FUN_00430113(heap) {
   try {
   let cVar1 = 0;
   let iVar2 = 0;
+  let pcVar3 = 0;
+  let pcVar4 = 0;
+  let pcVar5 = 0;
   FUN_0043018c(heap);
   pcVar3 = __addr_DAT_005f8fb3;
   pcVar4 = __addr_DAT_0099aa88;
   do {
     pcVar5 = pcVar4;
     cVar1 = heap.u32(pcVar3);
-    heap.u32(pcVar5) = cVar1;
+    heap.setU32(pcVar5, (cVar1) >>> 0);
     pcVar3 = pcVar3 + 1;
     pcVar4 = pcVar5 + 1;
   } while (cVar1 != '*');
   pcVar4 = __addr_DAT_005f92e0;
   do {
     cVar1 = heap.u32(pcVar4);
-    heap.u32(pcVar5) = cVar1;
+    heap.setU32(pcVar5, (cVar1) >>> 0);
     pcVar4 = pcVar4 + 1;
     pcVar5 = pcVar5 + 1;
   } while (cVar1 != '\0');

@@ -5,6 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00416f30(heap, param_1, param_2) {
+  let pcVar1 = 0;
   let iVar2 = 0;
   iVar2 = param_2;
   for (pcVar1 = param_1; (iVar2 != 0 && (iVar2 = iVar2 + -1, heap.u32(pcVar1) != '\0')); pcVar1 = pcVar1 + 1) {

@@ -10,7 +10,9 @@ import { FUN_00415770 } from "./415770.js";
 export function FUN_00413830(heap, param_1, param_2) {
   let iVar1 = 0;
   let uVar2 = 0;
+  let puVar3 = 0;
   let dwBytes = 0;
+  let puVar4 = 0;
   dwBytes = param_2 * param_1;
   if (dwBytes < 0xffffffe1) {
     if (dwBytes == 0) {
@@ -31,11 +33,11 @@ export function FUN_00413830(heap, param_1, param_2) {
         if (puVar3 != 0x0) {
           puVar4 = puVar3;
           for (uVar2 = dwBytes >>> 2; uVar2 != 0; uVar2 = uVar2 - 1) {
-            heap.u32(puVar4) = 0;
+            heap.setU32(puVar4, (0) >>> 0);
             puVar4 = puVar4 + 1;
           }
           for (uVar2 = dwBytes & 3; uVar2 != 0; uVar2 = uVar2 - 1) {
-            heap.u32(puVar4) = 0;
+            heap.setU32(puVar4, (0) >>> 0);
             puVar4 = (puVar4 + 1);
           }
           /* goto LAB_00413890 */ throw new Error("goto LAB_00413890 not supported");

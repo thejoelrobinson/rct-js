@@ -7,6 +7,7 @@
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e68e2 } from "./5e68e2.js";
 export function FUN_005d3628(heap) {
+  let puVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
@@ -27,33 +28,33 @@ export function FUN_005d3628(heap) {
   if (bVar11 == 1) {
     puVar1 = (iVar10 + 0x12);
     uVar2 = heap.u32(puVar1);
-    heap.u32(puVar1) = heap.u32(puVar1) | 1;
+    heap.setU32(puVar1, (heap.u32(puVar1) | 1) >>> 0);
   } else {
     if (bVar11 < 2) {
       puVar1 = (iVar10 + 0x12);
       uVar2 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xfffe;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xfffe) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar3 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xfffd;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xfffd) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar4 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xfffb;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xfffb) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar5 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xfff7;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xfff7) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar6 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xefff;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xefff) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar7 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xffdf;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xffdf) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar8 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xffef;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xffef) >>> 0);
       puVar1 = (iVar10 + 0x12);
       uVar9 = heap.u32(puVar1);
-      heap.u32(puVar1) = heap.u32(puVar1) & 0xffbf;
+      heap.setU32(puVar1, (heap.u32(puVar1) & 0xffbf) >>> 0);
       if ((((((((((uVar2 & 1) != 0) * '\x02' + ((uVar3 >>> 1 & 1) != 0)) * '\x02' + ((uVar4 >>> 2 & 1) != 0)) * '\x02' + ((uVar5 >>> 3 & 1) != 0)) * '\x02' + ((uVar6 >>> 0xc & 1) != 0)) * '\x02' + ((uVar7 >>> 5 & 1) != 0)) * '\x02' + ((uVar8 >>> 4 & 1) != 0)) * '\x02' + ((uVar9 >>> 6 & 1) != 0)) == '\0') {
         return;
       }
@@ -61,7 +62,7 @@ export function FUN_005d3628(heap) {
     }
     puVar1 = (iVar10 + 0x12);
     uVar2 = heap.u32(puVar1) >>> 5;
-    heap.u32(puVar1) = heap.u32(puVar1) | 0x20;
+    heap.setU32(puVar1, (heap.u32(puVar1) | 0x20) >>> 0);
   }
   if ((uVar2 & 1) != 0) {
     return;

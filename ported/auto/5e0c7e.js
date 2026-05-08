@@ -20,8 +20,8 @@ export function FUN_005e0c7e(heap) {
   FUN_005e3b2b(heap);
   if (bVar1) {
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_0099fd70;
-    heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x34;
+    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_0099fd70) >>> 0);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x34) >>> 0);
     FUN_005e412c(heap);
   }
   return CONCAT44(in_EDX, in_EAX);

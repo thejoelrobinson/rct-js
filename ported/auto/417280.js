@@ -16,7 +16,7 @@ export function FUN_00417280(heap, param_1, param_2, param_3, param_4) {
   FUN_00417140(heap, param_1);
   FUN_00418ce0(heap, param_1);
   uVar1 = heap.u32(param_1 + (3) * 4) & 0xffffc2f3;
-  heap.u32(param_1 + (3) * 4) = uVar1;
+  heap.setU32((param_1 + (3) * 4), (uVar1) >>> 0);
   if ((param_3 & 4) == 0) {
     if (param_2 == 0x0) {
       param_2 = FUN_004133c0(heap, param_4);
@@ -28,15 +28,15 @@ export function FUN_00417280(heap, param_1, param_2, param_3, param_4) {
     } else {
       uVar1 = uVar1 | 0x500;
     }
-    heap.u32(param_1 + (3) * 4) = uVar1;
+    heap.setU32((param_1 + (3) * 4), (uVar1) >>> 0);
   } else {
     param_2 = param_1 + 5;
-    heap.u32(param_1 + (3) * 4) = uVar1 | 4;
+    heap.setU32((param_1 + (3) * 4), (uVar1 | 4) >>> 0);
     param_4 = 2;
   }
-  heap.u32(param_1 + (6) * 4) = param_4;
-  heap.u32(param_1 + (2) * 4) = param_2;
-  heap.u32(param_1) = param_2;
-  heap.u32(param_1 + (1) * 4) = 0;
+  heap.setU32((param_1 + (6) * 4), (param_4) >>> 0);
+  heap.setU32((param_1 + (2) * 4), (param_2) >>> 0);
+  heap.setU32(param_1, (param_2) >>> 0);
+  heap.setU32((param_1 + (1) * 4), (0) >>> 0);
   return 0;
 }

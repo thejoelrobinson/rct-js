@@ -12,7 +12,13 @@ export function FUN_0045a8a9(heap) {
   let in_AX = 0;
   let uVar2 = 0;
   let in_CX = 0;
+  let pcVar3 = 0;
+  let pcVar4 = 0;
   let uVar5 = 0;
+  let pcVar6 = 0;
+  let pcVar7 = 0;
+  let unaff_EDI = 0;
+  let pcVar8 = 0;
   pcVar3 = __addr_DAT_0087f41c;
   uVar5 = 0;
   pcVar6 = 0x0;
@@ -44,7 +50,7 @@ export function FUN_0045a8a9(heap) {
   do {
     pcVar6 = pcVar7;
     cVar1 = heap.u32(unaff_EDI);
-    heap.u32(pcVar6) = cVar1;
+    heap.setU32(pcVar6, (cVar1) >>> 0);
     unaff_EDI = unaff_EDI + 1;
     if (cVar1 == '\0') {
       /* goto LAB_0045a920 */ throw new Error("goto LAB_0045a920 not supported");
@@ -52,7 +58,7 @@ export function FUN_0045a8a9(heap) {
     uVar5 = uVar5 + 1;
     pcVar7 = pcVar6 + 1;
   } while (uVar5 < 0x20);
-  heap.u32(pcVar6) = '\0';
+  heap.setU32(pcVar6, ('\0') >>> 0);
   LAB_0045a920: return (uVar2 | in_CX << 9) + 0x8000;
 } finally {
     heap.freeFrame(4);

@@ -11,6 +11,9 @@ export function FUN_00436508(heap) {
   try {
   let uVar1 = 0;
   let iVar2 = 0;
+  let puVar3 = 0;
+  let puVar4 = 0;
+  let puVar5 = 0;
   let bVar6 = 0;
   uVar1 = heap.u32(0x008ae938);
   bVar6 = false;
@@ -35,7 +38,7 @@ export function FUN_00436508(heap) {
       puVar4 = puVar3 + 3;
       puVar5 = puVar3;
       for (; iVar2 != 0; iVar2 = iVar2 + -1) {
-        heap.u32(puVar5) = heap.u32(puVar4);
+        heap.setU32(puVar5, (heap.u32(puVar4)) >>> 0);
         puVar4 = puVar4 + 1;
         puVar5 = puVar5 + 1;
       }

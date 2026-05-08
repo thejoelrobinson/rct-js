@@ -7,7 +7,9 @@
 export function FUN_00413180(heap, param_1, param_2) {
   let bVar1 = 0;
   let uVar2 = 0;
+  let puVar3 = 0;
   let uVar4 = 0;
+  let puVar5 = 0;
   puVar3 = param_1;
   do {
     if ((puVar3 & 3) == 0) {
@@ -47,34 +49,34 @@ export function FUN_00413180(heap, param_1, param_2) {
         param_2 = param_2 + 1;
         if (((uVar2 ^ 0xffffffff ^ uVar2 + 0x7efefeff) & 0x81010100) != 0) {
           if (uVar4 == '\0') {
-            LAB_00413258: heap.u32(puVar5) = uVar4;
+            LAB_00413258: heap.setU32(puVar5, (uVar4) >>> 0);
             return param_1;
           }
           if ((uVar4 >>> 8) == '\0') {
-            heap.u32(puVar5) = uVar4;
+            heap.setU32(puVar5, (uVar4) >>> 0);
             return param_1;
           }
           if ((uVar4 & 0xff0000) == 0) {
-            heap.u32(puVar5) = uVar4;
-            heap.u32((puVar5 + 2)) = 0;
+            heap.setU32(puVar5, (uVar4) >>> 0);
+            heap.setU32((puVar5 + 2), (0) >>> 0);
             return param_1;
           }
           if ((uVar4 & 0xff000000) == 0) {
-            heap.u32(puVar5) = uVar4;
+            heap.setU32(puVar5, (uVar4) >>> 0);
             return param_1;
           }
         }
-        heap.u32(puVar5) = uVar4;
+        heap.setU32(puVar5, (uVar4) >>> 0);
         puVar5 = puVar5 + 1;
       } while (true);
     }
-    bVar1 = (byte) * param_2;
+    bVar1 = heap.u32(param_2);
     uVar4 = bVar1;
     param_2 = (param_2 + 1);
     if (bVar1 == 0) {
       /* goto LAB_00413258 */ throw new Error("goto LAB_00413258 not supported");
     }
-    heap.u32(puVar5) = bVar1;
+    heap.setU32(puVar5, (bVar1) >>> 0);
     puVar5 = (puVar5 + 1);
   } while (true);
 }

@@ -1,0 +1,58 @@
+{
+  "imageBase": "0x400000",
+  "sizeOfImage": "0x5c4000",
+  "totalSize": 10240000,
+  "ranges": [
+    {
+      "name": ".text",
+      "va": "0x401000",
+      "size": 106918,
+      "kept": false,
+      "reason": "code"
+    },
+    {
+      "name": "CODESEG",
+      "va": "0x41c000",
+      "size": 1879133,
+      "kept": false,
+      "reason": "code"
+    },
+    {
+      "name": ".rdata",
+      "va": "0x5e7000",
+      "size": 8006,
+      "kept": true
+    },
+    {
+      "name": ".data",
+      "va": "0x5e9000",
+      "size": 44916,
+      "kept": true
+    },
+    {
+      "name": "DATASEG",
+      "va": "0x5f4000",
+      "size": 3855900,
+      "kept": true
+    },
+    {
+      "name": "DataSeg",
+      "va": "0x9a2000",
+      "size": 66305,
+      "kept": true
+    },
+    {
+      "name": "CodeSeg",
+      "va": "0x9b3000",
+      "size": 38242,
+      "kept": true
+    },
+    {
+      "name": ".rsrc",
+      "va": "0x9bd000",
+      "size": 26736,
+      "kept": true
+    }
+  ],
+  "generatedAt": "2026-05-08T17:16:26.428Z"
+}
