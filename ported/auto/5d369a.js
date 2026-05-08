@@ -7,6 +7,9 @@
 import { CONCAT11, CONCAT21, CONCAT22, CONCAT31 } from "../runtime/win32.js";
 import { FUN_00426f56 } from "./426f56.js";
 export function FUN_005d369a(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let uVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
@@ -25,7 +28,7 @@ export function FUN_005d369a(heap) {
   do {
     uVar11 = 0;
     LAB_005d36aa: do {
-      puVar12 = heap.u32((0x00971ef4) + ((ushort)((ushort)(uVar11 << 7 | uVar11 >>> 9 | uVar8) >>> 5 | (uVar11 >>> 9) << 0xb)) * 4);
+      puVar12 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar11 << 7 | uVar11 >>> 9 | uVar8) >>> 5 | (uVar11 >>> 9) << 0xb)) * 4);
       do {
         in_EDX = CONCAT22(heap, (in_EDX >>> 0x10), CONCAT11(heap, heap.u32(puVar12), in_EDX)) & 0xffff3cff;
         uVar10 = (undefined2)(uVar8 >>> 0x10);
@@ -67,4 +70,7 @@ export function FUN_005d369a(heap) {
       return;
     }
   } while (true);
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,13 +6,18 @@
 
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_005dde9c(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_PTR_DAT_006e2758 = __sp + 0;
+  const __addr_PTR_DAT_006e2788 = __sp + 4;
+  const __addr_DAT_006e1d80 = __sp + 8;
+  try {
   let uVar1 = 0;
   let sVar3 = 0;
   let uVar7 = 0;
   uVar7 = 0;
   do {
-    puVar5 = heap.u32((0x006e2758) + (uVar7) * 4);
-    puVar4 = heap.u32((0x006e2788) + (uVar7) * 4);
+    puVar5 = heap.u32((__addr_PTR_DAT_006e2758) + (uVar7) * 4);
+    puVar4 = heap.u32((__addr_PTR_DAT_006e2788) + (uVar7) * 4);
     while (true) {
       uVar1 = heap.u32(puVar5);
       if (uVar1 == 0xffff) {
@@ -28,10 +33,10 @@ export function FUN_005dde9c(heap) {
     uVar7 = uVar7 + 1;
   } while (uVar7 < 0xc);
   uVar7 = 0;
-  puVar6 = 0x006e1d80;
+  puVar6 = __addr_DAT_006e1d80;
   sVar3 = 4;
   do {
-    psVar2 = heap.u32((0x006e2788) + (uVar7) * 4);
+    psVar2 = heap.u32((__addr_PTR_DAT_006e2788) + (uVar7) * 4);
     heap.u32(puVar6) = 0;
     if (heap.u32(psVar2) != -1) {
       heap.u32(puVar6) = 5;
@@ -44,4 +49,7 @@ export function FUN_005dde9c(heap) {
   } while (uVar7 < 0xc);
   FUN_005e5301(heap);
   return;
+} finally {
+    heap.freeFrame(12);
+  }
 }

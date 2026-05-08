@@ -5,8 +5,11 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_005e68e2(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_009a013c = __sp + 0;
+  try {
   let in_AX = 0;
-  puVar1 = 0x009a013c;
+  puVar1 = __addr_DAT_009a013c;
   while (true) {
     if (heap.u32(0x009a1164) <= puVar1) {
       return in_AX;
@@ -17,4 +20,7 @@ export function FUN_005e68e2(heap) {
     puVar1 = puVar1 + 0x178;
   }
   return in_AX;
+} finally {
+    heap.freeFrame(4);
+  }
 }

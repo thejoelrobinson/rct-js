@@ -11,10 +11,13 @@ import { FUN_0042f98e } from "./42f98e.js";
 import { FUN_0042fa5f } from "./42fa5f.js";
 import { FUN_004447f6 } from "./4447f6.js";
 export function FUN_0042fd81(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0099aa88 = __sp + 0;
+  try {
   let iVar1 = 0;
   let bVar2 = 0;
   heap.setU32(0x005f8d35, (1) >>> 0);
-  iVar1 = FUN_004083b5(heap, 0x0099aa88);
+  iVar1 = FUN_004083b5(heap, __addr_DAT_0099aa88);
   bVar2 = iVar1 != -1;
   if (iVar1 != -1) {
     heap.setU32(0x005f88a4, (iVar1) >>> 0);
@@ -32,4 +35,7 @@ export function FUN_0042fd81(heap) {
     iVar1 = FUN_00408387(heap, heap.u32(0x005f88a4));
   }
   return iVar1;
+} finally {
+    heap.freeFrame(4);
+  }
 }

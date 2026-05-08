@@ -14,6 +14,10 @@ import { FUN_0040840d } from "./40840d.js";
 import { FUN_00436558 } from "./436558.js";
 import { FUN_005df431 } from "./5df431.js";
 export function FUN_00436634(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  const __addr_DAT_006e3b90 = __sp + 4;
+  try {
   let iVar2 = 0;
   let in_EAX = 0;
   let iVar3 = 0;
@@ -30,7 +34,7 @@ export function FUN_00436634(heap) {
   }
   uVar7 = 0;
   do {
-    iVar2 = heap.u32((0x00971ef4) + (uVar7) * 4);
+    iVar2 = heap.u32((__addr_DAT_00971ef4) + (uVar7) * 4);
     iVar6 = iVar2;
     do {
       iVar5 = iVar6 + 8;
@@ -42,7 +46,7 @@ export function FUN_00436634(heap) {
     uVar7 = uVar7 + 1;
   } while (uVar7 < 0x4000);
   FUN_00408387(heap, iVar3);
-  puVar8 = 0x006e3b90;
+  puVar8 = __addr_DAT_006e3b90;
   for (iVar3 = 0x18000; iVar3 != 0; iVar3 = iVar3 + -1) {
     heap.u32(puVar8) = 0;
     puVar8 = puVar8 + 1;
@@ -52,9 +56,12 @@ export function FUN_00436634(heap) {
     uVar4 = FUN_005df431(heap);
     return uVar4;
   }
-  FUN_00408276(heap, iVar3, 0x006e3b90, 0x60000);
+  FUN_00408276(heap, iVar3, __addr_DAT_006e3b90, 0x60000);
   FUN_00408387(heap, iVar3);
   FUN_0040840d(heap, 0x00628af7);
   FUN_00436558(heap);
   return in_EAX;
+} finally {
+    heap.freeFrame(8);
+  }
 }

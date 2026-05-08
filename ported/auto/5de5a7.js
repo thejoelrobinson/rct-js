@@ -11,6 +11,9 @@ import { FUN_005e3c3c } from "./5e3c3c.js";
 import { FUN_005e412c } from "./5e412c.js";
 import { FUN_005e5fcb } from "./5e5fcb.js";
 export function FUN_005de5a7(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_006e1d40 = __sp + 0;
+  try {
   let unaff_ESI = 0;
   let bVar1 = 0;
   bVar1 = true;
@@ -18,7 +21,7 @@ export function FUN_005de5a7(heap) {
   if (bVar1) {
     FUN_005dde9c(heap);
     FUN_005e3c3c(heap);
-    heap.u32((unaff_ESI + 0x1c)) = 0x006e1d40;
+    heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_006e1d40;
     heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x2fff4;
     heap.u32((unaff_ESI + 0xc)) = heap.u32((unaff_ESI + 0xc)) | 0x3c0000;
     FUN_005e412c(heap);
@@ -27,4 +30,7 @@ export function FUN_005de5a7(heap) {
     heap.setU32(0x006e1ec3, (2) >>> 0);
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -5,9 +5,15 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_00429361(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LAB_0042937c = __sp + 0;
+  try {
   if (heap.u32(0x0087d718) != -0x80000000) {
     return;
   }
-  (heap.u32(heap.u32((0x0042937c) + (heap.u32(0x0087d0d0)) * 4)))();
+  (heap.u32(heap.u32((__addr_PTR_LAB_0042937c) + (heap.u32(0x0087d0d0)) * 4)))();
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

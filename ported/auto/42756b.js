@@ -7,9 +7,12 @@
 import { FUN_004275d5 } from "./4275d5.js";
 import { FUN_005e3c3c } from "./5e3c3c.js";
 export function FUN_0042756b(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f4ac8 = __sp + 0;
+  try {
   let unaff_ESI = 0;
   FUN_005e3c3c(heap);
-  heap.u32((unaff_ESI + 0x1c)) = 0x005f4ac8;
+  heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_005f4ac8;
   heap.u32((unaff_ESI + 0xc)) = heap.u32(0x005f50d8);
   heap.u32((unaff_ESI + 0x30)) = 0;
   heap.u32((unaff_ESI + 0x164)) = 0;
@@ -20,4 +23,7 @@ export function FUN_0042756b(heap) {
   heap.u32((unaff_ESI + 0x16c)) = 0;
   FUN_004275d5(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

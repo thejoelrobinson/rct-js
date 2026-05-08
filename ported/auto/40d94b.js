@@ -5,11 +5,18 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_0040d94b(heap, param_1) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_005f0500 = __sp + 0;
+  const __addr_DAT_005f03a4 = __sp + 4;
+  try {
   let uVar1 = 0;
-  if (heap.u32((0x005f0500 + param_1 * 0x16c)) == 0) {
-    uVar1 = heap.u32((0x005f03a4 + param_1 * 0x16c));
+  if (heap.u32((__addr_DAT_005f0500 + param_1 * 0x16c)) == 0) {
+    uVar1 = heap.u32((__addr_DAT_005f03a4 + param_1 * 0x16c));
   } else {
     uVar1 = 0;
   }
   return uVar1;
+} finally {
+    heap.freeFrame(8);
+  }
 }

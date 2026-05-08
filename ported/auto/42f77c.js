@@ -7,6 +7,9 @@
 import { LOCK, UNLOCK } from "../runtime/win32.js";
 import { FUN_0042f6df } from "./42f6df.js";
 export function FUN_0042f77c(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f8cb5 = __sp + 0;
+  try {
   let in_AL = 0;
   if (heap.u32(0x005f88ae) == '\0') {
     heap.setU32(0x005f8cb4, (in_AL) >>> 0);
@@ -16,7 +19,7 @@ export function FUN_0042f77c(heap) {
   if (heap.u32(0x005f88ae) == '\x01') {
     if (in_AL != heap.u32(0x005f8cb4)) {
       heap.setU32(0x005f8cb5, (in_AL) >>> 0);
-      heap.setU32(0x005f8cb0, (0x005f8cb5) >>> 0);
+      heap.setU32(0x005f8cb0, (__addr_DAT_005f8cb5) >>> 0);
       heap.setU32(0x005f8d34, (2) >>> 0);
       heap.setU32(0x005f88ae, (3) >>> 0);
       return;
@@ -64,4 +67,7 @@ export function FUN_0042f77c(heap) {
   heap.setU32(0x005f88ae, (2) >>> 0);
   heap.setU32(0x005f8d34, (2) >>> 0);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

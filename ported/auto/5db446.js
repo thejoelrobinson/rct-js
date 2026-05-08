@@ -15,6 +15,15 @@ import { FUN_005ddd9c } from "./5ddd9c.js";
 import { FUN_005df40c } from "./5df40c.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 export function FUN_005db446(heap) {
+  const __sp = heap.allocFrame(28);
+  const __addr_DAT_00887422 = __sp + 0;
+  const __addr_DAT_00743b94 = __sp + 4;
+  const __addr_DAT_0088747e = __sp + 8;
+  const __addr_DAT_00887441 = __sp + 12;
+  const __addr_DAT_0088751d = __sp + 16;
+  const __addr_DAT_00743bd6 = __sp + 20;
+  const __addr_DAT_00743bd4 = __sp + 24;
+  try {
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -27,21 +36,21 @@ export function FUN_005db446(heap) {
   uVar5 = heap.u32(unaff_ESI + (0x30) * 4);
   iVar6 = uVar5 * 0x260;
   puVar7 = unaff_ESI;
-  if ((heap.u32((0x00887422) + (uVar5 * 0x130) * 4) & 0x400) == 0) {
-    for (; heap.u32(puVar7 + (1) * 4) != '\0'; puVar7 = 0x00743b94 + (uint) * (puVar7 + 0x40) * 0x100) {
+  if ((heap.u32((__addr_DAT_00887422) + (uVar5 * 0x130) * 4) & 0x400) == 0) {
+    for (; heap.u32(puVar7 + (1) * 4) != '\0'; puVar7 = __addr_DAT_00743b94 + (uint) * (puVar7 + 0x40) * 0x100) {
     
     }
     iVar4 = -1;
     do {
       iVar4 = iVar4 + 1;
-    } while (heap.u32((puVar7 + 10)) != heap.u32((0x0088747e + iVar4 * 2 + iVar6)));
+    } while (heap.u32((puVar7 + 10)) != heap.u32((__addr_DAT_0088747e + iVar4 * 2 + iVar6)));
     FUN_0045192e(heap);
-    if (heap.u32((0x00887441) + (iVar6) * 4) != '\0') {
+    if (heap.u32((__addr_DAT_00887441) + (iVar6) * 4) != '\0') {
       FUN_00426f56(heap);
     }
   }
-  heap.u32((0x00887422) + (uVar5 * 0x130) * 4) = heap.u32((0x00887422) + (uVar5 * 0x130) * 4) | 0x400;
-  heap.u32((0x0088751d) + (iVar6) * 4) = heap.u32((0x0088751d) + (iVar6) * 4) | 0xc;
+  heap.u32((__addr_DAT_00887422) + (uVar5 * 0x130) * 4) = heap.u32((__addr_DAT_00887422) + (uVar5 * 0x130) * 4) | 0x400;
+  heap.u32((__addr_DAT_0088751d) + (iVar6) * 4) = heap.u32((__addr_DAT_0088751d) + (iVar6) * 4) | 0xc;
   FUN_005ddd9c(heap);
   puVar7 = unaff_ESI;
   while (true) {
@@ -72,12 +81,15 @@ export function FUN_005db446(heap) {
     if (heap.u32((puVar7 + 0x3e)) == 0xffff) {
       break;
     }
-    puVar7 = 0x00743b94 + (uint) * (puVar7 + 0x3e) * 0x100;
+    puVar7 = __addr_DAT_00743b94 + (uint) * (puVar7 + 0x3e) * 0x100;
   }
   uVar1 = heap.u32((unaff_ESI + 0x40));
   uVar2 = heap.u32((puVar7 + 0x42));
-  heap.u32((0x00743bd6 + uVar1 * 0x100)) = uVar2;
-  heap.u32((0x00743bd4 + uVar2 * 0x100)) = uVar1;
+  heap.u32((__addr_DAT_00743bd6 + uVar1 * 0x100)) = uVar2;
+  heap.u32((__addr_DAT_00743bd4 + uVar2 * 0x100)) = uVar1;
   heap.u32((unaff_ESI + 0x28)) = 0;
   return;
+} finally {
+    heap.freeFrame(28);
+  }
 }

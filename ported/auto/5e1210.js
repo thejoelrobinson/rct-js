@@ -6,6 +6,9 @@
 
 import { FUN_005e12eb } from "./5e12eb.js";
 export function FUN_005e1210(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0099ad63 = __sp + 0;
+  try {
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -18,20 +21,20 @@ export function FUN_005e1210(heap) {
   do {
     uVar2 = uVar5;
     uVar6 = uVar3;
-    if (heap.u32((0x0099ad63) + (uVar1 + uVar3) * 4) != '\0') {
+    if (heap.u32((__addr_DAT_0099ad63) + (uVar1 + uVar3) * 4) != '\0') {
       do {
         uVar6 = uVar6 + heap.u32(0x00971ee6);
         if (heap.u32(0x00971eea) <= uVar2 + 1) {
           break;
         }
         uVar2 = uVar2 + 1;
-      } while (heap.u32((0x0099ad63) + (uVar1 + uVar6) * 4) != '\0');
+      } while (heap.u32((__addr_DAT_0099ad63) + (uVar1 + uVar6) * 4) != '\0');
       uVar6 = uVar6 - heap.u32(0x00971ee6);
       uVar2 = uVar1;
       uVar4 = uVar3;
       do {
         do {
-          heap.u32((0x0099ad63) + (uVar2 + uVar4) * 4) = 0;
+          heap.u32((__addr_DAT_0099ad63) + (uVar2 + uVar4) * 4) = 0;
           uVar2 = uVar2 + 1;
         } while (uVar2 <= uVar1);
         uVar4 = uVar4 + heap.u32(0x00971ee6);
@@ -52,4 +55,7 @@ export function FUN_005e1210(heap) {
       }
     }
   } while (true);
+} finally {
+    heap.freeFrame(4);
+  }
 }

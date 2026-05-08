@@ -5,9 +5,13 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_00436558(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_006e3b90 = __sp + 0;
+  const __addr_DAT_00971ef4 = __sp + 4;
+  try {
   let iVar2 = 0;
-  heap.setU32(0x00981ef4, (0x006e3b90) >>> 0);
-  puVar4 = 0x00971ef4;
+  heap.setU32(0x00981ef4, (__addr_DAT_006e3b90) >>> 0);
+  puVar4 = __addr_DAT_00971ef4;
   iVar2 = 0x4000;
   do {
     heap.u32(puVar4) = heap.u32(0x00981ef4);
@@ -21,4 +25,7 @@ export function FUN_00436558(heap) {
     iVar2 = iVar2 + -1;
   } while (iVar2 != 0);
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

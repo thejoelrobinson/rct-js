@@ -36,6 +36,14 @@ import { FUN_0041068b } from "./41068b.js";
 import { FUN_0041069d } from "./41069d.js";
 import { FUN_00413c90 } from "./413c90.js";
 export function FUN_0040f923(heap) {
+  const __sp = heap.allocFrame(24);
+  const __addr_DAT_005ec100 = __sp + 0;
+  const __addr_DAT_005ef6a8 = __sp + 4;
+  const __addr_DAT_005ef6a9 = __sp + 8;
+  const __addr_DAT_005ef6aa = __sp + 12;
+  const __addr_DAT_005ef6ab = __sp + 16;
+  const __addr_DAT_005efaa8 = __sp + 20;
+  try {
   let uVar1 = 0;
   let local_8 = 0;
   heap.setU32(0x005e916c, (FUN_00405b58(heap)) >>> 0);
@@ -43,15 +51,15 @@ export function FUN_0040f923(heap) {
     uVar1 = 0;
   } else {
     if (0 < heap.u32(0x005f12b4)) {
-      FUN_00413c90(heap, 0x005ec100, 0x005ec0ec, 799);
+      FUN_00413c90(heap, __addr_DAT_005ec100, 0x005ec0ec, 799);
     }
     for (local_8 = 0; local_8 < 0x100; local_8 = local_8 + 1) {
-      heap.u32((0x005ef6a8) + (local_8 * 4) * 4) = local_8;
-      heap.u32((0x005ef6a9) + (local_8 * 4) * 4) = heap.u32((0x005ef6a8) + (local_8 * 4) * 4);
-      heap.u32((0x005ef6aa) + (local_8 * 4) * 4) = heap.u32((0x005ef6a9) + (local_8 * 4) * 4);
-      heap.u32((0x005ef6ab) + (local_8 * 4) * 4) = 0;
+      heap.u32((__addr_DAT_005ef6a8) + (local_8 * 4) * 4) = local_8;
+      heap.u32((__addr_DAT_005ef6a9) + (local_8 * 4) * 4) = heap.u32((__addr_DAT_005ef6a8) + (local_8 * 4) * 4);
+      heap.u32((__addr_DAT_005ef6aa) + (local_8 * 4) * 4) = heap.u32((__addr_DAT_005ef6a9) + (local_8 * 4) * 4);
+      heap.u32((__addr_DAT_005ef6ab) + (local_8 * 4) * 4) = 0;
     }
-    heap.setU32(0x005ec0d8, (FUN_0040f2f4(heap, 0x005ef6a8, 0x100, 0x005efaa8)) >>> 0);
+    heap.setU32(0x005ec0d8, (FUN_0040f2f4(heap, __addr_DAT_005ef6a8, 0x100, __addr_DAT_005efaa8)) >>> 0);
     if (heap.u32(0x005ec0d8) == 0) {
       uVar1 = 0;
     } else {
@@ -87,4 +95,7 @@ export function FUN_0040f923(heap) {
     }
   }
   return uVar1;
+} finally {
+    heap.freeFrame(24);
+  }
 }

@@ -5,15 +5,22 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_005e6a83(heap) {
-  puVar2 = 0x009a121c;
-  psVar1 = 0x009a1168;
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_009a121c = __sp + 0;
+  const __addr_DAT_009a1168 = __sp + 4;
+  try {
+  puVar2 = __addr_DAT_009a121c;
+  psVar1 = __addr_DAT_009a1168;
   do {
     if (heap.u32(psVar1) != 0) {
       heap.u32(puVar2) = psVar1;
       puVar2 = puVar2 + 1;
     }
     psVar1 = psVar1 + 10;
-  } while (psVar1 < 0x009a121c);
+  } while (psVar1 < __addr_DAT_009a121c);
   heap.u32(puVar2) = 0;
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

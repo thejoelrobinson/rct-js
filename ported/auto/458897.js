@@ -9,6 +9,9 @@ import { FUN_0045897e } from "./45897e.js";
 import { FUN_00458bcf } from "./458bcf.js";
 import { FUN_009ba943 } from "./9ba943.js";
 export function FUN_00458897(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0099a888 = __sp + 0;
+  try {
   let bVar1 = 0;
   let in_DX = 0;
   let unaff_BX = 0;
@@ -27,7 +30,7 @@ export function FUN_00458897(heap) {
   }
   sVar4 = unaff_BP * (heap.u32(0x006432d4) >>> 1);
   heap.setU32(0x00971ef2, (2) >>> 0);
-  pbVar2 = 0x0099a888;
+  pbVar2 = __addr_DAT_0099a888;
   do {
     uVar5 = SUB42(heap, pbVar2, 0);
     uStack_8 = (undefined2)(pbVar2 >>> 0x10);
@@ -54,4 +57,7 @@ export function FUN_00458897(heap) {
     sVar4 = sVar4 - (heap.u32(0x006432d4) >>> 1);
   } while (-1 < sVar4);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -7,6 +7,11 @@
 import { CreateCompatibleDC, CreateDIBSection, DeleteDC, SelectPalette } from "../runtime/win32.js";
 import { FUN_004133c0 } from "./4133c0.js";
 export function FUN_0040e814(heap, param_1, param_2, param_3) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_005eee9a = __sp + 0;
+  const __addr_DAT_005eee99 = __sp + 4;
+  const __addr_DAT_005eee98 = __sp + 8;
+  try {
   let iVar1 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
@@ -22,9 +27,9 @@ export function FUN_0040e814(heap, param_1, param_2, param_3) {
   } else {
     iVar1 = heap.u32(param_1 + (0x22) * 4);
     for (local_10 = 0; local_10 < 0x100; local_10 = local_10 + 1) {
-      heap.u32((iVar1 + 0x2a + local_10 * 4)) = heap.u32((0x005eee9a) + (local_10 * 4) * 4);
-      heap.u32((iVar1 + 0x29 + local_10 * 4)) = heap.u32((0x005eee99) + (local_10 * 4) * 4);
-      heap.u32((iVar1 + 0x28 + local_10 * 4)) = heap.u32((0x005eee98) + (local_10 * 4) * 4);
+      heap.u32((iVar1 + 0x2a + local_10 * 4)) = heap.u32((__addr_DAT_005eee9a) + (local_10 * 4) * 4);
+      heap.u32((iVar1 + 0x29 + local_10 * 4)) = heap.u32((__addr_DAT_005eee99) + (local_10 * 4) * 4);
+      heap.u32((iVar1 + 0x28 + local_10 * 4)) = heap.u32((__addr_DAT_005eee98) + (local_10 * 4) * 4);
       heap.u32((iVar1 + 0x2b + local_10 * 4)) = 0;
     }
     puVar2 = heap.u32(param_1 + (0x22) * 4);
@@ -67,4 +72,7 @@ export function FUN_0040e814(heap, param_1, param_2, param_3) {
     }
   }
   return uVar3;
+} finally {
+    heap.freeFrame(12);
+  }
 }

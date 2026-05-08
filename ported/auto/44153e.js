@@ -12,16 +12,22 @@ import { FUN_005e5301 } from "./5e5301.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 import { FUN_005e5b80 } from "./5e5b80.js";
 export function FUN_0044153e(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_008d7e2a = __sp + 0;
+  try {
   let unaff_ESI = 0;
   FUN_0044151b(heap);
   FUN_005e53ca(heap);
   FUN_005e5b80(heap);
   FUN_005e5301(heap);
   if (heap.u32((unaff_ESI + 0x2e)) == '\x01') {
-    heap.u32((0x008d7e2a) + (heap.u32((unaff_ESI + 0xc5))) * 4) = 0;
+    heap.u32((__addr_DAT_008d7e2a) + (heap.u32((unaff_ESI + 0xc5))) * 4) = 0;
     FUN_004575af(heap);
   }
   FUN_0042cbb0(heap);
   FUN_00444d1f(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

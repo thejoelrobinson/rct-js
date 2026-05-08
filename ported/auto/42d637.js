@@ -6,12 +6,18 @@
 
 import { FUN_00408342 } from "./408342.js";
 export function FUN_0042d637(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f5558 = __sp + 0;
+  try {
   let in_AX = 0;
   if (0x5f593f < heap.u32(0x005f554c)) {
-    FUN_00408342(heap, heap.u32(0x005f5550), 0x005f5558, 1000);
-    heap.setU32(0x005f554c, (0x005f5558) >>> 0);
+    FUN_00408342(heap, heap.u32(0x005f5550), __addr_DAT_005f5558, 1000);
+    heap.setU32(0x005f554c, (__addr_DAT_005f5558) >>> 0);
   }
   heap.u32(heap.u32(0x005f554c)) = in_AX;
   heap.setU32(0x005f554c, (heap.u32(0x005f554c) + 1) >>> 0);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

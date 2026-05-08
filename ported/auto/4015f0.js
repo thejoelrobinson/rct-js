@@ -5,6 +5,9 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_004015f0(heap, param_1, param_2, param_3, param_4) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f2420 = __sp + 0;
+  try {
   let iVar1 = 0;
   let iVar2 = 0;
   let local_30 = 0;
@@ -40,7 +43,7 @@ export function FUN_004015f0(heap, param_1, param_2, param_3, param_4) {
       iVar1 = (((param_3 + (param_3 >>> 0x1f & 0x3fU)) >>> 6) - iVar1) + 1;
       for (local_24 = 0; local_24 < (((param_4 + (param_4 >>> 0x1f & 7U)) >>> 3) - iVar2) + 1; local_24 = local_24 + 1) {
         for (local_14 = 0; local_14 < iVar1; local_14 = local_14 + 1) {
-          heap.u32((0x005f2420) + (local_30) * 4) = 1;
+          heap.u32((__addr_DAT_005f2420) + (local_30) * 4) = 1;
           local_30 = local_30 + 1;
           heap.setU32(0x005e9158, (heap.u32(0x005e9158) + 1) >>> 0);
         }
@@ -49,4 +52,7 @@ export function FUN_004015f0(heap, param_1, param_2, param_3, param_4) {
     }
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

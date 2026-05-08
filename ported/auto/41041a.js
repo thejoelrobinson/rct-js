@@ -6,6 +6,9 @@
 
 import { CreateCompatibleDC, GetDC, RealizePalette, ReleaseDC, SelectObject, SelectPalette, SetDIBColorTable } from "../runtime/win32.js";
 export function FUN_0041041a(heap, param_1, param_2) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005ef6a8 = __sp + 0;
+  try {
   let uVar1 = 0;
   if (heap.u32(0x005ec0e4) == 0x0) {
     if ((heap.u32((param_1 + 0x90)) == 0) && (heap.u32((param_2 + 0x90)) != 0)) {
@@ -20,7 +23,7 @@ export function FUN_0041041a(heap, param_1, param_2) {
         } else {
           heap.setU32(0x005f0324, (SelectObject(heap, heap.u32(0x005ec0e8), heap.u32((param_1 + 0x8c)))) >>> 0);
           heap.setU32(0x005f0328, (SelectPalette(heap, heap.u32(0x005ec0e4), heap.u32(0x005ec0d8), 0)) >>> 0);
-          SetDIBColorTable(heap, heap.u32(0x005ec0e8), 0, 0x100, 0x005ef6a8);
+          SetDIBColorTable(heap, heap.u32(0x005ec0e8), 0, 0x100, __addr_DAT_005ef6a8);
           RealizePalette(heap, heap.u32(0x005ec0e4));
           uVar1 = 1;
         }
@@ -32,4 +35,7 @@ export function FUN_0041041a(heap, param_1, param_2) {
     uVar1 = 0;
   }
   return uVar1;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -7,6 +7,9 @@
 import { OutputDebugStringA } from "../runtime/win32.js";
 import { FUN_00413620 } from "./413620.js";
 export function FUN_004059dd(heap, param_1, param_2, param_3) {
+  const __sp = heap.allocFrame(1024);
+  const __addr_local_404 = __sp + 0;
+  try {
   local_408 = 0x005e9408;
   do {
     if (heap.u32((local_408 + 0x30)) == param_1) {
@@ -16,7 +19,10 @@ export function FUN_004059dd(heap, param_1, param_2, param_3) {
     piVar1 = (local_408 + 100);
     local_408 = pcVar2;
   } while (heap.u32(piVar1) != 0xffff);
-  FUN_00413620(heap, local_404, 0x005ebe00, local_408, param_1, param_2, param_3);
-  OutputDebugStringA(heap, local_404);
+  FUN_00413620(heap, __addr_local_404, 0x005ebe00, local_408, param_1, param_2, param_3);
+  OutputDebugStringA(heap, __addr_local_404);
   return 1;
+} finally {
+    heap.freeFrame(1024);
+  }
 }

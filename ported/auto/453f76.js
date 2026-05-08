@@ -11,6 +11,11 @@ import { FUN_00407c42 } from "./407c42.js";
 import { FUN_00407e33 } from "./407e33.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_00453f76(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_00632928 = __sp + 0;
+  const __addr_DAT_00632958 = __sp + 4;
+  const __addr_DAT_00632940 = __sp + 8;
+  try {
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -29,9 +34,9 @@ export function FUN_00453f76(heap) {
   }
   if ((heap.u32(0x008d7eb2) == '\x01') || (heap.u32(0x008d7eb2) == '\x02')) {
     if (heap.u32(0x00632924) == 1) {
-      iVar4 = FUN_004077b3(heap, 0x1c, 0x00632928, 1, 1);
+      iVar4 = FUN_004077b3(heap, 0x1c, __addr_DAT_00632928, 1, 1);
       if (iVar4 != 0) {
-        FUN_00407c42(heap, 0x00632928, 1, 0xfffff060, 0, 0);
+        FUN_00407c42(heap, __addr_DAT_00632928, 1, 0xfffff060, 0, 0);
         heap.setU32(0x00632924, (-4000) >>> 0);
       }
       /* goto LAB_0045405e */ throw new Error("goto LAB_0045405e not supported");
@@ -46,18 +51,18 @@ export function FUN_00453f76(heap) {
     }
     iVar4 = heap.u32(0x00632924) + -0x50;
     if (iVar4 < -3999) {
-      FUN_00407a41(heap, 0x00632928);
+      FUN_00407a41(heap, __addr_DAT_00632928);
       heap.setU32(0x00632924, (1) >>> 0);
       /* goto LAB_0045405e */ throw new Error("goto LAB_0045405e not supported");
     }
   }
   heap.setU32(0x00632924, (iVar4) >>> 0);
-  FUN_00407e33(heap, 0x00632928, iVar4);
+  FUN_00407e33(heap, __addr_DAT_00632928, iVar4);
   LAB_0045405e: if (heap.u32(0x0063293c) == 1) {
     heap.setU32(0x0063293c, (0) >>> 0);
-    iVar4 = FUN_004077b3(heap, heap.u32(0x0063296c), 0x00632958, 1, 1);
+    iVar4 = FUN_004077b3(heap, heap.u32(0x0063296c), __addr_DAT_00632958, 1, 1);
     if (iVar4 != 0) {
-      FUN_00407c42(heap, 0x00632958, 0, heap.u32(0x00632970), 10000, 0);
+      FUN_00407c42(heap, __addr_DAT_00632958, 0, heap.u32(0x00632970), 10000, 0);
       heap.setU32(0x00632954, (0) >>> 0);
     }
   } else {
@@ -76,13 +81,13 @@ export function FUN_00453f76(heap) {
       uVar3 = FUN_005df40c(heap);
       if ((uVar3 & 0x10000) == 0) {
         if ((uVar3 & 0x20000) == 0) {
-          if ((heap.u32(0x00632954) == 8) && (iVar4 = FUN_004077b3(heap, 0x1e, 0x00632958, 1, 1, uVar3), iVar4 != 0)) {
-            FUN_00407c42(heap, 0x00632958, 0, 0, ((uVar3 >>> 0x12 & 0xff) - 0x80) * 0x10, 0);
+          if ((heap.u32(0x00632954) == 8) && (iVar4 = FUN_004077b3(heap, 0x1e, __addr_DAT_00632958, 1, 1, uVar3), iVar4 != 0)) {
+            FUN_00407c42(heap, __addr_DAT_00632958, 0, 0, ((uVar3 >>> 0x12 & 0xff) - 0x80) * 0x10, 0);
             heap.setU32(0x00632954, (0) >>> 0);
           }
         } else {
-          if ((heap.u32(0x0063293c) == 8) && (iVar4 = FUN_004077b3(heap, 0x1d, 0x00632940, 1, 1, uVar3), iVar4 != 0)) {
-          FUN_00407c42(heap, 0x00632940, 0, 0, ((uVar3 >>> 0x12 & 0xff) - 0x80) * 0x10, 0);
+          if ((heap.u32(0x0063293c) == 8) && (iVar4 = FUN_004077b3(heap, 0x1d, __addr_DAT_00632940, 1, 1, uVar3), iVar4 != 0)) {
+          FUN_00407c42(heap, __addr_DAT_00632940, 0, 0, ((uVar3 >>> 0x12 & 0xff) - 0x80) * 0x10, 0);
           heap.setU32(0x0063293c, (0) >>> 0);
         }
         }
@@ -93,9 +98,9 @@ export function FUN_00453f76(heap) {
           heap.setU32(0x0063296c, (0x1e) >>> 0);
         }
         heap.setU32(0x00632970, ((uVar3 >>> 0x12 & 0xff) * -8) >>> 0);
-        iVar4 = FUN_004077b3(heap, heap.u32(0x0063296c), 0x00632940, 1, 1);
+        iVar4 = FUN_004077b3(heap, heap.u32(0x0063296c), __addr_DAT_00632940, 1, 1);
         if (iVar4 != 0) {
-          FUN_00407c42(heap, 0x00632940, 0, heap.u32(0x00632970), 0xffffd8f0, 0);
+          FUN_00407c42(heap, __addr_DAT_00632940, 0, heap.u32(0x00632970), 0xffffd8f0, 0);
           heap.setU32(0x0063293c, (1) >>> 0);
         }
       }
@@ -103,13 +108,16 @@ export function FUN_00453f76(heap) {
     }
   }
   }
-  if ((heap.u32(0x0063293c) != 8) && (iVar4 = FUN_00407b91(heap, 0x00632940), iVar4 == 0)) {
-    FUN_00407a41(heap, 0x00632940);
+  if ((heap.u32(0x0063293c) != 8) && (iVar4 = FUN_00407b91(heap, __addr_DAT_00632940), iVar4 == 0)) {
+    FUN_00407a41(heap, __addr_DAT_00632940);
     heap.setU32(0x0063293c, (8) >>> 0);
   }
-  if ((heap.u32(0x00632954) != 8) && (iVar4 = FUN_00407b91(heap, 0x00632958), iVar4 == 0)) {
-    FUN_00407a41(heap, 0x00632958);
+  if ((heap.u32(0x00632954) != 8) && (iVar4 = FUN_00407b91(heap, __addr_DAT_00632958), iVar4 == 0)) {
+    FUN_00407a41(heap, __addr_DAT_00632958);
     heap.setU32(0x00632954, (8) >>> 0);
   }
   return;
+} finally {
+    heap.freeFrame(12);
+  }
 }

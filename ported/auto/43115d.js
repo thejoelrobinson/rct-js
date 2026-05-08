@@ -7,13 +7,19 @@
 import { FUN_004310fa } from "./4310fa.js";
 import { FUN_005e3c3c } from "./5e3c3c.js";
 export function FUN_0043115d(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f94e0 = __sp + 0;
+  try {
   let unaff_ESI = 0;
   FUN_005e3c3c(heap);
-  heap.u32((unaff_ESI + 0x1c)) = 0x005f94e0;
+  heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_005f94e0;
   heap.u32((unaff_ESI + 0xc)) = heap.u32(0x005f9690);
   heap.u32((unaff_ESI + 0x30)) = 0;
   heap.u32((unaff_ESI + 0x164)) = 0;
   heap.u32((unaff_ESI + 0x168)) = 0;
   FUN_004310fa(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,6 +6,13 @@
 
 import { FUN_00458bcf } from "./458bcf.js";
 export function FUN_0045a95d(heap) {
+  const __sp = heap.allocFrame(20);
+  const __addr_DAT_006439d8 = __sp + 0;
+  const __addr_PTR_DAT_0064bb08 = __sp + 4;
+  const __addr_DAT_0099a888 = __sp + 8;
+  const __addr_DAT_0099a6c8 = __sp + 12;
+  const __addr_DAT_006432d8 = __sp + 16;
+  try {
   let uVar1 = 0;
   let uVar3 = 0;
   let in_AX = 0;
@@ -21,7 +28,7 @@ export function FUN_0045a95d(heap) {
   }
   heap.setU32(0x0064baf8, (heap.u32(0x0064baf8) + 1) >>> 0);
   uVar7 = 0;
-  psVar11 = 0x006439d8;
+  psVar11 = __addr_DAT_006439d8;
   uVar6 = 0xffffffff;
   do {
     if (heap.u32((psVar11 + 7)) <= uVar6) {
@@ -52,8 +59,8 @@ export function FUN_0045a95d(heap) {
   FUN_00458bcf(heap);
   psVar11 = heap.u32(0x0064bb00);
   uVar6 = heap.u32(heap.u32(0x0064bb00) + (5) * 4);
-  puVar9 = heap.u32((0x0064bb08) + (heap.u32(heap.u32(0x0064bb00) + (6) * 4)) * 4);
-  pbVar10 = 0x0099a888;
+  puVar9 = heap.u32((__addr_PTR_DAT_0064bb08) + (heap.u32(heap.u32(0x0064bb00) + (6) * 4)) * 4);
+  pbVar10 = __addr_DAT_0099a888;
   LAB_0045aa35: do {
     do {
       while (true) {
@@ -63,7 +70,7 @@ export function FUN_0045a95d(heap) {
           if (bVar4 != 0) {
             break;
           }
-          pbVar10 = 0x0099a888;
+          pbVar10 = __addr_DAT_0099a888;
         }
         if ((0x9b < bVar4) || (bVar4 < 0x8e)) {
           break;
@@ -71,8 +78,8 @@ export function FUN_0045a95d(heap) {
         heap.setU32(0x0064bb04, (heap.u32((heap.u32(0x0093a464) + (uint)(byte)(bVar4 + 0x72) * 4))) >>> 0);
       }
     } while (bVar4 < 0x20);
-    uVar7 = heap.u32((uint)(byte)(0x0099a6c8) + ((byte)(bVar4 - 0x20)) * 4);
-    pbVar8 = 0x006432d8 + (uint)(byte)(bVar4 - 0x20) * 8;
+    uVar7 = heap.u32((uint)(byte)(__addr_DAT_0099a6c8) + ((byte)(bVar4 - 0x20)) * 4);
+    pbVar8 = __addr_DAT_006432d8 + (uint)(byte)(bVar4 - 0x20) * 8;
     do {
       while (uVar3 = heap.u32(0x0064bb04), uVar6 != 0) {
         uVar6 = uVar6 - 1;
@@ -103,4 +110,7 @@ export function FUN_0045a95d(heap) {
       uVar7 = uVar7 - 1;
     } while (uVar7 != 0);
   } while (true);
+} finally {
+    heap.freeFrame(20);
+  }
 }

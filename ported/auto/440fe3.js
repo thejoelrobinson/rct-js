@@ -8,13 +8,16 @@ import { LOCK, UNLOCK } from "../runtime/win32.js";
 import { FUN_0043c60b } from "./43c60b.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 export function FUN_00440fe3(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0062d324 = __sp + 0;
+  try {
   let uVar2 = 0;
   let in_EAX = 0;
   let uVar3 = 0;
   let uVar4 = 0;
   let unaff_ESI = 0;
-  if ((heap.u32((0x0062d324) + ((in_EAX & 0xff) * 2) * 4) != -1) && (0xfd < heap.u32((unaff_ESI + 0x71)))) {
-    heap.u32((unaff_ESI + 0x71)) = heap.u32((0x0062d324) + ((in_EAX & 0xff) * 2) * 4);
+  if ((heap.u32((__addr_DAT_0062d324) + ((in_EAX & 0xff) * 2) * 4) != -1) && (0xfd < heap.u32((unaff_ESI + 0x71)))) {
+    heap.u32((unaff_ESI + 0x71)) = heap.u32((__addr_DAT_0062d324) + ((in_EAX & 0xff) * 2) * 4);
     heap.u32((unaff_ESI + 0x72)) = 0;
     heap.u32((unaff_ESI + 0x70)) = 0;
     FUN_0043c60b(heap);
@@ -50,4 +53,7 @@ export function FUN_00440fe3(heap) {
   } while (uVar4 < 5);
   heap.u32((unaff_ESI + 0x45)) = heap.u32((unaff_ESI + 0x45)) | 1;
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

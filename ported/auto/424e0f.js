@@ -12,6 +12,11 @@ import { FUN_005df1ff } from "./5df1ff.js";
 import { FUN_005df40c } from "./5df40c.js";
 import { FUN_005e56d3 } from "./5e56d3.js";
 export function FUN_00424e0f(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  const __addr_DAT_00887420 = __sp + 4;
+  const __addr_DAT_008ad1c0 = __sp + 8;
+  try {
   let uVar2 = 0;
   let sVar3 = 0;
   let uVar4 = 0;
@@ -27,7 +32,7 @@ export function FUN_00424e0f(heap) {
   LAB_00424e14: uVar6 = ((((((ushort)((heap.u32(0x008d4228) >>> 1 & 1) != 0) << 1 | (ushort)((heap.u32(0x008d4228) >>> 3 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 5 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 7 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 9 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 0xb & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 0xd & 1) != 0);
   uVar2 = (((((((ushort)((heap.u32(0x008d4228) & 1) != 0) << 1 | (ushort)((heap.u32(0x008d4228) >>> 2 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 4 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 6 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 8 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 10 & 1) != 0)) << 1 | (ushort)((heap.u32(0x008d4228) >>> 0xc & 1) != 0)) << 5;
   uVar4 = uVar6 << 5;
-  pbVar9 = heap.u32((0x00971ef4) + ((ushort)((ushort)(uVar6 << 0xc | uVar2) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
+  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar6 << 0xc | uVar2) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
   do {
     if ((heap.u32(pbVar9) & 0x3c) == 0) {
       pbVar11 = unaff_EDI;
@@ -86,7 +91,7 @@ export function FUN_00424e0f(heap) {
     uVar4 = extraout_CX_01;
   }
   LAB_00424f60: uVar2 = uVar4 << 7 | uVar4 >>> 9 | uVar2;
-  pbVar9 = heap.u32((0x00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
   do {
     if ((heap.u32(pbVar9) & 0x3c) == 0xc) {
       FUN_005df1ff(heap);
@@ -111,18 +116,21 @@ export function FUN_00424e0f(heap) {
     if (((0x70 < heap.u32(0x008dbed2)) && (heap.u32(0x008dbed2) < 0x80)) && ((-sVar3 < -1 || (300000 < heap.u32(0x0087c3b4))))) {
       uVar4 = FUN_005df40c(heap);
       if (uVar4 < 0x42) {
-        pcVar10 = 0x00887420;
+        pcVar10 = __addr_DAT_00887420;
         do {
           if (heap.u32(pcVar10) != -1) {
             FUN_00426f56(heap);
             return;
           }
           pcVar10 = pcVar10 + 0x260;
-        } while (pcVar10 < 0x008ad1c0);
+        } while (pcVar10 < __addr_DAT_008ad1c0);
       }
       return;
     }
     return;
   }
   /* goto code_r0x00424e0f */ throw new Error("goto code_r0x00424e0f not supported");
+} finally {
+    heap.freeFrame(12);
+  }
 }

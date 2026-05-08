@@ -7,6 +7,9 @@
 import { LOCK, UNLOCK } from "../runtime/win32.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00443f36(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0087c81c = __sp + 0;
+  try {
   let uVar1 = 0;
   let iVar2 = 0;
   let iVar3 = 0;
@@ -14,12 +17,15 @@ export function FUN_00443f36(heap) {
   do {
     iVar2 = iVar3 + -4;
     LOCK(heap);
-    uVar1 = heap.u32((0x0087c81c + iVar3));
-    heap.u32((0x0087c81c + iVar3)) = 0;
+    uVar1 = heap.u32((__addr_DAT_0087c81c + iVar3));
+    heap.u32((__addr_DAT_0087c81c + iVar3)) = 0;
     UNLOCK(heap);
     heap.u32((iVar3 + 0x87c854)) = uVar1;
     iVar3 = iVar2;
   } while (iVar2 != 0);
   FUN_005e5301(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,6 +6,11 @@
 
 import { CARRY1, CONCAT11 } from "../runtime/win32.js";
 export function FUN_00458b05(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_0099a516 = __sp + 0;
+  const __addr_DAT_008dc0b8 = __sp + 4;
+  const __addr_DAT_0099a508 = __sp + 8;
+  try {
   let bVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -13,7 +18,7 @@ export function FUN_00458b05(heap) {
   let uVar5 = 0;
   let unaff_DI = 0;
   uVar5 = heap.u32(0x00971e84);
-  uVar4 = heap.u32((ushort)(byte)(0x0099a516) + (uVar5) * 4) * -3 + unaff_DI;
+  uVar4 = heap.u32((ushort)(byte)(__addr_DAT_0099a516) + (uVar5) * 4) * -3 + unaff_DI;
   uVar3 = 0;
   puVar7 = unaff_ESI;
   while (true) {
@@ -37,7 +42,7 @@ export function FUN_00458b05(heap) {
     } else {
       if (bVar1 == 7) {
       uVar5 = 0x1c0;
-      LAB_00458bba: uVar4 = heap.u32((ushort)(byte)(0x0099a516) + (uVar5) * 4) * -3 + unaff_DI;
+      LAB_00458bba: uVar4 = heap.u32((ushort)(byte)(__addr_DAT_0099a516) + (uVar5) * 4) * -3 + unaff_DI;
     } else {
       if (bVar1 == 8) {
         uVar5 = 0x2a0;
@@ -55,7 +60,7 @@ export function FUN_00458b05(heap) {
         if (bVar1 == 0x17) {
           uVar2 = heap.u32(puVar7);
           puVar7 = (puVar6 + 5);
-          uVar3 = uVar3 + heap.u32((0x008dc0b8 + (uVar2 & 0x1ffff) * 0x10));
+          uVar3 = uVar3 + heap.u32((__addr_DAT_008dc0b8 + (uVar2 & 0x1ffff) * 0x10));
           uVar2 = 0;
           LAB_00458b39: if (unaff_DI < uVar3) {
             heap.u32(unaff_ESI) = 0x2e2e2e;
@@ -74,6 +79,9 @@ export function FUN_00458b05(heap) {
     }
     }
   }
-  uVar3 = CONCAT11(heap, (uVar3 >>> 8) + CARRY1(heap, uVar3, heap.u32((0x0099a508) + (uVar2 + uVar5) * 4)), uVar3 + heap.u32((0x0099a508) + (uVar2 + uVar5) * 4));
+  uVar3 = CONCAT11(heap, (uVar3 >>> 8) + CARRY1(heap, uVar3, heap.u32((__addr_DAT_0099a508) + (uVar2 + uVar5) * 4)), uVar3 + heap.u32((__addr_DAT_0099a508) + (uVar2 + uVar5) * 4));
   /* goto LAB_00458b39 */ throw new Error("goto LAB_00458b39 not supported");
+} finally {
+    heap.freeFrame(12);
+  }
 }

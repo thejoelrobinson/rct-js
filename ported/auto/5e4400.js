@@ -7,6 +7,9 @@
 import { FUN_005e0e07 } from "./5e0e07.js";
 import { FUN_009b30f1 } from "./9b30f1.js";
 export function FUN_005e4400(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LAB_005e452c = __sp + 0;
+  try {
   let sVar1 = 0;
   let unaff_ESI = 0;
   let unaff_EDI = 0;
@@ -39,6 +42,9 @@ export function FUN_005e4400(heap) {
       return;
     }
   }
-  (heap.u32(heap.u32((0x005e452c) + (heap.u32(pbVar2)) * 4)))();
+  (heap.u32(heap.u32((__addr_PTR_LAB_005e452c) + (heap.u32(pbVar2)) * 4)))();
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

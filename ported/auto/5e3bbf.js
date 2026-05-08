@@ -5,12 +5,15 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_005e3bbf(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_009a013c = __sp + 0;
+  try {
   let in_AX = 0;
   let in_CX = 0;
   let in_DX = 0;
   let unaff_BX = 0;
   if ((((-1 < in_DX) && (0x1d < in_AX)) && ((in_DX + unaff_BX) <= heap.u32(0x00971ed6))) && ((in_AX + in_CX) <= heap.u32(0x00971ed8))) {
-    puVar1 = 0x009a013c;
+    puVar1 = __addr_DAT_009a013c;
     while (true) {
       if (heap.u32(0x009a1164) <= puVar1) {
         return in_AX;
@@ -22,4 +25,7 @@ export function FUN_005e3bbf(heap) {
     }
   }
   return in_AX;
+} finally {
+    heap.freeFrame(4);
+  }
 }

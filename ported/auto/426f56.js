@@ -9,6 +9,9 @@ import { FUN_0044294c } from "./44294c.js";
 import { FUN_004429a8 } from "./4429a8.js";
 import { FUN_004429db } from "./4429db.js";
 export function FUN_00426f56(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LAB_005f49a0 = __sp + 0;
+  try {
   let uVar1 = 0;
   let unaff_EBX = 0;
   let uVar2 = 0;
@@ -20,7 +23,7 @@ export function FUN_00426f56(heap) {
   heap.setU32(0x005f4a6a, (heap.u32(0x005f4a6a) + '\x01') >>> 0);
   uVar2 = unaff_EBX & 0xfffffffe;
   heap.setU32(0x005f4a68, (uVar1) >>> 0);
-  (heap.u32(heap.u32((0x005f49a0) + (unaff_ESI) * 4)))();
+  (heap.u32(heap.u32((__addr_PTR_LAB_005f49a0) + (unaff_ESI) * 4)))();
   heap.setU32(0x005f4a68, (uVar1) >>> 0);
   if (uVar2 != 0x80000000) {
     if ((((heap.u32(0x005f4a6a) == '\x01') && ((unaff_EBX & 4) == 0)) && ((unaff_EBX & 0x20) == 0)) && (uVar2 != 0)) {
@@ -30,7 +33,7 @@ export function FUN_00426f56(heap) {
     heap.setU32(0x005f4a64, (uVar2) >>> 0);
     if (uVar2 != 0x80000000) {
       if ((unaff_EBX & 1) != 0) {
-        (heap.u32(heap.u32((0x005f49a0) + (unaff_ESI) * 4)))();
+        (heap.u32(heap.u32((__addr_PTR_LAB_005f49a0) + (unaff_ESI) * 4)))();
         if ((unaff_EBX != 0x80000000) && (unaff_EBX <= uVar2)) {
           uVar2 = unaff_EBX;
         }
@@ -50,4 +53,7 @@ export function FUN_00426f56(heap) {
     FUN_00427108(heap);
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

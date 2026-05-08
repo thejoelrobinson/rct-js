@@ -7,13 +7,16 @@
 import { FUN_004508fd } from "./4508fd.js";
 import { FUN_004509d3 } from "./4509d3.js";
 export function FUN_0045069f(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let bVar2 = 0;
   let cVar3 = 0;
   let uVar4 = 0;
   let unaff_ESI = 0;
   heap.setU32(0x008ae94c, (heap.u32(0x008ae94c) + 1) >>> 0);
   uVar4 = heap.u32(0x008ae93e) << 7 | heap.u32(0x008ae93e) >>> 9 | heap.u32(0x008ae93c);
-  pbVar5 = heap.u32((0x00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
+  pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
   do {
     bVar2 = heap.u32(pbVar5) & 0x3c;
     if (bVar2 == 0) {
@@ -105,4 +108,7 @@ export function FUN_0045069f(heap) {
   FUN_004508fd(heap);
   FUN_004509d3(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

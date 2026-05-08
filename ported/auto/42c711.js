@@ -8,6 +8,11 @@ import { CONCAT44 } from "../runtime/win32.js";
 import { FUN_0042cb29 } from "./42cb29.js";
 import { FUN_00458bcf } from "./458bcf.js";
 export function FUN_0042c711(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_008d7eb8 = __sp + 0;
+  const __addr_DAT_0064bc60 = __sp + 4;
+  const __addr_DAT_008d8930 = __sp + 8;
+  try {
   let in_EAX = 0;
   let uVar1 = 0;
   let in_ECX = 0;
@@ -16,7 +21,7 @@ export function FUN_0042c711(heap) {
   let uVar2 = 0;
   uVar1 = in_EAX;
   do {
-    pcVar3 = 0x008d7eb8;
+    pcVar3 = __addr_DAT_008d7eb8;
     do {
       if (heap.u32(pcVar3) == '\0') {
         heap.u32(pcVar3) = uVar1;
@@ -125,12 +130,15 @@ export function FUN_0042c711(heap) {
         heap.u32(pcVar3 + (0x10b) * 4) = '\0';
         uVar2 = heap.u32(0x006e3b80);
         heap.u32((pcVar3 + 8)) = heap.u32(0x006e3b80);
-        heap.u32(pcVar3 + (10) * 4) = (heap.u32(0x006e3b82) * (uint) * (0x0064bc60 + (uVar2 & 7) * 2) >>> 0x10) + '\x01';
+        heap.u32(pcVar3 + (10) * 4) = (heap.u32(0x006e3b82) * (uint) * (__addr_DAT_0064bc60 + (uVar2 & 7) * 2) >>> 0x10) + '\x01';
         return CONCAT44(heap, in_EDX, in_EAX);
       }
       pcVar3 = pcVar3 + 0x10c;
-    } while (pcVar3 < 0x008d8930);
+    } while (pcVar3 < __addr_DAT_008d8930);
     uVar1 = FUN_0042cb29(heap);
     in_ECX = extraout_ECX;
   } while (true);
+} finally {
+    heap.freeFrame(12);
+  }
 }

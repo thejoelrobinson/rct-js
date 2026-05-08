@@ -15,11 +15,17 @@
 export class Heap {
   /**
    * @param {Uint8Array} memory
+   * @param {number} [stackTop] absolute address where the stack starts (grows down).
+   *                           Defaults to the end of `memory`.
    */
-  constructor(memory) {
+  constructor(memory, stackTop) {
     this.bytes = memory;
     // DataView gives us little-endian unaligned reads/writes that match x86.
     this.view = new DataView(memory.buffer, memory.byteOffset, memory.byteLength);
+    // Stack — used by ported functions to allocate frames for address-taken
+    // locals so callees can read/write them through the shared heap.
+    // Default: grow down from the end of the buffer.
+    this.sp = stackTop !== undefined ? stackTop : memory.byteLength;
   }
 
   // Reads — all little-endian, unaligned-safe.
@@ -37,4 +43,19 @@ export class Heap {
   setI16(a, v) { this.view.setInt16 (a, v & 0xffff, true); }
   setU32(a, v) { this.view.setUint32(a, v >>> 0, true); }
   setI32(a, v) { this.view.setInt32 (a, v | 0, true); }
+
+  // Stack frame — allocate `n` bytes (rounded to 4) below the current SP and
+  // return the new SP (the address of the lowest byte of the frame). The
+  // returned region is zeroed, matching C local-variable semantics.
+  // The caller is responsible for matching this with a freeFrame(n) on exit.
+  allocFrame(n) {
+    n = (n + 3) & ~3;
+    this.sp -= n;
+    this.bytes.fill(0, this.sp, this.sp + n);
+    return this.sp;
+  }
+  freeFrame(n) {
+    n = (n + 3) & ~3;
+    this.sp += n;
+  }
 }

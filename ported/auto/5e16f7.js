@@ -9,6 +9,9 @@ import { FUN_00434a94 } from "./434a94.js";
 import { FUN_005e19eb } from "./5e19eb.js";
 import { FUN_005e4355 } from "./5e4355.js";
 export function FUN_005e16f7(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LAB_005e17b8 = __sp + 0;
+  try {
   let iVar1 = 0;
   let sVar2 = 0;
   let sVar3 = 0;
@@ -36,7 +39,7 @@ export function FUN_005e16f7(heap) {
       }
       if (cVar4 != '\0') {
         FUN_00423677(heap);
-        (heap.u32(heap.u32((0x005e17b8) + (heap.u32(0x00991f88)) * 4)))();
+        (heap.u32(heap.u32((__addr_PTR_LAB_005e17b8) + (heap.u32(0x00991f88)) * 4)))();
         return;
       }
       if ((heap.u32((unaff_ESI + 0x32)) & 8) != 0) {
@@ -58,4 +61,7 @@ export function FUN_005e16f7(heap) {
     FUN_005e19eb(heap);
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

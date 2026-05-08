@@ -8,13 +8,16 @@ import { GetLastError, SetFilePointer } from "../runtime/win32.js";
 import { FUN_00418d90 } from "./418d90.js";
 import { FUN_00418ea0 } from "./418ea0.js";
 export function FUN_004179a0(heap, param_1, param_2, param_3) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f3e60 = __sp + 0;
+  try {
   let hFile = 0;
   let DVar1 = 0;
   let DVar2 = 0;
   let iVar3 = 0;
   if (param_1 < heap.u32(0x005f3f60)) {
     iVar3 = (param_1 & 0x1f) * 8;
-    if ((heap.u32((heap.u32((0x005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) & 1) != 0) {
+    if ((heap.u32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) & 1) != 0) {
       hFile = FUN_00418ea0(heap, param_1);
       if (hFile == 0xffffffff) {
         heap.setU32(0x005efec0, (9) >>> 0);
@@ -30,11 +33,14 @@ export function FUN_004179a0(heap, param_1, param_2, param_3) {
         FUN_00418d90(heap, DVar2);
         return 0xffffffff;
       }
-      heap.u32((heap.u32((0x005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) = heap.u32((heap.u32((0x005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) & 0xfd;
+      heap.u32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) = heap.u32((heap.u32((__addr_DAT_005f3e60) + (param_1 >>> 5) * 4) + 4 + iVar3)) & 0xfd;
       return DVar1;
     }
   }
   heap.setU32(0x005efec0, (9) >>> 0);
   heap.setU32(0x005efec4, (0) >>> 0);
   return 0xffffffff;
+} finally {
+    heap.freeFrame(4);
+  }
 }

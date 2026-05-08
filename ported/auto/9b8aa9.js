@@ -6,6 +6,11 @@
 
 import { CONCAT22, LOCK, UNLOCK } from "../runtime/win32.js";
 export function FUN_009b8aa9(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_PTR_DAT_009b9d78 = __sp + 0;
+  const __addr_PTR_DAT_009b8cb0 = __sp + 4;
+  const __addr_PTR_DAT_009b95a4 = __sp + 8;
+  try {
   let in_AL = 0;
   let uVar1 = 0;
   let bVar5 = 0;
@@ -55,7 +60,7 @@ export function FUN_009b8aa9(heap) {
             LOCK(heap);
             UNLOCK(heap);
             heap.setU32(0x009a200c, (puVar12) >>> 0);
-            uVar1 = (heap.u32(heap.u32((0x009b9d78) + (uVar2) * 4)))();
+            uVar1 = (heap.u32(heap.u32((__addr_PTR_DAT_009b9d78) + (uVar2) * 4)))();
             return uVar1;
           }
         } else {
@@ -133,7 +138,7 @@ export function FUN_009b8aa9(heap) {
           LOCK(heap);
           UNLOCK(heap);
           heap.setU32(0x009a200c, (puVar12) >>> 0);
-          uVar1 = (heap.u32(heap.u32((0x009b8cb0) + (uVar2) * 4)))();
+          uVar1 = (heap.u32(heap.u32((__addr_PTR_DAT_009b8cb0) + (uVar2) * 4)))();
           return uVar1;
         }
       } else {
@@ -212,7 +217,7 @@ export function FUN_009b8aa9(heap) {
           LOCK(heap);
           UNLOCK(heap);
           heap.setU32(0x009a200c, (puVar12) >>> 0);
-          uVar1 = (heap.u32(heap.u32((0x009b95a4) + (uVar2) * 4)))();
+          uVar1 = (heap.u32(heap.u32((__addr_PTR_DAT_009b95a4) + (uVar2) * 4)))();
           return uVar1;
         }
       } else {
@@ -344,4 +349,7 @@ export function FUN_009b8aa9(heap) {
       }
     }
   } while (true);
+} finally {
+    heap.freeFrame(12);
+  }
 }

@@ -6,6 +6,12 @@
 
 import { FUN_004183a0 } from "./4183a0.js";
 export function FUN_00418570(heap, param_1, param_2) {
-  FUN_004183a0(heap, param_1, param_2, 0x005ee9e0);
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005ee9e0 = __sp + 0;
+  try {
+  FUN_004183a0(heap, param_1, param_2, __addr_DAT_005ee9e0);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

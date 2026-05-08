@@ -8,6 +8,9 @@ import { VirtualAlloc } from "../runtime/win32.js";
 import { FUN_00415410 } from "./415410.js";
 import { FUN_004159b0 } from "./4159b0.js";
 export function FUN_00415770(heap, param_1) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LOOP_005ec500 = __sp + 0;
+  try {
   let iVar9 = 0;
   let bVar11 = 0;
   piVar10 = heap.u32(0x005ee520);
@@ -46,10 +49,10 @@ export function FUN_00415770(heap, param_1) {
     }
     piVar10 = heap.u32(piVar10);
   } while (piVar10 != heap.u32(0x005ee520));
-  ppuVar8 = 0x005ec500;
+  ppuVar8 = __addr_PTR_LOOP_005ec500;
   while (heap.u32(ppuVar8 + (4) * 4) == 0xffffffff || (heap.u32(ppuVar8 + (3) * 4) == 0x0)) {
     ppuVar8 = heap.u32(ppuVar8);
-    if (ppuVar8 == 0x005ec500) {
+    if (ppuVar8 == __addr_PTR_LOOP_005ec500) {
       puVar6 = FUN_00415410(heap);
       if (puVar6 == 0x0) {
         return 0x0;
@@ -108,4 +111,7 @@ export function FUN_00415770(heap, param_1) {
   heap.u32(piVar10 + (1) * 4) = heap.u32(piVar10 + (1) * 4) - param_1;
   heap.u32(piVar10) = piVar10 + param_1 + 8;
   return piVar10 + 0x40;
+} finally {
+    heap.freeFrame(4);
+  }
 }

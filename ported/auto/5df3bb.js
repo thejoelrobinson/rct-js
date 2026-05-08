@@ -7,11 +7,15 @@
 import { CONCAT31 } from "../runtime/win32.js";
 import { FUN_005df208 } from "./5df208.js";
 export function FUN_005df3bb(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_0066deea = __sp + 0;
+  const __addr_DAT_0066fd3e = __sp + 4;
+  try {
   let uVar1 = 0;
   let iVar2 = 0;
   FUN_005df208(heap);
   heap.setU32(0x006e2b76, (0x351194e3) >>> 0);
-  puVar3 = 0x0066deea;
+  puVar3 = __addr_DAT_0066deea;
   iVar2 = 0x1e51;
   do {
     uVar1 = (uint3)(heap.u32(0x006e2b76) >>> 8);
@@ -19,7 +23,7 @@ export function FUN_005df3bb(heap) {
     puVar3 = puVar3 + 1;
     iVar2 = iVar2 + -1;
   } while (iVar2 != 0);
-  puVar3 = 0x0066fd3e;
+  puVar3 = __addr_DAT_0066fd3e;
   iVar2 = 0xbdc;
   do {
     uVar1 = (uint3)(heap.u32(0x006e2b76) >>> 8);
@@ -29,4 +33,7 @@ export function FUN_005df3bb(heap) {
   } while (iVar2 != 0);
   heap.setU32(0x0099c16a, (0) >>> 0);
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

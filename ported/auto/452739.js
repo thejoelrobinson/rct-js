@@ -13,19 +13,25 @@ import { FUN_0042f239 } from "./42f239.js";
 import { FUN_0042f3a2 } from "./42f3a2.js";
 import { FUN_00452835 } from "./452835.js";
 export function FUN_00452739(heap) {
+  const __sp = heap.allocFrame(16);
+  const __addr_DAT_00632448 = __sp + 0;
+  const __addr_DAT_00632608 = __sp + 4;
+  const __addr_DAT_006326c8 = __sp + 8;
+  const __addr_DAT_006325f0 = __sp + 12;
+  try {
   let in_EAX = 0;
   let iVar1 = 0;
   let sVar3 = 0;
   let uVar7 = 0;
   FUN_00452835(heap);
-  puVar4 = 0x00632448;
+  puVar4 = __addr_DAT_00632448;
   sVar3 = 6;
   do {
     heap.u32(puVar4) = 0xffff;
     puVar4 = puVar4 + 0x1e;
     sVar3 = sVar3 + -1;
   } while (sVar3 != 0);
-  puVar4 = 0x00632608;
+  puVar4 = __addr_DAT_00632608;
   sVar3 = 6;
   do {
     heap.u32(puVar4) = 0xffff;
@@ -37,7 +43,7 @@ export function FUN_00452739(heap) {
     FUN_0042f239(heap);
     iVar1 = FUN_0040771b(heap, 2);
     if (iVar1 != 0) {
-      piVar5 = 0x006326c8;
+      piVar5 = __addr_DAT_006326c8;
       while (heap.u32(piVar5) != -1) {
         piVar8 = piVar5 + 1;
         FUN_004077b3(heap, heap.u32(piVar5), piVar8, 1, 1);
@@ -54,7 +60,7 @@ export function FUN_00452739(heap) {
       iVar1 = FUN_0040d301(heap);
       if (iVar1 != 0) {
         heap.setU32(0x006323f8, (heap.u32(0x006323f8) | 1) >>> 0);
-        puVar6 = 0x006325f0;
+        puVar6 = __addr_DAT_006325f0;
         uVar7 = 0;
         do {
           heap.u32(puVar6) = 0xff;
@@ -67,4 +73,7 @@ export function FUN_00452739(heap) {
     FUN_00407696(heap);
   }
   return in_EAX;
+} finally {
+    heap.freeFrame(16);
+  }
 }

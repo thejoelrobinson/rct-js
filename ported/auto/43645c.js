@@ -10,11 +10,14 @@ import { FUN_0045aaf8 } from "./45aaf8.js";
 import { FUN_0045abea } from "./45abea.js";
 import { FUN_005e06cc } from "./5e06cc.js";
 export function FUN_0043645c(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_006e3b90 = __sp + 0;
+  try {
   let iVar1 = 0;
   FUN_0045aaf8(heap);
   heap.setU32(0x008ae938, (0) >>> 0);
   heap.setU32(0x00743b90, (0) >>> 0);
-  puVar2 = 0x006e3b90;
+  puVar2 = __addr_DAT_006e3b90;
   iVar1 = 0x4000;
   do {
     heap.u32(puVar2) = 0;
@@ -34,4 +37,7 @@ export function FUN_0043645c(heap) {
   FUN_005e06cc(heap);
   FUN_0045abea(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

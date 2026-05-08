@@ -5,9 +5,12 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_00458f0f(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_s_March_006432ac = __sp + 0;
+  try {
   let cVar1 = 0;
   let in_EAX = 0;
-  pcVar2 = heap.u32((0x006432ac) + (in_EAX & 7) * 4);
+  pcVar2 = heap.u32((__addr_PTR_s_March_006432ac) + (in_EAX & 7) * 4);
   do {
     cVar1 = heap.u32(pcVar2);
     heap.u32(unaff_EDI) = cVar1;
@@ -15,4 +18,7 @@ export function FUN_00458f0f(heap) {
     unaff_EDI = unaff_EDI + 1;
   } while (cVar1 != '\0');
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,6 +6,12 @@
 
 import { LOCK, UNLOCK } from "../runtime/win32.js";
 export function FUN_00444927(heap) {
+  const __sp = heap.allocFrame(16);
+  const __addr_DAT_00991f8e = __sp + 0;
+  const __addr_DAT_00743b94 = __sp + 4;
+  const __addr_DAT_00743b96 = __sp + 8;
+  const __addr_PTR_LAB_004449c4 = __sp + 12;
+  try {
   let uVar1 = 0;
   let in_AX = 0;
   let uVar2 = 0;
@@ -23,19 +29,19 @@ export function FUN_00444927(heap) {
     uVar3 = (uint)(ushort)((heap.u32((unaff_ESI + 0xe)) & 0xfe0) << 2 | heap.u32((unaff_ESI + 0x10)) >>> 5);
   }
   if (uVar2 != uVar3) {
-    puVar4 = 0x00991f8e + uVar3;
-    while (0x00743b94 + (uint) * puVar4 * 0x100 != unaff_ESI) {
-      puVar4 = 0x00743b96 + (uint) * puVar4 * 0x80;
+    puVar4 = __addr_DAT_00991f8e + uVar3;
+    while (__addr_DAT_00743b94 + (uint) * puVar4 * 0x100 != unaff_ESI) {
+      puVar4 = __addr_DAT_00743b96 + (uint) * puVar4 * 0x80;
     }
     heap.u32(puVar4) = heap.u32((unaff_ESI + 2));
     LOCK(heap);
-    uVar1 = heap.u32((0x00991f8e) + (uVar2) * 4);
-    heap.u32((0x00991f8e) + (uVar2) * 4) = heap.u32((unaff_ESI + 10));
+    uVar1 = heap.u32((__addr_DAT_00991f8e) + (uVar2) * 4);
+    heap.u32((__addr_DAT_00991f8e) + (uVar2) * 4) = heap.u32((unaff_ESI + 10));
     UNLOCK(heap);
     heap.u32((unaff_ESI + 2)) = uVar1;
   }
   if (in_AX != 0x8000) {
-    (heap.u32(heap.u32((0x004449c4) + (heap.u32(0x00991f88)) * 4)))();
+    (heap.u32(heap.u32((__addr_PTR_LAB_004449c4) + (heap.u32(0x00991f88)) * 4)))();
     return;
   }
   heap.u32((unaff_ESI + 0x16)) = 0x8000;
@@ -43,4 +49,7 @@ export function FUN_00444927(heap) {
   heap.u32((unaff_ESI + 0x10)) = in_ECX;
   heap.u32((unaff_ESI + 0x12)) = in_DX;
   return;
+} finally {
+    heap.freeFrame(16);
+  }
 }

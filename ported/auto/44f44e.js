@@ -7,6 +7,10 @@
 import { CONCAT44 } from "../runtime/win32.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_0044f44e(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_PTR_DAT_005f5f4c = __sp + 0;
+  const __addr_DAT_00887420 = __sp + 4;
+  try {
   let bVar2 = 0;
   let in_EAX = 0;
   let iVar3 = 0;
@@ -16,12 +20,12 @@ export function FUN_0044f44e(heap) {
   let unaff_ESI = 0;
   let uVar5 = 0;
   heap.u32((unaff_ESI + 5)) = 0;
-  pbVar1 = heap.u32((0x005f5f4c) + (in_EDX & 0xff) * 4);
+  pbVar1 = heap.u32((__addr_PTR_DAT_005f5f4c) + (in_EDX & 0xff) * 4);
   iVar3 = 200;
   while (iVar3 != 1) {
     bVar2 = FUN_005df40c(heap);
     uVar5 = (uint)(ushort)(((ushort)(bVar2 * (ushort) * pbVar1) >>> 8) * 3);
-    pcVar4 = 0x00887420;
+    pcVar4 = __addr_DAT_00887420;
     while ((extraout_DL != heap.u32(pcVar4) || (heap.u32((pbVar1 + uVar5 + 1)) != heap.u32((pcVar4 + 0x1e)))) || (iVar3 = extraout_ECX, heap.u32(pbVar1 + (uVar5 + 3) * 4) != heap.u32(pcVar4 + (0x20) * 4))) {
       pcVar4 = pcVar4 + 0x260;
       if (0x8ad1bf < pcVar4) {
@@ -33,4 +37,7 @@ export function FUN_0044f44e(heap) {
   LAB_0044f4a3: heap.u32((unaff_ESI + 0x1e)) = heap.u32((pbVar1 + uVar5 + 1));
   heap.u32((unaff_ESI + 0x20)) = heap.u32(pbVar1 + (uVar5 + 3) * 4);
   return CONCAT44(heap, in_EDX, in_EAX);
+} finally {
+    heap.freeFrame(8);
+  }
 }

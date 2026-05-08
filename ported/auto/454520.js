@@ -6,16 +6,22 @@
 
 import { FUN_004575af } from "./4575af.js";
 export function FUN_00454520(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_008d7e2a = __sp + 0;
+  try {
   let uVar1 = 0;
   uVar1 = 0;
   do {
-    heap.u32((0x008d7e2a) + (uVar1) * 4) = 0;
+    heap.u32((__addr_DAT_008d7e2a) + (uVar1) * 4) = 0;
     uVar1 = uVar1 + 1;
   } while (uVar1 < 0x74);
   do {
-    heap.u32((0x008d7e2a) + (uVar1) * 4) = 1;
+    heap.u32((__addr_DAT_008d7e2a) + (uVar1) * 4) = 1;
     uVar1 = uVar1 + 1;
   } while (uVar1 < 0x78);
   FUN_004575af(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

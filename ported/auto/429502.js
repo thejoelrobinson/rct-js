@@ -8,13 +8,18 @@ import { CONCAT11 } from "../runtime/win32.js";
 import { FUN_005df40c } from "./5df40c.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00429502(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_0087d738 = __sp + 0;
+  const __addr_DAT_0087d73a = __sp + 4;
+  const __addr_PTR_LAB_00429544 = __sp + 8;
+  try {
   let bVar2 = 0;
   let uVar3 = 0;
   if ((heap.u32(0x0087c3bc) & 1) == 0) {
     uVar3 = 0;
     do {
-      if (heap.u32((0x0087d738) + (uVar3 * 2) * 4) != 0) {
-        psVar1 = 0x0087d738 + uVar3 * 2;
+      if (heap.u32((__addr_DAT_0087d738) + (uVar3 * 2) * 4) != 0) {
+        psVar1 = __addr_DAT_0087d738 + uVar3 * 2;
         heap.u32(psVar1) = heap.u32(psVar1) + -1;
         if (heap.u32(psVar1) == 0) {
           FUN_005e5301(heap);
@@ -28,12 +33,15 @@ export function FUN_00429502(heap) {
     bVar2 = FUN_005df40c(heap);
     bVar2 = (byte)((ushort)(bVar2 * (CONCAT11(heap, 7, bVar2) >>> 8)) >>> 8);
     uVar3 = 0;
-    while (heap.u32((0x0087d738) + (uVar3 * 2) * 4) == 0 || (bVar2 != heap.u32((0x0087d73a) + (uVar3 * 2) * 4))) {
+    while (heap.u32((__addr_DAT_0087d738) + (uVar3 * 2) * 4) == 0 || (bVar2 != heap.u32((__addr_DAT_0087d73a) + (uVar3 * 2) * 4))) {
       uVar3 = uVar3 + 1;
       if (3 < uVar3) {
-        (heap.u32(heap.u32((0x00429544) + (bVar2) * 4)))();
+        (heap.u32(heap.u32((__addr_PTR_LAB_00429544) + (bVar2) * 4)))();
         return;
       }
     }
   } while (true);
+} finally {
+    heap.freeFrame(12);
+  }
 }

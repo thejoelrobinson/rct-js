@@ -5,13 +5,16 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_0044106c(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f5b78 = __sp + 0;
+  try {
   let in_EAX = 0;
   let cVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
   let unaff_ESI = 0;
   cVar1 = '\x14';
-  if ((((heap.u32((0x005f5b78 + in_EAX * 8)) & 0x800000) != 0) || (cVar1 = '\x15', (heap.u32((0x005f5b78 + in_EAX * 8)) & 0x1000000) != 0)) || (cVar1 = '\x16', (heap.u32((0x005f5b78 + in_EAX * 8)) & 0x2000000) != 0)) {
+  if ((((heap.u32((__addr_DAT_005f5b78 + in_EAX * 8)) & 0x800000) != 0) || (cVar1 = '\x15', (heap.u32((__addr_DAT_005f5b78 + in_EAX * 8)) & 0x1000000) != 0)) || (cVar1 = '\x16', (heap.u32((__addr_DAT_005f5b78 + in_EAX * 8)) & 0x2000000) != 0)) {
     uVar2 = 0;
     do {
       while (true) {
@@ -32,4 +35,7 @@ export function FUN_0044106c(heap) {
     } while (uVar2 < 5);
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

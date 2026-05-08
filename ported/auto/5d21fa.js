@@ -9,6 +9,9 @@ import { FUN_005cfac0 } from "./5cfac0.js";
 import { FUN_005cfe66 } from "./5cfe66.js";
 import { FUN_005e5562 } from "./5e5562.js";
 export function FUN_005d21fa(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0065247a = __sp + 0;
+  try {
   let bVar1 = 0;
   if (((heap.u32(0x00652288) != '\0') && (heap.u32(0x00652288) != '\x04')) && (heap.u32(0x00652288) != '\x05')) {
     if (heap.u32(0x00652288) == '\x03') {
@@ -21,7 +24,7 @@ export function FUN_005d21fa(heap) {
         heap.setU32(0x00652470, (heap.u32(0x00652289)) >>> 0);
         bVar1 = false;
         if ((heap.u32(0x006522a2) & 4) == 0) {
-          bVar1 = heap.u32(0x0065229e) < heap.u32((ushort)(0x0065247a) + (heap.u32(0x006522a2) * 2) * 4);
+          bVar1 = heap.u32(0x0065229e) < heap.u32((ushort)(__addr_DAT_0065247a) + (heap.u32(0x006522a2) * 2) * 4);
         }
         FUN_005cfac0(heap);
         if (!bVar1) {
@@ -35,4 +38,7 @@ export function FUN_005d21fa(heap) {
     }
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

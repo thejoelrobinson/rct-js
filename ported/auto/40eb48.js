@@ -7,6 +7,9 @@
 import { GetDC, RealizePalette, ReleaseDC, SelectPalette, StretchDIBits } from "../runtime/win32.js";
 import { FUN_0040ec7b } from "./40ec7b.js";
 export function FUN_0040eb48(heap, param_1, param_2, param_3, param_4) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005eee98 = __sp + 0;
+  try {
   let hdc = 0;
   let hPal = 0;
   let bVar1 = 0;
@@ -15,7 +18,7 @@ export function FUN_0040eb48(heap, param_1, param_2, param_3, param_4) {
     bVar1 = hdc != 0x0;
     if (bVar1) {
       hPal = SelectPalette(heap, hdc, heap.u32(0x005ec07c), 0);
-      FUN_0040ec7b(heap, param_1, 0, 0x100, 0x005eee98);
+      FUN_0040ec7b(heap, param_1, 0, 0x100, __addr_DAT_005eee98);
       RealizePalette(heap, hdc);
       StretchDIBits(heap, hdc, heap.u32(param_4), heap.u32(param_4 + (1) * 4), heap.u32(param_4 + (2) * 4) - heap.u32(param_4), heap.u32(param_4 + (3) * 4) - heap.u32(param_4 + (1) * 4), heap.u32(param_2), heap.u32((param_1 + 8)) - heap.u32(param_2 + (3) * 4), heap.u32(param_2 + (2) * 4) - heap.u32(param_2), heap.u32(param_2 + (3) * 4) - heap.u32(param_2 + (1) * 4), heap.u32((param_1 + 0x84)), heap.u32((param_1 + 0x88)), 0, 0xcc0020);
       SelectPalette(heap, hdc, hPal, 1);
@@ -25,4 +28,7 @@ export function FUN_0040eb48(heap, param_1, param_2, param_3, param_4) {
     bVar1 = false;
   }
   return bVar1;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -5,6 +5,9 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f0020 = __sp + 0;
+  try {
   let bVar2 = 0;
   let bVar3 = 0;
   let bVar4 = 0;
@@ -20,7 +23,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
   if (heap.u32(param_1) == 0x22) {
     bVar2 = heap.u32(param_1 + (1) * 4);
     while (pbVar7 = param_1 + 1, bVar2 != 0x22 && (bVar2 != 0)) {
-      if (((heap.u32((0x005f0020 + bVar2 + 1)) & 4) != 0) && (heap.u32(param_5) = heap.u32(param_5) + 1, param_3 != 0x0)) {
+      if (((heap.u32((__addr_DAT_005f0020 + bVar2 + 1)) & 4) != 0) && (heap.u32(param_5) = heap.u32(param_5) + 1, param_3 != 0x0)) {
         heap.u32(param_3) = heap.u32(pbVar7);
         param_3 = param_3 + 1;
         pbVar7 = param_1 + 2;
@@ -51,7 +54,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       bVar2 = heap.u32(param_1);
       pbVar7 = param_1 + 1;
       param_5 = bVar2;
-      if ((heap.u32((0x005f0020 + param_5 + 1U)) & 4) != 0) {
+      if ((heap.u32((__addr_DAT_005f0020 + param_5 + 1U)) & 4) != 0) {
         heap.u32(piVar6) = heap.u32(piVar6) + 1;
         if (param_3 != 0x0) {
           heap.u32(param_3) = heap.u32(pbVar7);
@@ -124,14 +127,14 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       }
       if (bVar3) {
         if (param_3 == 0x0) {
-          if ((heap.u32((0x005f0020 + bVar2 + 1)) & 4) != 0) {
+          if ((heap.u32((__addr_DAT_005f0020 + bVar2 + 1)) & 4) != 0) {
             pbVar7 = pbVar7 + 1;
             heap.u32(piVar6) = heap.u32(piVar6) + 1;
           }
           heap.u32(piVar6) = heap.u32(piVar6) + 1;
           /* goto LAB_00414905 */ throw new Error("goto LAB_00414905 not supported");
         }
-        if ((heap.u32((0x005f0020 + bVar2 + 1)) & 4) != 0) {
+        if ((heap.u32((__addr_DAT_005f0020 + bVar2 + 1)) & 4) != 0) {
           heap.u32(param_3) = bVar2;
           param_3 = param_3 + 1;
           pbVar7 = pbVar7 + 1;
@@ -156,4 +159,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
   }
   heap.u32(param_4) = heap.u32(param_4) + 1;
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

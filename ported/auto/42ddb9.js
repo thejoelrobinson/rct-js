@@ -8,12 +8,15 @@ import { CONCAT44 } from "../runtime/win32.js";
 import { FUN_00444927 } from "./444927.js";
 import { FUN_00444bd4 } from "./444bd4.js";
 export function FUN_0042ddb9(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let bVar1 = 0;
   let in_EAX = 0;
   let in_CX = 0;
   let in_EDX = 0;
   let bVar3 = 0;
-  pbVar2 = heap.u32((0x00971ef4) + ((ushort)((ushort)((in_CX & 0xffe0) << 7 | in_CX >>> 9 | in_EAX & 0xffe0) >>> 5 | (in_CX >>> 9) << 0xb)) * 4);
+  pbVar2 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((in_CX & 0xffe0) << 7 | in_CX >>> 9 | in_EAX & 0xffe0) >>> 5 | (in_CX >>> 9) << 0xb)) * 4);
   bVar1 = heap.u32(pbVar2);
   while ((bVar1 & 0x3c) != 0) {
     pbVar2 = pbVar2 + 8;
@@ -31,4 +34,7 @@ export function FUN_0042ddb9(heap) {
     heap.u32((unaff_ESI + 0x24)) = 0;
   }
   return CONCAT44(heap, in_EDX, in_EAX);
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,11 +6,14 @@
 
 import { HeapAlloc, HeapFree, VirtualAlloc, VirtualFree } from "../runtime/win32.js";
 export function FUN_00415410(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LOOP_005ec500 = __sp + 0;
+  try {
   let bVar1 = 0;
   let pvVar2 = 0;
   let iVar3 = 0;
   if (heap.u32(0x005ec510) == -1) {
-    lpMem = 0x005ec500;
+    lpMem = __addr_PTR_LOOP_005ec500;
   } else {
     lpMem = HeapAlloc(heap, heap.u32(0x005f3e44), 0, 0x2020);
     if (lpMem == 0x0) {
@@ -21,15 +24,15 @@ export function FUN_00415410(heap) {
   if (lpAddress != 0x0) {
     pvVar2 = VirtualAlloc(heap, lpAddress, 0x10000, 0x1000, 4);
     if (pvVar2 != 0x0) {
-      if (lpMem == 0x005ec500) {
-        if (heap.u32(0x005ec500) == 0x0) {
-          PTR_LOOP_005ec500 = 0x005ec500;
+      if (lpMem == __addr_PTR_LOOP_005ec500) {
+        if (heap.u32(__addr_PTR_LOOP_005ec500) == 0x0) {
+          heap.setU32(__addr_PTR_LOOP_005ec500, (__addr_PTR_LOOP_005ec500) >>> 0);
         }
         if (heap.u32(0x005ec504) == 0x0) {
-          PTR_LOOP_005ec504 = 0x005ec500;
+          PTR_LOOP_005ec504 = __addr_PTR_LOOP_005ec500;
         }
       } else {
-        heap.u32(lpMem) = 0x005ec500;
+        heap.u32(lpMem) = __addr_PTR_LOOP_005ec500;
         heap.u32(lpMem + (1) * 4) = heap.u32(0x005ec504);
         PTR_LOOP_005ec504 = lpMem;
         heap.u32(heap.u32(lpMem + (1) * 4)) = lpMem;
@@ -64,8 +67,11 @@ export function FUN_00415410(heap) {
     }
     VirtualFree(heap, lpAddress, 0, 0x8000);
   }
-  if (lpMem != 0x005ec500) {
+  if (lpMem != __addr_PTR_LOOP_005ec500) {
     HeapFree(heap, heap.u32(0x005f3e44), 0, lpMem);
   }
   return 0x0;
+} finally {
+    heap.freeFrame(4);
+  }
 }

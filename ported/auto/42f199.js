@@ -5,9 +5,14 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_0042f199(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_005f8ea4 = __sp + 0;
+  const __addr_DAT_005f91d9 = __sp + 4;
+  const __addr_DAT_008dbe94 = __sp + 8;
+  try {
   let cVar1 = 0;
-  pcVar2 = 0x005f8ea4;
-  pcVar3 = 0x005f91d9;
+  pcVar2 = __addr_DAT_005f8ea4;
+  pcVar3 = __addr_DAT_005f91d9;
   do {
     pcVar4 = pcVar3;
     cVar1 = heap.u32(pcVar2);
@@ -15,8 +20,8 @@ export function FUN_0042f199(heap) {
     pcVar2 = pcVar2 + 1;
     pcVar3 = pcVar4 + 1;
   } while (cVar1 != '\0');
-  if (heap.u32(0x008dbe94) != '\0') {
-    pcVar3 = 0x008dbe94;
+  if (heap.u32(__addr_DAT_008dbe94) != '\0') {
+    pcVar3 = __addr_DAT_008dbe94;
     do {
       pcVar2 = pcVar4;
       cVar1 = heap.u32(pcVar3);
@@ -28,4 +33,7 @@ export function FUN_0042f199(heap) {
     heap.u32(pcVar2 + (4) * 4) = '\0';
   }
   return;
+} finally {
+    heap.freeFrame(12);
+  }
 }

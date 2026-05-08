@@ -6,10 +6,13 @@
 
 import { FUN_0040704d } from "./40704d.js";
 export function FUN_004071e2(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f1180 = __sp + 0;
+  try {
   let iVar1 = 0;
   heap.setU32(0x005ebee8, (0) >>> 0);
   if (heap.u32(0x005ebf00) != 0x0) {
-    iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf00)) + 0x24))))(heap.u32(0x005ebf00), 0x100, 0x005f1180);
+    iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf00)) + 0x24))))(heap.u32(0x005ebf00), 0x100, __addr_DAT_005f1180);
     if (iVar1 == 0) {
       heap.setU32(0x005ebee8, (1) >>> 0);
     } else {
@@ -19,4 +22,7 @@ export function FUN_004071e2(heap) {
     }
   }
   return heap.u32(0x005ebee8);
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -7,10 +7,13 @@
 import { FUN_005e5b80 } from "./5e5b80.js";
 import { FUN_005e5bd8 } from "./5e5bd8.js";
 export function FUN_005dfbe0(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_009a013c = __sp + 0;
+  try {
   FUN_005e5b80(heap);
   puVar2 = heap.u32(0x009a1164);
   do {
-    if (puVar2 + -0x178 < 0x009a013c) {
+    if (puVar2 + -0x178 < __addr_DAT_009a013c) {
       return;
     }
     puVar1 = (puVar2 + -0x146);
@@ -18,4 +21,7 @@ export function FUN_005dfbe0(heap) {
   } while ((heap.u32(puVar1) & 3) != 0);
   FUN_005e5bd8(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

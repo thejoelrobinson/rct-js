@@ -9,6 +9,13 @@ import { FUN_009b4457 } from "./9b4457.js";
 import { FUN_009b8705 } from "./9b8705.js";
 import { FUN_009b8aa9 } from "./9b8aa9.js";
 export function FUN_009b8491(heap) {
+  const __sp = heap.allocFrame(20);
+  const __addr_DAT_008dc0c0 = __sp + 0;
+  const __addr_DAT_008dc0b4 = __sp + 4;
+  const __addr_DAT_008dc0b8 = __sp + 8;
+  const __addr_DAT_008dc0bc = __sp + 12;
+  const __addr_DAT_009a2032 = __sp + 16;
+  try {
   let bVar1 = 0;
   let uVar2 = 0;
   let in_EAX = 0;
@@ -22,10 +29,10 @@ export function FUN_009b8491(heap) {
   let sVar8 = 0;
   let unaff_EBX = 0;
   let unaff_EDI = 0;
-  if ((heap.u32((0x008dc0c0 + unaff_EBX)) & 0x20) != 0) {
+  if ((heap.u32((__addr_DAT_008dc0c0 + unaff_EBX)) & 0x20) != 0) {
     return in_EAX;
   }
-  if ((heap.u32((0x008dc0c0 + unaff_EBX)) & 0x10) != 0) {
+  if ((heap.u32((__addr_DAT_008dc0c0 + unaff_EBX)) & 0x10) != 0) {
     heap.u32((unaff_EDI + 0xe)) = heap.u32((unaff_EDI + 0xe)) + -1;
     heap.u32((unaff_EDI + 4)) = heap.u32((unaff_EDI + 4)) >>> 1;
     heap.u32((unaff_EDI + 6)) = heap.u32((unaff_EDI + 6)) >>> 1;
@@ -39,10 +46,10 @@ export function FUN_009b8491(heap) {
     heap.u32((unaff_EDI + 10)) = heap.u32((unaff_EDI + 10)) << 1;
     return uVar3;
   }
-  pbVar9 = heap.u32((0x008dc0b4 + unaff_EBX));
-  uVar3 = heap.u32((0x008dc0b8 + unaff_EBX));
-  heap.setU32(0x009a2018, (heap.u32((0x008dc0bc + unaff_EBX))) >>> 0);
-  heap.setU32(0x009a201c, (heap.u32((0x008dc0c0 + unaff_EBX))) >>> 0);
+  pbVar9 = heap.u32((__addr_DAT_008dc0b4 + unaff_EBX));
+  uVar3 = heap.u32((__addr_DAT_008dc0b8 + unaff_EBX));
+  heap.setU32(0x009a2018, (heap.u32((__addr_DAT_008dc0bc + unaff_EBX))) >>> 0);
+  heap.setU32(0x009a201c, (heap.u32((__addr_DAT_008dc0c0 + unaff_EBX))) >>> 0);
   sVar7 = (heap.u32(0x009a2018) >>> 0x10);
   heap.setU32(0x009a2014, (uVar3) >>> 0);
   heap.setU32(0x009a2016, ((ushort)(uVar3 >>> 0x10)) >>> 0);
@@ -170,7 +177,7 @@ export function FUN_009b8491(heap) {
       }
       if ((heap.u32(0x009a201c) & 2) != 0) {
         sVar7 = heap.u32(0x009a2016) * heap.u32(0x009a2014);
-        pbVar11 = 0x009a2032;
+        pbVar11 = __addr_DAT_009a2032;
         while (sVar7 != 0) {
           bVar1 = heap.u32(pbVar9);
           uVar3 = bVar1;
@@ -201,4 +208,7 @@ export function FUN_009b8491(heap) {
   }
   heap.setU32(0x009a2014, (uVar3) >>> 0);
   return uVar4;
+} finally {
+    heap.freeFrame(20);
+  }
 }

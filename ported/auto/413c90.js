@@ -12,6 +12,12 @@ import { FUN_00417420 } from "./417420.js";
 import { FUN_004175f0 } from "./4175f0.js";
 import { FUN_00417680 } from "./417680.js";
 export function FUN_00413c90(heap, param_1, param_2) {
+  const __sp = heap.allocFrame(820);
+  const __addr_DAT_005ee7a0 = __sp + 0;
+  const __addr_acStackY_356 = __sp + 4;
+  const __addr_local_324 = __sp + 20;
+  const __addr_local_220 = __sp + 280;
+  try {
   let cVar1 = 0;
   let DVar3 = 0;
   let uVar4 = 0;
@@ -20,17 +26,17 @@ export function FUN_00413c90(heap, param_1, param_2) {
   let uStackY_348 = 0;
   if ((heap.u32(0x005efeb4) == 1) || ((heap.u32(0x005efeb4) == 0 && (heap.u32(0x005ec264) == 1)))) {
     if ((heap.u32(0x005ee7ac) & 0x10c) == 0) {
-      pcStackY_340 = 0x005ee7a0;
+      pcStackY_340 = __addr_DAT_005ee7a0;
       puStackY_344 = 0x414199;
       FUN_00417280(heap);
     }
     pcStackY_340 = 0x005ec2a0;
-    puStackY_344 = 0x005ee7a0;
+    puStackY_344 = __addr_DAT_005ee7a0;
     uStackY_348 = 0x4141b7;
     FUN_00417240(heap);
     FUN_004170f0(heap);
   } else {
-    builtin_strncpy(local_220, "Assertion failed!", 0x12);
+    builtin_strncpy(__addr_local_220, "Assertion failed!", 0x12);
     uVar4 = 0xffffffff;
     pcVar7 = heap.u32(0x005ec2d0);
     do {
@@ -45,7 +51,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -82,7 +88,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -106,10 +112,10 @@ export function FUN_00413c90(heap, param_1, param_2) {
       pcVar8 = pcVar8 + 1;
     }
     pcStackY_340 = 0x413d6a;
-    DVar3 = GetModuleFileNameA(heap, 0x0, local_324, 0x104);
+    DVar3 = GetModuleFileNameA(heap, 0x0, __addr_local_324, 0x104);
     if (DVar3 == 0) {
       pcVar7 = "<program name unknown>";
-      pCVar9 = local_324;
+      pCVar9 = __addr_local_324;
       for (iVar5 = 5; iVar5 != 0; iVar5 = iVar5 + -1) {
         heap.u32(pCVar9) = heap.u32(pcVar7);
         pcVar7 = pcVar7 + 4;
@@ -119,8 +125,8 @@ export function FUN_00413c90(heap, param_1, param_2) {
       heap.u32(pCVar9 + (2) * 4) = heap.u32(pcVar7 + (2) * 4);
     }
     uVar4 = 0xffffffff;
-    pcVar7 = local_324;
-    pcVar8 = local_324;
+    pcVar7 = __addr_local_324;
+    pcVar8 = __addr_local_324;
     do {
       if (uVar4 == 0) {
         break;
@@ -131,7 +137,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     if (0x3c < ~uVar4 + 10) {
       uVar4 = 0xffffffff;
-      pcVar7 = local_324;
+      pcVar7 = __addr_local_324;
       do {
         if (uVar4 == 0) {
           break;
@@ -140,7 +146,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
         cVar1 = heap.u32(pcVar7);
         pcVar7 = pcVar7 + 1;
       } while (cVar1 != '\0');
-      pcVar7 = acStackY_356 + ~uVar4;
+      pcVar7 = __addr_acStackY_356 + ~uVar4;
       pcStackY_340 = 0x413dca;
       _strncpy(pcVar7, heap.u32(0x005ec2c8), 3);
     }
@@ -157,7 +163,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -194,7 +200,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -231,7 +237,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -278,7 +284,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       } while (cVar1 != '\0');
       uVar4 = ~uVar4;
       iVar5 = -1;
-      pcVar8 = local_220;
+      pcVar8 = __addr_local_220;
       do {
         pcVar11 = pcVar8;
         if (iVar5 == 0) {
@@ -298,7 +304,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       }
     } else {
       pcStackY_340 = 0x413e7a;
-      _strncat(local_220, param_2, 0x31);
+      _strncat(__addr_local_220, param_2, 0x31);
       uVar4 = 0xffffffff;
       pcVar7 = heap.u32(0x005ec2c8);
       do {
@@ -313,7 +319,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       } while (cVar1 != '\0');
       uVar4 = ~uVar4;
       iVar5 = -1;
-      pcVar7 = local_220;
+      pcVar7 = __addr_local_220;
       do {
         pcVar11 = pcVar7;
         if (iVar5 == 0) {
@@ -351,7 +357,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -388,7 +394,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -412,7 +418,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       pcVar8 = pcVar8 + 1;
     }
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       if (iVar5 == 0) {
         break;
@@ -438,7 +444,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar8 = local_220;
+    pcVar8 = __addr_local_220;
     do {
       pcVar10 = pcVar8;
       if (iVar5 == 0) {
@@ -475,7 +481,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar8 = local_220;
+    pcVar8 = __addr_local_220;
     do {
       pcVar10 = pcVar8;
       if (iVar5 == 0) {
@@ -509,7 +515,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       pcVar8 = pcVar8 + 1;
     } while (cVar1 != '\0');
     uVar6 = 0xffffffff;
-    pcVar8 = local_220;
+    pcVar8 = __addr_local_220;
     do {
       if (uVar6 == 0) {
         break;
@@ -532,7 +538,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       } while (cVar1 != '\0');
       uVar4 = ~uVar4;
       iVar5 = -1;
-      pcVar11 = local_220;
+      pcVar11 = __addr_local_220;
       do {
         pcVar10 = pcVar11;
         if (iVar5 == 0) {
@@ -557,7 +563,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       }
     } else {
       uVar4 = 0xffffffff;
-      pcVar7 = local_220;
+      pcVar7 = __addr_local_220;
       do {
         if (uVar4 == 0) {
           break;
@@ -567,7 +573,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
         pcVar7 = pcVar7 + 1;
       } while (cVar1 != '\0');
       pcStackY_340 = 0x41400c;
-      _strncat(local_220, param_1, 0x169 - (~uVar4 - 1));
+      _strncat(__addr_local_220, param_1, 0x169 - (~uVar4 - 1));
       uVar4 = 0xffffffff;
       pcVar7 = heap.u32(0x005ec2c8);
       do {
@@ -582,7 +588,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       } while (cVar1 != '\0');
       uVar4 = ~uVar4;
       iVar5 = -1;
-      pcVar7 = local_220;
+      pcVar7 = __addr_local_220;
       do {
         pcVar11 = pcVar7;
         if (iVar5 == 0) {
@@ -620,7 +626,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar8 = local_220;
+    pcVar8 = __addr_local_220;
     do {
       pcVar10 = pcVar8;
       if (iVar5 == 0) {
@@ -657,7 +663,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar8 = local_220;
+    pcVar8 = __addr_local_220;
     do {
       pcVar10 = pcVar8;
       if (iVar5 == 0) {
@@ -693,7 +699,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -730,7 +736,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     } while (cVar1 != '\0');
     uVar4 = ~uVar4;
     iVar5 = -1;
-    pcVar7 = local_220;
+    pcVar7 = __addr_local_220;
     do {
       pcVar11 = pcVar7;
       if (iVar5 == 0) {
@@ -769,4 +775,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
     }
   }
   _abort();
+} finally {
+    heap.freeFrame(820);
+  }
 }

@@ -7,6 +7,10 @@
 import { DestroyWindow, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA } from "../runtime/win32.js";
 import { FUN_00401120 } from "./401120.js";
 export function FUN_004037cf(heap, param_1, param_2, param_3) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_005e91f0 = __sp + 0;
+  const __addr_DAT_005e92f8 = __sp + 4;
+  try {
   let sVar1 = 0;
   let hWnd = 0;
   let uVar2 = 0;
@@ -20,8 +24,8 @@ export function FUN_004037cf(heap, param_1, param_2, param_3) {
     }
     SetWindowTextA(heap, param_1, heap.u32(0x005f1fd4));
     SetDlgItemTextA(heap, param_1, 0x3ea, heap.u32(0x005f1fc8));
-    SetDlgItemTextA(heap, param_1, 1, 0x005e91f0);
-    SetDlgItemTextA(heap, param_1, 2, 0x005e92f8);
+    SetDlgItemTextA(heap, param_1, 1, __addr_DAT_005e91f0);
+    SetDlgItemTextA(heap, param_1, 2, __addr_DAT_005e92f8);
     sVar1 = _strlen(heap.u32(0x005f1390));
     if (sVar1 != 0) {
       SetDlgItemTextA(heap, param_1, 1000, heap.u32(0x005f1390));
@@ -49,4 +53,7 @@ export function FUN_004037cf(heap, param_1, param_2, param_3) {
     LAB_004039ae: uVar2 = 0;
   }
   return uVar2;
+} finally {
+    heap.freeFrame(8);
+  }
 }

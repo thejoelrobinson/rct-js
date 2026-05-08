@@ -6,6 +6,9 @@
 
 import { CreateWindowExA, GetSystemMetrics } from "../runtime/win32.js";
 export function FUN_00405b05(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f1ba0 = __sp + 0;
+  try {
   let nHeight = 0;
   let nWidth = 0;
   let pHVar1 = 0;
@@ -18,6 +21,9 @@ export function FUN_00405b05(heap) {
   hInstance = heap.u32(0x005f1398);
   nHeight = GetSystemMetrics(heap, 1);
   nWidth = GetSystemMetrics(heap, 0);
-  pHVar1 = CreateWindowExA(heap, 8, 0x005e9030, 0x005f1ba0, 0x97080000, 0, 0, nWidth, nHeight, pHVar1, hMenu, hInstance, lpParam);
+  pHVar1 = CreateWindowExA(heap, 8, 0x005e9030, __addr_DAT_005f1ba0, 0x97080000, 0, 0, nWidth, nHeight, pHVar1, hMenu, hInstance, lpParam);
   return pHVar1;
+} finally {
+    heap.freeFrame(4);
+  }
 }

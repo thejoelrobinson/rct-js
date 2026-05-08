@@ -6,6 +6,10 @@
 
 import { CONCAT22, LOCK, UNLOCK } from "../runtime/win32.js";
 export function FUN_00433bae(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_006284ec = __sp + 0;
+  const __addr_DAT_0062892c = __sp + 4;
+  try {
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -25,7 +29,7 @@ export function FUN_00433bae(heap) {
   uVar12 = heap.u32(0x006288ec);
   if (heap.u32(0x006288ec) != 0xffffffff) {
     do {
-      iVar10 = heap.u32((0x006284ec) + (uVar12) * 4);
+      iVar10 = heap.u32((__addr_DAT_006284ec) + (uVar12) * 4);
       if (iVar10 != 0) {
         heap.u32((iVar9 + 0x20)) = iVar10;
         do {
@@ -73,7 +77,7 @@ export function FUN_00433bae(heap) {
         heap.setU32(0x006288f8, (iVar9) >>> 0);
         while (iVar11 = iVar10, iVar9 = heap.u32((iVar11 + 0x20)), iVar10 = heap.u32(0x006288f8), iVar9 != 0 && (bVar7 = heap.u32((iVar9 + 0x17)) & 0x82, iVar10 = heap.u32(0x006288f8), -1 < bVar7)) {
           iVar10 = iVar9;
-          if ((bVar7 != 0) && (heap.u32((0x0062892c) + (CONCAT22(heap, (heap.u32(0x00991f88) >>> 0x10), (((((heap.u32(0x00991f88) << 1 | (ushort)(uVar8 < heap.u32((iVar9 + 0xc)))) << 1 | (ushort)(uVar1 < heap.u32((iVar9 + 0xe)))) << 1 | (ushort)(uVar4 < heap.u32((iVar9 + 10)))) << 1 | (ushort)(uVar2 < heap.u32((iVar9 + 4)))) << 1 | (ushort)(uVar3 < heap.u32((iVar9 + 6)))) << 1 | (ushort)((ushort)(uVar4 >>> 0x10) < heap.u32((iVar9 + 8))))) * 4) != '\0')) {
+          if ((bVar7 != 0) && (heap.u32((__addr_DAT_0062892c) + (CONCAT22(heap, (heap.u32(0x00991f88) >>> 0x10), (((((heap.u32(0x00991f88) << 1 | (ushort)(uVar8 < heap.u32((iVar9 + 0xc)))) << 1 | (ushort)(uVar1 < heap.u32((iVar9 + 0xe)))) << 1 | (ushort)(uVar4 < heap.u32((iVar9 + 10)))) << 1 | (ushort)(uVar2 < heap.u32((iVar9 + 4)))) << 1 | (ushort)(uVar3 < heap.u32((iVar9 + 6)))) << 1 | (ushort)((ushort)(uVar4 >>> 0x10) < heap.u32((iVar9 + 8))))) * 4) != '\0')) {
             heap.u32((iVar11 + 0x20)) = heap.u32((iVar9 + 0x20));
             LOCK(heap);
             iVar10 = heap.u32((heap.u32(0x006288f8) + 0x20));
@@ -125,7 +129,7 @@ export function FUN_00433bae(heap) {
           heap.setU32(0x006288f8, (iVar10) >>> 0);
           while (iVar11 = iVar9, iVar10 = heap.u32((iVar11 + 0x20)), iVar9 = heap.u32(0x006288f8), iVar10 != 0 && (bVar7 = heap.u32((iVar10 + 0x17)) & 0x82, iVar9 = heap.u32(0x006288f8), -1 < bVar7)) {
             iVar9 = iVar10;
-            if ((bVar7 != 0) && (heap.u32((0x0062892c) + (CONCAT22(heap, (heap.u32(0x00991f88) >>> 0x10), (((((heap.u32(0x00991f88) << 1 | (ushort)(uVar8 < heap.u32((iVar10 + 0xc)))) << 1 | (ushort)(uVar1 < heap.u32((iVar10 + 0xe)))) << 1 | (ushort)(uVar4 < heap.u32((iVar10 + 10)))) << 1 | (ushort)(uVar2 < heap.u32((iVar10 + 4)))) << 1 | (ushort)(uVar3 < heap.u32((iVar10 + 6)))) << 1 | (ushort)((ushort)(uVar4 >>> 0x10) < heap.u32((iVar10 + 8))))) * 4) != '\0')) {
+            if ((bVar7 != 0) && (heap.u32((__addr_DAT_0062892c) + (CONCAT22(heap, (heap.u32(0x00991f88) >>> 0x10), (((((heap.u32(0x00991f88) << 1 | (ushort)(uVar8 < heap.u32((iVar10 + 0xc)))) << 1 | (ushort)(uVar1 < heap.u32((iVar10 + 0xe)))) << 1 | (ushort)(uVar4 < heap.u32((iVar10 + 10)))) << 1 | (ushort)(uVar2 < heap.u32((iVar10 + 4)))) << 1 | (ushort)(uVar3 < heap.u32((iVar10 + 6)))) << 1 | (ushort)((ushort)(uVar4 >>> 0x10) < heap.u32((iVar10 + 8))))) * 4) != '\0')) {
               heap.u32((iVar11 + 0x20)) = heap.u32((iVar10 + 0x20));
               LOCK(heap);
               iVar9 = heap.u32((heap.u32(0x006288f8) + 0x20));
@@ -141,4 +145,7 @@ export function FUN_00433bae(heap) {
     }
   }
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

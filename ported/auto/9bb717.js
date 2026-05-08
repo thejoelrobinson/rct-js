@@ -6,8 +6,11 @@
 
 import { FUN_00405cc0 } from "./405cc0.js";
 export function FUN_009bb717(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f2000 = __sp + 0;
+  try {
   let uVar1 = 0;
-  puVar3 = (0x005f2000 + heap.u32(0x008dff1c) * 4);
+  puVar3 = (__addr_DAT_005f2000 + heap.u32(0x008dff1c) * 4);
   uVar1 = heap.u32(0x008dff18);
   puVar2 = heap.u32(0x008dff14);
   do {
@@ -17,6 +20,9 @@ export function FUN_009bb717(heap) {
     puVar3 = puVar3 + 2;
     uVar1 = uVar1 - 1;
   } while (uVar1 != 0);
-  FUN_00405cc0(heap, 0x005f2000, 10, 0xec);
+  FUN_00405cc0(heap, __addr_DAT_005f2000, 10, 0xec);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,6 +6,10 @@
 
 import { CARRY1, CONCAT11, LOCK, UNLOCK } from "../runtime/win32.js";
 export function FUN_0045897e(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_008dc0b8 = __sp + 0;
+  const __addr_DAT_0099a508 = __sp + 4;
+  try {
   let bVar1 = 0;
   let uVar2 = 0;
   let bVar4 = 0;
@@ -64,9 +68,9 @@ export function FUN_0045897e(heap) {
         }
         uVar2 = heap.u32(unaff_ESI);
         unaff_ESI = (puVar7 + 5);
-        uVar5 = uVar5 + heap.u32((0x008dc0b8 + (uVar2 & 0x1ffff) * 0x10));
+        uVar5 = uVar5 + heap.u32((__addr_DAT_008dc0b8 + (uVar2 & 0x1ffff) * 0x10));
       } else {
-        uVar5 = CONCAT11(heap, (uVar5 >>> 8) + CARRY1(heap, uVar5, heap.u32((0x0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4)), uVar5 + heap.u32((0x0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4));
+        uVar5 = CONCAT11(heap, (uVar5 >>> 8) + CARRY1(heap, uVar5, heap.u32((__addr_DAT_0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4)), uVar5 + heap.u32((__addr_DAT_0099a508) + ((byte)(bVar4 - 0x20) + uVar6) * 4));
       }
     } while (uVar5 <= unaff_DI);
     puVar3 = heap.u32(0x00642fbc);
@@ -89,4 +93,7 @@ export function FUN_0045897e(heap) {
       heap.u32((unaff_ESI + -1)) = 0;
     }
   } while (true);
+} finally {
+    heap.freeFrame(8);
+  }
 }

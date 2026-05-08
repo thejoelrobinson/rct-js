@@ -6,6 +6,9 @@
 
 import { CreateCompatibleDC, GetBkColor, GetBkMode, GetDC, GetTextColor, RealizePalette, SelectObject, SelectPalette, SetDIBColorTable } from "../runtime/win32.js";
 export function FUN_0040e533(heap, param_1) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005eee98 = __sp + 0;
+  try {
   let CVar1 = 0;
   let iVar2 = 0;
   let pHVar3 = 0;
@@ -28,7 +31,7 @@ export function FUN_0040e533(heap, param_1) {
     if (heap.u32((param_1 + 0x90)) == 0) {
       pvVar4 = SelectObject(heap, local_8, heap.u32((param_1 + 0x8c)));
       heap.u32((param_1 + 0x94)) = pvVar4;
-      SetDIBColorTable(heap, local_8, 0, 0x100, 0x005eee98);
+      SetDIBColorTable(heap, local_8, 0, 0x100, __addr_DAT_005eee98);
     } else {
       pHVar3 = SelectPalette(heap, local_8, heap.u32(0x005ec07c), 0);
       heap.u32((param_1 + 0x94)) = pHVar3;
@@ -36,4 +39,7 @@ export function FUN_0040e533(heap, param_1) {
     }
   }
   return local_8;
+} finally {
+    heap.freeFrame(4);
+  }
 }

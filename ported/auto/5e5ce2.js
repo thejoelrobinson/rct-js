@@ -7,6 +7,10 @@
 import { FUN_005e3f31 } from "./5e3f31.js";
 import { FUN_005e5b80 } from "./5e5b80.js";
 export function FUN_005e5ce2(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_009a15bc = __sp + 0;
+  const __addr_DAT_009a1248 = __sp + 4;
+  try {
   let uVar1 = 0;
   let unaff_BX = 0;
   let unaff_BP = 0;
@@ -20,11 +24,11 @@ export function FUN_005e5ce2(heap) {
   heap.setU32(0x009a15c0, (unaff_BP + 3) >>> 0);
   heap.setU32(0x009a1244, (unaff_BX & 0x7fff) >>> 0);
   FUN_005e3f31(heap);
-  heap.u32((unaff_ESI + 0x1c)) = 0x009a15bc;
+  heap.u32((unaff_ESI + 0x1c)) = __addr_DAT_009a15bc;
   if ((heap.u32(0x009a15bd) & 0x80) != 0) {
     heap.u32((unaff_ESI + 0x32)) = heap.u32((unaff_ESI + 0x32)) | 0x10;
   }
-  puVar2 = 0x009a1248;
+  puVar2 = __addr_DAT_009a1248;
   uVar1 = heap.u32(0x009a1244);
   do {
     heap.u32(puVar2) = 0;
@@ -36,4 +40,7 @@ export function FUN_005e5ce2(heap) {
   heap.setU32(0x009a13dc, (0) >>> 0);
   heap.setU32(0x00991f36, (5) >>> 0);
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

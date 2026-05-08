@@ -7,6 +7,13 @@
 import { CONCAT44 } from "../runtime/win32.js";
 import { FUN_0043725f } from "./43725f.js";
 export function FUN_0043712e(heap) {
+  const __sp = heap.allocFrame(20);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  const __addr_PTR_DAT_00631d74 = __sp + 4;
+  const __addr_DAT_00654f18 = __sp + 8;
+  const __addr_DAT_005f5b78 = __sp + 12;
+  const __addr_DAT_00887420 = __sp + 16;
+  try {
   let bVar2 = 0;
   let in_EAX = 0;
   let in_CX = 0;
@@ -20,7 +27,7 @@ export function FUN_0043712e(heap) {
     return CONCAT44(heap, in_EDX, in_EAX);
   }
   uVar3 = in_CX << 7 | in_CX >>> 9 | uVar3;
-  pbVar4 = heap.u32((0x00971ef4) + ((ushort)(uVar3 >>> 5 | uVar3 << 0xb)) * 4);
+  pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar3 >>> 5 | uVar3 << 0xb)) * 4);
   do {
     bVar2 = heap.u32(pbVar4) & 0x3c;
     if (((bVar2 != 0) && (bVar2 != 0x3c)) && ((in_EDX < heap.u32(pbVar4 + (3) * 4) && ((heap.u32(pbVar4 + (2) * 4) < (byte)(in_EDX >>> 8) && ((heap.u32(pbVar4 + (1) * 4) & 0xf) != 0)))))) {
@@ -35,11 +42,11 @@ export function FUN_0043712e(heap) {
       } else {
         if (bVar2 == 0x18) {
         uVar3 = ((byte) - heap.u32(pbVar4) + unaff_BX & 3) + 8;
-        if ((heap.u32(heap.u32((byte)(0x00631d74) + (heap.u32((pbVar4 + 4)) & 0x3ff) * 4) + ((uVar3 >>> 3) + (uint)(heap.u32((pbVar4 + 4)) >>> 10) * 9 + 7) * 4) >>> (uVar3 & 7) & 1) == 0) {
+        if ((heap.u32(heap.u32((byte)(__addr_PTR_DAT_00631d74) + (heap.u32((pbVar4 + 4)) & 0x3ff) * 4) + ((uVar3 >>> 3) + (uint)(heap.u32((pbVar4 + 4)) >>> 10) * 9 + 7) * 4) >>> (uVar3 & 7) & 1) == 0) {
           /* goto LAB_0043724b */ throw new Error("goto LAB_0043724b not supported");
         }
       } else {
-        if ((bVar2 == 8) && (((heap.u32((byte)(0x00654f18) + (heap.u32(pbVar4 + (4) * 4) << 4 | heap.u32(pbVar4 + (5) * 4) & 0xf) * 4) >>> ((byte) - heap.u32(pbVar4) + unaff_BX & 3) & 1) == 0 || ((heap.u32((0x005f5b78 + heap.u32((uint)(byte)(0x00887420) + (heap.u32(pbVar4 + (7) * 4) * 0x260) * 4) * 8)) & 0x40000) != 0)))) {
+        if ((bVar2 == 8) && (((heap.u32((byte)(__addr_DAT_00654f18) + (heap.u32(pbVar4 + (4) * 4) << 4 | heap.u32(pbVar4 + (5) * 4) & 0xf) * 4) >>> ((byte) - heap.u32(pbVar4) + unaff_BX & 3) & 1) == 0 || ((heap.u32((__addr_DAT_005f5b78 + heap.u32((uint)(byte)(__addr_DAT_00887420) + (heap.u32(pbVar4 + (7) * 4) * 0x260) * 4) * 8)) & 0x40000) != 0)))) {
         /* goto LAB_0043724b */ throw new Error("goto LAB_0043724b not supported");
       }
       }
@@ -51,4 +58,7 @@ export function FUN_0043712e(heap) {
       return CONCAT44(heap, in_EDX, in_EAX);
     }
   } while (true);
+} finally {
+    heap.freeFrame(20);
+  }
 }

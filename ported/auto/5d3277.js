@@ -6,6 +6,10 @@
 
 import { CONCAT11 } from "../runtime/win32.js";
 export function FUN_005d3277(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  const __addr_DAT_006559d8 = __sp + 4;
+  try {
   let bVar2 = 0;
   let in_EDX = 0;
   let uVar3 = 0;
@@ -18,20 +22,20 @@ export function FUN_005d3277(heap) {
   do {
     uVar5 = 0;
     do {
-      puVar7 = heap.u32((0x00971ef4) + ((ushort)((ushort)(uVar5 << 7 | uVar5 >>> 9 | uVar4) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4);
+      puVar7 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar5 << 7 | uVar5 >>> 9 | uVar4) >>> 5 | (uVar5 >>> 9) << 0xb)) * 4);
       do {
         uVar3 = CONCAT11(heap, heap.u32(puVar7), uVar3) & 0xffff3cff;
         if (((uVar3 >>> 8) == '\b') && (uVar3 == heap.u32(puVar7 + (7) * 4))) {
           if (puVar6 == 0xffffffff) {
             LAB_005d32fd: puVar6 = puVar7;
             if ((heap.u32(puVar7 + (4) * 4) != '\x02') && (heap.u32(puVar7 + (4) * 4) != '\x03')) {
-              if ((heap.u32((0x006559d8) + (heap.u32(puVar7 + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
+              if ((heap.u32((__addr_DAT_006559d8) + (heap.u32(puVar7 + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
                 bVar2 = true;
               }
             }
           } else {
             if (((!bVar2) && (heap.u32(puVar7 + (4) * 4) != '\x02')) && (heap.u32(puVar7 + (4) * 4) != '\x03')) {
-            if ((heap.u32((0x006559d8) + (heap.u32(puVar7 + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
+            if ((heap.u32((__addr_DAT_006559d8) + (heap.u32(puVar7 + (4) * 4) * 0x10) * 4) & 0x10) != 0) {
               /* goto LAB_005d32fd */ throw new Error("goto LAB_005d32fd not supported");
             }
           }
@@ -47,4 +51,7 @@ export function FUN_005d3277(heap) {
       return;
     }
   } while (true);
+} finally {
+    heap.freeFrame(8);
+  }
 }

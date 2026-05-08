@@ -7,6 +7,11 @@
 import { CONCAT11, CONCAT44 } from "../runtime/win32.js";
 import { FUN_005e56d3 } from "./5e56d3.js";
 export function FUN_0042693f(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_0065247a = __sp + 0;
+  const __addr_DAT_00652478 = __sp + 4;
+  const __addr_DAT_00971ef4 = __sp + 8;
+  try {
   let in_EAX = 0;
   let in_CX = 0;
   let in_EDX = 0;
@@ -14,8 +19,8 @@ export function FUN_0042693f(heap) {
   let uVar3 = 0;
   let uVar4 = 0;
   uVar3 = heap.u32(unaff_ESI) & 3;
-  uVar4 = (in_CX + heap.u32((0x0065247a) + (uVar3 * 2) * 4)) * 0x80 | (ushort)(in_CX + heap.u32((0x0065247a) + (uVar3 * 2) * 4)) >>> 9 | in_EAX + heap.u32((0x00652478) + (uVar3 * 2) * 4);
-  puVar5 = heap.u32((0x00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
+  uVar4 = (in_CX + heap.u32((__addr_DAT_0065247a) + (uVar3 * 2) * 4)) * 0x80 | (ushort)(in_CX + heap.u32((__addr_DAT_0065247a) + (uVar3 * 2) * 4)) >>> 9 | in_EAX + heap.u32((__addr_DAT_00652478) + (uVar3 * 2) * 4);
+  puVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar4 >>> 5 | uVar4 << 0xb)) * 4);
   while (true) {
     uVar4 = CONCAT11(heap, heap.u32(puVar5), uVar3) & 0x3cff;
     uVar3 = uVar4;
@@ -35,4 +40,7 @@ export function FUN_0042693f(heap) {
   heap.u32(puVar5 + (((uVar4 & 0xf) >>> 3) + 5) * 4) = heap.u32(puVar5 + (((uVar4 & 0xf) >>> 3) + 5) * 4) | '\x01' << (uVar4 & 7);
   FUN_005e56d3(heap, puVar5);
   /* goto LAB_004269ce */ throw new Error("goto LAB_004269ce not supported");
+} finally {
+    heap.freeFrame(12);
+  }
 }

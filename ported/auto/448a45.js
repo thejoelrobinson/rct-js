@@ -7,6 +7,11 @@
 import { CONCAT31 } from "../runtime/win32.js";
 import { FUN_004364c2 } from "./4364c2.js";
 export function FUN_00448a45(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_00652478 = __sp + 0;
+  const __addr_DAT_0065247a = __sp + 4;
+  const __addr_DAT_00971ef4 = __sp + 8;
+  try {
   let uVar2 = 0;
   let cVar3 = 0;
   let in_AX = 0;
@@ -25,10 +30,10 @@ export function FUN_00448a45(heap) {
   if ((((heap.u32(unaff_ESI) & 0x3c) == 4) && (heap.setU32(0x00630bc8, (unaff_ESI) >>> 0), heap.setU32(0x00630bcc, (in_AX) >>> 0), heap.setU32(0x00630bce, (in_CX) >>> 0), heap.setU32(0x00630bd4, (unaff_EBX) >>> 0), (heap.u32(unaff_ESI + (4) * 4) & 4) != 0)) && ((heap.u32(unaff_ESI + (4) * 4) & 3) == bVar5)) {
     bVar4 = bVar4 + 4;
   }
-  in_AX = in_AX + heap.u32((0x00652478) + (unaff_EBX * 2) * 4);
-  in_CX = in_CX + heap.u32((0x0065247a) + (unaff_EBX * 2) * 4);
+  in_AX = in_AX + heap.u32((__addr_DAT_00652478) + (unaff_EBX * 2) * 4);
+  in_CX = in_CX + heap.u32((__addr_DAT_0065247a) + (unaff_EBX * 2) * 4);
   uVar6 = in_CX * 0x80 | in_CX >>> 9 | in_AX;
-  unaff_ESI = heap.u32((0x00971ef4) + ((ushort)(uVar6 >>> 5 | uVar6 << 0xb)) * 4);
+  unaff_ESI = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar6 >>> 5 | uVar6 << 0xb)) * 4);
   do {
     if ((unaff_ESI != heap.u32(0x00630bd0)) && ((heap.u32(unaff_ESI) & 0x3c) == 4)) {
       if (bVar4 == heap.u32(unaff_ESI + (2) * 4)) {
@@ -78,4 +83,7 @@ export function FUN_00448a45(heap) {
     return;
   }
   /* goto LAB_00448a65 */ throw new Error("goto LAB_00448a65 not supported");
+} finally {
+    heap.freeFrame(12);
+  }
 }

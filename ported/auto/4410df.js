@@ -12,6 +12,10 @@ import { FUN_00444c74 } from "./444c74.js";
 import { FUN_005df40c } from "./5df40c.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 export function FUN_004410df(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_PTR_DAT_0062d644 = __sp + 0;
+  const __addr_DAT_0062d630 = __sp + 4;
+  try {
   let bVar2 = 0;
   let cVar3 = 0;
   let uVar4 = 0;
@@ -33,7 +37,7 @@ export function FUN_004410df(heap) {
     heap.u32(unaff_ESI + (0x6e) * 4) = 0;
     heap.u32((unaff_ESI + 200)) = 0;
     uVar8 = heap.u32(unaff_ESI + (0x6e) * 4);
-    puVar1 = heap.u32((0x0062d644) + (heap.u32(unaff_ESI + (0x2d) * 4) * 2) * 4);
+    puVar1 = heap.u32((__addr_PTR_DAT_0062d644) + (heap.u32(unaff_ESI + (0x2d) * 4) * 2) * 4);
     heap.u32(unaff_ESI + (0x14) * 4) = heap.u32(puVar1 + (uVar8 * 4) * 4);
     heap.u32(unaff_ESI + (9) * 4) = heap.u32(puVar1 + (uVar8 * 4 + 1) * 4);
     heap.u32(unaff_ESI + (0x15) * 4) = heap.u32(puVar1 + (uVar8 * 4 + 2) * 4);
@@ -65,7 +69,7 @@ export function FUN_004410df(heap) {
       uVar4 = CONCAT31(heap, (uint3)(byte)(uVar4 >>> 8), 0xf);
     }
     heap.u32(unaff_ESI + (0x43) * 4) = uVar4 << 4 | (byte)(uVar4 >>> 8);
-    heap.u32(unaff_ESI + (0x44) * 4) = heap.u32((0x0062d630) + ((uVar8 & 0x38) >>> 3) * 4);
+    heap.u32(unaff_ESI + (0x44) * 4) = heap.u32((__addr_DAT_0062d630) + ((uVar8 & 0x38) >>> 3) * 4);
     uVar8 = uVar6 & 0xf8f80000 | uVar8 << 0x1d;
     cVar3 = (uVar8 >>> 0x13) + -0xf + heap.u32(0x0087d0c1);
     if (heap.u32(0x0087d0c1) == '\0') {
@@ -135,4 +139,7 @@ export function FUN_004410df(heap) {
     return;
   }
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

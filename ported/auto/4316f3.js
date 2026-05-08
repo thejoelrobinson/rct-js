@@ -12,6 +12,11 @@ import { FUN_00436b2a } from "./436b2a.js";
 import { FUN_009b30bc } from "./9b30bc.js";
 import { FUN_009b30f1 } from "./9b30f1.js";
 export function FUN_004316f3(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_005f96d0 = __sp + 0;
+  const __addr_DAT_006284ac = __sp + 4;
+  const __addr_DAT_00628a3c = __sp + 8;
+  try {
   let bVar1 = 0;
   let in_AX = 0;
   let uVar3 = 0;
@@ -36,7 +41,7 @@ export function FUN_004316f3(heap) {
   bVar1 = heap.u32((unaff_ESI + 0x10));
   heap.setU32(0x005f96cc, (-(((heap.u32(0x005f96c8) >>> (bVar1 & 0x1f)) - heap.u32(unaff_EDI + (2) * 4)) - heap.u32(unaff_EDI + (3) * 4))) >>> 0);
   heap.setU32(0x005f96c0, (heap.u32(unaff_EDI) + ((((heap.u32(0x005f96c4) - (heap.u32((unaff_ESI + 8)) & uVar8)) >>> (bVar1 & 0x1f)) + heap.u32((unaff_ESI + 4))) - heap.u32(unaff_EDI + (1) * 4)) + (heap.u32(unaff_EDI + (2) * 4) + heap.u32(unaff_EDI + (3) * 4)) * ((((heap.u32(0x005f96c6) - (heap.u32((unaff_ESI + 10)) & uVar8)) >>> (bVar1 & 0x1f)) + heap.u32((unaff_ESI + 6))) - heap.u32((unaff_EDI + 6)))) >>> 0);
-  piVar11 = 0x005f96d0;
+  piVar11 = __addr_DAT_005f96d0;
   uVar4 = heap.u32(0x005f96c4) & 0xffffffe0;
   heap.setU32(0x005f96d6, (heap.u32(0x005f96c6)) >>> 0);
   heap.setU32(0x005f96da, (heap.u32(0x005f96ca)) >>> 0);
@@ -67,18 +72,21 @@ export function FUN_004316f3(heap) {
     if ((heap.u32(0x00991f8c) & 1) != 0) {
       FUN_009b30bc(heap);
     }
-    heap.setU32(0x005f96e0, (0x006284ac) >>> 0);
+    heap.setU32(0x005f96e0, (__addr_DAT_006284ac) >>> 0);
     heap.setU32(0x00981ef8, (piVar11) >>> 0);
     FUN_00431b6f(heap);
     FUN_00436b2a(heap);
     FUN_00433bae(heap);
     FUN_00433e1c(heap);
     piVar2 = heap.u32(0x00981ef8);
-    if (heap.u32((0x00628a3c + heap.u32(0x008d7eb4) * 4)) != -1) {
+    if (heap.u32((__addr_DAT_00628a3c + heap.u32(0x008d7eb4) * 4)) != -1) {
       FUN_009b30f1(heap);
       piVar11 = piVar2;
     }
     FUN_00431ad7(heap);
   } while (uVar4 < (heap.u32(0x005f96c4) + heap.u32(0x005f96c8)));
   return;
+} finally {
+    heap.freeFrame(12);
+  }
 }

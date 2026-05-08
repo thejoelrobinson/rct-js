@@ -7,6 +7,9 @@
 import { FUN_0044142c } from "./44142c.js";
 import { FUN_00441452 } from "./441452.js";
 export function FUN_00439219(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let uVar2 = 0;
   let bVar3 = 0;
   let unaff_ESI = 0;
@@ -16,7 +19,7 @@ export function FUN_00439219(heap) {
   }
   uVar2 = heap.u32((unaff_ESI + 0x26)) << 7 | heap.u32((unaff_ESI + 0x26)) >>> 9 | heap.u32((unaff_ESI + 0x24));
   bVar3 = 0;
-  pbVar4 = heap.u32((0x00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+  pbVar4 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar2 >>> 5 | uVar2 << 0xb)) * 4);
   if ((heap.u32((unaff_ESI + 0x29)) & 0x18) == 0) {
     bVar3 = 4;
   }
@@ -31,4 +34,7 @@ export function FUN_00439219(heap) {
     }
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

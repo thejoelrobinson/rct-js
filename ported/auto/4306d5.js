@@ -6,8 +6,14 @@
 
 import { FUN_004306ee } from "./4306ee.js";
 export function FUN_004306d5(heap) {
-  heap.setU32(0x005f942c, (0x005f9432) >>> 0);
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005f9432 = __sp + 0;
+  try {
+  heap.setU32(0x005f942c, (__addr_DAT_005f9432) >>> 0);
   heap.setU32(0x005f9430, (0) >>> 0);
   FUN_004306ee(heap);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

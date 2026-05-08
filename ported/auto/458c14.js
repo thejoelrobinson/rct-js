@@ -11,6 +11,18 @@ import { FUN_00458f53 } from "./458f53.js";
 import { FUN_0045905e } from "./45905e.js";
 import { FUN_0045917b } from "./45917b.js";
 export function FUN_00458c14(heap) {
+  const __sp = heap.allocFrame(40);
+  const __addr_PTR_LAB_00458dfc = __sp + 0;
+  const __addr_PTR_LAB_00458e40 = __sp + 4;
+  const __addr_PTR_DAT_0064015b = __sp + 8;
+  const __addr_DAT_0064015f = __sp + 12;
+  const __addr_DAT_00640176 = __sp + 16;
+  const __addr_DAT_0064017b = __sp + 20;
+  const __addr_DAT_00640164 = __sp + 24;
+  const __addr_DAT_00640171 = __sp + 28;
+  const __addr_DAT_00640180 = __sp + 32;
+  const __addr_DAT_00640183 = __sp + 36;
+  try {
   let uVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
@@ -77,12 +89,12 @@ export function FUN_00458c14(heap) {
       unaff_ESI = pbVar8;
       /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");
     case 0x80:
-      (heap.u32(heap.u32((0x00458dfc) + (heap.u32(0x005f8da1) & 0x7f) * 4)))();
+      (heap.u32(heap.u32((__addr_PTR_LAB_00458dfc) + (heap.u32(0x005f8da1) & 0x7f) * 4)))();
       in_ECX = extraout_ECX_08;
       unaff_ESI = pbVar8;
       /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");
     case 0x81:
-      (heap.u32(heap.u32((0x00458e40) + (heap.u32(0x005f8da1) & 0x7f) * 4)))();
+      (heap.u32(heap.u32((__addr_PTR_LAB_00458e40) + (heap.u32(0x005f8da1) & 0x7f) * 4)))();
       in_ECX = extraout_ECX_09;
       unaff_ESI = pbVar8;
       /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");
@@ -122,12 +134,12 @@ export function FUN_00458c14(heap) {
     case 0x87:
       if (heap.u32(0x005f8d60) == '\0') {
         FUN_0045905e(heap);
-        ppuVar5 = 0x0064015b;
+        ppuVar5 = __addr_PTR_DAT_0064015b;
         in_ECX = extraout_ECX_10;
         pbVar9 = unaff_EDI;
       } else {
         FUN_0045905e(heap);
-        ppuVar5 = 0x0064015f;
+        ppuVar5 = __addr_DAT_0064015f;
         in_ECX = extraout_ECX_11;
         pbVar9 = unaff_EDI;
       }
@@ -143,7 +155,7 @@ export function FUN_00458c14(heap) {
     case 0x8a:
       if (heap.u32(in_ECX) / 0x3c != 0) {
         FUN_00458f53(heap, heap.u32(in_ECX) % 0x3c);
-        pbVar7 = 0x00640176;
+        pbVar7 = __addr_DAT_00640176;
         pbVar9 = unaff_EDI;
         do {
           unaff_EDI = pbVar9;
@@ -154,7 +166,7 @@ export function FUN_00458c14(heap) {
         } while (bVar3 != 0);
       }
       FUN_00458f53(heap);
-      ppuVar5 = 0x0064017b;
+      ppuVar5 = __addr_DAT_0064017b;
       in_ECX = extraout_ECX_07;
       pbVar9 = unaff_EDI;
       break;
@@ -166,7 +178,7 @@ export function FUN_00458c14(heap) {
         pcVar6 = 0x0064016a;
         pbVar9 = unaff_EDI;
         if (uVar4 == 1) {
-          pcVar6 = 0x00640164;
+          pcVar6 = __addr_DAT_00640164;
         }
         do {
           unaff_EDI = pbVar9;
@@ -177,19 +189,19 @@ export function FUN_00458c14(heap) {
         } while (bVar3 != 0);
       }
       FUN_00458f53(heap);
-      ppuVar5 = 0x00640171;
+      ppuVar5 = __addr_DAT_00640171;
       in_ECX = extraout_ECX_06;
       pbVar9 = unaff_EDI;
       break;
     case 0x8c:
       if (heap.u32(0x005f8d60) == '\0') {
         FUN_0045905e(heap);
-        ppuVar5 = 0x00640180;
+        ppuVar5 = __addr_DAT_00640180;
         in_ECX = extraout_ECX_04;
         pbVar9 = unaff_EDI;
       } else {
         FUN_0045905e(heap);
-        ppuVar5 = 0x00640183;
+        ppuVar5 = __addr_DAT_00640183;
         in_ECX = extraout_ECX_05;
         pbVar9 = unaff_EDI;
       }
@@ -218,4 +230,7 @@ export function FUN_00458c14(heap) {
   unaff_EDI = unaff_EDI + 1;
   unaff_ESI = pbVar8;
   /* goto code_r0x00458c14 */ throw new Error("goto code_r0x00458c14 not supported");
+} finally {
+    heap.freeFrame(40);
+  }
 }

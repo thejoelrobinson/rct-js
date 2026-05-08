@@ -6,6 +6,10 @@
 
 import { FUN_005e4198 } from "./5e4198.js";
 export function FUN_005ded48(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_PTR_DAT_006e2788 = __sp + 0;
+  const __addr_DAT_006e1eab = __sp + 4;
+  try {
   let uVar1 = 0;
   let extraout_CX = 0;
   let uVar2 = 0;
@@ -13,8 +17,8 @@ export function FUN_005ded48(heap) {
   let unaff_ESI = 0;
   (heap.u32(heap.u32((unaff_ESI + 4))))();
   sVar4 = 0;
-  for (psVar3 = heap.u32((0x006e2788) + (heap.u32(0x006e1eaa)) * 4); heap.u32(psVar3) != -1; psVar3 = psVar3 + 1) {
-    if (heap.u32(psVar3) == heap.u32((0x006e1eab) + (heap.u32(0x006e1eaa)) * 4)) {
+  for (psVar3 = heap.u32((__addr_PTR_DAT_006e2788) + (heap.u32(0x006e1eaa)) * 4); heap.u32(psVar3) != -1; psVar3 = psVar3 + 1) {
+    if (heap.u32(psVar3) == heap.u32((__addr_DAT_006e1eab) + (heap.u32(0x006e1eaa)) * 4)) {
       /* goto LAB_005ded7f */ throw new Error("goto LAB_005ded7f not supported");
     }
     sVar4 = sVar4 + 1;
@@ -32,4 +36,7 @@ export function FUN_005ded48(heap) {
   heap.u32((unaff_ESI + 0x36)) = uVar1;
   FUN_005e4198(heap);
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

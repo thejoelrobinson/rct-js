@@ -6,6 +6,9 @@
 
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00429249(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let bVar1 = 0;
   let sVar2 = 0;
   let uVar3 = 0;
@@ -15,7 +18,7 @@ export function FUN_00429249(heap) {
   do {
     uVar4 = 0;
     do {
-      pbVar5 = heap.u32((0x00971ef4) + ((ushort)((ushort)(uVar4 << 7 | uVar4 >>> 9 | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
+      pbVar5 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)(uVar4 << 7 | uVar4 >>> 9 | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
       bVar1 = heap.u32(pbVar5);
       while ((bVar1 & 0x3c) != 0) {
         pbVar5 = pbVar5 + 8;
@@ -33,4 +36,7 @@ export function FUN_00429249(heap) {
     FUN_005e5301(heap);
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

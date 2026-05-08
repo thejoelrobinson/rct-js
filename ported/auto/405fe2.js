@@ -9,6 +9,11 @@ import { FUN_00405a70 } from "./405a70.js";
 import { FUN_0040b8fc } from "./40b8fc.js";
 import { FUN_0040e0d4 } from "./40e0d4.js";
 export function FUN_00405fe2(heap, param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_005f12c0 = __sp + 0;
+  const __addr_DAT_005f12c2 = __sp + 4;
+  const __addr_DAT_005f12c4 = __sp + 8;
+  try {
   let bVar1 = 0;
   let iVar2 = 0;
   let uVar3 = 0;
@@ -42,7 +47,7 @@ export function FUN_00405fe2(heap, param_1, param_2, param_3, param_4, param_5, 
       if (iVar2 == 0) {
         local_c = 0;
         while (local_c < heap.u32(0x005f1290) && (!bVar1)) {
-          if ((heap.u32((0x005f12c0 + local_c * 6)) == param_2) && ((heap.u32((0x005f12c2 + local_c * 6)) == param_3 && (heap.u32((0x005f12c4 + local_c * 6)) == param_4)))) {
+          if ((heap.u32((__addr_DAT_005f12c0 + local_c * 6)) == param_2) && ((heap.u32((__addr_DAT_005f12c2 + local_c * 6)) == param_3 && (heap.u32((__addr_DAT_005f12c4 + local_c * 6)) == param_4)))) {
             bVar1 = true;
           } else {
             local_c = local_c + 1;
@@ -57,4 +62,7 @@ export function FUN_00405fe2(heap, param_1, param_2, param_3, param_4, param_5, 
     uVar3 = 0;
   }
   return uVar3;
+} finally {
+    heap.freeFrame(12);
+  }
 }

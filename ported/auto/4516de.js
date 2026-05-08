@@ -6,6 +6,10 @@
 
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_004516de(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_005f5658 = __sp + 0;
+  const __addr_DAT_00631c6c = __sp + 4;
+  try {
   let uVar1 = 0;
   let bVar2 = 0;
   let cVar3 = 0;
@@ -18,7 +22,7 @@ export function FUN_004516de(heap) {
     heap.setU32(0x00631c72, (0x1e) >>> 0);
   }
   uVar5 = (uint) * unaff_ESI;
-  uVar4 = heap.u32((0x005f5658 + uVar5 * 4));
+  uVar4 = heap.u32((__addr_DAT_005f5658 + uVar5 * 4));
   if (((uVar5 == 8) && (heap.u32(unaff_ESI + (1) * 4) != 0xf)) && (heap.u32(unaff_ESI + (1) * 4) != 9)) {
     uVar4 = 0;
   }
@@ -34,12 +38,12 @@ export function FUN_004516de(heap) {
       break;
     }
     uVar4 = uVar4 & ~(1 << (uVar1 & 0x1f));
-    cVar3 = cVar3 + heap.u32((0x00631c6c) + (uVar1) * 4);
+    cVar3 = cVar3 + heap.u32((__addr_DAT_00631c6c) + (uVar1) * 4);
   }
   if (cVar3 != '\0') {
     bVar2 = FUN_005df40c(heap);
     bVar2 = (byte)((ushort)(bVar2 * extraout_CL) >>> 8);
-    uVar4 = heap.u32((0x005f5658 + uVar5 * 4));
+    uVar4 = heap.u32((__addr_DAT_005f5658 + uVar5 * 4));
     do {
       uVar5 = 0;
       if (uVar4 != 0) {
@@ -48,10 +52,13 @@ export function FUN_004516de(heap) {
         }
       }
       uVar4 = uVar4 & ~(1 << (uVar5 & 0x1f));
-      bVar6 = heap.u32((byte)(0x00631c6c) + (uVar5) * 4) <= bVar2;
-      bVar2 = bVar2 - heap.u32((0x00631c6c) + (uVar5) * 4);
+      bVar6 = heap.u32((byte)(__addr_DAT_00631c6c) + (uVar5) * 4) <= bVar2;
+      bVar2 = bVar2 - heap.u32((__addr_DAT_00631c6c) + (uVar5) * 4);
     } while (bVar6);
     return;
   }
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

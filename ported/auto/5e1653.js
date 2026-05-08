@@ -8,9 +8,12 @@ import { FUN_005e1210 } from "./5e1210.js";
 import { FUN_005e16f7 } from "./5e16f7.js";
 import { FUN_005e43de } from "./5e43de.js";
 export function FUN_005e1653(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_009a013c = __sp + 0;
+  try {
   if (heap.u32(0x00971ef0) != '\0') {
     FUN_005e1210(heap);
-    for (puVar1 = 0x009a013c; puVar1 < heap.u32(0x009a1164); puVar1 = puVar1 + 0x178) {
+    for (puVar1 = __addr_DAT_009a013c; puVar1 < heap.u32(0x009a1164); puVar1 = puVar1 + 0x178) {
       if (heap.u32((puVar1 + 8)) != 0) {
         FUN_005e16f7(heap);
       }
@@ -32,4 +35,7 @@ export function FUN_005e1653(heap) {
     }
   }
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

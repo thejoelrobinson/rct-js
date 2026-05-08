@@ -7,6 +7,9 @@
 import { CONCAT11, CONCAT44 } from "../runtime/win32.js";
 import { FUN_00426f56 } from "./426f56.js";
 export function FUN_00437ae8(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let cVar1 = 0;
   let in_EAX = 0;
   let in_CX = 0;
@@ -16,7 +19,7 @@ export function FUN_00437ae8(heap) {
   let uVar4 = 0;
   let uVar5 = 0;
   if ((in_EAX < 0x1000) && (in_CX < 0x1000)) {
-    pbVar6 = heap.u32((0x00971ef4) + ((ushort)((ushort)((in_CX & 0xfe0) << 7 | in_EAX & 0xfe0) >>> 5 | ((in_CX & 0xfe0) >>> 9) << 0xb)) * 4);
+    pbVar6 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((in_CX & 0xfe0) << 7 | in_EAX & 0xfe0) >>> 5 | ((in_CX & 0xfe0) >>> 9) << 0xb)) * 4);
     bVar3 = heap.u32(pbVar6);
     while ((bVar3 & 0x3c) != 0) {
       pbVar6 = pbVar6 + 8;
@@ -46,4 +49,7 @@ export function FUN_00437ae8(heap) {
     }
   }
   return CONCAT44(heap, in_EDX, in_EAX);
+} finally {
+    heap.freeFrame(4);
+  }
 }

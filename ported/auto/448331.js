@@ -9,6 +9,11 @@ import { FUN_00448c64 } from "./448c64.js";
 import { FUN_00448d15 } from "./448d15.js";
 import { FUN_005e56d3 } from "./5e56d3.js";
 export function FUN_00448331(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_00652478 = __sp + 0;
+  const __addr_DAT_0065247a = __sp + 4;
+  const __addr_DAT_00971ef4 = __sp + 8;
+  try {
   let uVar2 = 0;
   let uVar3 = 0;
   let in_EAX = 0;
@@ -50,10 +55,10 @@ export function FUN_00448331(heap) {
   } else {
     LAB_0044836a: bVar6 = iVar8 + heap.u32(unaff_ESI + (2) * 4);
     uVar7 = CONCAT22(heap, (iVar8 >>> 0x10), CONCAT11(heap, bVar6 - 4, bVar6));
-    uVar3 = uVar14 + heap.u32((0x00652478) + (uVar11 * 2) * 4);
-    uVar4 = extraout_CX + heap.u32((0x0065247a) + (uVar11 * 2) * 4);
+    uVar3 = uVar14 + heap.u32((__addr_DAT_00652478) + (uVar11 * 2) * 4);
+    uVar4 = extraout_CX + heap.u32((__addr_DAT_0065247a) + (uVar11 * 2) * 4);
     uVar5 = uVar4 * 0x80 | uVar4 >>> 9 | uVar3;
-    pbVar13 = heap.u32((0x00971ef4) + ((ushort)(uVar5 >>> 5 | uVar5 << 0xb)) * 4);
+    pbVar13 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar5 >>> 5 | uVar5 << 0xb)) * 4);
     do {
       if ((heap.u32(pbVar13) & 0x3c) == 4) {
         if (bVar6 == heap.u32(pbVar13 + (2) * 4)) {
@@ -86,9 +91,9 @@ export function FUN_00448331(heap) {
         uVar15 = FUN_005e56d3(heap, pbVar13, unaff_EDI);
         uVar7 = (undefined4)(uVar15 >>> 0x20);
         uVar12 = uVar11 + 1 & 3;
-        uVar3 = extraout_ECX + heap.u32((0x0065247a) + (uVar12 * 2) * 4);
-        uVar3 = uVar3 * 0x80 | uVar3 >>> 9 | uVar15 + heap.u32((0x00652478) + (uVar12 * 2) * 4);
-        pbVar13 = heap.u32((0x00971ef4) + ((ushort)(uVar3 >>> 5 | uVar3 << 0xb)) * 4);
+        uVar3 = extraout_ECX + heap.u32((__addr_DAT_0065247a) + (uVar12 * 2) * 4);
+        uVar3 = uVar3 * 0x80 | uVar3 >>> 9 | uVar15 + heap.u32((__addr_DAT_00652478) + (uVar12 * 2) * 4);
+        pbVar13 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar3 >>> 5 | uVar3 << 0xb)) * 4);
         /* goto LAB_00448460 */ throw new Error("goto LAB_00448460 not supported");
       }
       LAB_004483ae: pbVar1 = pbVar13 + 1;
@@ -115,4 +120,7 @@ export function FUN_00448331(heap) {
     return CONCAT44(heap, in_EDX, in_EAX);
   }
   /* goto LAB_00448339 */ throw new Error("goto LAB_00448339 not supported");
+} finally {
+    heap.freeFrame(12);
+  }
 }

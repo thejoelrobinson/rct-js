@@ -6,6 +6,12 @@
 
 import { FUN_004175a0 } from "./4175a0.js";
 export function FUN_00417420(heap, param_1) {
+  const __sp = heap.allocFrame(16);
+  const __addr_DAT_005f0288 = __sp + 0;
+  const __addr_DAT_005f0294 = __sp + 4;
+  const __addr_DAT_005f028c = __sp + 8;
+  const __addr_DAT_005f0290 = __sp + 12;
+  try {
   let iVar1 = 0;
   let iVar2 = 0;
   let iVar3 = 0;
@@ -13,8 +19,8 @@ export function FUN_00417420(heap, param_1) {
   iVar2 = param_1;
   switch (param_1) {
     case 2:
-      puVar6 = 0x005f0288;
-      pcVar4 = heap.u32(0x005f0288);
+      puVar6 = __addr_DAT_005f0288;
+      pcVar4 = heap.u32(__addr_DAT_005f0288);
       break;
     default:
       return 0xffffffff;
@@ -26,16 +32,16 @@ export function FUN_00417420(heap, param_1) {
       pcVar4 = heap.u32(puVar6);
       break;
     case 0xf:
-      puVar6 = 0x005f0294;
-      pcVar4 = heap.u32(0x005f0294);
+      puVar6 = __addr_DAT_005f0294;
+      pcVar4 = heap.u32(__addr_DAT_005f0294);
       break;
     case 0x15:
-      puVar6 = 0x005f028c;
-      pcVar4 = heap.u32(0x005f028c);
+      puVar6 = __addr_DAT_005f028c;
+      pcVar4 = heap.u32(__addr_DAT_005f028c);
       break;
     case 0x16:
-      puVar6 = 0x005f0290;
-      pcVar4 = heap.u32(0x005f0290);
+      puVar6 = __addr_DAT_005f0290;
+      pcVar4 = heap.u32(__addr_DAT_005f0290);
   }
   iVar1 = heap.u32(0x005eff0c);
   iVar3 = heap.u32(0x005ec364);
@@ -81,4 +87,7 @@ export function FUN_00417420(heap, param_1) {
   }
   heap.setU32(0x005eff0c, (iVar5) >>> 0);
   return 0;
+} finally {
+    heap.freeFrame(16);
+  }
 }

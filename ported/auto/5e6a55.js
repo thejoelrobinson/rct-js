@@ -6,11 +6,14 @@
 
 import { CONCAT44 } from "../runtime/win32.js";
 export function FUN_005e6a55(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_009a0018 = __sp + 0;
+  try {
   let bVar1 = 0;
   let in_EAX = 0;
   let in_EDX = 0;
-  pbVar2 = 0x009a0018;
-  pbVar3 = 0x009a0018;
+  pbVar2 = __addr_DAT_009a0018;
+  pbVar3 = __addr_DAT_009a0018;
   while (true) {
     bVar1 = heap.u32(pbVar2);
     heap.u32(pbVar3) = bVar1;
@@ -23,4 +26,7 @@ export function FUN_005e6a55(heap) {
     pbVar2 = pbVar2 + 1;
   }
   return CONCAT44(heap, in_EDX, in_EAX);
+} finally {
+    heap.freeFrame(4);
+  }
 }

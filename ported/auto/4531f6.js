@@ -5,6 +5,10 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_004531f6(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_005f72ef = __sp + 0;
+  const __addr_DAT_00971ef4 = __sp + 4;
+  try {
   let bVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -59,7 +63,7 @@ export function FUN_004531f6(heap) {
           }
           heap.u32(puVar7 + (2) * 4) = (((uint)(ushort)(((((heap.u32(0x006326c2) + heap.u32(0x006326c6)) >>> 1) - heap.u32((iVar6 + 10))) >>> (heap.u32((iVar6 + 0x10)) & 0x1f)) + heap.u32((iVar6 + 6))) << 0x10) / uVar12 + -0x8000 >>> 4);
           uVar12 = heap.u32((unaff_ESI + 0x28));
-          if ((heap.u32((0x005f72ef) + ((uint) * (unaff_ESI + 0x31) * 4) * 4) & 1) != 0) {
+          if ((heap.u32((__addr_DAT_005f72ef) + ((uint) * (unaff_ESI + 0x31) * 4) * 4) & 1) != 0) {
             uVar12 = uVar12 << 1;
           }
           if (uVar12 < 0) {
@@ -71,7 +75,7 @@ export function FUN_004531f6(heap) {
           heap.u32((puVar7 + 4)) = 0;
           if (heap.u32((unaff_ESI + 0xe)) != 0x8000) {
             uVar14 = heap.u32((unaff_ESI + 0x10)) >>> 9;
-            pbVar13 = heap.u32((0x00971ef4) + ((ushort)((ushort)((heap.u32((unaff_ESI + 0x10)) & 0xffe0) << 7 | uVar14 | heap.u32((unaff_ESI + 0xe)) & 0xffe0) >>> 5 | uVar14 << 0xb)) * 4);
+            pbVar13 = heap.u32((__addr_DAT_00971ef4) + ((ushort)((ushort)((heap.u32((unaff_ESI + 0x10)) & 0xffe0) << 7 | uVar14 | heap.u32((unaff_ESI + 0xe)) & 0xffe0) >>> 5 | uVar14 << 0xb)) * 4);
             bVar1 = heap.u32(pbVar13);
             while ((bVar1 & 0x3c) != 0) {
               pbVar13 = pbVar13 + 8;
@@ -89,4 +93,7 @@ export function FUN_004531f6(heap) {
   }
   heap.setU32(0x006326c4, (uVar8) >>> 0);
   return;
+} finally {
+    heap.freeFrame(8);
+  }
 }

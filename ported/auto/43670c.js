@@ -7,6 +7,9 @@
 import { LOCK, UNLOCK } from "../runtime/win32.js";
 import { FUN_0043657e } from "./43657e.js";
 export function FUN_0043670c(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_00971ef4 = __sp + 0;
+  try {
   let uVar1 = 0;
   let extraout_CX = 0;
   let unaff_BL = 0;
@@ -14,8 +17,8 @@ export function FUN_0043670c(heap) {
   uVar1 = FUN_0043657e(heap);
   uVar1 = extraout_CX << 7 | extraout_CX >>> 9 | uVar1;
   LOCK(heap);
-  puVar2 = heap.u32((0x00971ef4) + ((ushort)(uVar1 >>> 5 | uVar1 << 0xb)) * 4);
-  heap.u32((0x00971ef4) + ((ushort)(uVar1 >>> 5 | uVar1 << 0xb)) * 4) = heap.u32(0x00981ef4);
+  puVar2 = heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar1 >>> 5 | uVar1 << 0xb)) * 4);
+  heap.u32((__addr_DAT_00971ef4) + ((ushort)(uVar1 >>> 5 | uVar1 << 0xb)) * 4) = heap.u32(0x00981ef4);
   UNLOCK(heap);
   do {
     puVar3 = heap.u32(0x00981ef4);
@@ -45,4 +48,7 @@ export function FUN_0043670c(heap) {
   }
   heap.setU32(0x00981ef4, (puVar3) >>> 0);
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

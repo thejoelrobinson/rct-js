@@ -6,6 +6,9 @@
 
 import { CARRY1 } from "../runtime/win32.js";
 export function FUN_00439822(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_PTR_LAB_0062d4ac = __sp + 0;
+  try {
   let bVar3 = 0;
   let cVar4 = 0;
   let bVar5 = 0;
@@ -75,6 +78,9 @@ export function FUN_00439822(heap) {
   if (!CARRY1(heap, bVar3, bVar5)) {
     return;
   }
-  (heap.u32(heap.u32((0x0062d4ac) + (heap.u32((unaff_ESI + 0x2b))) * 4)))();
+  (heap.u32(heap.u32((__addr_PTR_LAB_0062d4ac) + (heap.u32((unaff_ESI + 0x2b))) * 4)))();
   return;
+} finally {
+    heap.freeFrame(4);
+  }
 }

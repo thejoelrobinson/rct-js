@@ -10,6 +10,9 @@ import { FUN_0043c65e } from "./43c65e.js";
 import { FUN_00452fce } from "./452fce.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_004420e0(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_0062d564 = __sp + 0;
+  try {
   let bVar1 = 0;
   let in_EAX = 0;
   let extraout_ECX = 0;
@@ -93,7 +96,7 @@ export function FUN_004420e0(heap) {
       heap.u32((unaff_ESI + 0x71)) = 0xff;
     }
     heap.u32((unaff_ESI + 200)) = heap.u32((unaff_ESI + 200)) & 0xfffd;
-    if ((heap.u32((0x0062d564) + (bVar1) * 4) & 1) != 0) {
+    if ((heap.u32((__addr_DAT_0062d564) + (bVar1) * 4) & 1) != 0) {
       heap.u32((unaff_ESI + 200)) = heap.u32((unaff_ESI + 200)) | 2;
     }
     heap.u32((unaff_ESI + 0x6e)) = 0xff;
@@ -105,4 +108,7 @@ export function FUN_004420e0(heap) {
     }
   }
   return in_EAX;
+} finally {
+    heap.freeFrame(4);
+  }
 }

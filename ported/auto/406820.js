@@ -12,6 +12,9 @@ import { FUN_0041095e } from "./41095e.js";
 import { FUN_004109c9 } from "./4109c9.js";
 import { FUN_004133c0 } from "./4133c0.js";
 export function FUN_00406820(heap) {
+  const __sp = heap.allocFrame(4);
+  const __addr_local_2c = __sp + 0;
+  try {
   let iVar1 = 0;
   let uVar2 = 0;
   let iVar3 = 0;
@@ -35,7 +38,7 @@ export function FUN_00406820(heap) {
       while (iVar1 = FUN_0041091d(heap), iVar1 != 0) {
         iVar3 = FUN_0041095e(heap, iVar1);
         if (iVar3 != 0) {
-          iVar3 = FUN_004109c9(heap, iVar1, local_2c);
+          iVar3 = FUN_004109c9(heap, iVar1, __addr_local_2c);
           if (iVar3 == 0) {
             return 0;
           }
@@ -60,4 +63,7 @@ export function FUN_00406820(heap) {
     }
   }
   return uVar2;
+} finally {
+    heap.freeFrame(4);
+  }
 }

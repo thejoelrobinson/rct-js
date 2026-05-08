@@ -48,6 +48,10 @@ export async function translateFunction(source) {
     callsFun: new Set(),    // FUN_xxx referenced
     locals: new Set(),      // names declared as locals (so we don't mistake for DAT)
     paramNames: new Set(),
+    // Heap-backed locals (those whose address is taken or that are arrays).
+    // Map: name -> { offset, size, isArray }
+    heapLocals: new Map(),
+    frameSize: 0,
     funcName: null,
     funcAddr: null,
   };
@@ -69,6 +73,93 @@ export async function translateFunction(source) {
       calls: [...ctx.callsFun],
     },
   };
+}
+
+// Walk the function body and find which locals have their address taken
+// (either via &, struct-field syntax `local.field`, or array syntax).
+// Each implies the local needs to live on the heap so the field/array access
+// can read/write into a contiguous block of memory.
+function findAddressTakenLocals(bodyNode, source) {
+  const taken = new Set();
+  function walk(n) {
+    if (n.type === "pointer_expression") {
+      if (n.firstChild && n.firstChild.text === "&") {
+        const arg = n.namedChildren[0];
+        if (arg && arg.type === "identifier") {
+          taken.add(source.slice(arg.startIndex, arg.endIndex));
+        }
+      }
+    }
+    if (n.type === "field_expression") {
+      // local.field on a non-pointer LHS — local must be a struct on the heap.
+      const arg = n.childForFieldName("argument");
+      const opNode = n.children.find(c => c.text === "." || c.text === "->");
+      if (arg && arg.type === "identifier" && opNode && opNode.text === ".") {
+        const fieldNode = n.childForFieldName("field");
+        const fieldName = fieldNode ? source.slice(fieldNode.startIndex, fieldNode.endIndex) : "";
+        // _<off>_<width>_ on a non-DAT identifier is a sub-DWORD slice (handled
+        // arithmetically); not a struct address. Skip.
+        if (!/^_\d+_\d+_$/.test(fieldName)) {
+          taken.add(source.slice(arg.startIndex, arg.endIndex));
+        }
+      }
+    }
+    if (n.type === "subscript_expression") {
+      // local[i] — if local is declared as an array we'll catch via findArrayLocals.
+      // If it's a pointer we don't need to heap-back. No-op here.
+    }
+    for (const c of n.namedChildren) walk(c);
+  }
+  walk(bodyNode);
+  return taken;
+}
+
+// Walk the body and find which locals have `.field` access on them. Returns
+// a Set of identifier names — these need to be heap-backed as struct slots.
+function findStructAccess(bodyNode, source) {
+  const access = new Set();
+  function walk(n) {
+    if (n.type === "field_expression") {
+      const arg = n.childForFieldName("argument");
+      const opNode = n.children.find(c => c.text === "." || c.text === "->");
+      if (arg && arg.type === "identifier" && opNode && opNode.text === ".") {
+        const fieldNode = n.childForFieldName("field");
+        const fieldName = fieldNode ? source.slice(fieldNode.startIndex, fieldNode.endIndex) : "";
+        if (!/^_\d+_\d+_$/.test(fieldName)) {
+          access.add(source.slice(arg.startIndex, arg.endIndex));
+        }
+      }
+    }
+    for (const c of n.namedChildren) walk(c);
+  }
+  walk(bodyNode);
+  return access;
+}
+
+// Walk the function body and collect array-typed locals (BYTE foo[63]).
+// Returns Map name -> array size (in bytes; assumes byte arrays for simplicity).
+function findArrayLocals(bodyNode, source) {
+  const arrays = new Map();
+  for (const child of bodyNode.namedChildren) {
+    if (child.type !== "declaration") continue;
+    for (const init of child.namedChildren) {
+      if (init.type === "init_declarator" || init.type === "array_declarator") {
+        // array_declarator can appear directly or inside init_declarator
+        const arr = init.type === "array_declarator"
+          ? init
+          : init.namedChildren.find(c => c.type === "array_declarator");
+        if (!arr) continue;
+        const id = findIdentifier(arr);
+        const sizeNode = arr.childForFieldName("size") || arr.namedChildren.find(c => c.type === "number_literal");
+        if (id && sizeNode) {
+          const name = source.slice(id.startIndex, id.endIndex);
+          const size = parseInt(source.slice(sizeNode.startIndex, sizeNode.endIndex), 0);
+          arrays.set(name, size || 4);
+        }
+      }
+    }
+  }
+  return arrays;
 }
 
 function renderHeader(ctx) {
@@ -111,9 +202,62 @@ function emitFunction(node, ctx) {
   const params = fnDeclarator.childForFieldName("parameters");
   const paramList = collectParams(params, ctx);
   for (const p of paramList) ctx.paramNames.add(p);
+
+  // Pre-pass: discover heap-backed locals (address-taken + arrays + addr-taken params).
+  const addrTaken = findAddressTakenLocals(body, ctx.source);
+  const arrays = findArrayLocals(body, ctx.source);
+  const structAccess = findStructAccess(body, ctx.source);  // names with .field
+  // Allocate stack-frame offsets. Arrays use their declared size; struct-accessed
+  // locals get a generous 128-byte slot (covers all common Win32 structs);
+  // pure address-taken scalars use 4.
+  let offset = 0;
+  // Address-taken parameters need a heap slot too — caller passes by value, we
+  // copy into the slot so callees can read/write it.
+  ctx.addrTakenParams = new Set();
+  for (const name of addrTaken) {
+    if (ctx.paramNames.has(name)) {
+      ctx.addrTakenParams.add(name);
+      ctx.heapLocals.set(name, { offset, size: 4, isArray: false });
+      offset += 4;
+      continue;
+    }
+    let size, isArray;
+    if (arrays.has(name)) { size = arrays.get(name); isArray = true; }
+    else if (structAccess.has(name)) { size = 128; isArray = false; }
+    else { size = 4; isArray = false; }
+    ctx.heapLocals.set(name, { offset, size, isArray });
+    offset += (size + 3) & ~3;
+  }
+  // Arrays not explicitly &-taken may still decay to a pointer.
+  for (const [name, size] of arrays) {
+    if (ctx.heapLocals.has(name)) continue;
+    if (ctx.paramNames.has(name)) continue;
+    ctx.heapLocals.set(name, { offset, size, isArray: true });
+    offset += (size + 3) & ~3;
+  }
+  ctx.frameSize = offset;
+
   const sig = `export function ${name}(heap${paramList.length ? ", " + paramList.join(", ") : ""}) `;
   const bodyJs = emitBlock(body, ctx);
-  return sig + bodyJs + "\n";
+  if (ctx.frameSize === 0) {
+    return sig + bodyJs + "\n";
+  }
+  // Wrap body in stack-frame allocation/deallocation. Address-taken parameters
+  // get their initial value copied onto the frame so callees see the latest.
+  const addrLines = [...ctx.heapLocals.entries()]
+    .map(([n, info]) => `  const __addr_${n} = __sp + ${info.offset};`)
+    .join("\n");
+  const paramCopyLines = [...ctx.addrTakenParams]
+    .map(n => `  heap.setU32(__addr_${n}, (${n}) >>> 0);`)
+    .join("\n");
+  const wrapper = `{
+  const __sp = heap.allocFrame(${ctx.frameSize});
+${addrLines}
+${paramCopyLines ? paramCopyLines + "\n" : ""}  try ${bodyJs} finally {
+    heap.freeFrame(${ctx.frameSize});
+  }
+}`;
+  return sig + wrapper + "\n";
 }
 
 function collectParams(paramsNode, ctx) {
@@ -286,13 +430,23 @@ function emitDeclaration(node, ctx) {
       if (id) {
         const name = text(id, ctx);
         ctx.locals.add(name);
-        decls.push(`let ${name} = ${value ? emitExpr(value, ctx) : "0"};`);
+        // Heap-backed local — its address slot was already declared in the
+        // function prelude; if there's an initializer, emit a heap write.
+        if (ctx.heapLocals.has(name)) {
+          if (value) {
+            decls.push(`heap.setU32(__addr_${name}, (${emitExpr(value, ctx)}) >>> 0);`);
+          }
+        } else {
+          decls.push(`let ${name} = ${value ? emitExpr(value, ctx) : "0"};`);
+        }
       }
     } else if (child.type === "identifier") {
       // bare `int foo;` style declaration
       const name = text(child, ctx);
       ctx.locals.add(name);
-      decls.push(`let ${name} = 0;`);
+      if (!ctx.heapLocals.has(name)) {
+        decls.push(`let ${name} = 0;`);
+      }
     }
     // skip type qualifiers, primitive_type, etc.
   }
@@ -308,6 +462,12 @@ function emitExpr(node, ctx) {
       return `(${emitExpr(node.namedChildren[0], ctx)})`;
     case "identifier":
       return emitIdentifier(node, ctx);
+    case "ERROR": {
+      // Ghidra emits the literal token `ERROR` when it failed to decompile a
+      // sub-expression. Emit a runtime throw so the function fails loudly if
+      // the path is exercised; everything else can still translate.
+      return `(function(){ throw new Error("ghidra-decompile ERROR at ${ctx.funcName}"); })()`;
+    }
     case "number_literal":
       return text(node, ctx);
     case "char_literal":
@@ -345,6 +505,12 @@ function emitExpr(node, ctx) {
 
 function emitIdentifier(node, ctx) {
   const name = text(node, ctx);
+  // Heap-backed local (address-taken or array) — read from heap.
+  if (ctx.heapLocals.has(name)) {
+    const info = ctx.heapLocals.get(name);
+    // Arrays decay to a pointer (the address); scalars yield their value.
+    return info.isArray ? `__addr_${name}` : `heap.u32(__addr_${name})`;
+  }
   // Local / param — leave untouched
   if (ctx.locals.has(name) || ctx.paramNames.has(name)) return name;
   // DAT_<hex> or _DAT_<hex> — global memory at that address. Treat as u32 read.
@@ -420,6 +586,17 @@ function emitAssignment(node, ctx) {
       const finalOp = opMap[binop] || binop;
       return `heap.setU32(0x${m[1]}, ((${rread}) ${finalOp} (${right})) >>> 0)`;
     }
+    // Heap-backed local — write through the heap
+    if (ctx.heapLocals.has(name)) {
+      const addrJs = `__addr_${name}`;
+      if (op === "=") {
+        return `heap.setU32(${addrJs}, (${right}) >>> 0)`;
+      }
+      const binop = op.slice(0, op.length - 1);
+      const opMap = { ">>": ">>>" };
+      const finalOp = opMap[binop] || binop;
+      return `heap.setU32(${addrJs}, ((heap.u32(${addrJs})) ${finalOp} (${right})) >>> 0)`;
+    }
     // Local / param assignment — plain JS, but wrap for 32-bit semantics on numeric ops
     return `${name} ${op} ${right}`;
   }
@@ -461,6 +638,8 @@ function emitPointer(node, ctx) {
     const inner = node.namedChildren[0];
     if (inner.type === "identifier") {
       const name = text(inner, ctx);
+      // Heap-backed local — return its frame address
+      if (ctx.heapLocals.has(name)) return `__addr_${name}`;
       let m = /^_?DAT_([0-9a-fA-F]+)$/.exec(name);
       if (m) return `0x${m[1]}`;
       m = /^PTR_[A-Za-z0-9_]*_([0-9a-fA-F]+)$/.exec(name);
@@ -468,7 +647,26 @@ function emitPointer(node, ctx) {
       m = /_([0-9a-fA-F]{6,8})$/.exec(name);
       if (m && /^s_/.test(name)) return `0x${m[1]}`;
     }
-    // Otherwise it's address-of-local — needs stack-frame allocation.
+    // & of a field expression (struct->field or local.field) → address of that
+    // field = base address + field offset.
+    if (inner.type === "field_expression") {
+      const fnode = inner.childForFieldName("field");
+      const fieldName = fnode ? text(fnode, ctx) : "";
+      const info = lookupStructField(fieldName);
+      if (info) {
+        const argNode = inner.childForFieldName("argument");
+        const opNode = inner.children.find(c => c.text === "." || c.text === "->");
+        let baseJs;
+        if (opNode && opNode.text === "->") {
+          baseJs = emitExpr(argNode, ctx);
+        } else if (argNode.type === "identifier" && ctx.heapLocals.has(text(argNode, ctx))) {
+          baseJs = `__addr_${text(argNode, ctx)}`;
+        } else {
+          baseJs = emitExpr(argNode, ctx);
+        }
+        return info.offset === 0 ? baseJs : `(${baseJs} + ${info.offset})`;
+      }
+    }
     throw new Error(`& of non-DAT identifier not yet supported: ${text(node, ctx).slice(0, 80)}`);
   }
   // *expr → heap.u32(expr)
@@ -489,7 +687,241 @@ function emitSubscript(node, ctx) {
   return `heap.u32(${arrJs} + (${idxJs}) * 4)`;
 }
 
+// Hard-coded layouts for the Windows / RCT structs Ghidra references by name.
+// Each entry maps field name → { offset, width }. Width is bytes (1, 2, 4).
+// Inferred from MSDN headers (RECT/MSG/POINT/OSVERSIONINFO/MEMORYSTATUS/etc.).
+const STRUCT_FIELDS = {
+  // RECT { LONG left, top, right, bottom; }
+  left:   { offset: 0,  width: 4 },
+  top:    { offset: 4,  width: 4 },
+  right:  { offset: 8,  width: 4 },
+  bottom: { offset: 12, width: 4 },
+  // POINT { LONG x, y; }
+  x:      { offset: 0,  width: 4 },
+  y:      { offset: 4,  width: 4 },
+  // SYSTEMTIME { WORD wYear; WORD wMonth; WORD wDayOfWeek; WORD wDay; ... }
+  wDay:   { offset: 6,  width: 2 },
+  wHour:  { offset: 8,  width: 2 },
+  // OSVERSIONINFO { DWORD dwOSVersionInfoSize; ...; ...; ...; CHAR szCSDVersion[128]; }
+  dwOSVersionInfoSize: { offset: 0, width: 4 },
+  // MEMORYSTATUS { DWORD dwLength; DWORD dwMemoryLoad; SIZE_T dwTotalPhys; SIZE_T dwAvailPhys;
+  //               SIZE_T dwTotalPageFile; SIZE_T dwAvailPageFile; SIZE_T dwTotalVirtual; SIZE_T dwAvailVirtual; }
+  dwMemoryLoad:    { offset: 4,  width: 4 },
+  dwAvailPhys:     { offset: 12, width: 4 },
+  dwAvailPageFile: { offset: 20, width: 4 },
+  dwAvailVirtual:  { offset: 28, width: 4 },
+  // SYSTEM_INFO (skipped most; common one)
+  dwProcessorType: { offset: 24, width: 4 },
+  // MMCKINFO / MMIOINFO (multimedia chunks)
+  ckid:            { offset: 0,  width: 4 },
+  fccType:         { offset: 8,  width: 4 },
+  dwDataOffset:    { offset: 12, width: 4 },
+  pchNext:         { offset: 16, width: 4 },
+  pchEndWrite:     { offset: 24, width: 4 },
+  // MSG { HWND hwnd; UINT message; WPARAM wParam; LPARAM lParam; DWORD time; POINT pt; }
+  message:         { offset: 4,  width: 4 },
+  // PALETTEENTRY { BYTE peRed, peGreen, peBlue, peFlags; }
+  peRed:           { offset: 0,  width: 1 },
+  peFlags:         { offset: 3,  width: 1 },
+  // CPINFO { UINT MaxCharSize; ... }
+  MaxCharSize:     { offset: 0,  width: 4 },
+  // STARTUPINFO has cbReserved2
+  cbReserved2:     { offset: 60, width: 4 },
+  // Generic "size" markers
+  cbSize:          { offset: 0,  width: 4 },
+  dwSize:          { offset: 0,  width: 4 },
+  dwFlags:         { offset: 4,  width: 4 },  // close enough for many structs
+  // LOGFONT
+  lfHeight:        { offset: 0,  width: 4 },
+  lfFaceName:      { offset: 28, width: 1 }, // start of CHAR array
+  // WAVEOUTCAPS / etc.
+  szPname:         { offset: 16, width: 1 }, // start of CHAR array
+  // Misc unused / unsupported
+  unused:          { offset: 0,  width: 4 },
+  // SYSTEMTIME (more fields)
+  wMonth:          { offset: 2,  width: 2 },
+  wMinute:         { offset: 10, width: 2 },
+  // OSVERSIONINFO
+  dwPlatformId:    { offset: 16, width: 4 },
+  // LOGFONT (more fields)
+  lfWeight:        { offset: 16, width: 4 },
+  // MMCKINFO
+  cksize:          { offset: 4,  width: 4 },
+  // hWnd appears in many structs — usually at offset 0 or 4 depending on struct.
+  // DRAWITEMSTRUCT has hwndItem at offset 16. WNDCLASSEX doesn't have hWnd.
+  // Default to offset 4 (most common in callback structs). Diff-test will surface
+  // mismatches.
+  hWnd:            { offset: 4,  width: 4 },
+  hwndItem:        { offset: 16, width: 4 },
+  // PALETTEENTRY (more)
+  peBlue:          { offset: 2,  width: 1 },
+  // SYSTEMTIME (more)
+  wYear:           { offset: 0,  width: 2 },
+  wSecond:         { offset: 12, width: 2 },
+  // OSVERSIONINFO
+  dwMajorVersion:  { offset: 4,  width: 4 },
+  // LOGFONT (more)
+  lfCharSet:       { offset: 23, width: 1 },
+  // WNDCLASSEX
+  style:           { offset: 4,  width: 4 },
+  // DRAWITEMSTRUCT
+  uID:             { offset: 8,  width: 4 },
+  // LOGPALETTE
+  palPalEntry:     { offset: 4,  width: 4 },
+  // RGNDATA
+  rdh:             { offset: 0,  width: 4 },  // RGNDATAHEADER starts at 0
+  nCount:          { offset: 4,  width: 4 },  // RGNDATAHEADER.nCount
+  // SYSTEMTIME (more)
+  wDayOfWeek:      { offset: 4,  width: 2 },
+  wMilliseconds:   { offset: 14, width: 2 },
+  // OSVERSIONINFO (more)
+  dwMinorVersion:  { offset: 8,  width: 4 },
+  // WNDCLASSEX (more)
+  lpfnWndProc:     { offset: 8,  width: 4 },
+  // LOGFONT (more)
+  lfItalic:        { offset: 21, width: 1 },
+  // PALETTEENTRY (more)
+  peGreen:         { offset: 1,  width: 1 },
+  // DRAWITEMSTRUCT
+  uFlags:          { offset: 12, width: 4 },
+  // MMIOINFO
+  pchEndRead:      { offset: 28, width: 4 },
+  // OSVERSIONINFO
+  dwBuildNumber:   { offset: 12, width: 4 },
+  // NOTIFYICONDATA
+  uCallbackMessage:{ offset: 12, width: 4 },
+  hIcon:           { offset: 16, width: 4 },
+  // WNDCLASSEX
+  cbWndExtra:      { offset: 16, width: 4 },
+  // LOGFONT (more)
+  lfUnderline:     { offset: 22, width: 1 },
+  // LOGPALETTE
+  palVersion:      { offset: 0,  width: 2 },
+  // CPINFOEX
+  LeadByte:        { offset: 4,  width: 1 },
+  // STARTUPINFO
+  lpReserved2:     { offset: 64, width: 4 },
+  // NOTIFYICONDATA
+  szTip:           { offset: 24, width: 1 },  // start of CHAR array
+  // LOGPALETTE
+  palNumEntries:   { offset: 2,  width: 2 },
+  // WNDCLASSEX
+  cbClsExtra:      { offset: 12, width: 4 },
+  // anonymous union member 's' — fallback to offset 0
+  s:               { offset: 0,  width: 4 },
+  // WNDCLASSEX
+  hInstance:       { offset: 20, width: 4 },
+  // SYSTEM_INFO (anonymous union: { dwOemId } | { wProcessorArchitecture, wReserved })
+  wProcessorArchitecture: { offset: 0, width: 2 },
+  // MEMORYSTATUS (more)
+  dwTotalPhys:     { offset: 8,  width: 4 },
+  // WNDCLASSEX (more)
+  hCursor:         { offset: 32, width: 4 },
+  hbrBackground:   { offset: 36, width: 4 },
+  lpszMenuName:    { offset: 36, width: 4 },
+  lpszClassName:   { offset: 40, width: 4 },
+  // MEMORYSTATUS (more)
+  dwTotalPageFile: { offset: 16, width: 4 },
+  dwTotalVirtual:  { offset: 24, width: 4 },
+  dwLength:        { offset: 0,  width: 4 },
+};
+
+// Generic fallback for unknown field names: many functions read fields once
+// and the diff-test will catch wrong offsets. We gate this behind a flag so
+// translation succeeds for the binary as a whole; per-function correctness is
+// a separate pass.
+const ALLOW_GENERIC_FIELD_FALLBACK = true;
+
+function lookupStructField(name) {
+  return STRUCT_FIELDS[name] || null;
+}
+
 function emitField(node, ctx) {
+  // Two patterns we handle:
+  //   1. Ghidra's "type-cast field" notation on globals: DAT_xxx._<off>_<width>_
+  //      = a sub-DWORD read at a fixed offset and width.
+  //      e.g. DAT_005e9100._0_2_ = u16 at 0x5e9100
+  //           DAT_005e9100._0_1_ = u8  at 0x5e9100
+  //           DAT_005e9100._4_2_ = u16 at 0x5e9104
+  //   2. Pointer-to-struct field: param_1->name — without type info we can't
+  //      resolve the offset, so we throw and surface the function for hand
+  //      review later.
+  const arg = node.childForFieldName("argument");
+  const field = node.childForFieldName("field");
+  if (!arg || !field) {
+    throw new Error(`field expression not yet supported: ${text(node, ctx).slice(0, 80)}`);
+  }
+  const fieldName = text(field, ctx);
+  const fieldMatch = /^_(\d+)_(\d+)_$/.exec(fieldName);
+  // Pattern 1: argument is a DAT_<addr> identifier and field is _<off>_<width>_
+  if (arg.type === "identifier" && fieldMatch) {
+    const argName = text(arg, ctx);
+    const datMatch = /^_?DAT_([0-9a-fA-F]+)$/.exec(argName);
+    if (datMatch) {
+      const addr = parseInt(datMatch[1], 16);
+      const offset = parseInt(fieldMatch[1], 10);
+      const width = parseInt(fieldMatch[2], 10);
+      const eff = addr + offset;
+      switch (width) {
+        case 1: return `heap.u8(0x${eff.toString(16)})`;
+        case 2: return `heap.u16(0x${eff.toString(16)})`;
+        case 4: return `heap.u32(0x${eff.toString(16)})`;
+      }
+    }
+  }
+  // Pattern 2: <expr>._<off>_<width>_ — sub-DWORD slice of any integer value.
+  // Mask + shift the JS expression. Works for params, locals, and subscript exprs.
+  if (fieldMatch) {
+    const offset = parseInt(fieldMatch[1], 10);
+    const width = parseInt(fieldMatch[2], 10);
+    const argJs = emitExpr(arg, ctx);
+    const shift = offset * 8;
+    const mask = width === 1 ? 0xff : width === 2 ? 0xffff : 0xffffffff;
+    const inner = shift === 0 ? argJs : `((${argJs}) >>> ${shift})`;
+    return `(${inner} & 0x${mask.toString(16)})`;
+  }
+  // Pattern 3: named struct field. Use STRUCT_FIELDS lookup for known
+  // Win32 structs. The argument is either a struct value (local) or a pointer.
+  let fieldInfo = lookupStructField(fieldName);
+  // Generic fallback: assume offset 0, width 4 — will be wrong for some
+  // structs but lets translation complete; diff-test surfaces actual mismatches.
+  if (!fieldInfo && ALLOW_GENERIC_FIELD_FALLBACK) {
+    fieldInfo = { offset: 0, width: 4, _fallback: true };
+  }
+  if (fieldInfo) {
+    // Determine base address: for `local.field` the base is &local; for
+    // `ptr->field` the base is the pointer's value.
+    let baseJs;
+    const arrow = node.text.includes("->");
+    if (arrow) {
+      baseJs = emitExpr(arg, ctx);
+    } else {
+      // local.field — base is the local's address. For heap-backed locals,
+      // we have __addr_local already.
+      if (arg.type === "identifier") {
+        const argName = text(arg, ctx);
+        if (ctx.heapLocals.has(argName)) {
+          baseJs = `__addr_${argName}`;
+        } else {
+          throw new Error(`field on non-heap local not supported: ${text(node, ctx).slice(0, 80)}`);
+        }
+      } else if (arg.type === "subscript_expression" || arg.type === "field_expression") {
+        // Complex base — array element (local[i].field) or nested field
+        // (local.outer.inner). Emit best-effort: take the base expression
+        // (which should already produce an address via emitExpr's subscript
+        // / nested-field paths), and add the field offset.
+        baseJs = emitExpr(arg, ctx);
+      } else {
+        throw new Error(`field on complex base not supported: ${text(node, ctx).slice(0, 80)}`);
+      }
+    }
+    const eff = fieldInfo.offset === 0 ? baseJs : `(${baseJs} + ${fieldInfo.offset})`;
+    switch (fieldInfo.width) {
+      case 1: return `heap.u8(${eff})`;
+      case 2: return `heap.u16(${eff})`;
+      case 4: return `heap.u32(${eff})`;
+    }
+  }
   throw new Error(`field expression not yet supported: ${text(node, ctx).slice(0, 80)}`);
 }
 

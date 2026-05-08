@@ -5,20 +5,26 @@
 /** @typedef {import("../runtime/heap.js").Heap} Heap */
 
 export function FUN_004175a0(heap, param_1) {
-  puVar2 = 0x005ec2e0;
+  const __sp = heap.allocFrame(4);
+  const __addr_DAT_005ec2e0 = __sp + 0;
+  try {
+  puVar2 = __addr_DAT_005ec2e0;
   if (heap.u32(0x005ec2e4) != param_1) {
     puVar3 = puVar2;
     do {
       puVar2 = puVar3 + 0xc;
-      if (0x005ec2e0 + heap.u32(0x005ec360) * 0xc <= puVar2) {
+      if (__addr_DAT_005ec2e0 + heap.u32(0x005ec360) * 0xc <= puVar2) {
         break;
       }
       piVar1 = (puVar3 + 0x10);
       puVar3 = puVar2;
     } while (heap.u32(piVar1) != param_1);
   }
-  if ((0x005ec2e0 + heap.u32(0x005ec360) * 0xc <= puVar2) || (heap.u32((puVar2 + 4)) != param_1)) {
+  if ((__addr_DAT_005ec2e0 + heap.u32(0x005ec360) * 0xc <= puVar2) || (heap.u32((puVar2 + 4)) != param_1)) {
     puVar2 = 0x0;
   }
   return puVar2;
+} finally {
+    heap.freeFrame(4);
+  }
 }

@@ -6,6 +6,10 @@
 
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00441452(heap) {
+  const __sp = heap.allocFrame(8);
+  const __addr_DAT_0088752b = __sp + 0;
+  const __addr_DAT_0088751d = __sp + 4;
+  try {
   let in_EAX = 0;
   let iVar1 = 0;
   let unaff_ESI = 0;
@@ -13,8 +17,8 @@ export function FUN_00441452(heap) {
     FUN_005e5301(heap);
     if ((heap.u32((unaff_ESI + 0x2b)) == '\x03') || (heap.u32((unaff_ESI + 0x2b)) == '\a')) {
       iVar1 = (uint) * (unaff_ESI + 0x68) * 0x260;
-      heap.u32((0x0088752b) + (iVar1) * 4) = heap.u32((0x0088752b) + (iVar1) * 4) + '\x01';
-      heap.u32((0x0088751d) + (iVar1) * 4) = heap.u32((0x0088751d) + (iVar1) * 4) | 0xc;
+      heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) = heap.u32((__addr_DAT_0088752b) + (iVar1) * 4) + '\x01';
+      heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) = heap.u32((__addr_DAT_0088751d) + (iVar1) * 4) | 0xc;
     }
     FUN_005e5301(heap);
     return in_EAX;
@@ -22,4 +26,7 @@ export function FUN_00441452(heap) {
   FUN_005e5301(heap);
   FUN_005e5301(heap);
   return in_EAX;
+} finally {
+    heap.freeFrame(8);
+  }
 }

@@ -6,16 +6,19 @@
 
 import { FUN_00408d5d } from "./408d5d.js";
 export function FUN_0040bb01(heap, param_1, param_2) {
+  const __sp = heap.allocFrame(4);
+  const __addr_local_70 = __sp + 0;
+  try {
   let iVar1 = 0;
   let iVar2 = 0;
   let uVar3 = 0;
   let local_60 = 0;
   let local_4c = 0;
   if ((heap.u32(0x005ebf64) == 0) && (heap.u32(0x005ebf34) != 0x0)) {
-    _memset(local_70, 0, 0x6c);
-    heap.u32(local_70 + (0) * 4) = 0x6c;
+    _memset(__addr_local_70, 0, 0x6c);
+    heap.u32(__addr_local_70 + (0) * 4) = 0x6c;
     do {
-      iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf34)) + 100))))(heap.u32(0x005ebf34), 0, local_70, 1, 0);
+      iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf34)) + 100))))(heap.u32(0x005ebf34), 0, __addr_local_70, 1, 0);
       if ((iVar1 == -0x7789fe3e) && (iVar2 = FUN_00408d5d(heap), iVar2 == 0)) {
         break;
       }
@@ -32,4 +35,7 @@ export function FUN_0040bb01(heap, param_1, param_2) {
     uVar3 = 0;
   }
   return uVar3;
+} finally {
+    heap.freeFrame(4);
+  }
 }

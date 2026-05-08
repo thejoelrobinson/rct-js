@@ -8,6 +8,11 @@ import { CONCAT11, CONCAT22 } from "../runtime/win32.js";
 import { FUN_00436e2b } from "./436e2b.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_00436d2d(heap) {
+  const __sp = heap.allocFrame(12);
+  const __addr_DAT_00981efc = __sp + 0;
+  const __addr_DAT_00981ef8 = __sp + 4;
+  const __addr_DAT_00971ef4 = __sp + 8;
+  try {
   let sVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
@@ -21,7 +26,7 @@ export function FUN_00436d2d(heap) {
   let iVar10 = 0;
   let iVar13 = 0;
   let cVar14 = 0;
-  puVar12 = 0x00981efc;
+  puVar12 = __addr_DAT_00981efc;
   for (iVar7 = 0x2000; iVar7 != 0; iVar7 = iVar7 + -1) {
     heap.u32(puVar12) = 0x5050505;
     puVar12 = puVar12 + 1;
@@ -43,7 +48,7 @@ export function FUN_00436d2d(heap) {
     do {
       iVar13 = iVar7;
       sVar6 = heap.u32((iVar10 + 0x981dfb));
-      sVar1 = heap.u32((0x00981ef8 + iVar10 + 3));
+      sVar1 = heap.u32((__addr_DAT_00981ef8 + iVar10 + 3));
       bVar8 = (byte)(sVar1 >>> 8);
       bVar11 = sVar1;
       if (bVar8 <= sVar1) {
@@ -75,7 +80,7 @@ export function FUN_00436d2d(heap) {
         cVar14 = cVar14 + '\x01';
       }
       cVar4 = bVar11 * '\x04';
-      iVar7 = heap.u32((0x00971ef4) + (iVar13) * 4);
+      iVar7 = heap.u32((__addr_DAT_00971ef4) + (iVar13) * 4);
       heap.u32((iVar7 + 2)) = cVar4;
       if ((((uVar5 & 1) != 0 || (uVar9 & 1) != 0) || (uVar9 & 0x100) != 0) || (uVar5 & 0x100) != 0) {
         cVar4 = cVar4 + '\x04';
@@ -93,4 +98,7 @@ export function FUN_00436d2d(heap) {
     iVar7 = iVar13 + 3;
   } while (bVar11 < 0x7f);
   return;
+} finally {
+    heap.freeFrame(12);
+  }
 }
