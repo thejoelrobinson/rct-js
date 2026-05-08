@@ -1,0 +1,15 @@
+node_modules/
+
+# Game data — large, recoverable from the original ISO
+web/assets/
+
+# Lifter output — regenerable from /lifter via `node lifter/lift.js`
+generated/
+
+# Run-time snapshots / debug artifacts
+frames/
+sprites/
+
+# OS / editor noise
+.DS_Store
+*.log
