@@ -1,0 +1,32 @@
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_009bb52c(void)
+
+{
+  DAT_009a1550 = FUN_00404bc3(0x74);
+  _DAT_009a1554 = FUN_00404bc3(0x6d);
+  _DAT_009a1558 = FUN_00404bc3(0x6e);
+  _DAT_009a155c = FUN_00404bc3(0x70);
+  DAT_009a1560 = FUN_00404bc3(0x78);
+  DAT_009a1564 = FUN_00404bc3(0x77);
+  _DAT_009a1568 = FUN_00404bc3(0x7c);
+  _DAT_009a156c = FUN_00404bc3(0x83);
+  _DAT_009a1570 = FUN_00404bc3(0x7f);
+  _DAT_009a1574 = FUN_00404bc3(0x80);
+  _DAT_009a1578 = FUN_00404bc3(0x81);
+  _DAT_009a157c = FUN_00404bc3(0x82);
+  _DAT_009a1580 = FUN_00404bc3(0x84);
+  _DAT_009a1584 = FUN_00404bc3(0x85);
+  _DAT_009a1588 = FUN_00404bc3(0x8a);
+  _DAT_009a158c = FUN_00404bc3(0x89);
+  _DAT_009a1590 = FUN_00404bc3(0x8b);
+  _DAT_009a1594 = FUN_00404bc3(0x8d);
+  _DAT_009a1598 = FUN_00404bc3(0x8e);
+  _DAT_009a159c = FUN_00404bc3(0x8f);
+  _DAT_009a15a0 = FUN_00404bc3(0x90);
+  _DAT_009a15a4 = FUN_00404bc3(0x91);
+  FUN_00404ba4(DAT_009a1550);
+  return;
+}
+

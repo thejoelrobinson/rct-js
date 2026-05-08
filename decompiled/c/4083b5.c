@@ -1,0 +1,8 @@
+
+void FUN_004083b5(LPCSTR param_1)
+
+{
+  CreateFileA(param_1,0x80000000,1,(LPSECURITY_ATTRIBUTES)0x0,3,0x10000080,(HANDLE)0x0);
+  return;
+}
+

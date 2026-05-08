@@ -1,0 +1,117 @@
+
+/* WARNING: Restarted to delay deadcode elimination for space: stack */
+
+void FUN_00458230(void)
+
+{
+  char cVar1;
+  byte bVar2;
+  uint uVar3;
+  int iVar4;
+  ushort uVar5;
+  uint uVar6;
+  uint uVar7;
+  undefined4 *puVar8;
+  char *pcVar9;
+  undefined2 *puVar10;
+  undefined4 local_50 [16];
+  undefined4 *local_10;
+  undefined2 local_c;
+  undefined2 local_a;
+  undefined2 local_8;
+  undefined2 local_6;
+  undefined2 local_4;
+  undefined2 local_2;
+  
+  pcVar9 = &DAT_0099a508;
+  uVar6 = 0x5a1e;
+  do {
+    cVar1 = (char)*(undefined2 *)(&DAT_008dc0b8 + uVar6 * 0x10);
+    uVar5 = (ushort)uVar6;
+    if ((0x5a78 < uVar5) && (uVar5 < 0x5a9d)) {
+      cVar1 = '\0';
+    }
+    *pcVar9 = cVar1;
+    pcVar9 = pcVar9 + 1;
+    uVar6 = (uint)(ushort)(uVar5 + 1);
+  } while ((ushort)(uVar5 + 1) < 0x5afe);
+  uVar6 = 0x5afe;
+  do {
+    cVar1 = (char)*(undefined2 *)(&DAT_008dc0b8 + uVar6 * 0x10);
+    uVar5 = (ushort)uVar6;
+    if ((0x5b58 < uVar5) && (uVar5 < 0x5b7d)) {
+      cVar1 = '\0';
+    }
+    *pcVar9 = cVar1;
+    pcVar9 = pcVar9 + 1;
+    uVar6 = (uint)(ushort)(uVar5 + 1);
+  } while ((ushort)(uVar5 + 1) < 0x5bde);
+  uVar6 = 0x5bde;
+  do {
+    cVar1 = (char)*(undefined2 *)(&DAT_008dc0b8 + uVar6 * 0x10) + '\x01';
+    uVar5 = (ushort)uVar6;
+    if ((0x5c38 < uVar5) && (uVar5 < 0x5c5d)) {
+      cVar1 = '\0';
+    }
+    *pcVar9 = cVar1;
+    pcVar9 = pcVar9 + 1;
+    uVar6 = (uint)(ushort)(uVar5 + 1);
+  } while ((ushort)(uVar5 + 1) < 0x5cbe);
+  uVar6 = 0x5cbe;
+  do {
+    cVar1 = (char)*(undefined2 *)(&DAT_008dc0b8 + uVar6 * 0x10) + '\x01';
+    uVar5 = (ushort)uVar6;
+    if ((0x5d18 < uVar5) && (uVar5 < 0x5d3d)) {
+      cVar1 = '\0';
+    }
+    *pcVar9 = cVar1;
+    pcVar9 = pcVar9 + 1;
+    uVar6 = (uint)(ushort)(uVar5 + 1);
+  } while ((ushort)(uVar5 + 1) < 0x5d9e);
+  local_10 = local_50;
+  local_c = 0;
+  local_a = 0;
+  local_8 = 8;
+  local_6 = 8;
+  local_4 = 0;
+  local_2 = 0;
+  uVar6 = 0;
+  do {
+    puVar8 = local_10;
+    for (iVar4 = 0x10; iVar4 != 0; iVar4 = iVar4 + -1) {
+      *puVar8 = 0;
+      puVar8 = puVar8 + 1;
+    }
+    FUN_009b438b();
+    uVar7 = 0;
+    do {
+      pcVar9 = (char *)((int)local_10 + uVar7);
+      iVar4 = 8;
+      uVar3 = 0;
+      do {
+        bVar2 = (char)uVar3 + *pcVar9;
+        uVar3 = CONCAT31((int3)(uVar3 >> 8),bVar2) >> 1 | (uint)((bVar2 & 1) != 0) << 0x1f;
+        pcVar9 = pcVar9 + 8;
+        iVar4 = iVar4 + -1;
+      } while (iVar4 != 0);
+      (&DAT_006432d8)[uVar6 * 8 + uVar7] = (char)(uVar3 >> 0x18);
+      uVar7 = uVar7 + 1;
+    } while (uVar7 < 8);
+    uVar6 = uVar6 + 1;
+  } while (uVar6 < 0xe0);
+  puVar8 = &DAT_008dffb4;
+  puVar10 = &DAT_006439ea;
+  iVar4 = 0x10;
+  do {
+    *puVar8 = puVar10;
+    *(undefined2 *)(puVar8 + 1) = 0x40;
+    *(undefined2 *)((int)puVar8 + 6) = 0x20;
+    *puVar10 = 0xffff;
+    *(undefined4 *)(puVar10 + 7) = 0;
+    puVar8 = puVar8 + 4;
+    puVar10 = puVar10 + 0x409;
+    iVar4 = iVar4 + -1;
+  } while (iVar4 != 0);
+  return;
+}
+

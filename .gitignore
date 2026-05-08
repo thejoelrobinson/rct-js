@@ -10,6 +10,9 @@ generated/
 frames/
 sprites/
 
+# Ghidra project state (binary, regenerable from binary/rct.exe)
+decompiled/ghidra-project/
+
 # OS / editor noise
 .DS_Store
 *.log
