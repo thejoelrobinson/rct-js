@@ -414,9 +414,9 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
     local_30 = ((4) >>> 0);
   }
   heap.setU32(param_1, (heap.u32(__addr_local_2c)) & 0xffffffff);
-  heap.setU32((param_1 + 1), (pbVar11) & 0xffffffff);
-  heap.setU32((param_1 + 3), (param_3) & 0xffffffff);
-  heap.setU32((param_1 + (5) * 4), (heap.u32(__addr_local_22) | uVar7) & 0xffffffff);
+  heap.setU32((param_1 + ((1) * 2)), (pbVar11) & 0xffffffff);
+  heap.setU32((param_1 + ((3) * 2)), (param_3) & 0xffffffff);
+  heap.setU16((param_1 + (5) * 2), (heap.u32(__addr_local_22) | uVar7) & 0xffff);
   return local_30;
 } finally {
     heap.freeFrame(43);

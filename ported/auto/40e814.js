@@ -51,7 +51,7 @@ export function FUN_0040e814(heap, param_1, param_2, param_3) {
       } else {
         local_20 = ((SelectPalette(heap, hdc, heap.u32(0x005ec07c), 1)) >>> 0);
       }
-      pHVar5 = ((CreateDIBSection(heap, hdc, heap.u32(param_1 + (0x22) * 4), 0, (param_1 + 0x21), 0x0, 0)) >>> 0);
+      pHVar5 = ((CreateDIBSection(heap, hdc, heap.u32(param_1 + (0x22) * 4), 0, (param_1 + ((0x21) * 4)), 0x0, 0)) >>> 0);
       heap.setU32((param_1 + (0x23) * 4), (pHVar5) & 0xffffffff);
       if (local_20 != 0x0) {
         SelectPalette(heap, hdc, local_20, 1);
@@ -61,7 +61,7 @@ export function FUN_0040e814(heap, param_1, param_2, param_3) {
         uVar3 = ((0) >>> 0);
       } else {
         heap.setI16((((param_1) >>> 0) + 6), (((param_2) << 16 >> 16)) & 0xffff);
-        heap.setI16((param_1 + 2), (((param_3) << 16 >> 16)) & 0xffff);
+        heap.setI16((param_1 + ((2) * 4)), (((param_3) << 16 >> 16)) & 0xffff);
         heap.setU32((param_1 + (4) * 4), (uVar4) & 0xffffffff);
         heap.setU32(param_1, (heap.u32(param_1 + (0x21) * 4)) & 0xffffffff);
         uVar3 = ((1) >>> 0);

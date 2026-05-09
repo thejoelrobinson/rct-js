@@ -26,10 +26,10 @@ export function FUN_0040ddca(heap, param_1) {
   heap.setU32(__addr_local_10, (0) >>> 0);
   heap.setU32(__addr_local_c, (0) >>> 0);
   heap.setU32(__addr_local_20, (0) >>> 0);
-  if (heap.u32(param_1) != 0) {
-    (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(param_1)) + 0x50)), heap.u32(param_1)));
-    heap.setU32(__addr_local_8, ((regs.eax = FUN_0040de9c(heap, heap.u32(param_1 + (1) * 4)))) >>> 0);
-    if (((heap.u32(__addr_local_8) != 0) && (iVar1 = (((regs.eax = FUN_0040db5e(heap, heap.u32(__addr_local_8), __addr_local_c, __addr_local_20, __addr_local_14))) >>> 0), iVar1 != 0)) && (iVar1 = (((regs.eax = FUN_0040dba3(heap, heap.u32(param_1), heap.u32(__addr_local_20), heap.u32(param_1 + (3) * 4)))) >>> 0), iVar1 != 0)) {
+  if (heap.i32(param_1) != 0) {
+    (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.i32(param_1)) + 0x50)), heap.i32(param_1)));
+    heap.setU32(__addr_local_8, ((regs.eax = FUN_0040de9c(heap, heap.i32(param_1 + (1) * 4)))) >>> 0);
+    if (((heap.u32(__addr_local_8) != 0) && (iVar1 = (((regs.eax = FUN_0040db5e(heap, heap.u32(__addr_local_8), __addr_local_c, __addr_local_20, __addr_local_14))) >>> 0), iVar1 != 0)) && (iVar1 = (((regs.eax = FUN_0040dba3(heap, heap.i32(param_1), heap.u32(__addr_local_20), heap.i32(param_1 + (3) * 4)))) >>> 0), iVar1 != 0)) {
       return 1;
     }
   }

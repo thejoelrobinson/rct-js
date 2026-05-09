@@ -20,7 +20,7 @@ export function FUN_00418750(heap, param_1, param_2) {
     if (((heap.u32(param_2 + (1) * 4) & 0xfffff) == 0) && (uVar2 == 0)) {
       heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
       heap.setU32(param_1, (0) & 0xffffffff);
-      heap.setU16((param_1 + 2), (0) & 0xffff);
+      heap.setU16((param_1 + ((2) * 4)), (0) & 0xffff);
       return;
     }
     iVar6 = ((0x3c01) >>> 0);
@@ -43,6 +43,6 @@ export function FUN_00418750(heap, param_1, param_2) {
     heap.setU32((param_1 + (1) * 4), (uVar3) & 0xffffffff);
     heap.setU32(param_1, (heap.u32(param_1) * 2) & 0xffffffff);
   }
-  heap.setU16((param_1 + 2), (uVar5 | uVar1 & 0x8000) & 0xffff);
+  heap.setU16((param_1 + ((2) * 4)), (uVar5 | uVar1 & 0x8000) & 0xffff);
   return;
 }

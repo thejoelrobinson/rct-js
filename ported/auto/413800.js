@@ -17,7 +17,7 @@ export function FUN_00413800(heap, _Str, _Ch) {
     }
     iVar2 = ((iVar2 + -1) >>> 0);
     pcVar4 = ((_Str + 1) >>> 0);
-    cVar1 = ((heap.u32(_Str)) & 0xff);
+    cVar1 = ((heap.i8(_Str)) & 0xff);
     _Str = ((pcVar4) >>> 0);
   } while (cVar1 != 0);
   iVar2 = ((-(iVar2 + 1)) >>> 0);

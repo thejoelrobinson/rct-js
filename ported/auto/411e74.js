@@ -20,16 +20,16 @@ export function FUN_00411e74(heap, param_1, param_2) {
   let local_7c = 0;
   local_7c = ((0xffffffff) >>> 0);
   if (param_2 != 0xffffffff) {
-    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x44)), param_1, __addr_local_78))) >>> 0);
+    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x44)), param_1, __addr_local_78))) >>> 0);
     if (iVar1 == 0) {
       local_80 = ((GetPixel(heap, heap.u32(__addr_local_78), 0, 0)) >>> 0);
       SetPixel(heap, heap.u32(__addr_local_78), 0, 0, param_2);
-      (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x68)), param_1, heap.u32(__addr_local_78)));
+      (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x68)), param_1, heap.u32(__addr_local_78)));
     }
   }
   heap.setU32((__addr_local_70 + (0) * 4), (0x6c) & 0xffffffff);
   while (true) {
-    heap.setU32(__addr_local_74, ((regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 100)), param_1, 0, __addr_local_70, 0, 0))) >>> 0);
+    heap.setU32(__addr_local_74, ((regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 100)), param_1, 0, __addr_local_70, 0, 0))) >>> 0);
     if (heap.u32(__addr_local_74) != -0x7789fde4) {
       break;
     }
@@ -37,13 +37,13 @@ export function FUN_00411e74(heap, param_1, param_2) {
   }
   if (heap.u32(__addr_local_74) == 0) {
     local_7c = ((heap.u32(heap.u32(__addr_local_4c)) & (1 << (heap.u32(__addr_local_1c) & 0x1f)) - 1) >>> 0);
-    (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x80)), param_1, 0));
+    (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x80)), param_1, 0));
   }
   if (param_2 != 0xffffffff) {
-    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x44)), param_1, __addr_local_78))) >>> 0);
+    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x44)), param_1, __addr_local_78))) >>> 0);
     if (iVar1 == 0) {
       SetPixel(heap, heap.u32(__addr_local_78), 0, 0, local_80);
-      (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x68)), param_1, heap.u32(__addr_local_78)));
+      (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x68)), param_1, heap.u32(__addr_local_78)));
     }
   }
   return local_7c;

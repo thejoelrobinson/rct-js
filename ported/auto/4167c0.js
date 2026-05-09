@@ -12,24 +12,24 @@ export function FUN_004167c0(heap, param_1) {
   let cVar2 = 0;
   let iVar3 = 0;
   let uVar4 = 0;
-  iVar3 = (((regs.eax = FUN_00418010(heap, ((heap.u32(param_1)) >>> 0)))) >>> 0);
+  iVar3 = (((regs.eax = FUN_00418010(heap, ((heap.i8(param_1)) >>> 0)))) >>> 0);
   if (iVar3 != 0x65) {
     do {
       param_1 = ((param_1 + 1) >>> 0);
       if (heap.u32(0x005ee754) < 2) {
-        uVar4 = ((((heap.u32(heap.u32(0x005ee548) + (heap.u32(param_1) * 2) * 4)) & 0xff) & 4) >>> 0);
+        uVar4 = ((((heap.u32(heap.u32(0x005ee548) + (heap.i8(param_1) * 2) * 4)) & 0xff) & 4) >>> 0);
       } else {
-        uVar4 = (((regs.eax = FUN_00416f60(heap, ((heap.u32(param_1)) >>> 0), 4))) >>> 0);
+        uVar4 = (((regs.eax = FUN_00416f60(heap, ((heap.i8(param_1)) >>> 0), 4))) >>> 0);
       }
     } while (uVar4 != 0);
   }
-  cVar2 = ((heap.u32(param_1)) & 0xff);
+  cVar2 = ((heap.i8(param_1)) & 0xff);
   heap.setU32(param_1, (heap.u32(0x005ee758)) & 0xffffffff);
   do {
     param_1 = ((param_1 + 1) >>> 0);
-    cVar1 = ((heap.u32(param_1)) & 0xff);
+    cVar1 = ((heap.i8(param_1)) & 0xff);
     heap.setU32(param_1, (cVar2) & 0xffffffff);
     cVar2 = ((cVar1) & 0xff);
-  } while (heap.u32(param_1) != 0);
+  } while (heap.i8(param_1) != 0);
   return;
 }

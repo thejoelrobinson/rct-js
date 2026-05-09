@@ -32,7 +32,7 @@ export function FUN_004176c0(heap, param_1, param_2, param_3, param_4) {
   heap.setI8((pcVar4 + (1)), (0) & 0xff);
   do {
     cVar3 = ((heap.i8(pcVar4)) & 0xff);
-    heap.setU32(pcVar4, (heap.u32(param_2)) & 0xffffffff);
+    heap.setU32(pcVar4, (heap.i8(param_2)) & 0xffffffff);
     heap.setU32(param_2, (cVar3) & 0xffffffff);
     pcVar4 = ((pcVar4 + -1) >>> 0);
     param_2 = ((param_2 + 1) >>> 0);

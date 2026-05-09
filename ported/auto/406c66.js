@@ -9,7 +9,7 @@ import { FUN_004113d9 } from "./4113d9.js";
 export function FUN_00406c66(heap, param_1, param_2) {
   let iVar1 = 0;
   let uVar2 = 0;
-  iVar1 = (((regs.eax = FUN_004113d9(heap, param_1, heap.u32(param_2), 0))) >>> 0);
+  iVar1 = (((regs.eax = FUN_004113d9(heap, param_1, heap.i32(param_2), 0))) >>> 0);
   heap.setU32(param_2, (iVar1) & 0xffffffff);
   if (heap.u32(0x005ebedc) == 0) {
     uVar2 = ((2) >>> 0);
@@ -17,7 +17,7 @@ export function FUN_00406c66(heap, param_1, param_2) {
     if ((heap.u32(0x005ec148) == 0) || (heap.u32(0x005ec1c4) != 0)) {
     uVar2 = ((1) >>> 0);
   } else {
-    if (heap.u32(param_2) < 1) {
+    if (heap.i32(param_2) < 1) {
     uVar2 = ((3) >>> 0);
   } else {
     uVar2 = ((0) >>> 0);

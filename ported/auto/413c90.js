@@ -288,7 +288,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
         }
         uVar4 = ((uVar4 - 1) >>> 0);
         pcVar7 = ((param_2 + 1) >>> 0);
-        cVar1 = ((heap.u32(param_2)) & 0xff);
+        cVar1 = ((heap.i8(param_2)) & 0xff);
         param_2 = ((pcVar7) >>> 0);
       } while (cVar1 != 0);
       uVar4 = ((~uVar4) >>> 0);
@@ -542,7 +542,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
         }
         uVar4 = ((uVar4 - 1) >>> 0);
         pcVar8 = ((param_1 + 1) >>> 0);
-        cVar1 = ((heap.u32(param_1)) & 0xff);
+        cVar1 = ((heap.i8(param_1)) & 0xff);
         param_1 = ((pcVar8) >>> 0);
       } while (cVar1 != 0);
       uVar4 = ((~uVar4) >>> 0);

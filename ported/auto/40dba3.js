@@ -16,13 +16,13 @@ export function FUN_0040dba3(heap, param_1, param_2, param_3) {
   const __addr_local_c = __sp + 16;
   try {
   let iVar1 = 0;
-  if ((((param_1 != 0x0) && (param_2 != 0)) && (param_3 != 0)) && (iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x2c)), param_1, 0, param_3, __addr_local_10, __addr_local_8, __addr_local_14, __addr_local_c, 0))) >>> 0), -1 < (iVar1 | 0))) {
+  if ((((param_1 != 0x0) && (param_2 != 0)) && (param_3 != 0)) && (iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x2c)), param_1, 0, param_3, __addr_local_10, __addr_local_8, __addr_local_14, __addr_local_c, 0))) >>> 0), -1 < (iVar1 | 0))) {
     _memset(heap, heap.u32(__addr_local_10), 0, heap.u32(__addr_local_8));
     (regs.eax = FUN_004138d0(heap, heap.u32(__addr_local_10), param_2, heap.u32(__addr_local_8)));
     if (heap.u32(__addr_local_c) != 0) {
       (regs.eax = FUN_004138d0(heap, heap.u32(__addr_local_14), heap.u32(__addr_local_8) + param_2, heap.u32(__addr_local_c)));
     }
-    (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x4c)), param_1, heap.u32(__addr_local_10), heap.u32(__addr_local_8), heap.u32(__addr_local_14), heap.u32(__addr_local_c)));
+    (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x4c)), param_1, heap.u32(__addr_local_10), heap.u32(__addr_local_8), heap.u32(__addr_local_14), heap.u32(__addr_local_c)));
     return 1;
   }
   return 0;

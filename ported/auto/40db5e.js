@@ -6,7 +6,7 @@
 
 export function FUN_0040db5e(heap, param_1, param_2, param_3, param_4) {
   heap.setU32(param_4, (heap.u32(param_1)) & 0xffffffff);
-  heap.setU32(param_2, (param_1 + 1) & 0xffffffff);
+  heap.setU32(param_2, (param_1 + ((1) * 4)) & 0xffffffff);
   heap.setU32(param_3, (((param_1) >>> 0) + 0x16) & 0xffffffff);
   return 1;
 }

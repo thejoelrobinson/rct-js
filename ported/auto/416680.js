@@ -13,9 +13,9 @@ export function FUN_00416680(heap, param_1, param_2, param_3, param_4) {
       return;
     }
     param_2 = ((param_2 + -1) >>> 0);
-    cVar1 = ((heap.u32(param_1)) & 0xff);
+    cVar1 = ((heap.i8(param_1)) & 0xff);
     param_1 = ((param_1 + 1) >>> 0);
     (regs.eax = FUN_004165f0(heap, ((cVar1) >>> 0), param_3, param_4));
-  } while ((heap.u32(param_4) | 0) != -1);
+  } while ((heap.i32(param_4) | 0) != -1);
   return;
 }

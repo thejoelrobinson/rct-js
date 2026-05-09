@@ -82,7 +82,7 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
         return local_41c - heap.u32(__addr_local_40c);
       }
       if (local_414 == 0) {
-        if (((heap.u8((iVar6 + 4 + heap.i32(heap.u32(__addr_local_408)))) & 0x40) != 0) && (heap.u32(param_2) == 26)) {
+        if (((heap.u8((iVar6 + 4 + heap.i32(heap.u32(__addr_local_408)))) & 0x40) != 0) && (heap.i8(param_2) == 26)) {
           return 0;
         }
         heap.setU32(0x005efec0, (0x1c) >>> 0);

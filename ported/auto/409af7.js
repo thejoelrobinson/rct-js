@@ -19,16 +19,16 @@ export function FUN_00409af7(heap, param_1, param_2) {
   let iVar1 = 0;
   let iVar2 = 0;
   if (((heap.u32(0x005ebf54) != 0) && (heap.u32(0x005ebf40) != 0x0)) && (param_1 != 0)) {
-    heap.setU32(__addr_local_8, (heap.u32(param_2 + (2) * 4) - heap.u32(param_2)) >>> 0);
-    heap.setU32(__addr_local_c, (heap.u32(param_2 + (3) * 4) - heap.u32(param_2 + (1) * 4)) >>> 0);
+    heap.setU32(__addr_local_8, (heap.i32(param_2 + (2) * 4) - heap.i32(param_2)) >>> 0);
+    heap.setU32(__addr_local_c, (heap.i32(param_2 + (3) * 4) - heap.i32(param_2 + (1) * 4)) >>> 0);
     if ((0 < heap.u32(__addr_local_8)) && (0 < heap.u32(__addr_local_c))) {
       if (0x40 < heap.u32(__addr_local_8)) {
         heap.setU32(__addr_local_8, (0x40) >>> 0);
-        heap.setU32((param_2 + (2) * 4), (heap.u32(param_2) + 0x40) & 0xffffffff);
+        heap.setI32((param_2 + (2) * 4), (heap.i32(param_2) + 0x40) & 0xffffffff);
       }
       if (0x40 < heap.u32(__addr_local_c)) {
         heap.setU32(__addr_local_c, (0x40) >>> 0);
-        heap.setU32((param_2 + (3) * 4), (heap.u32(param_2 + (1) * 4) + 0x40) & 0xffffffff);
+        heap.setI32((param_2 + (3) * 4), (heap.i32(param_2 + (1) * 4) + 0x40) & 0xffffffff);
       }
       heap.setU32(__addr_local_18, (0) >>> 0);
       heap.setU32(__addr_local_1c, (0) >>> 0);

@@ -10,18 +10,18 @@ export function FUN_00417c80(heap, param_1) {
   let iVar1 = 0;
   heap.setU32(0x005f0284, (heap.u32(0x005f0284) + 1) >>> 0);
   iVar1 = (((regs.eax = FUN_004133c0(heap, 0x1000))) >>> 0);
-  heap.setU32((param_1 + (2) * 4), (iVar1) & 0xffffffff);
+  heap.setI32((param_1 + (2) * 4), (iVar1) & 0xffffffff);
   if (iVar1 != 0) {
-    heap.setU32((param_1 + (3) * 4), (heap.u32(param_1 + (3) * 4) | 8) & 0xffffffff);
-    heap.setU32((param_1 + (6) * 4), (0x1000) & 0xffffffff);
-    heap.setU32(param_1, (heap.u32(param_1 + (2) * 4)) & 0xffffffff);
-    heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+    heap.setI32((param_1 + (3) * 4), (heap.i32(param_1 + (3) * 4) | 8) & 0xffffffff);
+    heap.setI32((param_1 + (6) * 4), (0x1000) & 0xffffffff);
+    heap.setU32(param_1, (heap.i32(param_1 + (2) * 4)) & 0xffffffff);
+    heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
     return;
   }
-  heap.setU32((param_1 + (6) * 4), (2) & 0xffffffff);
-  heap.setU32((param_1 + (3) * 4), (heap.u32(param_1 + (3) * 4) | 4) & 0xffffffff);
-  heap.setU32((param_1 + (2) * 4), ((((param_1 + 5)) >>> 0)) & 0xffffffff);
-  heap.setU32(param_1, ((((param_1 + 5)) >>> 0)) & 0xffffffff);
-  heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+  heap.setI32((param_1 + (6) * 4), (2) & 0xffffffff);
+  heap.setI32((param_1 + (3) * 4), (heap.i32(param_1 + (3) * 4) | 4) & 0xffffffff);
+  heap.setI32((param_1 + (2) * 4), ((((param_1 + ((5) * 4))) >>> 0)) & 0xffffffff);
+  heap.setU32(param_1, ((((param_1 + ((5) * 4))) >>> 0)) & 0xffffffff);
+  heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
   return;
 }

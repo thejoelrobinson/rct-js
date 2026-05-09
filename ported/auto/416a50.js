@@ -21,7 +21,7 @@ export function FUN_00416a50(heap, param_1, param_2, param_3) {
   } else {
     if (heap.u32(0x005f0258) == param_3) {
     iVar1 = ((heap.u32(0x005f0258) + (heap.u32(heap.u32(0x005f0250)) == 0x2d)) >>> 0);
-    heap.setU32((param_2 + (iVar1) * 4), (0x30) & 0xffffffff);
+    heap.setU8((param_2 + (iVar1)), (0x30) & 0xff);
     heap.setU32(((param_2 + iVar1) + (1) * 4), (0) & 0xffffffff);
   }
   }

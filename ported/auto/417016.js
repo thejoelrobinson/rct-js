@@ -31,7 +31,7 @@ export function FUN_00417016(heap, param_1) {
       uVar1 = ((heap.u32(param_1)) >>> 0);
       uVar4 = ((uVar1 ^ (uVar7 << 0x10 | uVar7)) >>> 0);
       uVar3 = ((uVar1 ^ 0xffffffff ^ uVar1 + 0x7efefeff) >>> 0);
-      puVar5 = ((param_1 + 1) >>> 0);
+      puVar5 = ((param_1 + ((1) * 4)) >>> 0);
       if (((uVar4 ^ 0xffffffff ^ uVar4 + 0x7efefeff) & 0x81010100) != 0) {
         break;
       }

@@ -20,9 +20,9 @@ export function FUN_0040a88b(heap, param_1, param_2, param_3) {
   let iVar2 = 0;
   if (heap.u32(0x005ebf54) == 0) {
     heap.setU32(__addr_local_18, (param_2) >>> 0);
-    heap.setU32(__addr_local_10, ((heap.u32(param_1 + (2) * 4) - heap.u32(param_1)) + param_2) >>> 0);
+    heap.setU32(__addr_local_10, ((heap.i32(param_1 + (2) * 4) - heap.i32(param_1)) + param_2) >>> 0);
     heap.setU32(__addr_local_14, (param_3) >>> 0);
-    heap.setU32(__addr_local_c, ((heap.u32(param_1 + (3) * 4) - heap.u32(param_1 + (1) * 4)) + param_3) >>> 0);
+    heap.setU32(__addr_local_c, ((heap.i32(param_1 + (3) * 4) - heap.i32(param_1 + (1) * 4)) + param_3) >>> 0);
     uVar1 = (((regs.eax = FUN_0040a611(heap, param_1, __addr_local_18))) >>> 0);
   } else {
     if ((heap.u32(0x005ebf60) != 0x0) && (heap.u32(0x005ebf5c) != 0)) {

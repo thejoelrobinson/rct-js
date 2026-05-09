@@ -13,6 +13,6 @@ export function FUN_00416640(heap, param_1, param_2, param_3, param_4) {
     }
     param_2 = ((param_2 + -1) >>> 0);
     (regs.eax = FUN_004165f0(heap, param_1, param_3, param_4));
-  } while ((heap.u32(param_4) | 0) != -1);
+  } while ((heap.i32(param_4) | 0) != -1);
   return;
 }

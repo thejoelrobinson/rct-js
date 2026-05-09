@@ -24,7 +24,7 @@ export function FUN_004126ba(heap, param_1, param_2, param_3, param_4, param_5, 
     }
     heap.setU32(heap.u32((param_6 + 16)), (heap.i8((local_c + param_3))) & 0xffffffff);
     heap.setU32((param_6 + 16), (heap.u32((param_6 + 16)) + 1) >>> 0);
-    heap.setU32(param_5, (heap.u32(param_5) + 1) & 0xffffffff);
+    heap.setU32(param_5, (heap.i32(param_5) + 1) & 0xffffffff);
     local_c = ((local_c + 1) >>> 0);
   } while (true);
 }

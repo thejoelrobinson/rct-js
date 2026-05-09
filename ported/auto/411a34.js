@@ -21,7 +21,7 @@ export function FUN_00411a34(heap, param_1, param_2, param_3, param_4, param_5, 
   if ((param_2 == 0x0) || (param_1 == 0x0)) {
     heap.setU32(__addr_local_78, (-0x7fffbffb) >>> 0);
   } else {
-    (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x6c)), param_1));
+    (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x6c)), param_1));
     heap.setU32(__addr_local_74, (CreateCompatibleDC(heap, ((0x0) >>> 0))) >>> 0);
     SelectObject(heap, heap.u32(__addr_local_74), param_2);
     GetObjectA(heap, param_2, 0x18, __addr_local_90);
@@ -33,11 +33,11 @@ export function FUN_00411a34(heap, param_1, param_2, param_3, param_4, param_5, 
     }
     heap.setU32(__addr_local_70, (0x6c) >>> 0);
     heap.setU32(__addr_local_6c, (6) >>> 0);
-    (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x58)), param_1, __addr_local_70));
-    heap.setU32(__addr_local_78, ((regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x44)), param_1, __addr_local_94))) >>> 0);
+    (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x58)), param_1, __addr_local_70));
+    heap.setU32(__addr_local_78, ((regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x44)), param_1, __addr_local_94))) >>> 0);
     if (heap.u32(__addr_local_78) == 0) {
       BitBlt(heap, heap.u32(__addr_local_94), 0, 0, param_5, param_6, heap.u32(__addr_local_74), param_3, param_4, 0xcc0020);
-      (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x68)), param_1, heap.u32(__addr_local_94)));
+      (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x68)), param_1, heap.u32(__addr_local_94)));
     }
     DeleteDC(heap, heap.u32(__addr_local_74));
   }

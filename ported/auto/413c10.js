@@ -12,26 +12,26 @@ export function FUN_00413c10(heap, param_1, param_2) {
   let cVar3 = 0;
   let pcVar4 = 0;
   let pcVar5 = 0;
-  if (heap.u32(param_2) == 0) {
+  if (heap.i8(param_2) == 0) {
     return param_1;
   }
-  if (heap.u32(param_2 + (1) * 4) == 0) {
+  if (heap.i8(param_2 + (1)) == 0) {
     pcVar4 = (((regs.eax = FUN_00417016(heap))) >>> 0);
     return pcVar4;
   }
   do {
-    cVar3 = ((heap.u32(param_1)) & 0xff);
+    cVar3 = ((heap.i8(param_1)) & 0xff);
     do {
-      while (param_1 = ((param_1 + 1) >>> 0), cVar3 != heap.u32(param_2)) {
+      while (param_1 = ((param_1 + 1) >>> 0), cVar3 != heap.i8(param_2)) {
         if (cVar3 == 0) {
           return 0x0;
         }
-        cVar3 = ((heap.u32(param_1)) & 0xff);
+        cVar3 = ((heap.i8(param_1)) & 0xff);
       }
-      cVar3 = ((heap.u32(param_1)) & 0xff);
+      cVar3 = ((heap.i8(param_1)) & 0xff);
       pcVar5 = ((param_1 + 1) >>> 0);
       pcVar4 = ((param_2) >>> 0);
-    } while (cVar3 != heap.u32(param_2 + (1) * 4));
+    } while (cVar3 != heap.i8(param_2 + (1)));
     do {
       if (heap.i8(pcVar4 + (2)) == 0) {
         LAB_00413c83: return param_1 + -1;

@@ -44,24 +44,24 @@ export function FUN_00419c90(heap, param_1, param_2) {
   heap.setU32(__addr_local_4, (0) >>> 0);
   uStack_2 = ((0) & 0xffff);
   if (((0x7ffe < uVar1) || (0x7ffe < uVar3)) || (0xbffd < uVar4)) {
-    heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+    heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
     heap.setU32(param_1, (0) & 0xffffffff);
-    heap.setU32((param_1 + (2) * 4), ((-((uVar6 != 0) >>> 0) & 0x80000000) + 0x7fff8000) & 0xffffffff);
+    heap.setI32((param_1 + (2) * 4), ((-((uVar6 != 0) >>> 0) & 0x80000000) + 0x7fff8000) & 0xffffffff);
     return;
   }
   if (uVar4 < 0x3fc0) {
-    heap.setU32((param_1 + (2) * 4), (0) & 0xffffffff);
-    heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+    heap.setI32((param_1 + (2) * 4), (0) & 0xffffffff);
+    heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
     heap.setU32(param_1, (0) & 0xffffffff);
     return;
   }
-  if (((uVar1 == 0) && (uVar4 = ((uVar4 + 1) & 0xffff), (heap.u32(param_1 + (2) * 4) & 0x7fffffff) == 0)) && ((heap.u32(param_1 + (1) * 4) == 0 && (heap.u32(param_1) == 0)))) {
+  if (((uVar1 == 0) && (uVar4 = ((uVar4 + 1) & 0xffff), (heap.i32(param_1 + (2) * 4) & 0x7fffffff) == 0)) && ((heap.i32(param_1 + (1) * 4) == 0 && (heap.i32(param_1) == 0)))) {
     heap.setU16((((param_1) >>> 0) + 10), (0) & 0xffff);
     return;
   }
-  if (((uVar3 == 0) && (uVar4 = ((uVar4 + 1) & 0xffff), (heap.u32(param_2 + (2) * 4) & 0x7fffffff) == 0)) && ((heap.u32(param_2 + (1) * 4) == 0 && (heap.u32(param_2) == 0)))) {
-    heap.setU32((param_1 + (2) * 4), (0) & 0xffffffff);
-    heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+  if (((uVar3 == 0) && (uVar4 = ((uVar4 + 1) & 0xffff), (heap.i32(param_2 + (2) * 4) & 0x7fffffff) == 0)) && ((heap.i32(param_2 + (1) * 4) == 0 && (heap.i32(param_2) == 0)))) {
+    heap.setI32((param_1 + (2) * 4), (0) & 0xffffffff);
+    heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
     heap.setU32(param_1, (0) & 0xffffffff);
     return;
   }
@@ -70,7 +70,7 @@ export function FUN_00419c90(heap, param_1, param_2) {
   iVar5 = ((5) >>> 0);
   do {
     if (0 < iVar5) {
-      puVar8 = (((param_2 + 2)) >>> 0);
+      puVar8 = (((param_2 + ((2) * 4))) >>> 0);
       puVar7 = (((local_18 * 2 + ((param_1) >>> 0))) >>> 0);
       local_10 = ((iVar5) >>> 0);
       do {
@@ -136,9 +136,9 @@ export function FUN_00419c90(heap, param_1, param_2) {
   heap.setU32(__addr_local_4, (((((iVar2) >>> 0) >>> 0x10) & 0xffff)) >>> 0);
   uStack_6 = ((((iVar2) & 0xffff)) & 0xffff);
   if (0x7ffe < uVar4) {
-    heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+    heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
     heap.setU32(param_1, (0) & 0xffffffff);
-    heap.setU32((param_1 + (2) * 4), ((-((uVar6 != 0) >>> 0) & 0x80000000) + 0x7fff8000) & 0xffffffff);
+    heap.setI32((param_1 + (2) * 4), ((-((uVar6 != 0) >>> 0) & 0x80000000) + 0x7fff8000) & 0xffffffff);
     return;
   }
   heap.setU16(param_1, (uStack_a) & 0xffff);

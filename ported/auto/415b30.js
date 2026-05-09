@@ -23,24 +23,24 @@ export function FUN_00415b30(heap, param_1, param_2) {
   let iVar7 = 0;
   LAB_00415ba3: {
   piVar4 = ((param_2) >>> 0);
-  uVar1 = ((heap.u32(param_2 + (3) * 4)) >>> 0);
-  uVar2 = ((heap.u32(param_2 + (4) * 4)) >>> 0);
+  uVar1 = ((heap.i32(param_2 + (3) * 4)) >>> 0);
+  uVar2 = ((heap.i32(param_2 + (4) * 4)) >>> 0);
   if (((uVar1 & 0x82) == 0) || ((uVar1 & 0x40) != 0)) {
-    LAB_00415c50: heap.setU32((param_2 + (3) * 4), (uVar1 | 0x20) & 0xffffffff);
+    LAB_00415c50: heap.setI32((param_2 + (3) * 4), (uVar1 | 0x20) & 0xffffffff);
     return 0xffffffff;
   }
   iVar7 = ((0) >>> 0);
   if ((uVar1 & 1) != 0) {
-    heap.setU32((param_2 + (1) * 4), (0) & 0xffffffff);
+    heap.setI32((param_2 + (1) * 4), (0) & 0xffffffff);
     if ((uVar1 & 0x10) == 0) {
       /* goto LAB_00415c50 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00415b30/LAB_00415c50"); return 0;
     }
-    heap.setU32(param_2, (heap.u32(param_2 + (2) * 4)) & 0xffffffff);
-    heap.setU32((param_2 + (3) * 4), (uVar1 & 0xfffffffe) & 0xffffffff);
+    heap.setU32(param_2, (heap.i32(param_2 + (2) * 4)) & 0xffffffff);
+    heap.setI32((param_2 + (3) * 4), (uVar1 & 0xfffffffe) & 0xffffffff);
   }
-  uVar1 = ((heap.u32(param_2 + (3) * 4)) >>> 0);
-  heap.setU32((param_2 + (1) * 4), (0) & 0xffffffff);
-  heap.setU32((param_2 + (3) * 4), (uVar1 & 0xffffffef | 2) & 0xffffffff);
+  uVar1 = ((heap.i32(param_2 + (3) * 4)) >>> 0);
+  heap.setI32((param_2 + (1) * 4), (0) & 0xffffffff);
+  heap.setI32((param_2 + (3) * 4), (uVar1 & 0xffffffef | 2) & 0xffffffff);
   if ((uVar1 & 0x10c) == 0) {
     if ((param_2 == 0x005ee780) || (param_2 == 0x005ee7a0)) {
       iVar5 = (((regs.eax = FUN_00417ce0(heap, uVar2))) >>> 0);

@@ -20,16 +20,16 @@ export function FUN_00409c1f(heap, param_1, param_2, param_3, param_4) {
   let iVar1 = 0;
   if ((((param_1 != 0) && (param_3 != 0)) && (heap.i32((param_3 + 0x80)) != 0)) && (heap.i32((param_1 + 0x80)) != 0)) {
     if (heap.u32(0x005ebf54) == 0) {
-      heap.setU32(__addr_local_18, (heap.u32(param_4)) >>> 0);
-      heap.setU32(__addr_local_14, (heap.u32(param_4 + (1) * 4)) >>> 0);
-      heap.setU32(__addr_local_10, (heap.u32(param_4 + (2) * 4)) >>> 0);
-      heap.setU32(__addr_local_c, (heap.u32(param_4 + (3) * 4)) >>> 0);
+      heap.setU32(__addr_local_18, (heap.i32(param_4)) >>> 0);
+      heap.setU32(__addr_local_14, (heap.i32(param_4 + (1) * 4)) >>> 0);
+      heap.setU32(__addr_local_10, (heap.i32(param_4 + (2) * 4)) >>> 0);
+      heap.setU32(__addr_local_c, (heap.i32(param_4 + (3) * 4)) >>> 0);
       GetClientRect(heap, heap.u32(0x005e916c), __addr_local_28);
       ClientToScreen(heap, heap.u32(0x005e916c), ((__addr_local_28) >>> 0));
-      heap.setU32(param_4, (heap.u32(param_4) + heap.u32(__addr_local_28)) & 0xffffffff);
-      heap.setU32((param_4 + (1) * 4), (heap.u32(param_4 + (1) * 4) + heap.u32((__addr_local_28 + 4))) & 0xffffffff);
-      heap.setU32((param_4 + (2) * 4), (heap.u32(param_4 + (2) * 4) + heap.u32(__addr_local_28)) & 0xffffffff);
-      heap.setU32((param_4 + (3) * 4), (heap.u32(param_4 + (3) * 4) + heap.u32((__addr_local_28 + 4))) & 0xffffffff);
+      heap.setU32(param_4, (heap.i32(param_4) + heap.u32(__addr_local_28)) & 0xffffffff);
+      heap.setI32((param_4 + (1) * 4), (heap.i32(param_4 + (1) * 4) + heap.u32((__addr_local_28 + 4))) & 0xffffffff);
+      heap.setI32((param_4 + (2) * 4), (heap.i32(param_4 + (2) * 4) + heap.u32(__addr_local_28)) & 0xffffffff);
+      heap.setI32((param_4 + (3) * 4), (heap.i32(param_4 + (3) * 4) + heap.u32((__addr_local_28 + 4))) & 0xffffffff);
     }
     do {
       heap.setU32(__addr_local_8, ((regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32((param_3 + 0x80))) + 0x14)), heap.u32((param_3 + 0x80)), param_4, heap.u32((param_1 + 0x80)), param_2, 0x1000000, 0))) >>> 0);
@@ -39,9 +39,9 @@ export function FUN_00409c1f(heap, param_1, param_2, param_3, param_4) {
     } while (heap.u32(__addr_local_8) == -0x7789fe3e);
     if (heap.u32(0x005ebf54) == 0) {
       heap.setU32(param_4, (heap.u32(__addr_local_18)) & 0xffffffff);
-      heap.setU32((param_4 + (1) * 4), (heap.u32(__addr_local_14)) & 0xffffffff);
-      heap.setU32((param_4 + (2) * 4), (heap.u32(__addr_local_10)) & 0xffffffff);
-      heap.setU32((param_4 + (3) * 4), (heap.u32(__addr_local_c)) & 0xffffffff);
+      heap.setI32((param_4 + (1) * 4), (heap.u32(__addr_local_14)) & 0xffffffff);
+      heap.setI32((param_4 + (2) * 4), (heap.u32(__addr_local_10)) & 0xffffffff);
+      heap.setI32((param_4 + (3) * 4), (heap.u32(__addr_local_c)) & 0xffffffff);
     }
     if (heap.u32(__addr_local_8) == 0) {
       return 1;

@@ -31,8 +31,8 @@ export function FUN_00418bc0(heap, param_1) {
     iVar3 = (((regs.eax = FUN_004133c0(heap, 0x1000))) >>> 0);
     heap.setU32(((0x005f02e0) + (iVar2) * 4), (iVar3) & 0xffffffff);
     if (iVar3 == 0) {
-      heap.setU32((param_1 + (2) * 4), (param_1 + 5) & 0xffffffff);
-      heap.setU32(param_1, (param_1 + 5) & 0xffffffff);
+      heap.setU32((param_1 + (2) * 4), (param_1 + ((5) * 4)) & 0xffffffff);
+      heap.setU32(param_1, (param_1 + ((5) * 4)) & 0xffffffff);
       heap.setU32((param_1 + (6) * 4), (2) & 0xffffffff);
       heap.setU32((param_1 + (1) * 4), (2) & 0xffffffff);
       heap.setU32((param_1 + (3) * 4), (heap.u32(param_1 + (3) * 4) | 0x1102) & 0xffffffff);

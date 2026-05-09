@@ -931,7 +931,21 @@ function collectParams(paramsNode, ctx) {
     if (!declNode) continue;     // (void) — no name
     // declarator may be a pointer_declarator; descend to find the identifier
     const id = findIdentifier(declNode);
-    if (id) out.push(text(id, ctx));
+    if (!id) continue;
+    const name = text(id, ctx);
+    out.push(name);
+    // If parameter is `T *name`, register the pointee width so pointer
+    // arithmetic in the body scales `name + N` to `name + N*sizeof(T)`
+    // — same behaviour as for local-variable pointer declarations. Without
+    // this, dword-stride loops in string functions (`uint *p; p = p + 1;`)
+    // stride by 1 byte instead of 4, becoming infinite re-reads of
+    // overlapping bytes.
+    if (declNode.type === "pointer_declarator") {
+      const typeNode = child.childForFieldName("type");
+      const typeText = typeNode ? text(typeNode, ctx) : "";
+      const acc = pointeeAccForDeclTop(declNode, typeText);
+      if (acc) ctx.varPointee.set(name, acc);
+    }
   }
   return out;
 }
@@ -1930,6 +1944,23 @@ function emitPointer(node, ctx) {
 
 // Map a `(TYPE *)` cast's TYPE to an accessor name (u8/i8/u16/i16/u32).
 // Returns null if the type isn't a recognised pointer-to-scalar.
+function pointerDepthOf(declNode) {
+  let d = 0;
+  let cur = declNode;
+  while (cur && cur.type === "pointer_declarator") {
+    d++;
+    cur = cur.childForFieldName("declarator");
+  }
+  return d;
+}
+
+function pointeeAccForDeclTop(declNode, typeText) {
+  if (!typeText) return null;
+  const depth = pointerDepthOf(declNode);
+  if (depth >= 2) return "u32";
+  return pointerCastToAccessor(typeText);
+}
+
 function pointerCastToAccessor(typeText) {
   // The type text in tree-sitter-c includes the trailing `*`; e.g. "ushort *"
   // or "char  *" (single-star = pointed-to value), "undefined **" (double

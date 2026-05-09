@@ -8,11 +8,11 @@ export function FUN_004182c0(heap, param_1) {
   let iVar1 = 0;
   iVar1 = ((0) >>> 0);
   do {
-    if (heap.u32(param_1) != 0) {
+    if (heap.i32(param_1) != 0) {
       return 0;
     }
     iVar1 = ((iVar1 + 1) >>> 0);
-    param_1 = ((param_1 + 1) >>> 0);
+    param_1 = ((param_1 + ((1) * 4)) >>> 0);
   } while (iVar1 < 3);
   return 1;
 }

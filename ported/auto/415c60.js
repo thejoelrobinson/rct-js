@@ -59,7 +59,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
   heap.setU32(__addr_local_220, (0) >>> 0);
   puVar10 = ((0x0) >>> 0);
   heap.setU32(__addr_local_240, (0) >>> 0);
-  cVar8 = ((heap.u32(param_2)) & 0xff);
+  cVar8 = ((heap.i8(param_2)) & 0xff);
   heap.setU32(__addr_local_21c, (CONCAT31((((heap.u32(__addr_local_21c)) >>> 8) & 0xffffffff), cVar8)) >>> 0);
   pcVar11 = ((param_2) >>> 0);
   do {
@@ -77,7 +77,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
         switchD_00415cdd_caseD_0: heap.setU32(__addr_local_230, (0) >>> 0);
         if ((heap.u32(heap.u32(0x005ee548) + ((heap.u32(__addr_local_21c) & 0xff) * 2 + 1) * 4) & 0x80) != 0) {
           (regs.eax = FUN_004165f0(heap, ((cVar8) >>> 0), param_1, __addr_local_240));
-          cVar8 = ((heap.u32(param_2)) & 0xff);
+          cVar8 = ((heap.i8(param_2)) & 0xff);
           param_2 = ((pcVar11 + 2) >>> 0);
         }
         (regs.eax = FUN_004165f0(heap, ((cVar8) >>> 0), param_1, __addr_local_240));
@@ -136,7 +136,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
       case 6:
         switch (cVar8) {
           case 73:
-            if ((heap.u32(param_2) != 54) || (heap.i8(pcVar11 + (2)) != 52)) {
+            if ((heap.i8(param_2) != 54) || (heap.i8(pcVar11 + (2)) != 52)) {
               heap.setU32(__addr_local_220, (0) >>> 0);
               /* goto switchD_00415cdd_caseD_0 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00415c60/switchD_00415cdd_caseD_0"); return 0;
             }
@@ -191,7 +191,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
             }
             heap.setU32(__addr_local_210, (heap.u32(heap.u32(__addr_param_3))) >>> 0);
             heap.setU32(__addr_local_20c, (heap.u32(heap.u32(__addr_param_3) + (1) * 4)) >>> 0);
-            heap.setU32(__addr_param_3, (heap.u32(__addr_param_3) + 2) >>> 0);
+            heap.setU32(__addr_param_3, (heap.u32(__addr_param_3) + ((2) * 4)) >>> 0);
             (regs.eax = callIndirect(heap, heap.u32(0x005ee530), __addr_local_210, __addr_local_200, ((cVar8) >>> 0), local_244, heap.u32(__addr_local_218)));
             if (((local_24c & 0x80) != 0) && (local_244 == 0)) {
               (regs.eax = callIndirect(heap, heap.u32(0x005ee53c), __addr_local_200));
@@ -421,7 +421,7 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
           }
         }
     }
-    cVar8 = ((heap.u32(param_2)) & 0xff);
+    cVar8 = ((heap.i8(param_2)) & 0xff);
     heap.setU32(__addr_local_21c, (CONCAT31((((heap.u32(__addr_local_21c)) >>> 8) & 0xffffffff), cVar8)) >>> 0);
     pcVar11 = ((param_2) >>> 0);
   } while (true);

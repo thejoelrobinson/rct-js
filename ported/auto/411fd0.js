@@ -49,12 +49,12 @@ export function FUN_00411fd0(heap, param_1, param_2, param_3, param_4) {
               }
               pvVar2 = ((GlobalAlloc(heap, 0, (heap.u32(__addr_local_34) & 0xffff) + 0x12)) >>> 0);
               heap.setU32(param_3, (((pvVar2) >>> 0)) & 0xffffffff);
-              if (heap.u32(param_3) == 0) {
+              if (heap.i32(param_3) == 0) {
                 heap.setU32(__addr_local_8, (0xe000) >>> 0);
               } else {
-                (regs.eax = FUN_004138d0(heap, heap.u32(param_3), __addr_local_30, 0x10));
-                heap.setU16((heap.u32(param_3) + 0x10), (((heap.u32(__addr_local_34)) & 0xffff)) & 0xffff);
-                if (((heap.u32(__addr_local_34) & 0xffff) == 0) || (uVar3 = ((mmioRead(heap, heap.u32(__addr_local_20), (((heap.u32(param_3) + 0x12)) >>> 0), heap.u32(__addr_local_34) & 0xffff)) >>> 0), uVar3 == (heap.u32(__addr_local_34) & 0xffff))) {
+                (regs.eax = FUN_004138d0(heap, heap.i32(param_3), __addr_local_30, 0x10));
+                heap.setU16((heap.i32(param_3) + 0x10), (((heap.u32(__addr_local_34)) & 0xffff)) & 0xffff);
+                if (((heap.u32(__addr_local_34) & 0xffff) == 0) || (uVar3 = ((mmioRead(heap, heap.u32(__addr_local_20), (((heap.i32(param_3) + 0x12)) >>> 0), heap.u32(__addr_local_34) & 0xffff)) >>> 0), uVar3 == (heap.u32(__addr_local_34) & 0xffff))) {
                   heap.setU32(__addr_local_8, (mmioAscend(heap, heap.u32(__addr_local_20), __addr_local_1c, 0)) >>> 0);
                   if (heap.u32(__addr_local_8) == 0) {
                     break LAB_0041220f;
@@ -74,8 +74,8 @@ export function FUN_00411fd0(heap, param_1, param_2, param_3, param_4) {
     }
   }
   }
-  if (heap.u32(param_3) != 0) {
-    GlobalFree(heap, ((heap.u32(param_3)) >>> 0));
+  if (heap.i32(param_3) != 0) {
+    GlobalFree(heap, ((heap.i32(param_3)) >>> 0));
     heap.setU32(param_3, (0) & 0xffffffff);
   }
   if (heap.u32(__addr_local_20) != ((0x0) >>> 0)) {

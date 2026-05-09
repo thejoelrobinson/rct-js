@@ -79,7 +79,7 @@ export function FUN_00411b58(heap, param_1, param_2) {
       heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 3) * 4), (0) & 0xffffffff);
     }
   }
-  (regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x14)), param_1, 4, __addr_local_41c, __addr_local_14, 0));
+  (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x14)), param_1, 4, __addr_local_41c, __addr_local_14, 0));
   return heap.u32(__addr_local_14);
 } finally {
     heap.freeFrame(1112);

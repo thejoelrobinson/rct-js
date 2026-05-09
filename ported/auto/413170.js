@@ -23,7 +23,7 @@ export function FUN_00413170(heap, param_1, param_2) {
   do {
     uVar2 = ((heap.u32(param_2)) >>> 0);
     uVar3 = ((heap.u32(param_2)) >>> 0);
-    param_2 = ((param_2 + 1) >>> 0);
+    param_2 = ((param_2 + ((1) * 4)) >>> 0);
     if (((uVar2 ^ 0xffffffff ^ uVar2 + 0x7efefeff) & 0x81010100) != 0) {
       if (((uVar3) << 24 >> 24) == 0) {
         LAB_00413258: heap.setU8(puVar4, (((uVar3) & 0xff)) & 0xff);

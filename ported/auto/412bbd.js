@@ -26,10 +26,10 @@ export function FUN_00412bbd(heap, param_1, param_2, param_3, param_4, param_5) 
   if ((heap.u32(__addr_local_8) == 0) && (heap.setU32(__addr_local_8, ((regs.eax = FUN_00412224(heap, __addr_local_34, __addr_local_1c, __addr_local_30))) >>> 0), heap.u32(__addr_local_8) == 0)) {
     pvVar1 = ((GlobalAlloc(heap, 0, heap.u32(__addr_local_18))) >>> 0);
     heap.setU32(param_5, (((pvVar1) >>> 0)) & 0xffffffff);
-    if (heap.u32(param_5) == 0) {
+    if (heap.i32(param_5) == 0) {
       heap.setU32(__addr_local_8, (0xe000) >>> 0);
     } else {
-      heap.setU32(__addr_local_8, ((regs.eax = FUN_004122a3(heap, heap.u32(__addr_local_34), heap.u32(__addr_local_18), heap.u32(param_5), __addr_local_1c, __addr_local_38))) >>> 0);
+      heap.setU32(__addr_local_8, ((regs.eax = FUN_004122a3(heap, heap.u32(__addr_local_34), heap.u32(__addr_local_18), heap.i32(param_5), __addr_local_1c, __addr_local_38))) >>> 0);
       if (heap.u32(__addr_local_8) == 0) {
         heap.setU32(param_2, (heap.u32(__addr_local_38)) & 0xffffffff);
         if (heap.u32(__addr_local_34) != ((0x0) >>> 0)) {
@@ -39,12 +39,12 @@ export function FUN_00412bbd(heap, param_1, param_2, param_3, param_4, param_5) 
       }
     }
   }
-  if (heap.u32(param_5) != 0) {
-    GlobalFree(heap, ((heap.u32(param_5)) >>> 0));
+  if (heap.i32(param_5) != 0) {
+    GlobalFree(heap, ((heap.i32(param_5)) >>> 0));
     heap.setU32(param_5, (0) & 0xffffffff);
   }
-  if (heap.u32(param_4) != 0) {
-    GlobalFree(heap, ((heap.u32(param_4)) >>> 0));
+  if (heap.i32(param_4) != 0) {
+    GlobalFree(heap, ((heap.i32(param_4)) >>> 0));
     heap.setU32(param_4, (0) & 0xffffffff);
   }
   LAB_00412cd9: if (heap.u32(__addr_local_34) != ((0x0) >>> 0)) {

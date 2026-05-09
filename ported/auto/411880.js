@@ -47,7 +47,7 @@ export function FUN_00411880(heap, param_1, param_2, param_3, param_4) {
     heap.setU32(__addr_local_8, (0x40) >>> 0);
     heap.setU32(__addr_local_64, (heap.u32(__addr_local_84)) >>> 0);
     heap.setU32(__addr_local_68, (heap.u32(__addr_local_80)) >>> 0);
-    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(param_1) + 0x18)), param_1, __addr_local_70, __addr_local_90, 0))) >>> 0);
+    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x18)), param_1, __addr_local_70, __addr_local_90, 0))) >>> 0);
     if (iVar1 == 0) {
       (regs.eax = FUN_00411a34(heap, heap.u32(__addr_local_90), heap.u32(__addr_local_8c), 0, 0, 0, 0));
       DeleteObject(heap, heap.u32(__addr_local_8c));
