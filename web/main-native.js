@@ -91,24 +91,35 @@ async function main() {
     runtime.runInit();
     log(`[init] complete after ${_ops.toLocaleString()} heap ops: ${state.windows.size} window(s), ${state.windowClasses.size} class(es)`, "ok");
     log(`[init] dibs: ${state.dibSections.length}, palette captured: ${!!state.capturedPalette}`, "info");
-    // Bump budget for per-tick work. The first tick is init-heavy
-    // (FUN_004385d8's first-time block runs lots of sub-inits); subsequent
-    // ticks should be smaller.
-    _budget = 500_000_000;  // raised — 4385d8 has a 25ms busy-wait loop that
-    // hits the budget when ticks are run synchronously without yielding
-    _wallBudgetMs = 120_000; // 2 minutes per tick — full-screen DDraw blit
-    // (FUN_00402027) iterates 480 rows × 160 dwords with several heap ops
-    // each, so per-tick op count is naturally high (~14M); raise wallclock
-    // proportionally rather than treating it as an infinite loop.
-    _ops = 0;
-    _startMs = Date.now();
   } catch (e) {
-    unwrapHeap();
     log(`[init] threw: ${e.message}`, "err");
     if (e.stack) log(e.stack.slice(0, 2000), "err");
     status("init error — see log");
     return;
   }
+
+  // First tick = "init phase 2": runs FUN_004385d8 with cb8==0, which
+  // executes the binary's first-time-init sequence (asset loading, sprite
+  // table population, etc). This is genuinely heavy work that only runs
+  // once. Allow 60s and 2B heap ops for it; subsequent ticks are bounded
+  // much tighter.
+  status("first tick (asset load + scene init)…");
+  _budget = 2_000_000_000;
+  _wallBudgetMs = 60_000;
+  _ops = 0;
+  _startMs = Date.now();
+  try {
+    const t0 = Date.now();
+    runtime.runTick(() => {});
+    log(`[first tick] complete after ${_ops.toLocaleString()} heap ops in ${Date.now() - t0}ms`, "ok");
+  } catch (e) {
+    log(`[first tick] threw at ${_ops.toLocaleString()} ops: ${(e.message || e).slice(0, 200)}`, "err");
+    if (e.stack) log(e.stack.split("\n").slice(0, 8).join("\n"), "err");
+  }
+  // Per-frame budget: 5M heap ops, 5s wallclock. After init, a tick is
+  // mostly draw work (~hundreds of thousands of ops).
+  _budget = 50_000_000;
+  _wallBudgetMs = 5_000;
 
   // Main loop. rAF cadence ≈ 60 Hz. Post WM_TIMER every 16 ms (matches the
   // game's expectation of a 60 Hz tick clock) and WM_PAINT every 33 ms.
