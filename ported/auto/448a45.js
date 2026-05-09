@@ -41,7 +41,15 @@ export function FUN_00448a45(heap) {
         if (((heap.u8(unaff_ESI + (4)) & 4) == 0) || ((heap.u8(unaff_ESI + (4)) & 3) == bVar5)) {
           break LAB_00448b0e;
         }
-        /* goto LAB_00448b71 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448a45/LAB_00448b71"); return 0;
+        uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
+        pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
+        if (((in_DL != 0xff) && (heap.u32(0x00630bc8) != 0xffffffff)) && ((heap.u32(heap.u32(0x00630bc8) + (4) * 4) & 0xf0) == 0)) {
+          heap.setU32((heap.u32(0x00630bc8) + (4) * 4), (heap.u32(heap.u32(0x00630bc8) + (4) * 4) | 8) & 0xffffffff);
+          heap.setU32(pbVar1, (heap.u8(pbVar1) & 0x3f) & 0xffffffff);
+          heap.setU32(pbVar1, (heap.u8(pbVar1) | ((uVar2) << 24 >> 24) << 6) & 0xffffffff);
+          (regs.eax = FUN_004364c2(heap));
+        }
+        return;
       }
       if (((bVar4 - 4) & 0xff) == heap.u8(unaff_ESI + (2))) {
         break;
@@ -64,8 +72,16 @@ export function FUN_00448a45(heap) {
   heap.setU8((unaff_ESI + (4)), (heap.u8(unaff_ESI + (4)) & 0xf7) & 0xff);
   uVar6 = ((((unaff_EBX) & 0xffff)) & 0xffff);
   if ((heap.u8(unaff_ESI + (((((((uVar6 ^ 2)) << 16 >> 16)) >>> 0) >>> 3) + 6)) >>> ((uVar6 ^ 2) & 7) & 1) == 0) {
-    /* goto LAB_00448b71 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448a45/LAB_00448b71"); return 0;
+    uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
   }
+  pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
+  if (((in_DL != 0xff) && (heap.u32(0x00630bc8) != 0xffffffff)) && ((heap.u32(heap.u32(0x00630bc8) + (4) * 4) & 0xf0) == 0)) {
+    heap.setU32((heap.u32(0x00630bc8) + (4) * 4), (heap.u32(heap.u32(0x00630bc8) + (4) * 4) | 8) & 0xffffffff);
+    heap.setU32(pbVar1, (heap.u8(pbVar1) & 0x3f) & 0xffffffff);
+    heap.setU32(pbVar1, (heap.u8(pbVar1) | ((uVar2) << 24 >> 24) << 6) & 0xffffffff);
+    (regs.eax = FUN_004364c2(heap));
+  }
+  return;
   heap.setU8((unaff_ESI + (7)), (in_DL) & 0xff);
   cVar3 = ((heap.u32(0x00630bd8)) & 0xff);
   heap.setU8((unaff_ESI + (5)), (heap.u8(unaff_ESI + (5)) & 0x8f) & 0xff);

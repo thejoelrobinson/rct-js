@@ -92,16 +92,29 @@ export function decodeSprite(csg, index) {
 // Reference RCT1 8-bit palette — the standard system palette baked into the
 // binary's resources. Each entry is RGB. Index 0 is the cursor mask color
 // (transparent in tools), 0xff is transparent in sprites. We can populate
-// from binary later; for now, a simple approximation that lets us export
-// PNGs that look palette-ish.
+// Sourced from OpenRCT2's resources/palettes/sprites.json — the canonical
+// 256-entry RCT1/RCT2 sprite palette. Stored as base64-encoded RGB triples
+// (768 bytes; 0/0/0 entries reflect unused indices like 0..9 reserved for
+// system colors).
+//
+// Index 0 is transparent; indices 0xFE/0xFF are typically white/black.
+const _RCT_PALETTE_RGB_BASE64 =
+  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFyMjIzMzL0NDP1NTS2NjW3NzN5uXJ4+HG4N7D3dvB2tjB2tjB2tjB2tjB2tjB2tjB2tjB2tjD3dvG4N7J4+Hu79zF393D3NrB2tjAF9XAFdPAFdPAFdPAFdPAFdPAFdPAFdPAFdPAF9XB2dfD3NrXysAB2tjAGNbAFtTAFNLAEtDAEtDAEtDAEtDAEtDAEtDAEtDAEtDAFNLAFtTAGNbjycnozs7s09Px2dn139/65+f/7+/GzMTIz8XL08fO18nR28rV38zY487c5tDg6tLk7tTx///m+Pjc8vLU7OvN5uXN5uXN5uXN5uXN5uXN5uXN5uXN5uXU7Ovc8vLm+PjE1MAq+fne8vLU7OvL5eTF393F393F393F393F393F393F393F393L5eTU6+ve8vLu3NTg8/PV7OzN5uXG4N7B2tjB2tjB2tjB2tjB2tjB2tjB2tjB2tjG4N7M5uXV7Ozt7ff09Pv7+//ABtvACeXBzOnD0O7G1PLK2ffQ4fjW6Pnd7vvj9Pzr+f71/f/CysPDzcXLy8vLy8vV0cvO3NLT4dfY5t3e6+Lk8enr9vDz/PfPwBfSwdzUw9/Xx+Payubez+rJycrJycrQzcjv5vn18Pz8+v/PwAAVwAAcwAAjwAAqwAAxwAA4wcA/wcA/09D/3tzHyMnHyMnPy8bbzMAkz8At0cA208A/1MA/28X/4sz/6NP/7dr/8uH/9ujADMvAD83AEtDAFdPB2tjF393K5OPR6ejY7u7g8/Pq+fnz///PwAbZwAzews/jxdPox9ftydv2zuP71ur83e795fL+7ff/9fvJxMANx8HRy8PWz8fa1Mze2dLj39ro5N/u6uTz8Or59vD//PfN0tL/7cA/9sA//8AB2tjD3dvG4N7J4+HN5uXN5uXU7Ovc8vLm+Pjx///Q1tbU2trY3t7AABfGyuLJzuXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+let _cachedPalette = null;
 export function defaultPalette() {
+  if (_cachedPalette) return _cachedPalette;
+  const bin = (typeof atob !== "undefined")
+    ? atob(_RCT_PALETTE_RGB_BASE64)
+    : Buffer.from(_RCT_PALETTE_RGB_BASE64, "base64").toString("binary");
   const palette = new Uint8ClampedArray(256 * 4);
   for (let i = 0; i < 256; i++) {
-    palette[i * 4]     = (i * 7) & 0xff;
-    palette[i * 4 + 1] = (i * 11) & 0xff;
-    palette[i * 4 + 2] = (i * 13) & 0xff;
-    palette[i * 4 + 3] = i === 0xff ? 0 : 255;
+    palette[i * 4 + 0] = bin.charCodeAt(i * 3 + 0);
+    palette[i * 4 + 1] = bin.charCodeAt(i * 3 + 1);
+    palette[i * 4 + 2] = bin.charCodeAt(i * 3 + 2);
+    palette[i * 4 + 3] = i === 0 ? 0 : 255;     // 0 = transparent
   }
+  _cachedPalette = palette;
   return palette;
 }
 

@@ -35,7 +35,8 @@ export function FUN_004122a3(heap, param_1, param_2, param_3, param_4, param_5) 
         heap.setU32(__addr_local_8, (0) >>> 0);
         if (heap.u32((__addr_local_5c + 16)) == heap.u32((__addr_local_5c + 28))) {
           heap.setU32(__addr_local_8, (0xe103) >>> 0);
-          break LAB_004123e9;
+          heap.setU32(param_5, (0) & 0xffffffff);
+          return heap.u32(__addr_local_8);
         }
       }
       heap.setU32(__addr_local_10, (((heap.u32((__addr_local_5c + 28))) >>> 0) - ((heap.u32((__addr_local_5c + 16))) >>> 0)) >>> 0);

@@ -29,7 +29,6 @@ export function FUN_0042e062(heap) {
   let bVar8 = 0;
   let uVar9 = 0;
   let pbVar6 = 0;
-  LAB_0042e189: {
   uVar2 = ((((in_EAX) << 16 >> 16) + (((heap.u32((0x00652478) + ((unaff_EBX >>> 3) * 2) * 4)) << 16 >> 16) >>> 3)) & 0xffff);
   uVar3 = ((in_CX + (((heap.u32((0x0065247a) + ((unaff_EBX >>> 3) * 2) * 4)) << 16 >> 16) >>> 3)) & 0xffff);
   bVar8 = ((false) & 0xff);
@@ -47,7 +46,7 @@ export function FUN_0042e062(heap) {
       pbVar6 = ((pbVar6 + 8) >>> 0);
     } while ((heap.u8(pbVar5) & 0x80) == 0);
   }
-  break LAB_0042e189;
+  return 1;
   while (pbVar6 = ((pbVar5) >>> 0), (heap.u8(pbVar5) & 0x3c) != 0) {
     LAB_0042e0f3: pbVar5 = ((pbVar6 + 8) >>> 0);
     if ((heap.u8(pbVar6 + (1)) & 0x80) != 0) {
@@ -80,6 +79,5 @@ export function FUN_0042e062(heap) {
       break;
     }
   }
-  }
-  return 1;
+  LAB_0042e189: return 1;
 }

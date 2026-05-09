@@ -11,7 +11,6 @@ export function FUN_00418bc0(heap, param_1) {
   let uVar1 = 0;
   let iVar2 = 0;
   let iVar3 = 0;
-  LAB_00418c60: {
   iVar2 = (((regs.eax = FUN_00417ce0(heap, heap.u32(param_1 + (4) * 4)))) >>> 0);
   if (iVar2 == 0) {
     return 0;
@@ -36,7 +35,8 @@ export function FUN_00418bc0(heap, param_1) {
       heap.setU32(param_1, (param_1 + 5) & 0xffffffff);
       heap.setU32((param_1 + (6) * 4), (2) & 0xffffffff);
       heap.setU32((param_1 + (1) * 4), (2) & 0xffffffff);
-      break LAB_00418c60;
+      heap.setU32((param_1 + (3) * 4), (heap.u32(param_1 + (3) * 4) | 0x1102) & 0xffffffff);
+      return 1;
     }
   }
   uVar1 = ((heap.u32((0x005f02e0) + (iVar2) * 4)) >>> 0);
@@ -44,7 +44,6 @@ export function FUN_00418bc0(heap, param_1) {
   heap.setU32((param_1 + (2) * 4), (uVar1) & 0xffffffff);
   heap.setU32(param_1, (uVar1) & 0xffffffff);
   heap.setU32((param_1 + (1) * 4), (0x1000) & 0xffffffff);
-  }
-  heap.setU32((param_1 + (3) * 4), (heap.u32(param_1 + (3) * 4) | 0x1102) & 0xffffffff);
+  LAB_00418c60: heap.setU32((param_1 + (3) * 4), (heap.u32(param_1 + (3) * 4) | 0x1102) & 0xffffffff);
   return 1;
 }

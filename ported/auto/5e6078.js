@@ -45,7 +45,15 @@ export function FUN_005e6078(heap) {
       } else {
         iVar6 = ((CONCAT31((regs.eax = callIndirect(heap, int3, ((iVar6) >>> 0) >>> 8)), heap.u8(0x00991f5b))) >>> 0);
       }
-      break LAB_005e6105;
+      (regs.eax = FUN_005e65cf(heap, iVar6, uVar5));
+      if (heap.u8(0x00991f36) == 8) {
+        iVar6 = ((5) >>> 0);
+      }
+      if (((iVar6) << 24 >> 24) != heap.u8(0x00991f34)) {
+        heap.setU8(0x00991f34, (((iVar6) << 24 >> 24)) & 0xff);
+        uVar2 = (((regs.eax = FUN_00404ba4(heap, heap.u32((0x009a1550) + (iVar6) * 4)))) >>> 0);
+      }
+      return uVar2;
     }
   }
   if ((((heap.i8(unaff_EDI) == 1) && ((heap.u16((unaff_ESI + 0x32)) & 0x80) != 0)) && ((((heap.i16((unaff_ESI + 0x20)) + heap.i16((unaff_ESI + 0x24)) + -0x13)) << 16 >> 16) <= ((uVar1) << 16 >> 16))) && ((((heap.i16((unaff_ESI + 0x22)) + heap.i16((unaff_ESI + 0x26)) + -0x13)) << 16 >> 16) <= ((unaff_EBX) << 16 >> 16))) {

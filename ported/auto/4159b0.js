@@ -45,7 +45,8 @@ export function FUN_004159b0(heap, param_1, param_2, param_3) {
           }
           heap.setU32(param_1, ((((pbVar6 + param_3)) >>> 0)) & 0xffffffff);
           heap.setU32((param_1 + (1) * 4), (uVar5 - param_3) & 0xffffffff);
-          /* goto LAB_00415b06 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004159b0/LAB_00415b06"); return 0;
+          heap.setU32(pbVar6, (((param_3) & 0xff)) & 0xffffffff);
+          return (((pbVar6 + 8)) >>> 0) * 0x10 + ((param_1) >>> 0) * -0xf;
         }
         if (pbVar6 == pbVar2) {
           heap.setU32((param_1 + (1) * 4), (uVar5) & 0xffffffff);

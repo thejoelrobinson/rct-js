@@ -159,7 +159,7 @@ export function FUN_005d5ad1(heap) {
       }
     }
   }
-  break LAB_005d5ff4;
+  return 1;
   while (true) {
     uVar2 = ((0) & 0xffff);
     uVar4 = ((uVar4 + 0x20) & 0xffff);

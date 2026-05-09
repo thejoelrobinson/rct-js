@@ -65,8 +65,9 @@ export function FUN_00436fae(heap) {
           bVar9 = ((((uVar6) & 0xff)) & 0xff);
           bVar2 = ((bVar8 + 8) & 0xff);
           if ((((unaff_BL & 1) != 0) && ((((unaff_BL & 0x10) == 0 && (bVar8 < bVar3)) || (bVar2 < bVar3)))) || (((((unaff_BL & 2) != 0 && ((((unaff_BL & 0x20) == 0 && (bVar8 < bVar4)) || (bVar2 < bVar4)))) || (((unaff_BL & 4) != 0 && ((((unaff_BL & 0x40) == 0 && (bVar8 < bVar5)) || (bVar2 < bVar5)))))) || (((unaff_BL & 8) != 0 && ((((unaff_BL & 0x80) == 0 && (bVar8 < bVar7)) || (bVar2 < bVar7)))))))) {
-            /* goto LAB_0043710e — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00436fae/LAB_0043710e"); return 0;
+            (regs.eax = FUN_0043725f(heap));
           }
+          return 1;
         } else {
           heap.setU32(0x00628af6, (heap.u32(0x00628af6) & 0xfe | 2) >>> 0);
         }

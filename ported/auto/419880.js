@@ -189,7 +189,10 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
     } while (psVar1 <= psVar7);
     if (psVar1 <= psVar7) {
       heap.setI8(psVar7, (((heap.i16(psVar7)) << 24 >> 24) + 1) & 0xff);
-      break LAB_00419be6;
+      cVar3 = (((((psVar7) << 24 >> 24) - ((param_6) << 24 >> 24)) + -3) & 0xff);
+      heap.setI8((((param_6) >>> 0) + 3), (cVar3) & 0xff);
+      heap.setU8((((param_6) >>> 0) + cVar3 + 4), (0) & 0xff);
+      return 1;
     }
   }
   psVar7 = (((((psVar7) >>> 0) + 1)) >>> 0);

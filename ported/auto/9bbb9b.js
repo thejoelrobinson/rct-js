@@ -25,7 +25,6 @@ export function FUN_009bbb9b(heap) {
   let puVar11 = 0;
   let pcVar12 = 0;
   let puVar13 = 0;
-  LAB_009bbdbf: {
   LAB_009bbdbe: {
   sVar2 = ((1) & 0xffff);
   while (true) {
@@ -125,7 +124,7 @@ export function FUN_009bbb9b(heap) {
         iVar4 = (((regs.eax = FUN_00408387(heap, heap.u32(0x009a2004)))) >>> 0);
         if ((iVar4 | 0) != -1) {
           uVar6 = ((((((iVar4) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
-          break LAB_009bbdbf;
+          return CONCAT22(uVar6, sVar2);
         }
         break LAB_009bbdbe;
       }
@@ -134,6 +133,5 @@ export function FUN_009bbb9b(heap) {
   }
   }
   uVar6 = ((((((iVar4) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
-  }
-  return CONCAT22(uVar6, sVar2);
+  LAB_009bbdbf: return CONCAT22(uVar6, sVar2);
 }

@@ -227,6 +227,145 @@ function fixDanglingLabels(source) {
   return source.replace(/(\b[A-Za-z_][\w]*:)\s*(\n\s*\})/g, "$1 ;$2");
 }
 
+// Inline forward `goto LABEL;` sites with the body of `LABEL:` when that
+// body is short and ends in `return ...;` (no fall-through possible). This
+// is a source-level transformation that lifts ~108 functions out of the
+// "broken-goto, returns 0" bucket without needing to model goto in JS.
+//
+// Pattern handled:
+//   if (cond) goto LABEL;
+//   ...
+//   LABEL:
+//     stmt1;
+//     stmt2;
+//     return X;
+//
+// Becomes:
+//   if (cond) {
+//     stmt1;
+//     stmt2;
+//     return X;
+//   }
+//   ...
+//   LABEL:
+//     stmt1;     // (kept — other paths may still reach the label)
+//     stmt2;
+//     return X;
+//
+// Limitations:
+//   - Label body must terminate (return/break/continue) — no fall-through.
+//   - Body must be ≤ 12 statements (cap to keep emitted JS readable).
+//   - `goto LABEL;` must be the only statement in its block (so the
+//     replacement-with-block doesn't break adjacent statements).
+function inlineForwardGotos(source) {
+  // Find all `LABEL:` definitions and their following statement body up to
+  // the next return/break/continue/closing-brace. Track the label's source
+  // offset so we can verify gotos are forward (lower offset → label).
+  const labels = new Map();   // labelName → { body, defOffset }
+  const LABEL_DEF = /^([ \t]*)([A-Za-z_]\w*):[ \t]*\n/gm;
+  let m;
+  while ((m = LABEL_DEF.exec(source)) !== null) {
+    const indent = m[1];
+    const name = m[2];
+    const defOffset = m.index;
+    const bodyStart = m.index + m[0].length;
+    // Read statements until a terminating one (return/break/continue/goto)
+    // or until we hit a closing brace at less-than-current indent.
+    const body = readLabelBody(source, bodyStart, indent);
+    if (body) labels.set(name, { body, defOffset });
+  }
+  if (labels.size === 0) return source;
+  // Replace `goto LABEL;` (when alone in its block, preceded by an `if (...)`
+  // or sitting on its own line) with the label's body, indented appropriately.
+  let out = source;
+  for (const [name, { body, defOffset }] of labels) {
+    // Skip switch-fallthrough labels — these live inside switch statements
+    // and inlining their body at a goto site would put case_* code outside
+    // a switch block (parse error).
+    if (/^switchD_/.test(name)) continue;
+    // Skip "joined_*" labels — Ghidra emits these for joined return paths;
+    // their bodies are sometimes complex multi-block patterns we don't
+    // safely inline.
+    if (/^joined_/.test(name)) continue;
+    // Only inline when label body terminates (last non-blank line is return/break/continue).
+    if (!/(?:return\b[^;]*;|break\s*;|continue\s*;)\s*$/.test(body.trim())) continue;
+    if (body.split("\n").length > 14) continue;   // skip long bodies
+    // Skip bodies containing break/continue at any non-final position —
+    // those refer to the label's enclosing loop. Inlining at a different
+    // loop site changes their target (or makes them illegal).
+    const trimmedBody = body.trim();
+    const lastTermMatch = /(return\b[^;]*;|break\s*;|continue\s*;)\s*$/.exec(trimmedBody);
+    const beforeFinalTerm = trimmedBody.slice(0, lastTermMatch.index);
+    if (/\b(break|continue)\b\s*;/.test(beforeFinalTerm)) continue;
+    // Also skip if the FINAL terminator is `break`/`continue` and the body
+    // referenced loop-bound state — the inlined break would target a
+    // different loop. Conservative: skip all break/continue terminators
+    // that the goto-site is in a different loop than the label-site.
+    // We can't easily tell, so skip break/continue terminators entirely
+    // unless we have stronger context.
+    if (/^(break|continue)\s*;$/.test(lastTermMatch[1].trim())) continue;
+    // Replace `goto NAME;` lines with the body. Preserve the indentation of
+    // the goto line. The body lines are reindented to that level.
+    // CRITICAL: only replace gotos whose source offset is BEFORE the label
+    // definition (forward gotos). Backward gotos are loop edges and
+    // inlining them creates infinite duplication or parse errors.
+    const gotoRe = new RegExp(`^([ \\t]*)goto[ \\t]+${name}[ \\t]*;[ \\t]*\\n`, "gm");
+    out = out.replace(gotoRe, (match, gIndent, gOffset) => {
+      // Note: out has been modified by previous label replacements, so
+      // gOffset is in the CURRENT `out` not the original source. We can't
+      // compare to defOffset directly. Instead, inline only if the goto's
+      // line appears before the label's identical line in `out`.
+      const labelLine = `${name}:`;
+      const labelIdxInOut = out.indexOf(labelLine);
+      if (labelIdxInOut === -1 || gOffset >= labelIdxInOut) return match;
+      const lines = body.trim().split("\n");
+      const minIndent = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^[ \t]*/)[0].length));
+      const reindented = lines.map(l => l.trim() ? gIndent + l.slice(minIndent) : "").join("\n");
+      return `${reindented}\n`;
+    });
+  }
+  return out;
+}
+
+function readLabelBody(source, start, baseIndent) {
+  const lines = [];
+  let i = start;
+  let foundTerminator = false;
+  // Ghidra emits labels at column 0 even when the surrounding scope is
+  // deeply indented. Track the first body line's indent and use that as
+  // the "natural body indent" — closing braces at an indent less than
+  // that mean the enclosing scope (not the label's body) is ending.
+  let bodyIndent = null;
+  while (i < source.length) {
+    const lineEnd = source.indexOf("\n", i);
+    const line = source.slice(i, lineEnd === -1 ? source.length : lineEnd);
+    if (lineEnd === -1) break;
+    const isBlank = !line.trim();
+    if (!isBlank && bodyIndent === null) {
+      bodyIndent = line.match(/^[ \t]*/)[0].length;
+    }
+    // Stop at a closing brace whose indent is less than the body's natural
+    // indent — the surrounding scope is ending and we'd escape the label.
+    if (/^[ \t]*\}/.test(line) && bodyIndent !== null) {
+      const indent = line.match(/^[ \t]*/)[0].length;
+      if (indent < bodyIndent) break;
+    }
+    // Stop at another label definition at the same column 0 indent.
+    if (/^[ \t]*[A-Za-z_]\w*:\s*$/.test(line) && line.trim() !== "") {
+      const indent = line.match(/^[ \t]*/)[0].length;
+      if (indent === baseIndent.length) break;
+    }
+    lines.push(line);
+    if (/\b(return\b[^;]*;|break\s*;|continue\s*;|goto\s+\w+\s*;)/.test(line)) {
+      foundTerminator = true;
+      break;
+    }
+    i = lineEnd + 1;
+  }
+  if (!foundTerminator) return null;
+  return lines.join("\n");
+}
+
 // Ghidra preserves C++-style symbols verbatim in C output, including
 // templates (`char_traits<char>::move`) and qualifiers (`__cdecl`). Tree-
 // sitter-c can't parse these — sanitise by flattening templates and dropping
@@ -251,7 +390,7 @@ function sanitiseCxxSymbols(source) {
 // like Win32 imports (RtlUnwind, _strlen, etc.) don't collide with their
 // runtime counterparts.
 export async function translateFunction(source, forceAddr, opts = {}) {
-  source = fixDanglingLabels(sanitiseCxxSymbols(stripWideStringPrefix(stripIntSuffixes(normalizeTypes(source)))));
+  source = fixDanglingLabels(inlineForwardGotos(sanitiseCxxSymbols(stripWideStringPrefix(stripIntSuffixes(normalizeTypes(source))))));
   const parser = await getParser();
   const tree = parser.parse(source);
   const ctx = {

@@ -93,7 +93,7 @@ export function FUN_005dcd40(heap) {
                             }
                           }
                           if ((heap.u32((0x00743be4) + (iVar16) * 4) == NaN) && ((heap.i8(unaff_ESI + (0x50)) != 5 && (heap.i8(unaff_ESI + (0x50)) != 4)))) {
-                            /* goto LAB_005dcf66 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_005dcd40/LAB_005dcf66"); return 0;
+                            return 1;
                           }
                         }
                         heap.setU16((unaff_ESI + 0x48), (heap.u16((unaff_ESI + 0x48)) | 0x40) & 0xffff);

@@ -54,8 +54,10 @@ export function FUN_00416d00(heap, param_1, param_2, param_3, param_4, param_5, 
     if ((param_2 & 0x400) == 0) {
       param_4 = (((regs.eax = FUN_004133c0(heap, iVar1 * 2))) >>> 0);
       if ((param_4 == 0x0) || (iVar2 = ((LCMapStringW(heap, param_1, param_2, lpWideCharStr, iVar2, param_4, iVar1)) >>> 0), iVar2 == 0)) {
-        break LAB_00416f08;
+        (regs.eax = FUN_00413470(heap, lpWideCharStr));
       }
+      (regs.eax = FUN_00413470(heap, param_4));
+      return 0;
       if (param_6 == 0) {
         iVar1 = ((WideCharToMultiByte(heap, param_7, 0x220, param_4, iVar1, ((0x0) >>> 0), 0, ((0x0) >>> 0), ((0x0) >>> 0))) >>> 0);
         iVar2 = ((iVar1) >>> 0);
