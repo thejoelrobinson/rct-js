@@ -36,6 +36,6 @@ export function FUN_005d7337(heap) {
       uVar3 = ((uVar2) & 0xffff);
     }
   }
-  (regs.eax = FUN_005d6a1d(heap));
+  (regs.ebx = 0x3, regs.eax = FUN_005d6a1d(heap));
   return CONCAT44(CONCAT22((((((in_EDX) >>> 0) >>> 0x10)) << 16 >> 16), uVar3 + ((CONCAT31((regs.eax = callIndirect(heap, int3, ((pbVar4) >>> 0) >>> 8)), 3)) << 16 >> 16)), in_EAX);
 }

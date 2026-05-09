@@ -14,7 +14,7 @@ export function FUN_0042dfd1(heap) {
   let unaff_BX = regs.ebx & 0xffff;
   let unaff_ESI = regs.esi >>> 0;
   let in_ZF = regs.zf | 0;
-  (regs.eax = FUN_00444bd4(heap));
+  (regs.ebx = 0x2, regs.eax = FUN_00444bd4(heap));
   if (!in_ZF) {
     heap.setU8((unaff_ESI + (0x14)), (0xd) & 0xff);
     heap.setU8((unaff_ESI + (9)), (0x16) & 0xff);

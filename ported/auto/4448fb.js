@@ -14,7 +14,7 @@ export function FUN_004448fb(heap) {
   pcVar1 = ((0x00743b94) >>> 0);
   do {
     if ((heap.i8(pcVar1) | 0) != -1) {
-      (regs.eax = FUN_00444927(heap));
+      (regs.esi = 0x743b94, regs.eax = FUN_00444927(heap));
     }
     pcVar1 = ((pcVar1 + 0x100) >>> 0);
   } while (pcVar1 < 0x0087c394);

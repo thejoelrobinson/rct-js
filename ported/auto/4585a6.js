@@ -13,11 +13,11 @@ export function FUN_004585a6(heap) {
   let in_DX = regs.edx & 0xffff;
   (regs.eax = FUN_00458bcf(heap));
   heap.setU32(0x00971e84, (0xe0) >>> 0);
-  (regs.eax = FUN_00458a7c(heap, 0x0099a888));
-  (regs.eax = FUN_009ba943(heap, in_DX));
-  (regs.eax = FUN_009b30f1(heap));
+  (regs.esi = 0x99a888, regs.eax = FUN_00458a7c(heap, 0x0099a888));
+  (regs.esi = 0x99a888, regs.eax = FUN_009ba943(heap, in_DX));
+  (regs.ecx = 0xa, regs.ebx = 0xffff, regs.eax = FUN_009b30f1(heap));
   if (heap.u8(0x0099ac8a) != 0) {
-    (regs.eax = FUN_009b30f1(heap));
+    (regs.ecx = 0xa, regs.ebx = 0xffff, regs.eax = FUN_009b30f1(heap));
   }
   return;
 }

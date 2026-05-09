@@ -15,7 +15,7 @@ export function FUN_0042e276(heap) {
   let unaff_BP = regs.ebp & 0xffff;
   let unaff_ESI = regs.esi >>> 0;
   let in_ZF = regs.zf | 0;
-  (regs.eax = FUN_00444bd4(heap));
+  (regs.ebx = 0x2, regs.eax = FUN_00444bd4(heap));
   if (!in_ZF) {
     heap.setU16((unaff_ESI + 0x46), (unaff_BP) & 0xffff);
     heap.setU16((unaff_ESI + 0x2e), (unaff_BX) & 0xffff);

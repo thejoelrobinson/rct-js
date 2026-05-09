@@ -15,7 +15,7 @@ export function FUN_00435005(heap) {
   let extraout_EDX = 0;
   let cVar3 = 0;
   let unaff_BX = regs.ebx & 0xffff;
-  sVar1 = (((regs.eax = FUN_00431510(heap))) & 0xffff);
+  sVar1 = (((regs.edx = 0xffde, regs.eax = FUN_00431510(heap))) & 0xffff);
   cVar3 = ((((unaff_BX) << 24 >> 24)) & 0xff);
   if (cVar3 == 0) {
     return 0x8000;

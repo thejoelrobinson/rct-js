@@ -13,7 +13,7 @@ export function FUN_0043fe80(heap) {
   let bVar2 = 0;
   LAB_0043feb2: {
   bVar2 = ((0xff8bc46b < heap.u32((unaff_ESI + 0x30)) << 8) & 0xff);
-  uVar1 = (((regs.eax = FUN_0043feb6(heap))) >>> 0);
+  uVar1 = (((regs.esi = 0x743b94, regs.eax = FUN_0043feb6(heap))) >>> 0);
   if (bVar2) {
     uVar1 = ((uVar1 | 0x10000) >>> 0);
     if ((heap.u32((unaff_ESI + 0x10)) >>> 0x10 & 1) != 0) {

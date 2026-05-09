@@ -20,10 +20,10 @@ export function FUN_00458897(heap) {
   let uVar5 = 0;
   let uStack_8 = 0;
   heap.setU32(0x00971e84, (0xe0) >>> 0);
-  (regs.eax = FUN_009ba943(heap));
+  (regs.esi = 0x642fb9, regs.eax = FUN_009ba943(heap));
   (regs.eax = FUN_00458bcf(heap));
   heap.setU32(0x00971e84, (0xe0) >>> 0);
-  (regs.eax = FUN_0045897e(heap, 0xa888));
+  (regs.esi = 0x99a888, regs.edi = 0x990000, regs.eax = FUN_0045897e(heap, 0xa888));
   heap.setU32(0x006432d4, (10) >>> 0);
   if ((0xe0 < unaff_BX) && (heap.setU32(0x006432d4, (6) >>> 0), unaff_BX != 0x1c0)) {
     heap.setU32(0x006432d4, (0x12) >>> 0);
@@ -34,7 +34,7 @@ export function FUN_00458897(heap) {
   do {
     uVar5 = ((SUB42(pbVar2, 0)) & 0xffff);
     uStack_8 = ((((((pbVar2) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
-    (regs.eax = FUN_009ba943(heap, uVar5, in_DX));
+    (regs.esi = 0x642fb9, regs.eax = FUN_009ba943(heap, uVar5, in_DX));
     pbVar2 = ((CONCAT22(uStack_8, uVar5)) >>> 0);
     while (true) {
       pbVar3 = ((pbVar2) >>> 0);

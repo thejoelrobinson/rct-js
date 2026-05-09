@@ -25,6 +25,6 @@ export function FUN_00450124(heap) {
       }
     }
   }
-  (regs.eax = FUN_005e5301(heap));
+  (regs.eax = 0xb, regs.eax = FUN_005e5301(heap));
   return 1;
 }

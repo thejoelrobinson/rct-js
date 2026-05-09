@@ -346,7 +346,8 @@ export function FUN_004499cc(heap) {
     LAB_0044a22e: pbVar14 = ((pbVar14 + 0x260) >>> 0);
     uVar6 = ((uVar6 + 1) >>> 0);
     if (0xfe < uVar6) {
-      return (regs.eax = FUN_00453bf8(heap));
+      (regs.ebx = 0x4, regs.eax = FUN_00453bf8(heap));
+      return;
     }
   } while (true);
   }

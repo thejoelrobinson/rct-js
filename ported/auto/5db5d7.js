@@ -19,7 +19,7 @@ export function FUN_005db5d7(heap) {
   let in_ZF = regs.zf | 0;
   bVar1 = ((heap.u8((unaff_ESI + 0x30))) & 0xff);
   sVar2 = ((heap.i16((unaff_ESI + 10))) & 0xffff);
-  (regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0xb, regs.eax = FUN_005e3b2b(heap));
   if (!in_ZF) {
     iVar4 = ((((bVar1) >>> 0) * 0x260) >>> 0);
     iVar3 = ((heap.u16((unaff_ESI + 0x15a)) - 1) >>> 0);

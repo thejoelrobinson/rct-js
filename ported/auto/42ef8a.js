@@ -110,7 +110,7 @@ export function FUN_0042ef8a(heap) {
         }
         heap.setU8(0x005f8d5d, (heap.u32((0x0063297d) + (heap.u8(0x005f8d5f)) * 4)) & 0xff);
         heap.setU8(0x005f8d5e, (heap.u32((0x00632980) + (heap.u8(0x005f8d5f)) * 4)) & 0xff);
-        return (regs.eax = FUN_0042f1d3(heap));
+        return (regs.eax = 0x3, regs.eax = FUN_0042f1d3(heap));
       }
       /* goto LAB_0042f06b — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0042ef8a/LAB_0042f06b"); return 0;
     }

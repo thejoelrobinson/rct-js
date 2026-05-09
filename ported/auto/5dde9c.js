@@ -47,5 +47,5 @@ export function FUN_005dde9c(heap) {
     uVar7 = ((uVar7 + 1) >>> 0);
     puVar6 = ((puVar6 + 0x10) >>> 0);
   } while (uVar7 < 0xc);
-  return (regs.eax = FUN_005e5301(heap));
+  return (regs.eax = 0xff12, regs.ecx = 0x4, regs.edx = 0x6e2a74, regs.ebx = 0x6e0000, regs.esi = 0x6e1e40, regs.edi = 0xc, regs.eax = FUN_005e5301(heap));
 }

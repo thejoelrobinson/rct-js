@@ -35,5 +35,5 @@ export function FUN_005ded48(heap) {
     uVar1 = ((uVar2) & 0xffff);
   }
   heap.setU16((unaff_ESI + 0x36), (uVar1) & 0xffff);
-  return (regs.eax = FUN_005e4198(heap));
+  return (regs.eax = 0xfffa, regs.edi = 0x6e1e40, regs.eax = FUN_005e4198(heap));
 }

@@ -14,7 +14,7 @@ export function FUN_005e12eb(heap) {
   let uVar1 = 0;
   let unaff_BP = regs.ebp & 0xffff;
   let puVar2 = 0;
-  (regs.eax = FUN_009bb355(heap));
+  (regs.ecx = 0xffff, regs.edx = 0xffff, regs.eax = FUN_009bb355(heap));
   heap.setU32(0x0099fb94, (in_DX - in_AX) >>> 0);
   heap.setU32(0x0099fb98, (-((heap.u32(0x0099fb94) - heap.u32(0x0099fb84)) - heap.u32(0x0099fb88))) >>> 0);
   heap.setU32(0x0099fb96, (unaff_BP - unaff_BX) >>> 0);

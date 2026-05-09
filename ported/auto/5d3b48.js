@@ -40,7 +40,7 @@ export function FUN_005d3b48(heap) {
   heap.setU32(0x00991f8c, (0) >>> 0);
   uVar8 = ((unaff_EBX & 0xffff03ff) >>> 0);
   heap.setU32(0x005f96e0, (0x006284ac) >>> 0);
-  (regs.eax = FUN_00431b6f(heap));
+  (regs.ebp = 0x5f96ec, regs.eax = FUN_00431b6f(heap));
   pbVar11 = ((0x00887420 + (in_EDX & 0xff) * 0x260) >>> 0);
   uVar12 = ((0) >>> 0);
   uVar13 = ((extraout_var) >>> 0);

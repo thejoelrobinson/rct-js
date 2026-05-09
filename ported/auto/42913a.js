@@ -36,7 +36,7 @@ export function FUN_0042913a(heap) {
     UNLOCK();
     uVar8 = ((uVar8 + 1) >>> 0);
   } while (uVar8 < 0x20);
-  (regs.eax = FUN_005e5301(heap));
+  (regs.eax = 0x1b, regs.edi = 0x20, regs.eax = FUN_005e5301(heap));
   uVar5 = ((heap.u32(0x0087c81c)) & 0xffff);
   if (0x9c4 < heap.u32(0x0087c81c)) {
     uVar5 = ((0x9c4) & 0xffff);
@@ -51,7 +51,7 @@ export function FUN_0042913a(heap) {
     UNLOCK();
     uVar9 = ((uVar9 + 1) >>> 0);
   } while (uVar9 < 0x20);
-  (regs.eax = FUN_005e5301(heap));
+  (regs.eax = 0x1b, regs.edi = 0x20, regs.eax = FUN_005e5301(heap));
   uVar8 = ((0) >>> 0);
   iVar6 = ((heap.u32(0x0087c3b4) - heap.u32(0x0087c3b8)) >>> 0);
   do {
@@ -62,7 +62,7 @@ export function FUN_0042913a(heap) {
     uVar8 = ((uVar8 + 1) >>> 0);
     iVar6 = ((iVar2) >>> 0);
   } while (uVar8 < 0x80);
-  (regs.eax = FUN_005e5301(heap));
+  (regs.eax = 0x1b, regs.edi = 0x20, regs.eax = FUN_005e5301(heap));
   if (1 < heap.u32(0x0087d310)) {
     heap.setU32(0x0087d30c, (heap.u32(0x0087d30c) / ((((heap.u32(0x0087d310)) >>> 0)) >>> 0)) >>> 0);
   }
@@ -77,7 +77,7 @@ export function FUN_0042913a(heap) {
   } while (uVar8 < 0x80);
   heap.setU32(0x0087d30c, (0) >>> 0);
   heap.setU32(0x0087d310, (0) >>> 0);
-  (regs.eax = FUN_005e5301(heap));
+  (regs.eax = 0x1b, regs.edi = 0x20, regs.eax = FUN_005e5301(heap));
   uVar8 = ((0) >>> 0);
   uVar7 = ((heap.u32(0x0087d514)) >>> 0);
   do {

@@ -13,7 +13,7 @@ export function FUN_0043424f(heap) {
   let uVar2 = 0;
   let extraout_CX = 0;
   let unaff_BL = regs.ebx & 0xff;
-  sVar1 = (((regs.eax = FUN_00431510(heap))) & 0xffff);
+  sVar1 = (((regs.edx = 0xfffe, regs.eax = FUN_00431510(heap))) & 0xffff);
   if (unaff_BL != 0) {
     heap.setU32(0x00628a34, (sVar1 + 0x1f) >>> 0);
     heap.setU32(0x00628a36, (extraout_CX + 0x1f) >>> 0);

@@ -15,10 +15,10 @@ export function FUN_0042cc19(heap) {
   bVar1 = ((true) & 0xff);
   (regs.eax = FUN_005e5fcb(heap));
   if (bVar1) {
-    (regs.eax = FUN_005e3c3c(heap));
+    (regs.ecx = 0x1e, regs.edx = 0x42cc8f, regs.ebx = 0x12c0190, regs.ebp = 0x42cde5, regs.eax = FUN_005e3c3c(heap));
     heap.setU32((unaff_ESI + 0x1c), (0x005f54a4) & 0xffffffff);
     heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 4) & 0xffffffff);
-    (regs.eax = FUN_005e412c(heap));
+    (regs.edx = 0x42cc8f, regs.eax = FUN_005e412c(heap));
     heap.setU16((unaff_ESI + 0x15a), (0xffff) & 0xffff);
   }
   return (regs.eax = FUN_0042cc5f(heap));

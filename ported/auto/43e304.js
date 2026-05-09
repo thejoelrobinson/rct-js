@@ -113,7 +113,7 @@ export function FUN_0043e304(heap) {
                 in_DL = ((extraout_DL_00) & 0xff);
                 if (extraout_DL_00 == heap.u8((unaff_ESI + 0xc5))) {
                   heap.setU8((unaff_ESI + 0xc5), (0xff) & 0xff);
-                  (regs.eax = FUN_005e5301(heap, CONCAT31((regs.eax = callIndirect(heap, int3, unaff_EBX >>> 8)), 1), uVar3));
+                  (regs.eax = 0xc97, regs.eax = FUN_005e5301(heap, CONCAT31((regs.eax = callIndirect(heap, int3, unaff_EBX >>> 8)), 1), uVar3));
                   in_DL = ((extraout_DL_01) & 0xff);
                 }
               }
@@ -214,7 +214,7 @@ export function FUN_0043e304(heap) {
     if (uVar2 == 0) {
       LAB_0043e63e: if (((unaff_BP & 4) == 0) && (uVar3 = (((regs.eax = FUN_004413fa(heap))) >>> 0), extraout_DL_02 == heap.i8((unaff_ESI + 0xc5)))) {
         heap.setU8((unaff_ESI + 0xc5), (0xff) & 0xff);
-        (regs.eax = FUN_005e5301(heap, 1, uVar3));
+        (regs.eax = 0xc97, regs.eax = FUN_005e5301(heap, 1, uVar3));
       }
       return in_EAX;
     }
@@ -237,7 +237,7 @@ export function FUN_0043e304(heap) {
   }
   if (in_DL == heap.u8((unaff_ESI + 0xc5))) {
     heap.setU8((unaff_ESI + 0xc5), (0xff) & 0xff);
-    (regs.eax = FUN_005e5301(heap, unaff_EBX, uVar2));
+    (regs.eax = 0xc97, regs.eax = FUN_005e5301(heap, unaff_EBX, uVar2));
   }
   return in_EAX;
 }

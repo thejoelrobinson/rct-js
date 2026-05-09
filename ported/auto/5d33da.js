@@ -25,7 +25,7 @@ export function FUN_005d33da(heap) {
   let in_ZF = regs.zf | 0;
   LAB_005d3452: {
   heap.setU32(__addr_uStack_4, (in_EDX) >>> 0);
-  uVar1 = (((regs.eax = FUN_005e3b2b(heap))) >>> 0);
+  uVar1 = (((regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap))) >>> 0);
   heap.setU32(__addr_puStack_18, (__addr_uStack_4) >>> 0);
   if (((!in_ZF) && (in_CF = ((0) & 0xff), heap.u8(0x00652288) != 0)) && (in_CF = ((heap.u8(0x00652289) < ((heap.u8(unaff_ESI + (7))) & 0xff)) & 0xff), heap.u8(0x00652289) == heap.u8(unaff_ESI + (7)))) {
     (regs.eax = FUN_005d21fa(heap));

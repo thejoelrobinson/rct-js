@@ -13,13 +13,13 @@ export function FUN_0042df75(heap) {
   let in_EDX = regs.edx >>> 0;
   let unaff_ESI = regs.esi >>> 0;
   let in_ZF = regs.zf | 0;
-  (regs.eax = FUN_00444bd4(heap));
+  (regs.ebx = 0x2, regs.eax = FUN_00444bd4(heap));
   if (!in_ZF) {
     heap.setU8((unaff_ESI + (0x14)), (0x19) & 0xff);
     heap.setU8((unaff_ESI + (9)), (0x55) & 0xff);
     heap.setU8((unaff_ESI + (0x15)), (8) & 0xff);
     heap.setU32(unaff_ESI, (2) & 0xffffffff);
-    (regs.eax = FUN_00444927(heap));
+    (regs.edx = 0x4, regs.eax = FUN_00444927(heap));
     heap.setU8((unaff_ESI + (1)), (5) & 0xff);
     heap.setU16((unaff_ESI + 0x26), (0) & 0xffff);
   }

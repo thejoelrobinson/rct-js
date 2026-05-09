@@ -12,6 +12,6 @@ export function FUN_004518fc(heap) {
   let in_EDX = regs.edx >>> 0;
   heap.setU16((0x00971e86 + 0), (heap.u32((0x00887442) + ((in_EDX & 0xff) * 0x130) * 4)) & 0xffff);
   unique0x00017200 = ((heap.u32((0x00887444) + ((in_EDX & 0xff) * 0x98) * 4)) >>> 0);
-  (regs.eax = FUN_0042c711(heap));
+  (regs.eax = 0x1, regs.eax = FUN_0042c711(heap));
   return 1;
 }

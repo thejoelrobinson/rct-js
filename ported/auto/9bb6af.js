@@ -17,7 +17,7 @@ export function FUN_009bb6af(heap) {
   (regs.eax = FUN_009b3000(heap));
   (regs.eax = FUN_00458230(heap));
   (regs.eax = FUN_009bb52c(heap));
-  cVar1 = (((regs.eax = FUN_009bb4b4(heap))) & 0xff);
+  cVar1 = (((regs.eax = 0x1, regs.eax = FUN_009bb4b4(heap))) & 0xff);
   if (cVar1 == 0) {
     return (regs.eax = FUN_005df472(heap));
   }

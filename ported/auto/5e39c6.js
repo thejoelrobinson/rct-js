@@ -15,8 +15,8 @@ export function FUN_005e39c6(heap) {
     heap.setU32(0x009a1618, (heap.u32(0x009a1618) + 1) >>> 0);
   }
   while (0x9a013b < uVar1 - 0x178) {
-    (regs.eax = FUN_005e40c4(heap));
-    (regs.eax = FUN_005e39ff(heap));
+    (regs.esi = 0xfffffe88, regs.eax = FUN_005e40c4(heap));
+    (regs.esi = 0xfffffe88, regs.eax = FUN_005e39ff(heap));
     (regs.eax = callIndirect(heap, heap.u32((uVar1 - 0x174))));
     uVar1 = ((uVar1 - 0x178) >>> 0);
   }

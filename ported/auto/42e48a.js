@@ -26,7 +26,7 @@ export function FUN_0042e48a(heap) {
     uVar6 = ((0) >>> 0);
     uVar1 = ((in_EAX) >>> 0);
     do {
-      (regs.eax = FUN_0042e276(heap, uVar6, in_EDX, in_ECX, uVar5, uVar1));
+      (regs.eax = 0x20, regs.ebx = 0x800, regs.eax = FUN_0042e276(heap, uVar6, in_EDX, in_ECX, uVar5, uVar1));
       uVar5 = ((uVar5 + 1) >>> 0);
     } while (uVar5 < 4);
     return in_EAX;
@@ -34,7 +34,7 @@ export function FUN_0042e48a(heap) {
   if (uVar5 != 2) {
     if (uVar5 != 4) {
       (regs.eax = FUN_005df40c(heap));
-      (regs.eax = FUN_0042e276(heap));
+      (regs.eax = 0x20, regs.ebx = 0x800, regs.eax = FUN_0042e276(heap));
       return in_EAX;
     }
     uVar1 = ((in_EAX) >>> 0);
@@ -42,8 +42,8 @@ export function FUN_0042e48a(heap) {
     uVar2 = ((((((uVar7) >>> 0) >>> 0x20) >>> 0)) >>> 0);
     uVar4 = ((((uVar7) >>> 0) & 3) >>> 0);
     uVar6 = ((extraout_ECX_00) >>> 0);
-    (regs.eax = FUN_0042e276(heap, 4, uVar2, extraout_ECX_00, uVar4, uVar1));
-    (regs.eax = FUN_0042e276(heap, uVar5, uVar2, uVar6, uVar4 + 4, uVar1));
+    (regs.eax = 0x20, regs.ebx = 0x800, regs.eax = FUN_0042e276(heap, 4, uVar2, extraout_ECX_00, uVar4, uVar1));
+    (regs.eax = 0x20, regs.ebx = 0x800, regs.eax = FUN_0042e276(heap, uVar5, uVar2, uVar6, uVar4 + 4, uVar1));
     return in_EAX;
   }
   uVar2 = ((in_EAX) >>> 0);
@@ -53,7 +53,7 @@ export function FUN_0042e48a(heap) {
   uVar6 = ((2) >>> 0);
   uVar1 = ((extraout_ECX) >>> 0);
   do {
-    (regs.eax = FUN_0042e276(heap, uVar6, uVar3, uVar1, uVar5, uVar2));
+    (regs.eax = 0x20, regs.ebx = 0x800, regs.eax = FUN_0042e276(heap, uVar6, uVar3, uVar1, uVar5, uVar2));
     uVar5 = ((uVar5 + 2) >>> 0);
   } while (uVar5 < 4);
   return in_EAX;

@@ -45,7 +45,7 @@ export function FUN_005e613e(heap) {
   sVar13 = ((((unaff_EBX) << 16 >> 16)) & 0xffff);
   heap.setU32(0x0099fdf2, (sVar13) >>> 0);
   if ((heap.u32(0x0099a500) & 1) == 0) {
-    uVar19 = (((regs.eax = FUN_00431510(heap))) >>> 0);
+    uVar19 = (((regs.edx = 0xff79, regs.eax = FUN_00431510(heap))) >>> 0);
     pbVar11 = (((((uVar19) >>> 0) >>> 0x20)) >>> 0);
     uVar6 = ((((uVar19) >>> 0)) >>> 0);
     cVar12 = ((((unaff_EBX) << 24 >> 24)) & 0xff);

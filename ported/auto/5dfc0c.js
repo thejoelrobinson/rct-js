@@ -10,7 +10,7 @@ import { FUN_005e5bd8 } from "./5e5bd8.js";
 export function FUN_005dfc0c(heap) {
   let puVar1 = 0;
   let puVar2 = 0;
-  (regs.eax = FUN_005e5b80(heap));
+  (regs.ecx = 0x6, regs.eax = FUN_005e5b80(heap));
   puVar2 = ((heap.u32(0x009a1164)) >>> 0);
   while (0x009a013c <= puVar2 + -0x178) {
     puVar1 = (((puVar2 + -0x146)) >>> 0);

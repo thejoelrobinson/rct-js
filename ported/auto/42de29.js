@@ -17,7 +17,7 @@ export function FUN_0042de29(heap) {
   let unaff_EBX = regs.ebx >>> 0;
   let unaff_ESI = regs.esi >>> 0;
   let in_ZF = regs.zf | 0;
-  (regs.eax = FUN_00444bd4(heap));
+  (regs.ebx = 0x2, regs.eax = FUN_00444bd4(heap));
   if (!in_ZF) {
     heap.setU32((unaff_ESI + 0x28), (unaff_EBX) & 0xffffffff);
     heap.setU8((unaff_ESI + (0x14)), (0x40) & 0xff);
@@ -34,7 +34,7 @@ export function FUN_0042de29(heap) {
     }
     (regs.eax = FUN_00458bcf(heap));
     heap.setU32(0x00971e84, (0xe0) >>> 0);
-    (regs.eax = FUN_00458a7c(heap));
+    (regs.esi = 0x99a888, regs.eax = FUN_00458a7c(heap));
     heap.setU16((unaff_ESI + 0x44), (-(extraout_CX >>> 1)) & 0xffff);
     heap.setU16((unaff_ESI + 0x46), (0) & 0xffff);
   }

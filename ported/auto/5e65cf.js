@@ -26,7 +26,7 @@ export function FUN_005e65cf(heap) {
   if ((heap.u32(0x0099a500) & 1) != 0) {
     return in_EAX;
   }
-  uVar9 = (((regs.eax = FUN_00431510(heap))) >>> 0);
+  uVar9 = (((regs.edx = 0x9, regs.eax = FUN_00431510(heap))) >>> 0);
   pbVar10 = (((((uVar9) >>> 0) >>> 0x20)) >>> 0);
   uVar3 = ((((uVar9) >>> 0)) >>> 0);
   if (unaff_BL == 3) {
@@ -87,10 +87,10 @@ export function FUN_005e65cf(heap) {
     bVar8 = (((heap.u32(0x00991f30) & 0x48) == 0x48) & 0xff);
     if (!bVar8) {
       uVar3 = ((extraout_ECX) >>> 0);
-      uVar2 = (((regs.eax = FUN_005e3b2b(heap))) >>> 0);
+      uVar2 = (((regs.ecx = 0x8d, regs.edx = 0x9, regs.eax = FUN_005e3b2b(heap))) >>> 0);
       uVar9 = ((CONCAT44(pbVar10, uVar2)) >>> 0);
       if (bVar8) {
-        uVar3 = (((regs.eax = FUN_005e3b2b(heap, unaff_ESI, pbVar10, uVar3))) >>> 0);
+        uVar3 = (((regs.ecx = 0x8d, regs.edx = 0x9, regs.eax = FUN_005e3b2b(heap, unaff_ESI, pbVar10, uVar3))) >>> 0);
         uVar9 = ((CONCAT44(pbVar10, uVar3)) >>> 0);
         if (bVar8) {
           return uVar3;

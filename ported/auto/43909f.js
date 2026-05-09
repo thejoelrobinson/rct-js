@@ -15,7 +15,8 @@ export function FUN_0043909f(heap) {
     pcVar2 = ((0x00887420) >>> 0);
     do {
       if ((heap.i8(pcVar2) | 0) != -1) {
-        return (regs.eax = FUN_00426f56(heap));
+        (regs.ebx = 0x1, regs.esi = 0x7, regs.eax = FUN_00426f56(heap));
+        return;
       }
       pcVar2 = ((pcVar2 + 0x260) >>> 0);
     } while (pcVar2 < 0x008ad1c0);

@@ -9,7 +9,7 @@ import { FUN_009b438b } from "./9b438b.js";
 export function FUN_0044e5a0(heap) {
   let unaff_ESI = regs.esi >>> 0;
   if ((heap.u32((unaff_ESI + 0x10)) >>> 0xb & 1) == 0) {
-    (regs.eax = FUN_009b438b(heap));
+    (regs.edx = 0xfffa, regs.ebx = 0xa7306394, regs.eax = FUN_009b438b(heap));
   }
   return;
 }

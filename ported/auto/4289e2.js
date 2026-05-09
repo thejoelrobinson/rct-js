@@ -9,9 +9,9 @@ import { FUN_009b438b } from "./9b438b.js";
 export function FUN_004289e2(heap) {
   let unaff_ESI = regs.esi >>> 0;
   if ((heap.u32((unaff_ESI + 0x10)) >>> 5 & 1) == 0) {
-    (regs.eax = FUN_009b438b(heap));
-    (regs.eax = FUN_009b438b(heap, heap.u32(0x005f4b1e) + heap.i16((unaff_ESI + 0x22)) + 1, heap.u32(0x005f4b1a) + heap.i16((unaff_ESI + 0x20)) + 7, unaff_ESI));
-    (regs.eax = FUN_009b438b(heap));
+    (regs.ebx = 0x5eef, regs.eax = FUN_009b438b(heap));
+    (regs.ebx = 0x5eef, regs.eax = FUN_009b438b(heap, heap.u32(0x005f4b1e) + heap.i16((unaff_ESI + 0x22)) + 1, heap.u32(0x005f4b1a) + heap.i16((unaff_ESI + 0x20)) + 7, unaff_ESI));
+    (regs.ebx = 0x5eef, regs.eax = FUN_009b438b(heap));
   }
   return;
 }

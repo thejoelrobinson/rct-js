@@ -261,6 +261,13 @@ export async function translateFunction(source, forceAddr, opts = {}) {
     callsFun: new Set(),    // FUN_xxx referenced
     forceAddr: forceAddr,
     charDats: opts.charDats || new Set(),    // DAT addresses that are byte-sized
+    // Per-call-site register-arg propagation:
+    //   regConsumers: Map<calleeAddr, Set<reg>> — which functions read which regs
+    //   callsiteRegs: Map<callerAddr, Map<calleeAddr, {eax,ebx,...}>> — captured state
+    // When emitting a call to a known consumer, prepend `regs.<reg> = <captured>`
+    // to satisfy the callee's register input. Without this, `unaff_*` reads return 0.
+    regConsumers: opts.regConsumers || new Map(),
+    callsiteRegs: opts.callsiteRegs || new Map(),
     locals: new Set(),      // names declared as locals (so we don't mistake for DAT)
     paramNames: new Set(),
     varPointee: new Map(),  // pointer-typed local name → accessor (u8/i8/u16/i16/u32) of pointed-to element
@@ -1645,6 +1652,26 @@ function emitCall(node, ctx) {
     if (mFun) {
       ctx.callsFun.add(name);
       ctx.usesRegs = true;
+      const calleeAddr = parseInt(mFun[1], 16);
+      // Caller-side register-arg propagation. If callee reads `unaff_*`/`in_*`
+      // and we have a traced register snapshot for THIS call site, set those
+      // registers before the call. Without this, the callee sees 0s and
+      // either bails or reads garbage.
+      const consumed = ctx.regConsumers.get(calleeAddr);
+      const callerSiteRegs = ctx.callsiteRegs.get(ctx.forceAddr);
+      const captured = callerSiteRegs && callerSiteRegs.get(calleeAddr);
+      if (consumed && captured) {
+        const regWrites = [];
+        for (const reg of consumed) {
+          const val = captured[reg];
+          if (val !== undefined && val !== 0) {
+            regWrites.push(`regs.${reg} = 0x${val.toString(16)}`);
+          }
+        }
+        if (regWrites.length > 0) {
+          return `(${regWrites.join(", ")}, regs.eax = ${name}(heap${args.length ? ", " + args.join(", ") : ""}))`;
+        }
+      }
       return `(regs.eax = ${name}(heap${args.length ? ", " + args.join(", ") : ""}))`;
     }
     if (GHIDRA_BUILTINS.has(name)) {

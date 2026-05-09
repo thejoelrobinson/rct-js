@@ -42,7 +42,7 @@ export function FUN_005dd8dd(heap) {
         }
         }
         heap.setU16((0x00743bc6 + ((uVar5) >>> 0) * 0x100), (uVar1) & 0xffff);
-        (regs.eax = FUN_005e53ca(heap));
+        (regs.esi = 0x743b94, regs.eax = FUN_005e53ca(heap));
         iVar2 = ((extraout_ECX + 1) >>> 0);
         uVar5 = ((heap.u16((0x00743bd2 + ((uVar5) >>> 0) * 0x100))) & 0xffff);
         iVar3 = ((extraout_EDX) >>> 0);

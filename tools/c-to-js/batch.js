@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve, basename } from "node:path";
 import { translateFunction } from "./translate.js";
 import { scanCharDats } from "./scan-char-dats.js";
+import { scanRegConsumers } from "./scan-reg-consumers.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const C_DIR = resolve(HERE, "../../decompiled/c");
@@ -27,6 +28,28 @@ mkdirSync(PORTED_DIR, { recursive: true });
 // 0x971ef0 if that's a separate char DAT).
 const charDats = scanCharDats(C_DIR);
 console.error(`Pre-scan: ${charDats.size} byte-sized DAT addresses identified.`);
+
+// Caller-side register-arg propagation manifests:
+//   regConsumers: which functions read which registers (from existing ports)
+//   callsiteRegs: per-call-site register snapshots (from interpreter trace)
+// Both are optional — if missing, translator falls back to no-prefix calls.
+const regConsumers = scanRegConsumers(PORTED_DIR);
+console.error(`Pre-scan: ${regConsumers.size} functions consume registers.`);
+
+let callsiteRegs = new Map();
+try {
+  const raw = JSON.parse(readFileSync(resolve(HERE, "callsite-regs.json"), "utf8"));
+  for (const [callerHex, byCallee] of Object.entries(raw)) {
+    const inner = new Map();
+    for (const [calleeHex, regs] of Object.entries(byCallee)) {
+      inner.set(parseInt(calleeHex, 16), regs);
+    }
+    callsiteRegs.set(parseInt(callerHex, 16), inner);
+  }
+  console.error(`Loaded ${callsiteRegs.size} caller register snapshots.`);
+} catch (e) {
+  console.error(`No callsite-regs.json (${e.code || e.message}) — caller-side propagation disabled.`);
+}
 
 const files = readdirSync(C_DIR).filter(f => f.endsWith(".c"));
 console.error(`Translating ${files.length} files...`);
@@ -64,7 +87,7 @@ for (const file of files) {
     // the function name to FUN_<padded-hex>, avoiding collisions with
     // Win32 / Ghidra-builtin names Ghidra may have used.
     const addrFromFile = parseInt(file.replace(/\.c$/, ""), 16);
-    const { js, info } = await translateFunction(source, addrFromFile, { charDats });
+    const { js, info } = await translateFunction(source, addrFromFile, { charDats, regConsumers, callsiteRegs });
     writeFileSync(outputPath, js);
     ok.push({ file, addr: info.funcAddr, name: info.funcName });
   } catch (e) {

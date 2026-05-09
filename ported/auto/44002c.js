@@ -10,7 +10,7 @@ import { FUN_005e43de } from "./5e43de.js";
 export function FUN_0044002c(heap) {
   let unaff_ESI = regs.esi >>> 0;
   if (heap.i32((unaff_ESI + 8)) == 0) {
-    (regs.eax = FUN_005e429d(heap));
+    (regs.eax = 0xa30006, regs.ebx = 0xff5cfffa, regs.eax = FUN_005e429d(heap));
     heap.setU16((unaff_ESI + 0x32), (heap.u16((unaff_ESI + 0x32)) | 4) & 0xffff);
     (regs.eax = FUN_005e43de(heap));
   }

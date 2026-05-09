@@ -66,7 +66,7 @@ export function FUN_005db66f(heap) {
   if (uVar7 != extraout_ECX) {
     uVar5 = ((heap.i16((unaff_ESI + 0x38)) + heap.u32((0x00652478) + (uVar7 * 2) * 4)) & 0xffff);
     bVar10 = ((CARRY2(heap.u16((unaff_ESI + 0x3a)), heap.u32((0x0065247a) + (uVar7 * 2) * 4))) & 0xff);
-    uVar11 = (((regs.eax = FUN_005db615(heap))) >>> 0);
+    uVar11 = (((regs.eax = 0xff, regs.edx = 0xffe0, regs.eax = FUN_005db615(heap))) >>> 0);
     uVar2 = ((((uVar11 >>> 0x20) & 0xffff)) & 0xffff);
     uVar8 = ((((uVar11) >>> 0)) >>> 0);
     uVar3 = ((extraout_ECX_00) >>> 0);
@@ -78,7 +78,7 @@ export function FUN_005db66f(heap) {
   if (uVar7 != uVar3) {
     uVar5 = ((heap.i16((unaff_ESI + 0x38)) + heap.u32((0x00652478) + (uVar7 * 2) * 4)) & 0xffff);
     bVar10 = ((CARRY2(heap.u16((unaff_ESI + 0x3a)), heap.u32((0x0065247a) + (uVar7 * 2) * 4))) & 0xff);
-    uVar11 = (((regs.eax = FUN_005db615(heap))) >>> 0);
+    uVar11 = (((regs.eax = 0xff, regs.edx = 0xffe0, regs.eax = FUN_005db615(heap))) >>> 0);
     uVar2 = ((((uVar11 >>> 0x20) & 0xffff)) & 0xffff);
     uVar8 = ((((uVar11) >>> 0)) >>> 0);
     uVar3 = ((extraout_ECX_01) >>> 0);
@@ -90,7 +90,7 @@ export function FUN_005db66f(heap) {
   if (uVar7 != uVar3) {
     uVar5 = ((heap.i16((unaff_ESI + 0x38)) + heap.u32((0x00652478) + (uVar7 * 2) * 4)) & 0xffff);
     bVar10 = ((CARRY2(heap.u16((unaff_ESI + 0x3a)), heap.u32((0x0065247a) + (uVar7 * 2) * 4))) & 0xff);
-    uVar11 = (((regs.eax = FUN_005db615(heap))) >>> 0);
+    uVar11 = (((regs.eax = 0xff, regs.edx = 0xffe0, regs.eax = FUN_005db615(heap))) >>> 0);
     uVar2 = ((((uVar11 >>> 0x20) & 0xffff)) & 0xffff);
     uVar8 = ((((uVar11) >>> 0)) >>> 0);
     uVar3 = ((extraout_ECX_02) >>> 0);
@@ -102,7 +102,7 @@ export function FUN_005db66f(heap) {
   if (uVar8 != uVar3) {
     uVar5 = ((heap.i16((unaff_ESI + 0x38)) + heap.u32((0x00652478) + (uVar8 * 2) * 4)) & 0xffff);
     bVar10 = ((CARRY2(heap.u16((unaff_ESI + 0x3a)), heap.u32((0x0065247a) + (uVar8 * 2) * 4))) & 0xff);
-    (regs.eax = FUN_005db615(heap));
+    (regs.eax = 0xff, regs.edx = 0xffe0, regs.eax = FUN_005db615(heap));
     uVar3 = ((extraout_ECX_03) >>> 0);
     uVar2 = ((extraout_DX) & 0xffff);
     if (!bVar10) {

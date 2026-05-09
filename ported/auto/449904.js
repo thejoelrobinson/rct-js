@@ -19,7 +19,7 @@ export function FUN_00449904(heap) {
   let uVar3 = 0;
   let unaff_ESI = regs.esi >>> 0;
   let in_ZF = regs.zf | 0;
-  (regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0x94, regs.eax = FUN_005e3b2b(heap));
   if (!in_ZF) {
     if (heap.u8(0x00630b21) == 2) {
       (regs.eax = FUN_0043642b(heap));

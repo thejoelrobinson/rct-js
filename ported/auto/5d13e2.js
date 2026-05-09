@@ -48,7 +48,7 @@ export function FUN_005d13e2(heap) {
   let uVar22 = 0;
   LAB_005d1dd2: {
   LAB_005d1c4c: {
-  (regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap));
   if (in_ZF) {
     break LAB_005d1dd2;
   }

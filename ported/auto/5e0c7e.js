@@ -15,12 +15,12 @@ export function FUN_005e0c7e(heap) {
   let unaff_ESI = regs.esi >>> 0;
   let bVar1 = 0;
   bVar1 = ((true) & 0xff);
-  (regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0x16, regs.eax = FUN_005e3b2b(heap));
   if (bVar1) {
-    (regs.eax = FUN_005e3c3c(heap));
+    (regs.ecx = 0x16, regs.edx = 0x5e0cb6, regs.ebx = 0x440034, regs.ebp = 0x5e0d3c, regs.eax = FUN_005e3c3c(heap));
     heap.setU32((unaff_ESI + 0x1c), (0x0099fd70) & 0xffffffff);
     heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x34) & 0xffffffff);
-    (regs.eax = FUN_005e412c(heap));
+    (regs.edx = 0x5e0cb6, regs.eax = FUN_005e412c(heap));
   }
   return 1;
 }

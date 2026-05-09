@@ -23,9 +23,9 @@ export function FUN_0042e9e5(heap) {
   let uVar7 = 0;
   (regs.eax = FUN_005df40c(heap));
   bVar6 = ((false) & 0xff);
-  sVar1 = (((regs.eax = FUN_00425432(heap))) & 0xffff);
+  sVar1 = (((regs.eax = 0x400, regs.ecx = 0x400, regs.eax = FUN_00425432(heap))) & 0xffff);
   if (!bVar6) {
-    sVar1 = (((regs.eax = FUN_00423677(heap))) & 0xffff);
+    sVar1 = (((regs.eax = 0x400, regs.ecx = 0x400, regs.eax = FUN_00423677(heap))) & 0xffff);
     if (extraout_var != 0) {
       uVar4 = ((0) & 0xffff);
       cVar2 = ((NaN) & 0xff);
@@ -33,7 +33,7 @@ export function FUN_0042e9e5(heap) {
       do {
         cVar3 = ((NaN) & 0xff);
         do {
-          (regs.eax = FUN_00423677(heap, uVar7));
+          (regs.eax = 0x400, regs.ecx = 0x400, regs.eax = FUN_00423677(heap, uVar7));
           if (extraout_var_00 == extraout_var) {
             uVar4 = ((uVar4 + 1) & 0xffff);
           }

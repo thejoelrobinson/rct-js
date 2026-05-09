@@ -34,5 +34,5 @@ export function FUN_0043645c(heap) {
   (regs.eax = FUN_00436558(heap));
   (regs.eax = FUN_00436d2d(heap));
   (regs.eax = FUN_005e06cc(heap));
-  return (regs.eax = FUN_0045abea(heap));
+  return (regs.eax = 0x1, regs.eax = FUN_0045abea(heap));
 }

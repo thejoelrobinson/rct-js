@@ -15,7 +15,7 @@ export function FUN_0044e2ed(heap) {
   let bVar2 = 0;
   if ((heap.u32((unaff_ESI + 0x10)) >>> 5 & 1) == 0) {
     bVar2 = (((((heap.i16((heap.i32((unaff_ESI + 0x1c)) + 0x56)) + 1 + heap.i16((unaff_ESI + 0x22)))) << 16 >> 16) == 0) & 0xff);
-    (regs.eax = FUN_005e6aae(heap));
+    (regs.eax = 0x1, regs.ecx = 0x1, regs.edx = 0xfffc, regs.ebx = 0xffff, regs.eax = FUN_005e6aae(heap));
     if (!bVar2) {
       uVar1 = ((heap.u16((unaff_ESI + 0x30))) & 0xffff);
       (regs.eax = FUN_005ddbe1(heap));
@@ -26,7 +26,7 @@ export function FUN_0044e2ed(heap) {
         heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) << 1) & 0xffff);
         heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) << 1) & 0xffff);
       }
-      (regs.eax = FUN_009b438b(heap));
+      (regs.edx = 0xfff4, regs.ebx = 0xa0000000, regs.eax = FUN_009b438b(heap));
     }
   }
   return;

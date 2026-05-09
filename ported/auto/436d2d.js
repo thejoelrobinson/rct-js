@@ -34,7 +34,7 @@ export function FUN_00436d2d(heap) {
   sVar6 = (((uVar5 & 0x1ff) + 0x28) & 0xffff);
   heap.setU32(0x00628aea, (0) >>> 0);
   do {
-    (regs.eax = FUN_00436e2b(heap));
+    (regs.ebx = 0x4, regs.eax = FUN_00436e2b(heap));
     sVar6 = ((sVar6 + -1) & 0xffff);
   } while (sVar6 != 0);
   iVar10 = ((0x101) >>> 0);

@@ -19,5 +19,5 @@ export function FUN_0042cc5f(heap) {
     sVar2 = ((0) & 0xffff);
   }
   heap.setI16((unaff_ESI + 0x3e), (sVar2) & 0xffff);
-  return (regs.eax = FUN_005e4198(heap));
+  return (regs.eax = 0xffed, regs.edi = 0x5f54d4, regs.eax = FUN_005e4198(heap));
 }

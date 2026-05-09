@@ -11,6 +11,6 @@ import { FUN_009ba943 } from "./9ba943.js";
 export function FUN_00458407(heap) {
   (regs.eax = FUN_00458bcf(heap));
   heap.setU32(0x00971e84, (0xe0) >>> 0);
-  (regs.eax = FUN_00458b05(heap));
+  (regs.esi = 0x99a888, regs.edi = 0x990000, regs.eax = FUN_00458b05(heap));
   return (regs.eax = FUN_009ba943(heap));
 }

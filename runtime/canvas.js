@@ -33,15 +33,29 @@ export function presentBootStatus(canvas, ctx, lines) {
 }
 
 export function presentFrame(heap, canvas, ctx) {
-  // Primary DDraw surface takes priority — once the binary's DDraw init has
-  // run, the binary draws here every frame and Blts/Flips it for display.
+  // Pick the DDraw surface with the most non-zero content. Primary is the
+  // intended target, but the binary often draws to a back-buffer first
+  // (intending a Blt that may not have fired yet). Counting bytes finds
+  // whichever has the actual frame.
   let width, height, stride, bufAddr, topDown = true;
+  let bestNonZero = 0;
+  let bestSurface = null;
   for (const surf of state.ddrawSurfaces.values()) {
-    if (surf.isPrimary) {
-      width = surf.width; height = surf.height;
-      stride = surf.pitch; bufAddr = surf.bytes;
-      break;
+    if (surf.width < 320 || surf.height < 240) continue;   // skip cursor/icons
+    let nz = 0;
+    const sz = surf.width * surf.height;
+    // Cheap density estimate: sample 256 stride-spaced bytes.
+    const stride256 = Math.max(1, sz >> 8);
+    for (let i = 0; i < sz; i += stride256) if (heap.bytes[surf.bytes + i] !== 0) nz++;
+    // Primary tie-breaker: if anything else has more content, use that.
+    if (nz > bestNonZero || (bestSurface === null && surf.isPrimary)) {
+      bestNonZero = nz;
+      bestSurface = surf;
     }
+  }
+  if (bestSurface) {
+    width = bestSurface.width; height = bestSurface.height;
+    stride = bestSurface.pitch; bufAddr = bestSurface.bytes;
   }
   if (width === undefined && state.dibSections.length > 0) {
     const dib = state.dibSections[state.dibSections.length - 1];
@@ -56,7 +70,19 @@ export function presentFrame(heap, canvas, ctx) {
     canvas.width = width;
     canvas.height = height;
   }
-  const palette = state.capturedPalette || defaultPalette();
+  // capturedPalette can be a near-empty array (binary set only a few entries
+  // before our snapshot) — fall back to defaultPalette() if fewer than 32
+  // unique non-black entries exist.
+  let palette = state.capturedPalette;
+  if (palette) {
+    let nonBlackEntries = 0;
+    for (let i = 0; i < 256; i++) {
+      if (palette[i*4] || palette[i*4+1] || palette[i*4+2]) nonBlackEntries++;
+    }
+    if (nonBlackEntries < 32) palette = defaultPalette();
+  } else {
+    palette = defaultPalette();
+  }
   const key = `${width}x${height}`;
   if (_imageDataKey !== key) {
     _imageData = ctx.createImageData(width, height);

@@ -21,5 +21,5 @@ export function FUN_00443f36(heap) {
     heap.setU32((iVar3 + 0x87c854), (uVar1) & 0xffffffff);
     iVar3 = ((iVar2) >>> 0);
   } while (iVar2 != 0);
-  return (regs.eax = FUN_005e5301(heap));
+  return (regs.eax = 0x1c, regs.eax = FUN_005e5301(heap));
 }

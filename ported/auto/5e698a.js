@@ -20,7 +20,7 @@ export function FUN_005e698a(heap) {
   LOCK();
   heap.setU32(0x009a0128, (0xff) >>> 0);
   UNLOCK();
-  (regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0xff, regs.eax = FUN_005e3b2b(heap));
   if (!in_ZF) {
     (regs.eax = callIndirect(heap, heap.u32((unaff_ESI + 4))));
   }

@@ -49,7 +49,7 @@ export function FUN_005db446(heap) {
   puVar7 = ((unaff_ESI) >>> 0);
   while (true) {
     heap.setU8((puVar7 + (0x51)), (2) & 0xff);
-    (regs.eax = FUN_00452fce(heap, heap.u16((puVar7 + 0x10)), heap.u16((puVar7 + 0xe)), unaff_BX));
+    (regs.eax = 0xe, regs.ebx = 0x8001, regs.eax = FUN_00452fce(heap, heap.u16((puVar7 + 0x10)), heap.u16((puVar7 + 0xe)), unaff_BX));
     (regs.eax = FUN_0042df47(heap));
     unaff_BX = ((heap.u16((puVar7 + 0x32))) & 0xffff);
     (regs.eax = FUN_0042deab(heap));

@@ -9,7 +9,7 @@ import { FUN_00443e92 } from "./443e92.js";
 import { FUN_005e3c3c } from "./5e3c3c.js";
 export function FUN_00443ef0(heap) {
   let unaff_ESI = regs.esi >>> 0;
-  (regs.eax = FUN_005e3c3c(heap));
+  (regs.ecx = 0x1c, regs.edx = 0x442a6e, regs.ebx = 0x1040212, regs.ebp = 0x442bbf, regs.eax = FUN_005e3c3c(heap));
   heap.setU32((unaff_ESI + 0x1c), (0x00630380) & 0xffffffff);
   heap.setU32((unaff_ESI + 0xc), (heap.u32(0x00630740)) & 0xffffffff);
   heap.setU16((unaff_ESI + 0x30), (0) & 0xffff);

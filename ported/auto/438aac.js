@@ -137,5 +137,5 @@ export function FUN_00438aac(heap) {
         (regs.eax = FUN_005e6028(heap));
     }
   }
-  return (regs.eax = FUN_004270f2(heap));
+  return (regs.eax = 0x1, regs.eax = FUN_004270f2(heap));
 }

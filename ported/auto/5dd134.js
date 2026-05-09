@@ -52,7 +52,7 @@ export function FUN_005dd134(heap) {
     } while (uVar4 < 4);
   }
   bVar6 = ((true) & 0xff);
-  (regs.eax = FUN_005e3b2b(heap, unaff_EDI, unaff_ESI));
+  (regs.ecx = 0xb, regs.eax = FUN_005e3b2b(heap, unaff_EDI, unaff_ESI));
   if (!bVar6) {
     (regs.eax = callIndirect(heap, heap.u32((unaff_ESI + 4))));
   }

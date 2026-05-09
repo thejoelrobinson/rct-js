@@ -16,12 +16,12 @@ export function FUN_0044153e(heap) {
   let unaff_ESI = regs.esi >>> 0;
   (regs.eax = FUN_0044151b(heap));
   (regs.eax = FUN_005e53ca(heap));
-  (regs.eax = FUN_005e5b80(heap));
-  (regs.eax = FUN_005e5301(heap));
+  (regs.ecx = 0x17, regs.eax = FUN_005e5b80(heap));
+  (regs.eax = 0x18, regs.ecx = 0x17, regs.eax = FUN_005e5301(heap));
   if (heap.i8((unaff_ESI + 0x2e)) == 1) {
     heap.setU32(((0x008d7e2a) + (heap.u8((unaff_ESI + 0xc5))) * 4), (0) & 0xffffffff);
     (regs.eax = FUN_004575af(heap));
   }
-  (regs.eax = FUN_0042cbb0(heap));
+  (regs.eax = 0x2, regs.eax = FUN_0042cbb0(heap));
   return (regs.eax = FUN_00444d1f(heap));
 }

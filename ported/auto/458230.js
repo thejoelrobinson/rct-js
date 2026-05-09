@@ -89,7 +89,7 @@ export function FUN_00458230(heap) {
       heap.setU32(puVar8, (0) & 0xffffffff);
       puVar8 = ((puVar8 + ((1) * 4)) >>> 0);
     }
-    (regs.eax = FUN_009b438b(heap));
+    (regs.ebx = 0x5bde, regs.edi = 0x9d3fec, regs.eax = FUN_009b438b(heap));
     uVar7 = ((0) >>> 0);
     do {
       pcVar9 = (((((heap.u32(__addr_local_10)) >>> 0) + uVar7)) >>> 0);

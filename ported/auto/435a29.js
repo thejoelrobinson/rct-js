@@ -15,7 +15,7 @@ export function FUN_00435a29(heap) {
   let extraout_EDX = 0;
   let cVar3 = 0;
   let unaff_BX = regs.ebx & 0xffff;
-  sVar1 = (((regs.eax = FUN_00431510(heap))) & 0xffff);
+  sVar1 = (((regs.edx = 0xfff6, regs.eax = FUN_00431510(heap))) & 0xffff);
   cVar3 = ((((unaff_BX) << 24 >> 24)) & 0xff);
   if (cVar3 != 0) {
     heap.setU32(0x00628a36, (extraout_CX + 0x1f) >>> 0);

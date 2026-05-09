@@ -11,7 +11,7 @@ export function FUN_0042d678(heap) {
   uVar1 = ((heap.u32(0x0087c39a)) & 0xffff);
   while (uVar1 != 0xffff) {
     uVar1 = ((heap.u32((0x00743b98) + (((uVar1) >>> 0) * 0x80) * 4)) & 0xffff);
-    (regs.eax = FUN_0042db0f(heap));
+    (regs.esi = 0x743b94, regs.eax = FUN_0042db0f(heap));
   }
   return;
 }

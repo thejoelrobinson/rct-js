@@ -45,7 +45,7 @@ export function FUN_005dd1c4(heap) {
     bVar5 = ((heap.u32((0x005f6be5) + (heap.u32(((0x00887421) >>> 0) + (iVar10) * 4) * 4) * 4)) & 0xff);
     bVar1 = ((heap.u32((0x005f5d03) + (heap.u32(pbVar11) * 8) * 4)) & 0xff);
     do {
-      (regs.eax = FUN_005ddbe1(heap));
+      (regs.eax = 0x800, regs.eax = FUN_005ddbe1(heap));
       uVar6 = ((0) >>> 0);
       uVar9 = ((0) & 0xffff);
       for (pbVar11 = ((0x0065ea78) >>> 0); bVar2 = ((heap.u8(pbVar11)) & 0xff), bVar2 != 0xff; pbVar11 = (((pbVar11 + 1) >>> 0)) >>> 0) {
@@ -69,7 +69,7 @@ export function FUN_005dd1c4(heap) {
       local_22 = ((bVar5) & 0xff);
     }
     heap.setU32(((0x0088749d) + (iVar10) * 4), (bVar5 | bVar1 << 4) & 0xffffffff);
-    (regs.eax = FUN_005ddbe1(heap));
+    (regs.eax = 0x800, regs.eax = FUN_005ddbe1(heap));
     uVar6 = ((0) >>> 0);
     for (pbVar11 = ((0x0065ea78) >>> 0); heap.u8(pbVar11) != 0xff; pbVar11 = (((pbVar11 + 1) >>> 0)) >>> 0) {
       uVar6 = ((uVar6 + heap.i32((0x005f6f1c + heap.u32(pbVar11) * 8))) >>> 0);
@@ -107,7 +107,7 @@ export function FUN_005dd1c4(heap) {
   if (sVar4 != CONCAT11(heap.u32((0x00887498) + (iVar10) * 4), heap.u32((0x00887499) + (iVar10) * 4))) {
     heap.setU32(((0x00887499) + (iVar10) * 4), (((sVar4) << 24 >> 24)) & 0xffffffff);
     heap.setU32(((0x00887498) + (iVar10) * 4), ((((((sVar4) & 0xffff) >>> 8)) << 24 >> 24)) & 0xffffffff);
-    (regs.eax = FUN_005e5301(heap));
+    (regs.eax = 0xb, regs.ecx = 0xdd0000, regs.edx = 0xff, regs.ebx = 0xff, regs.ebp = 0xb0d9bd, regs.esi = 0x65ea8b, regs.edi = 0x887420, regs.eax = FUN_005e5301(heap));
   }
   return 1;
 }

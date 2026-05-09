@@ -73,7 +73,7 @@ export function FUN_004316f3(heap) {
     }
     heap.setU32(0x005f96e0, (0x006284ac) >>> 0);
     heap.setU32(0x00981ef8, (piVar11) >>> 0);
-    (regs.eax = FUN_00431b6f(heap));
+    (regs.ebp = 0x5f96ec, regs.eax = FUN_00431b6f(heap));
     (regs.eax = FUN_00436b2a(heap));
     (regs.eax = FUN_00433bae(heap));
     (regs.eax = FUN_00433e1c(heap));

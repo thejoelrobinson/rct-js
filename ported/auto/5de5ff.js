@@ -11,7 +11,7 @@ export function FUN_005de5ff(heap) {
   let unaff_ESI = regs.esi >>> 0;
   let bVar1 = 0;
   bVar1 = ((true) & 0xff);
-  (regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0x12, regs.eax = FUN_005e3b2b(heap));
   if (!bVar1) {
     (regs.eax = callIndirect(heap, heap.u32((unaff_ESI + 4))));
   }

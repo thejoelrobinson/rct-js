@@ -18,11 +18,11 @@ export function FUN_005de5a7(heap) {
   (regs.eax = FUN_005e5fcb(heap));
   if (bVar1) {
     (regs.eax = FUN_005dde9c(heap));
-    (regs.eax = FUN_005e3c3c(heap));
+    (regs.ecx = 0x12, regs.edx = 0x5de61a, regs.ebx = 0xa601ca, regs.ebp = 0x5de99b, regs.eax = FUN_005e3c3c(heap));
     heap.setU32((unaff_ESI + 0x1c), (0x006e1d40) & 0xffffffff);
     heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x2fff4) & 0xffffffff);
     heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x3c0000) & 0xffffffff);
-    (regs.eax = FUN_005e412c(heap));
+    (regs.edx = 0x5de61a, regs.eax = FUN_005e412c(heap));
     (regs.eax = FUN_005ded48(heap));
     (regs.eax = FUN_00424db7(heap));
     heap.setU32(0x006e1ec3, (2) >>> 0);
