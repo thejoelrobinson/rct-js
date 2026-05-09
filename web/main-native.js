@@ -42,6 +42,15 @@ const VFS_FILES = [
   "css7.dat", "css8.dat", "css9.dat", "css11.dat", "css13.dat", "css14.dat",
   "css15.dat", "css17.dat",
 ];
+// Files referenced by the binary's asset table but not shipped in our
+// build. The asset-load loop opens then immediately closes — it just
+// validates presence. Provide empty placeholders so the loop completes
+// successfully and execution proceeds to scenario init / sprite-table
+// population. ReadFile against an empty file returns 0 bytes, which
+// the binary treats as a successful zero-length read.
+const VFS_PLACEHOLDERS = [
+  "css10.dat", "css12.dat", "css16.dat", "tutl.dat",
+];
 
 // Win32 message constants we care about for the rAF pump.
 const WM_PAINT = 0x000F;
@@ -60,7 +69,8 @@ async function main() {
     vfs.set(name.toLowerCase(), bytes);
     totalBytes += bytes.length;
   }));
-  log(`vfs: ${VFS_FILES.length} files, ${(totalBytes / 1e6).toFixed(1)} MB`, "ok");
+  for (const name of VFS_PLACEHOLDERS) vfs.set(name.toLowerCase(), new Uint8Array(0));
+  log(`vfs: ${VFS_FILES.length} files (${VFS_PLACEHOLDERS.length} placeholders), ${(totalBytes / 1e6).toFixed(1)} MB`, "ok");
 
   status("createRuntime…");
   const runtime = createRuntime({ dataBin, vfs, canvas });

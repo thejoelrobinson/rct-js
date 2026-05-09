@@ -27,6 +27,7 @@ export function FUN_0042727a(heap) {
   heap.setU32(unaff_ESI, (heap.u32(0x005f50a0)) & 0xffffffff);
   heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x005f50bc)) & 0xffffffff);
   heap.setU32((unaff_ESI + (5) * 4), (0) & 0xffffffff);
-  (regs.eax = 0x4275db, regs.eax = FUN_005e412c(heap));
-  return (regs.eax = FUN_00428c0b(heap));
+  (regs.eax = 0x4275db, regs.ecx = 0x1b, regs.eax = FUN_005e412c(heap));
+  (regs.ecx = 0x1b, regs.eax = FUN_00428c0b(heap));
+  return;
 }

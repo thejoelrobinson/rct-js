@@ -893,6 +893,10 @@ function emitFunction(node, ctx) {
     ["ZF",  "regs.zf | 0"], ["CF",  "regs.cf | 0"],
   ];
   for (const [reg, init] of REG_INITS) {
+    // Note: we do NOT propagate `extraout_*` here — those are register
+    // values AFTER a sub-call returned, and approximating them as
+    // entry-state is wrong when the sub-call genuinely modifies the
+    // register. Defer to a future pass that re-reads regs.* after each call.
     for (const prefix of ["in_", "unaff_"]) {
       const decl = `let ${prefix}${reg} = 0;`;
       if (bodyJs.includes(decl)) {
