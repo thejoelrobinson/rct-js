@@ -96,7 +96,10 @@ async function main() {
     // ticks should be smaller.
     _budget = 500_000_000;  // raised — 4385d8 has a 25ms busy-wait loop that
     // hits the budget when ticks are run synchronously without yielding
-    _wallBudgetMs = 30_000; // 30s per tick — first tick is init-heavy
+    _wallBudgetMs = 120_000; // 2 minutes per tick — full-screen DDraw blit
+    // (FUN_00402027) iterates 480 rows × 160 dwords with several heap ops
+    // each, so per-tick op count is naturally high (~14M); raise wallclock
+    // proportionally rather than treating it as an infinite loop.
     _ops = 0;
     _startMs = Date.now();
   } catch (e) {

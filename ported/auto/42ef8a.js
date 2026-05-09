@@ -43,11 +43,18 @@ export function FUN_0042ef8a(heap) {
     return 0;
   }
   // Outer "missing-files" retry loop (binary's `do { ... } while(true)`).
+  // Max 2 iterations: first attempt + retry after popup. Safety cap = 3.
+  let outerIters = 0;
   outer: while (true) {
+    if (++outerIters > 3) return 0;
     let uVar3 = 0;
     // Inner: iterate file indices 0..0x16.
     for (uVar3 = 0; uVar3 <= 0x16; uVar3++) {
-      heap.setU32(0x005f851c + uVar3 * 4, 0);
+      // (&DAT_005f851c)[uVar3] is a BYTE array — single-byte write per index.
+      // Ghidra emitted `(uint *)`-style indexing which would be a 4-byte
+      // write that clobbers the missing-files flag at 0x005f8533 when
+      // uVar3 == 5 (0x5f8530..3 = 4 bytes covers 0x5f8533).
+      heap.setU8(0x005f851c + uVar3, 0);
       regs.ebx = uVar3 >>> 0;          // 42f239 reads ebx for the index
       FUN_0042f239(heap);
       let iVar2 = FUN_004083b5(heap, uVar3) | 0;
@@ -57,7 +64,7 @@ export function FUN_0042ef8a(heap) {
       }
       // First-attempt failed. Try alternate path (set flag, retry).
       if (uVar3 === 0x12) continue;    // file 0x12 has no alt
-      heap.setU32(0x005f851c + uVar3 * 4, 1);
+      heap.setU8(0x005f851c + uVar3, 1);
       regs.ebx = uVar3 >>> 0;
       FUN_0042f239(heap);
       iVar2 = FUN_004083b5(heap, uVar3) | 0;
