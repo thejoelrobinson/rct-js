@@ -5,29 +5,21 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_004413c5(heap) {
-  const __sp = heap.allocFrame(16);
-  const __addr_DAT_0088751c = __sp + 0;
-  const __addr_DAT_0088751b = __sp + 4;
-  const __addr_DAT_0088751a = __sp + 8;
-  const __addr_DAT_0088751d = __sp + 12;
-  try {
   let bVar1 = 0;
-  let unaff_BL = 0;
-  let unaff_EDI = 0;
-  heap.setU32(((__addr_DAT_0088751c) + (unaff_EDI) * 4), (heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4) + unaff_BL) >>> 0);
-  heap.setU32(((__addr_DAT_0088751b) + (unaff_EDI) * 4), (heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4) + '\x01') >>> 0);
-  if (0x13 < heap.u32((__addr_DAT_0088751b) + (unaff_EDI) * 4)) {
+  let unaff_BL = regs.ebx & 0xff;
+  let unaff_EDI = regs.edi >>> 0;
+  heap.setU32(((0x0088751c) + (unaff_EDI) * 4), (heap.u32((0x0088751c) + (unaff_EDI) * 4) + unaff_BL) & 0xffffffff);
+  heap.setU32(((0x0088751b) + (unaff_EDI) * 4), (heap.u32((0x0088751b) + (unaff_EDI) * 4) + 1) & 0xffffffff);
+  if (0x13 < heap.u32(((0x0088751b) & 0xff) + (unaff_EDI) * 4)) {
     LOCK();
-    bVar1 = heap.u32((__addr_DAT_0088751c) + (unaff_EDI) * 4);
-    heap.setU32(((__addr_DAT_0088751c) + (unaff_EDI) * 4), (0) >>> 0);
+    bVar1 = ((heap.u32((0x0088751c) + (unaff_EDI) * 4)) & 0xff);
+    heap.setU32(((0x0088751c) + (unaff_EDI) * 4), (0) & 0xffffffff);
     UNLOCK();
-    heap.setU32(((__addr_DAT_0088751a) + (unaff_EDI) * 4), (bVar1 >>> 2) >>> 0);
-    heap.setU32(((__addr_DAT_0088751b) + (unaff_EDI) * 4), (0) >>> 0);
-    heap.setU32(((__addr_DAT_0088751d) + (unaff_EDI) * 4), (heap.u32((__addr_DAT_0088751d) + (unaff_EDI) * 4) | 1) >>> 0);
+    heap.setU32(((0x0088751a) + (unaff_EDI) * 4), (bVar1 >>> 2) & 0xffffffff);
+    heap.setU32(((0x0088751b) + (unaff_EDI) * 4), (0) & 0xffffffff);
+    heap.setU32(((0x0088751d) + (unaff_EDI) * 4), (heap.u32((0x0088751d) + (unaff_EDI) * 4) | 1) & 0xffffffff);
   }
   return;
-} finally {
-    heap.freeFrame(16);
-  }
 }

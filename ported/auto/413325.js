@@ -5,6 +5,5 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00413325(heap, param_1) {
-  __local_unwind2(heap.u32((param_1 + 0x18)), heap.u32((param_1 + 0x1c)));
-  return;
+  return __local_unwind2(heap.u32((param_1 + 0x18)), heap.u32((param_1 + 0x1c)));
 }

@@ -4,64 +4,59 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00423677 } from "./423677.js";
 import { FUN_00434a94 } from "./434a94.js";
 import { FUN_005e19eb } from "./5e19eb.js";
 import { FUN_005e4355 } from "./5e4355.js";
 export function FUN_005e16f7(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_PTR_LAB_005e17b8 = __sp + 0;
-  try {
   let iVar1 = 0;
   let sVar2 = 0;
   let sVar3 = 0;
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   let cVar4 = 0;
-  (heap.u32(heap.u32((unaff_ESI + 4))))();
-  iVar1 = heap.u32((unaff_ESI + 8));
+  (regs.eax = callIndirect(heap, heap.u32((unaff_ESI + 4))));
+  iVar1 = ((heap.i32((unaff_ESI + 8))) >>> 0);
   if (iVar1 != 0) {
-    if (heap.u32((unaff_ESI + 0x16e)) == -1) {
-      sVar3 = (heap.u32((iVar1 + 0xe)) >>> 1) + heap.u32((unaff_ESI + 0x172));
-      sVar2 = FUN_00434a94(heap);
-      cVar4 = (sVar2 + 0x100) < 0;
+    if ((heap.i16((unaff_ESI + 0x16e)) | 0) == -1) {
+      sVar3 = (((heap.u16((iVar1 + 0xe)) >>> 1) + heap.i16((unaff_ESI + 0x172))) & 0xffff);
+      sVar2 = (((regs.eax = FUN_00434a94(heap))) & 0xffff);
+      cVar4 = (((((sVar2 + 0x100)) << 16 >> 16) < 0) & 0xff);
       if (cVar4) {
-        sVar2 = -0x100;
+        sVar2 = ((-0x100) & 0xffff);
       }
-      if ((sVar3 + 0x100) < 0) {
-        sVar3 = -0x100;
-        cVar4 = cVar4 + '\x01';
+      if ((((sVar3 + 0x100)) << 16 >> 16) < 0) {
+        sVar3 = ((-0x100) & 0xffff);
+        cVar4 = ((cVar4 + 1) & 0xff);
       }
       if (0x10fe < sVar2) {
-        cVar4 = cVar4 + '\x01';
+        cVar4 = ((cVar4 + 1) & 0xff);
       }
       if (0x10fe < sVar3) {
-        cVar4 = cVar4 + '\x01';
+        cVar4 = ((cVar4 + 1) & 0xff);
       }
-      if (cVar4 != '\0') {
-        FUN_00423677(heap);
-        (heap.u32(heap.u32((__addr_PTR_LAB_005e17b8) + (heap.u32(0x00991f88)) * 4)))();
-        return;
+      if (cVar4 != 0) {
+        (regs.eax = FUN_00423677(heap));
+        return (regs.eax = callIndirect(heap, heap.u32((0x005e17b8) + (heap.u8(0x00991f88)) * 4)));
       }
-      if ((heap.u32((unaff_ESI + 0x32)) & 8) != 0) {
-        sVar2 = heap.u32((unaff_ESI + 0x170)) - heap.u32((iVar1 + 8));
+      if ((heap.u16((unaff_ESI + 0x32)) & 8) != 0) {
+        sVar2 = ((heap.i16((unaff_ESI + 0x170)) - heap.i16((iVar1 + 8))) & 0xffff);
         if (sVar2 < 0) {
-          sVar2 = -sVar2;
+          sVar2 = ((-sVar2) & 0xffff);
         }
-        sVar3 = heap.u32((unaff_ESI + 0x172)) - heap.u32((iVar1 + 10));
+        sVar3 = ((heap.i16((unaff_ESI + 0x172)) - heap.i16((iVar1 + 10))) & 0xffff);
         if (sVar3 < 0) {
-          sVar3 = -sVar3;
+          sVar3 = ((-sVar3) & 0xffff);
         }
-        if ((sVar2 + 7 | sVar3 + 7) >>> 3 == 0) {
-          heap.setU32((unaff_ESI + 0x32), (heap.u32((unaff_ESI + 0x32)) & 0xfff7) >>> 0);
+        if (((sVar2 + 7 | sVar3 + 7) & 0xffff) >>> 3 == 0) {
+          heap.setU16((unaff_ESI + 0x32), (heap.u16((unaff_ESI + 0x32)) & 0xfff7) & 0xffff);
         }
       }
     } else {
-      FUN_005e4355(heap);
+      (regs.eax = FUN_005e4355(heap));
     }
-    FUN_005e19eb(heap);
+    (regs.eax = FUN_005e19eb(heap));
   }
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

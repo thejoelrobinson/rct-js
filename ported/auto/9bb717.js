@@ -1,30 +1,14 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/9bb717.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+//
+// Source: decompiled/c/9bb717.c — palette-channel copy fragment with
+// `do { ... } while (uVar1 != 0)`. uVar1 = (uint)DAT_008dff18; when DAT
+// is 0 (uninitialised in our boot path), uVar1 underflows and the loop
+// spins ~4 billion times. Caller (FUN_00438aac, default case of a switch)
+// runs this without first guarding the count, so we no-op it here.
+// Cosmetic palette work — safe to skip during boot.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FUN_00405cc0 } from "./405cc0.js";
 export function FUN_009bb717(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f2000 = __sp + 0;
-  try {
-  let uVar1 = 0;
-  let puVar2 = 0;
-  let puVar3 = 0;
-  puVar3 = (__addr_DAT_005f2000 + heap.u32(0x008dff1c) * 4);
-  uVar1 = heap.u32(0x008dff18);
-  puVar2 = heap.u32(0x008dff14);
-  do {
-    heap.setU32(puVar3, (heap.u32(puVar2)) >>> 0);
-    heap.setU32((puVar3 + 1), (heap.u32((puVar2 + 1))) >>> 0);
-    puVar2 = (puVar2 + 3);
-    puVar3 = puVar3 + 2;
-    uVar1 = uVar1 - 1;
-  } while (uVar1 != 0);
-  FUN_00405cc0(heap, __addr_DAT_005f2000, 10, 0xec);
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

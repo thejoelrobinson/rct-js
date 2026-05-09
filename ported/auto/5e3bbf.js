@@ -4,29 +4,24 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_005e3bbf(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_009a013c = __sp + 0;
-  try {
-  let in_AX = 0;
-  let in_CX = 0;
-  let in_DX = 0;
-  let unaff_BX = 0;
+  let in_AX = regs.eax & 0xffff;
+  let in_CX = regs.ecx & 0xffff;
+  let in_DX = regs.edx & 0xffff;
+  let unaff_BX = regs.ebx & 0xffff;
   let puVar1 = 0;
-  if ((((-1 < in_DX) && (0x1d < in_AX)) && ((in_DX + unaff_BX) <= heap.u32(0x00971ed6))) && ((in_AX + in_CX) <= heap.u32(0x00971ed8))) {
-    puVar1 = __addr_DAT_009a013c;
+  if ((((-1 < (in_DX | 0)) && (0x1d < in_AX)) && ((((in_DX + unaff_BX)) << 16 >> 16) <= heap.u32(0x00971ed6))) && ((((in_AX + in_CX)) << 16 >> 16) <= heap.u32(0x00971ed8))) {
+    puVar1 = ((0x009a013c) >>> 0);
     while (true) {
       if (heap.u32(0x009a1164) <= puVar1) {
         return in_AX;
       }
-      if ((((heap.u32((puVar1 + 0x32)) & 1) == 0) && (heap.u32((puVar1 + 0x20)) < (in_DX + unaff_BX))) && ((in_DX < (heap.u32((puVar1 + 0x20)) + heap.u32((puVar1 + 0x24))) && ((heap.u32((puVar1 + 0x22)) < (in_AX + in_CX) && (in_AX < (heap.u32((puVar1 + 0x22)) + heap.u32((puVar1 + 0x26))))))))) {
+      if ((((heap.u16((puVar1 + 0x32)) & 1) == 0) && (heap.i16((puVar1 + 0x20)) < (((in_DX + unaff_BX)) << 16 >> 16))) && ((in_DX < (((heap.i16((puVar1 + 0x20)) + heap.i16((puVar1 + 0x24)))) << 16 >> 16) && ((heap.i16((puVar1 + 0x22)) < (((in_AX + in_CX)) << 16 >> 16) && (in_AX < (((heap.i16((puVar1 + 0x22)) + heap.i16((puVar1 + 0x26)))) << 16 >> 16))))))) {
         break;
       }
-      puVar1 = puVar1 + 0x178;
+      puVar1 = ((puVar1 + 0x178) >>> 0);
     }
   }
   return in_AX;
-} finally {
-    heap.freeFrame(4);
-  }
 }

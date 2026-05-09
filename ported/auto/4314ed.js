@@ -8,18 +8,18 @@ export function FUN_004314ed(heap) {
   let iVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
-  iVar1 = 0;
-  uVar2 = heap.u32(0x0087c3dc);
+  iVar1 = ((0) >>> 0);
+  uVar2 = ((heap.u32(0x0087c3dc)) >>> 0);
   do {
-    uVar3 = uVar2 & 1;
-    uVar2 = uVar2 >>> 1;
-    iVar1 = iVar1 + (uVar3 != 0);
-    uVar3 = heap.u32(0x0087c3e0);
+    uVar3 = ((uVar2 & 1) >>> 0);
+    uVar2 = ((uVar2 >>> 1) >>> 0);
+    iVar1 = ((iVar1 + ((uVar3 != 0) >>> 0)) >>> 0);
+    uVar3 = ((heap.u32(0x0087c3e0)) >>> 0);
   } while (uVar2 != 0);
   do {
-    uVar2 = uVar3 >>> 1;
-    iVar1 = iVar1 + ((uVar3 & 1) != 0);
-    uVar3 = uVar2;
+    uVar2 = ((uVar3 >>> 1) >>> 0);
+    iVar1 = ((iVar1 + (((uVar3 & 1) != 0) >>> 0)) >>> 0);
+    uVar3 = ((uVar2) >>> 0);
   } while (uVar2 != 0);
   return iVar1;
 }

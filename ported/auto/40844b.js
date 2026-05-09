@@ -7,6 +7,6 @@
 import { FindFirstFileA } from "../../runtime/win32.js";
 export function FUN_0040844b(heap, param_1, param_2) {
   let pvVar1 = 0;
-  pvVar1 = FindFirstFileA(heap, param_1, param_2);
+  pvVar1 = ((FindFirstFileA(heap, param_1, param_2)) >>> 0);
   return pvVar1;
 }

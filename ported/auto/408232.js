@@ -6,6 +6,5 @@
 
 import { SetFilePointer } from "../../runtime/win32.js";
 export function FUN_00408232(heap, param_1, param_2) {
-  SetFilePointer(heap, param_1, param_2, 0x0, 1);
-  return;
+  return SetFilePointer(heap, param_1, param_2, 0x0, 1);
 }

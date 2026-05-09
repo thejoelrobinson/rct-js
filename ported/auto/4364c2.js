@@ -4,35 +4,30 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_004364c2(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_008ad1c8 = __sp + 0;
-  try {
-  let in_AX = 0;
-  let in_CX = 0;
-  let in_DX = 0;
+  let in_AX = regs.eax & 0xffff;
+  let in_CX = regs.ecx & 0xffff;
+  let in_DX = regs.edx & 0xffff;
   let uVar1 = 0;
   let psVar2 = 0;
-  uVar1 = heap.u32(0x008ae938);
-  psVar2 = __addr_DAT_008ad1c8;
+  uVar1 = ((((heap.u32(0x008ae938)) >>> 0)) >>> 0);
+  psVar2 = ((0x008ad1c8) >>> 0);
   if (uVar1 != 0) {
     if (999 < uVar1) {
       return;
     }
     do {
-      if (((in_AX == heap.u32(psVar2 + (1) * 4)) && (in_CX == heap.u32(psVar2 + (2) * 4))) && (in_DX == heap.u32(psVar2))) {
+      if (((in_AX == heap.i16(psVar2 + (1) * 2)) && (in_CX == heap.i16(psVar2 + (2) * 2))) && (in_DX == heap.i16(psVar2))) {
         return;
       }
-      psVar2 = psVar2 + 3;
-      uVar1 = uVar1 - 1;
+      psVar2 = ((psVar2 + ((3) * 2)) >>> 0);
+      uVar1 = ((uVar1 - 1) >>> 0);
     } while (uVar1 != 0);
   }
   heap.setU32(0x008ae938, (heap.u32(0x008ae938) + 1) >>> 0);
-  heap.setU32((psVar2 + (1) * 4), (in_AX) >>> 0);
-  heap.setU32((psVar2 + (2) * 4), (in_CX) >>> 0);
-  heap.setU32(psVar2, (in_DX) >>> 0);
+  heap.setI16((psVar2 + (1) * 2), (in_AX) & 0xffff);
+  heap.setI16((psVar2 + (2) * 2), (in_CX) & 0xffff);
+  heap.setU32(psVar2, (in_DX) & 0xffffffff);
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

@@ -4,7 +4,8 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_004204a4(heap) {
-  let in_EAX = 0;
+  let in_EAX = regs.eax >>> 0;
   return in_EAX;
 }

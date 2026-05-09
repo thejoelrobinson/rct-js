@@ -10,18 +10,18 @@ export function FUN_0040dd0c(heap, param_1) {
     if (heap.u32(0x005ec058) == param_1) {
       heap.setU32(0x005ec058, (0) >>> 0);
     }
-    heap.setU32(0x005ec054, (heap.u32((param_1 + 0x10))) >>> 0);
+    heap.setU32(0x005ec054, (heap.i32((param_1 + 0x10))) >>> 0);
   } else {
-    for (local_8 = heap.u32(0x005ec054); heap.u32((local_8 + 0x10)) != param_1; local_8 = heap.u32((local_8 + 0x10))) {
+    for (local_8 = ((heap.u32(0x005ec054)) >>> 0); heap.i32((local_8 + 0x10)) != param_1; local_8 = (((heap.i32((local_8 + 0x10))) >>> 0)) >>> 0) {
     
     }
     if (heap.u32(0x005ec058) == param_1) {
       heap.setU32(0x005ec058, (local_8) >>> 0);
-      heap.setU32((local_8 + 0x10), (0) >>> 0);
+      heap.setU32((local_8 + 0x10), (0) & 0xffffffff);
     } else {
-      heap.setU32((local_8 + 0x10), (heap.u32((param_1 + 0x10))) >>> 0);
+      heap.setU32((local_8 + 0x10), (heap.u32((param_1 + 0x10))) & 0xffffffff);
     }
   }
-  heap.setU32((param_1 + 0x10), (0) >>> 0);
+  heap.setU32((param_1 + 0x10), (0) & 0xffffffff);
   return;
 }

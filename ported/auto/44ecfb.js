@@ -4,50 +4,43 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_005e43de } from "./5e43de.js";
 export function FUN_0044ecfb(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_DAT_00887420 = __sp + 0;
-  const __addr_DAT_008ad1c0 = __sp + 4;
-  const __addr_PTR_LAB_0044ed6c = __sp + 8;
-  try {
   let extraout_CL = 0;
   let cVar1 = 0;
   let cVar2 = 0;
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   let pcVar3 = 0;
-  cVar1 = '\0';
-  cVar2 = '\0';
-  pcVar3 = __addr_DAT_00887420;
+  cVar1 = ((0) & 0xff);
+  cVar2 = ((0) & 0xff);
+  pcVar3 = ((0x00887420) >>> 0);
   do {
-    if ((heap.u32(pcVar3) != -1) && (cVar1 = cVar1 + '\x01', (heap.u32(pcVar3 + (0xfd) * 4) & 8) != 0)) {
-      heap.setU32((pcVar3 + (0xfd) * 4), (heap.u32(pcVar3 + (0xfd) * 4) & 0xf7) >>> 0);
-      cVar2 = cVar2 + '\x01';
+    if (((heap.i8(pcVar3) | 0) != -1) && (cVar1 = ((cVar1 + 1) & 0xff), (heap.i8(pcVar3 + (0xfd)) & 8) != 0)) {
+      heap.setI8((pcVar3 + (0xfd)), (heap.i8(pcVar3 + (0xfd)) & 0xf7) & 0xff);
+      cVar2 = ((cVar2 + 1) & 0xff);
     }
-    pcVar3 = pcVar3 + 0x260;
-  } while (pcVar3 < __addr_DAT_008ad1c0);
-  if (cVar2 != '\0') {
-    FUN_005e43de(heap);
-    cVar1 = extraout_CL;
+    pcVar3 = ((pcVar3 + 0x260) >>> 0);
+  } while (pcVar3 < 0x008ad1c0);
+  if (cVar2 != 0) {
+    (regs.eax = FUN_005e43de(heap));
+    cVar1 = ((extraout_CL) & 0xff);
   }
-  if (cVar1 != heap.u32((unaff_ESI + 0x158))) {
-    heap.setU32((unaff_ESI + 0x158), (cVar1) >>> 0);
-    pcVar3 = __addr_DAT_00887420;
-    cVar1 = '\0';
+  if (cVar1 != heap.i8((unaff_ESI + 0x158))) {
+    heap.setI8((unaff_ESI + 0x158), (cVar1) & 0xff);
+    pcVar3 = ((0x00887420) >>> 0);
+    cVar1 = ((0) & 0xff);
     do {
-      if (heap.u32(pcVar3) != -1) {
-        heap.setU32((unaff_ESI + 0x58), (cVar1) >>> 0);
-        (heap.u32(heap.u32((__addr_PTR_LAB_0044ed6c) + (heap.u32((unaff_ESI + 0x16a))) * 4)))(0);
-        return;
+      if ((heap.i8(pcVar3) | 0) != -1) {
+        heap.setI8((unaff_ESI + 0x58), (cVar1) & 0xff);
+        return (regs.eax = callIndirect(heap, heap.u32((0x0044ed6c) + (heap.u16((unaff_ESI + 0x16a))) * 4), 0));
       }
-      pcVar3 = pcVar3 + 0x260;
-      cVar1 = cVar1 + '\x01';
-    } while (pcVar3 < __addr_DAT_008ad1c0);
-    heap.setU32((unaff_ESI + 0x159), (0xff) >>> 0);
-    FUN_005e43de(heap);
+      pcVar3 = ((pcVar3 + 0x260) >>> 0);
+      cVar1 = ((cVar1 + 1) & 0xff);
+    } while (pcVar3 < 0x008ad1c0);
+    heap.setU8((unaff_ESI + 0x159), (0xff) & 0xff);
+    (regs.eax = FUN_005e43de(heap));
   }
   return;
-} finally {
-    heap.freeFrame(12);
-  }
 }

@@ -4,16 +4,16 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0040330f } from "./40330f.js";
 export function FUN_004033af(heap, param_1) {
-  const __sp = heap.allocFrame(12);
+  const __sp = heap.allocFrame(8);
   const __addr_local_c = __sp + 0;
-  const __addr_DAT_005f1b60 = __sp + 4;
-  const __addr_local_8 = __sp + 8;
+  const __addr_local_8 = __sp + 4;
   try {
-  FUN_0040330f(heap, param_1, __addr_local_c, __addr_local_8);
-  return (heap.u32(__addr_local_8 + (0) * 4) & heap.u32((__addr_DAT_005f1b60) + (heap.u32(__addr_local_c)) * 4)) != 0;
+  (regs.eax = FUN_0040330f(heap, param_1, __addr_local_c, __addr_local_8));
+  return (heap.u32(__addr_local_8 + (0) * 4) & heap.u32((0x005f1b60) + (heap.u32(__addr_local_c)) * 4)) != 0;
 } finally {
-    heap.freeFrame(12);
+    heap.freeFrame(8);
   }
 }

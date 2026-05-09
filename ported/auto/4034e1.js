@@ -7,7 +7,7 @@
 import { SetTimer } from "../../runtime/win32.js";
 export function FUN_004034e1(heap) {
   if (heap.u32(0x005e91dc) == 0) {
-    heap.setU32(0x005e91dc, (SetTimer(heap, heap.u32(0x005e916c), 1000, 500, 0x0)) >>> 0);
+    heap.setU32(0x005e91dc, (SetTimer(heap, heap.u32(0x005e916c), 1000, 500, ((0x0) >>> 0))) >>> 0);
   }
   return;
 }

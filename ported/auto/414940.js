@@ -5,6 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { FreeEnvironmentStringsA, FreeEnvironmentStringsW, GetEnvironmentStrings, GetEnvironmentStringsW, WideCharToMultiByte } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_004133c0 } from "./4133c0.js";
 import { FUN_00413470 } from "./413470.js";
 export function FUN_00414940(heap) {
@@ -22,14 +23,14 @@ export function FUN_00414940(heap) {
   let pCVar10 = 0;
   let pCVar11 = 0;
   let pWVar4 = 0;
-  lpWideCharStr = 0x0;
-  pCVar9 = 0x0;
+  lpWideCharStr = ((0x0) >>> 0);
+  pCVar9 = ((0x0) >>> 0);
   if (heap.u32(0x005f0018) == 0) {
-    lpWideCharStr = GetEnvironmentStringsW(heap);
+    lpWideCharStr = ((GetEnvironmentStringsW(heap)) >>> 0);
     if (lpWideCharStr == 0x0) {
-      pCVar9 = GetEnvironmentStrings(heap);
+      pCVar9 = ((GetEnvironmentStrings(heap)) >>> 0);
       if (pCVar9 == 0x0) {
-        return 0x0;
+        return ((0x0) >>> 0);
       }
       heap.setU32(0x005f0018, (2) >>> 0);
     } else {
@@ -37,64 +38,64 @@ export function FUN_00414940(heap) {
     }
   }
   if (heap.u32(0x005f0018) == 1) {
-    if ((lpWideCharStr != 0x0) || (lpWideCharStr = GetEnvironmentStringsW(heap), lpWideCharStr != 0x0)) {
-      WVar2 = heap.u32(lpWideCharStr);
-      pWVar3 = lpWideCharStr;
-      while (WVar2 != '\0') {
+    if ((lpWideCharStr != 0x0) || (lpWideCharStr = ((GetEnvironmentStringsW(heap)) >>> 0), lpWideCharStr != 0x0)) {
+      WVar2 = ((heap.u32(lpWideCharStr)) >>> 0);
+      pWVar3 = ((lpWideCharStr) >>> 0);
+      while (WVar2 != 0) {
         do {
-          pWVar4 = pWVar3;
-          pWVar3 = pWVar4 + 1;
-        } while (heap.u32(pWVar3) != '\0');
-        pWVar3 = pWVar4 + 2;
-        WVar2 = heap.u32(pWVar3);
+          pWVar4 = ((pWVar3) >>> 0);
+          pWVar3 = ((pWVar4 + ((1) * 4)) >>> 0);
+        } while (heap.i32(pWVar3) != 0);
+        pWVar3 = ((pWVar4 + ((2) * 4)) >>> 0);
+        WVar2 = ((heap.i32(pWVar3)) >>> 0);
       }
-      iVar5 = (pWVar3 - lpWideCharStr >>> 1) + 1;
-      cbMultiByte = WideCharToMultiByte(heap, 0, 0, lpWideCharStr, iVar5, 0x0, 0, 0x0, 0x0);
-      if ((cbMultiByte != 0) && (lpMultiByteStr = FUN_004133c0(heap, cbMultiByte), lpMultiByteStr != 0x0)) {
-        iVar5 = WideCharToMultiByte(heap, 0, 0, lpWideCharStr, iVar5, lpMultiByteStr, cbMultiByte, 0x0, 0x0);
+      iVar5 = (((((pWVar3) >>> 0) - ((lpWideCharStr) >>> 0) >>> 1) + 1) >>> 0);
+      cbMultiByte = ((WideCharToMultiByte(heap, 0, 0, lpWideCharStr, iVar5, ((0x0) >>> 0), 0, ((0x0) >>> 0), ((0x0) >>> 0))) >>> 0);
+      if ((cbMultiByte != 0) && (lpMultiByteStr = (((((regs.eax = FUN_004133c0(heap, cbMultiByte))) >>> 0)) >>> 0), lpMultiByteStr != ((0x0) >>> 0))) {
+        iVar5 = ((WideCharToMultiByte(heap, 0, 0, lpWideCharStr, iVar5, lpMultiByteStr, cbMultiByte, ((0x0) >>> 0), ((0x0) >>> 0))) >>> 0);
         if (iVar5 == 0) {
-          FUN_00413470(heap, lpMultiByteStr);
-          lpMultiByteStr = 0x0;
+          (regs.eax = FUN_00413470(heap, lpMultiByteStr));
+          lpMultiByteStr = ((((0x0) >>> 0)) >>> 0);
         }
         FreeEnvironmentStringsW(heap, lpWideCharStr);
         return lpMultiByteStr;
       }
       FreeEnvironmentStringsW(heap, lpWideCharStr);
-      return 0x0;
+      return ((0x0) >>> 0);
     }
   } else {
-    if ((heap.u32(0x005f0018) == 2) && ((pCVar9 != 0x0 || (pCVar9 = GetEnvironmentStrings(heap), pCVar9 != 0x0)))) {
-    cVar1 = heap.u32(pCVar9);
-    pCVar6 = pCVar9;
-    while (cVar1 != '\0') {
+    if ((heap.u32(0x005f0018) == 2) && ((pCVar9 != 0x0 || (pCVar9 = ((GetEnvironmentStrings(heap)) >>> 0), pCVar9 != 0x0)))) {
+    cVar1 = ((heap.u32(pCVar9)) & 0xff);
+    pCVar6 = ((pCVar9) >>> 0);
+    while (cVar1 != 0) {
       do {
-        pCVar10 = pCVar6;
-        pCVar6 = pCVar10 + 1;
-      } while (heap.u32(pCVar10 + (1) * 4) != '\0');
-      pCVar6 = pCVar10 + 2;
-      cVar1 = heap.u32(pCVar10 + (2) * 4);
+        pCVar10 = ((pCVar6) >>> 0);
+        pCVar6 = ((pCVar10 + 1) >>> 0);
+      } while (heap.u32(pCVar10 + (1) * 4) != 0);
+      pCVar6 = ((pCVar10 + 2) >>> 0);
+      cVar1 = ((heap.u32(pCVar10 + (2) * 4)) & 0xff);
     }
-    pCVar6 = pCVar6 + (1 - pCVar9);
-    pCVar7 = FUN_004133c0(heap, pCVar6);
+    pCVar6 = ((pCVar6 + (1 - ((pCVar9) >>> 0))) >>> 0);
+    pCVar7 = (((regs.eax = FUN_004133c0(heap, pCVar6))) >>> 0);
     if (pCVar7 != 0x0) {
-      pCVar10 = pCVar9;
-      pCVar11 = pCVar7;
-      for (uVar8 = pCVar6 >>> 2; uVar8 != 0; uVar8 = uVar8 - 1) {
-        heap.setU32(pCVar11, (heap.u32(pCVar10)) >>> 0);
-        pCVar10 = pCVar10 + 4;
-        pCVar11 = pCVar11 + 4;
+      pCVar10 = ((pCVar9) >>> 0);
+      pCVar11 = ((pCVar7) >>> 0);
+      for (uVar8 = ((((pCVar6) >>> 0) >>> 2) >>> 0); uVar8 != 0; uVar8 = (((uVar8 - 1) >>> 0)) >>> 0) {
+        heap.setU32(pCVar11, (heap.u32(pCVar10)) & 0xffffffff);
+        pCVar10 = ((pCVar10 + 4) >>> 0);
+        pCVar11 = ((pCVar11 + ((4) * 4)) >>> 0);
       }
-      for (uVar8 = pCVar6 & 3; uVar8 != 0; uVar8 = uVar8 - 1) {
-        heap.setU32(pCVar11, (heap.u32(pCVar10)) >>> 0);
-        pCVar10 = pCVar10 + 1;
-        pCVar11 = pCVar11 + 1;
+      for (uVar8 = ((((pCVar6) >>> 0) & 3) >>> 0); uVar8 != 0; uVar8 = (((uVar8 - 1) >>> 0)) >>> 0) {
+        heap.setU32(pCVar11, (heap.u32(pCVar10)) & 0xffffffff);
+        pCVar10 = ((pCVar10 + 1) >>> 0);
+        pCVar11 = ((pCVar11 + ((1) * 4)) >>> 0);
       }
       FreeEnvironmentStringsA(heap, pCVar9);
       return pCVar7;
     }
     FreeEnvironmentStringsA(heap, pCVar9);
-    return 0x0;
+    return ((0x0) >>> 0);
   }
   }
-  return 0x0;
+  return ((0x0) >>> 0);
 }

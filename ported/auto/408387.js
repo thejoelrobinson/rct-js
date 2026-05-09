@@ -8,9 +8,9 @@ import { CloseHandle } from "../../runtime/win32.js";
 export function FUN_00408387(heap, param_1) {
   let BVar1 = 0;
   if (param_1 == 0x0) {
-    BVar1 = 1;
+    BVar1 = ((1) >>> 0);
   } else {
-    BVar1 = CloseHandle(heap, param_1);
+    BVar1 = ((CloseHandle(heap, param_1)) >>> 0);
   }
   return BVar1;
 }

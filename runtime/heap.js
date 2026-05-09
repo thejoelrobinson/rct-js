@@ -22,27 +22,34 @@ export class Heap {
     this.bytes = memory;
     // DataView gives us little-endian unaligned reads/writes that match x86.
     this.view = new DataView(memory.buffer, memory.byteOffset, memory.byteLength);
+    this._n = memory.byteLength;  // cached for OOB checks in hot accessors
     // Stack — used by ported functions to allocate frames for address-taken
     // locals so callees can read/write them through the shared heap.
     // Default: grow down from the end of the buffer.
     this.sp = stackTop !== undefined ? stackTop : memory.byteLength;
   }
 
-  // Reads — all little-endian, unaligned-safe.
-  u8 (a) { return this.view.getUint8(a); }
-  i8 (a) { return this.view.getInt8(a); }
-  u16(a) { return this.view.getUint16(a, true); }
-  i16(a) { return this.view.getInt16(a, true); }
-  u32(a) { return this.view.getUint32(a, true); }
-  i32(a) { return this.view.getInt32(a, true); }
+  // Reads — all little-endian, unaligned-safe. Addresses are masked to 32 bits
+  // because Ghidra-translated pointer arithmetic in JS doesn't wrap on overflow.
+  // Out-of-range reads return 0 (matching x86 behavior on uninitialized memory)
+  // rather than throwing — the binary often dereferences pointers to .text
+  // jump tables that we don't extract into data.bin, and throwing breaks init.
+  // The translator's pointer-arithmetic and width-typing bugs also produce bad
+  // addresses; OOB-as-zero contains them rather than aborting boot.
+  u8 (a) { a = a >>> 0; return a + 1 > this._n ? 0 : this.view.getUint8 (a); }
+  i8 (a) { a = a >>> 0; return a + 1 > this._n ? 0 : this.view.getInt8  (a); }
+  u16(a) { a = a >>> 0; return a + 2 > this._n ? 0 : this.view.getUint16(a, true); }
+  i16(a) { a = a >>> 0; return a + 2 > this._n ? 0 : this.view.getInt16 (a, true); }
+  u32(a) { a = a >>> 0; return a + 4 > this._n ? 0 : this.view.getUint32(a, true); }
+  i32(a) { a = a >>> 0; return a + 4 > this._n ? 0 : this.view.getInt32 (a, true); }
 
-  // Writes.
-  setU8 (a, v) { this.view.setUint8 (a, v & 0xff); }
-  setI8 (a, v) { this.view.setInt8  (a, v & 0xff); }
-  setU16(a, v) { this.view.setUint16(a, v & 0xffff, true); }
-  setI16(a, v) { this.view.setInt16 (a, v & 0xffff, true); }
-  setU32(a, v) { this.view.setUint32(a, v >>> 0, true); }
-  setI32(a, v) { this.view.setInt32 (a, v | 0, true); }
+  // Writes — silently drop OOB writes for symmetry with reads.
+  setU8 (a, v) { a = a >>> 0; if (a + 1 <= this._n) this.view.setUint8 (a, v & 0xff); }
+  setI8 (a, v) { a = a >>> 0; if (a + 1 <= this._n) this.view.setInt8  (a, v & 0xff); }
+  setU16(a, v) { a = a >>> 0; if (a + 2 <= this._n) this.view.setUint16(a, v & 0xffff, true); }
+  setI16(a, v) { a = a >>> 0; if (a + 2 <= this._n) this.view.setInt16 (a, v & 0xffff, true); }
+  setU32(a, v) { a = a >>> 0; if (a + 4 <= this._n) this.view.setUint32(a, v >>> 0, true); }
+  setI32(a, v) { a = a >>> 0; if (a + 4 <= this._n) this.view.setInt32 (a, v | 0, true); }
 
   // Read a NUL-terminated C string starting at `addr`. Returns a JS string.
   // Stops at NUL or when `maxLen` bytes have been read (default 4096).

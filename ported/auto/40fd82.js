@@ -6,40 +6,34 @@
 
 import { CreateCompatibleDC, GetBkColor, GetBkMode, GetDC, GetTextColor, RealizePalette, SelectObject, SelectPalette, SetDIBColorTable } from "../../runtime/win32.js";
 export function FUN_0040fd82(heap, param_1) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005ef6a8 = __sp + 0;
-  try {
   let CVar1 = 0;
   let iVar2 = 0;
   let pHVar3 = 0;
   let pvVar4 = 0;
   let local_8 = 0;
-  if (heap.u32((param_1 + 0x90)) == 0) {
-    local_8 = CreateCompatibleDC(heap, 0x0);
+  if (heap.i32((param_1 + 0x90)) == 0) {
+    local_8 = ((CreateCompatibleDC(heap, ((0x0) >>> 0))) >>> 0);
   } else {
-    local_8 = GetDC(heap, heap.u32(0x005e916c));
+    local_8 = ((GetDC(heap, heap.u32(0x005e916c))) >>> 0);
   }
-  if (local_8 != 0x0) {
-    CVar1 = GetTextColor(heap, local_8);
-    heap.setU32((param_1 + 0x98), (CVar1) >>> 0);
-    CVar1 = GetBkColor(heap, local_8);
-    heap.setU32((param_1 + 0x9c), (CVar1) >>> 0);
-    iVar2 = GetBkMode(heap, local_8);
-    heap.setU32((param_1 + 0xa4), (iVar2) >>> 0);
-    heap.setU32((param_1 + 0xa0), (0) >>> 0);
-    heap.setU32((param_1 + 0xc), (1) >>> 0);
-    if (heap.u32((param_1 + 0x90)) == 0) {
-      pvVar4 = SelectObject(heap, local_8, heap.u32((param_1 + 0x8c)));
-      heap.setU32((param_1 + 0x94), (pvVar4) >>> 0);
-      SetDIBColorTable(heap, local_8, 0, 0x100, __addr_DAT_005ef6a8);
+  if (local_8 != ((0x0) >>> 0)) {
+    CVar1 = ((GetTextColor(heap, local_8)) >>> 0);
+    heap.setU32((param_1 + 0x98), (CVar1) & 0xffffffff);
+    CVar1 = ((GetBkColor(heap, local_8)) >>> 0);
+    heap.setU32((param_1 + 0x9c), (CVar1) & 0xffffffff);
+    iVar2 = ((GetBkMode(heap, local_8)) >>> 0);
+    heap.setI32((param_1 + 0xa4), (iVar2) & 0xffffffff);
+    heap.setU32((param_1 + 0xa0), (0) & 0xffffffff);
+    heap.setU16((param_1 + 0xc), (1) & 0xffff);
+    if (heap.i32((param_1 + 0x90)) == 0) {
+      pvVar4 = ((SelectObject(heap, local_8, heap.i32((param_1 + 0x8c)))) >>> 0);
+      heap.setI32((param_1 + 0x94), (pvVar4) & 0xffffffff);
+      SetDIBColorTable(heap, local_8, 0, 0x100, 0x005ef6a8);
     } else {
-      pHVar3 = SelectPalette(heap, local_8, heap.u32(0x005ec0d8), 0);
-      heap.setU32((param_1 + 0x94), (pHVar3) >>> 0);
+      pHVar3 = ((SelectPalette(heap, local_8, heap.u32(0x005ec0d8), 0)) >>> 0);
+      heap.setU32((param_1 + 0x94), (pHVar3) & 0xffffffff);
       RealizePalette(heap, local_8);
     }
   }
   return local_8;
-} finally {
-    heap.freeFrame(4);
-  }
 }

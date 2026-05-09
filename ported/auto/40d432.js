@@ -4,32 +4,27 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0040cd89 } from "./40cd89.js";
 import { FUN_0040d575 } from "./40d575.js";
 import { FUN_0040d8ee } from "./40d8ee.js";
 export function FUN_0040d432(heap, param_1, param_2, param_3) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f03a4 = __sp + 0;
-  try {
   let uVar1 = 0;
   let iVar2 = 0;
   if (heap.u32(0x005ebfdc) == 0) {
-    uVar1 = 0;
+    uVar1 = ((0) >>> 0);
   } else {
-    iVar2 = FUN_0040d8ee(heap, param_1);
+    iVar2 = (((regs.eax = FUN_0040d8ee(heap, param_1))) >>> 0);
     if (iVar2 != 0) {
-      FUN_0040d575(heap, param_1);
+      (regs.eax = FUN_0040d575(heap, param_1));
     }
-    iVar2 = FUN_0040cd89(heap, param_1, param_2, param_3);
+    iVar2 = (((regs.eax = FUN_0040cd89(heap, param_1, param_2, param_3))) >>> 0);
     if (iVar2 == 0) {
-      heap.setU32((__addr_DAT_005f03a4 + param_1 * 0x16c), (0) >>> 0);
-      uVar1 = 1;
+      heap.setU32((0x005f03a4 + param_1 * 0x16c), (0) & 0xffffffff);
+      uVar1 = ((1) >>> 0);
     } else {
-      uVar1 = 0;
+      uVar1 = ((0) >>> 0);
     }
   }
   return uVar1;
-} finally {
-    heap.freeFrame(4);
-  }
 }

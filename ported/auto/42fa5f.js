@@ -4,36 +4,31 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00408210 } from "./408210.js";
 import { FUN_00408254 } from "./408254.js";
 import { FUN_00408276 } from "./408276.js";
 export function FUN_0042fa5f(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f88b0 = __sp + 0;
-  try {
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;
-  uVar1 = FUN_00408254(heap, heap.u32(0x005f88a4), 0);
+  uVar1 = (((regs.eax = FUN_00408254(heap, heap.u32(0x005f88a4), 0))) >>> 0);
   if (7 < uVar1) {
-    uVar1 = uVar1 - 4;
-    FUN_00408210(heap, heap.u32(0x005f88a4), 0);
+    uVar1 = ((uVar1 - 4) >>> 0);
+    (regs.eax = FUN_00408210(heap, heap.u32(0x005f88a4), 0));
     do {
-      uVar2 = uVar1;
+      uVar2 = ((uVar1) >>> 0);
       if (0x400 < uVar1) {
-        uVar2 = 0x400;
+        uVar2 = ((0x400) >>> 0);
       }
-      FUN_00408276(heap, heap.u32(0x005f88a4), __addr_DAT_005f88b0, uVar2);
-      uVar3 = uVar2;
+      (regs.eax = FUN_00408276(heap, heap.u32(0x005f88a4), 0x005f88b0, uVar2));
+      uVar3 = ((uVar2) >>> 0);
       do {
-        uVar3 = uVar3 - 1;
+        uVar3 = ((uVar3 - 1) >>> 0);
       } while (uVar3 != 0);
-      uVar1 = uVar1 - uVar2;
+      uVar1 = ((uVar1 - uVar2) >>> 0);
     } while (uVar1 != 0);
-    FUN_00408276(heap, heap.u32(0x005f88a4), __addr_DAT_005f88b0, 4);
+    (regs.eax = FUN_00408276(heap, heap.u32(0x005f88a4), 0x005f88b0, 4));
   }
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

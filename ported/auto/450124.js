@@ -5,35 +5,26 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00450b21 } from "./450b21.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00450124(heap) {
-  const __sp = heap.allocFrame(20);
-  const __addr_DAT_00887510 = __sp + 0;
-  const __addr_DAT_00887422 = __sp + 4;
-  const __addr_DAT_00887498 = __sp + 8;
-  const __addr_DAT_0088747e = __sp + 12;
-  const __addr_DAT_00743bdc = __sp + 16;
-  try {
-  let in_EAX = 0;
-  let in_EDX = 0;
+  let in_EAX = regs.eax >>> 0;
+  let in_EDX = regs.edx >>> 0;
   let extraout_EDX = 0;
   let iVar1 = 0;
   let uVar2 = 0;
-  FUN_00450b21(heap);
-  uVar2 = extraout_EDX & 0xff;
-  heap.setU32(((__addr_DAT_00887510) + (uVar2 * 0x130) * 4), (0xffff) >>> 0);
-  heap.setU32(((__addr_DAT_00887422) + (uVar2 * 0x130) * 4), (heap.u32((__addr_DAT_00887422) + (uVar2 * 0x130) * 4) & 0xfff9) >>> 0);
-  if ((heap.u32((__addr_DAT_00887422) + (uVar2 * 0x130) * 4) & 1) != 0) {
-    for (iVar1 = 0; iVar1 < heap.u32((__addr_DAT_00887498) + (uVar2 * 0x260) * 4); iVar1 = iVar1 + 1) {
-      if (heap.u32((__addr_DAT_0088747e + iVar1 * 2 + uVar2 * 0x260)) != 0xffff) {
-        heap.setU32((__addr_DAT_00743bdc + heap.u32((__addr_DAT_0088747e + iVar1 * 2 + uVar2 * 0x260)) * 0x100), (heap.u32((__addr_DAT_00743bdc + heap.u32((__addr_DAT_0088747e + iVar1 * 2 + uVar2 * 0x260)) * 0x100)) & 0xffdf) >>> 0);
+  (regs.eax = FUN_00450b21(heap));
+  uVar2 = ((extraout_EDX & 0xff) >>> 0);
+  heap.setU32(((0x00887510) + (uVar2 * 0x130) * 4), (0xffff) & 0xffffffff);
+  heap.setU32(((0x00887422) + (uVar2 * 0x130) * 4), (heap.u32((0x00887422) + (uVar2 * 0x130) * 4) & 0xfff9) & 0xffffffff);
+  if ((heap.u32((0x00887422) + (uVar2 * 0x130) * 4) & 1) != 0) {
+    for (iVar1 = ((0) >>> 0); ((iVar1) & 0xff) < heap.u32(((0x00887498) & 0xff) + (uVar2 * 0x260) * 4); iVar1 = (((iVar1 + 1) >>> 0)) >>> 0) {
+      if (heap.u16((0x0088747e + iVar1 * 2 + uVar2 * 0x260)) != 0xffff) {
+        heap.setU16((0x00743bdc + heap.u32((0x0088747e + iVar1 * 2 + uVar2 * 0x260)) * 0x100), (heap.u16((0x00743bdc + heap.u32((0x0088747e + iVar1 * 2 + uVar2 * 0x260)) * 0x100)) & 0xffdf) & 0xffff);
       }
     }
   }
-  FUN_005e5301(heap);
-  return CONCAT44(in_EDX, in_EAX);
-} finally {
-    heap.freeFrame(20);
-  }
+  (regs.eax = FUN_005e5301(heap));
+  return 1;
 }

@@ -5,12 +5,12 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0040fb7c(heap, param_1) {
-  if (heap.u32((param_1 + 0x90)) == 0) {
-    heap.setU32((param_1 + 4), (4) >>> 0);
-    heap.setU32((param_1 + 10), (1) >>> 0);
-    heap.setU32((param_1 + 0xc), (1) >>> 0);
+  if (heap.i32((param_1 + 0x90)) == 0) {
+    heap.setU16((param_1 + 4), (4) & 0xffff);
+    heap.setU16((param_1 + 10), (1) & 0xffff);
+    heap.setU16((param_1 + 0xc), (1) & 0xffff);
   } else {
-    param_1 = 0;
+    param_1 = ((0) >>> 0);
   }
   return param_1;
 }

@@ -5,13 +5,12 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { DirectSoundEnumerateA } from "../../runtime/win32.js";
-import { FUN_0040da50 } from "./40da50.js";
 export function FUN_0040dae1(heap) {
   let iVar1 = 0;
   heap.setU32(0x005f0394, (0) >>> 0);
-  iVar1 = DirectSoundEnumerateA(heap, FUN_0040da50, 0);
+  iVar1 = ((DirectSoundEnumerateA(heap, 0x0040da50, 0)) >>> 0);
   if (iVar1 == 0) {
-    iVar1 = heap.u32(0x005f0394);
+    iVar1 = ((heap.u32(0x005f0394)) >>> 0);
   }
   return iVar1;
 }

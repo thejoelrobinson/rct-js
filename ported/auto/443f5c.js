@@ -4,16 +4,14 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_004447f6 } from "./4447f6.js";
 export function FUN_00443f5c(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_0087c820 = __sp + 0;
-  try {
   let uVar1 = 0;
-  uVar1 = 0;
+  uVar1 = ((0) >>> 0);
   do {
-    heap.setU32((__addr_DAT_0087c820 + uVar1), (0) >>> 0);
-    uVar1 = uVar1 + 4;
+    heap.setU32((((0x0087c820) >>> 0) + uVar1), (0) & 0xffffffff);
+    uVar1 = ((uVar1 + 4) >>> 0);
   } while (uVar1 < 0x38);
   heap.setU32(0x0087d304, (0) >>> 0);
   heap.setU32(0x0087d308, (0) >>> 0);
@@ -26,9 +24,5 @@ export function FUN_00443f5c(heap) {
   heap.setU32(0x0087d718, (0x80000000) >>> 0);
   heap.setU32(0x0087d71c, (0) >>> 0);
   heap.setU32(0x0087d720, (0) >>> 0);
-  FUN_004447f6(heap);
-  return;
-} finally {
-    heap.freeFrame(4);
-  }
+  return (regs.eax = FUN_004447f6(heap));
 }

@@ -4,12 +4,13 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00407a41 } from "./407a41.js";
 import { FUN_00407b91 } from "./407b91.js";
 export function FUN_00407bfd(heap, param_1) {
   let iVar1 = 0;
-  if ((heap.u32(param_1) != 0) && (iVar1 = FUN_00407b91(heap, param_1), iVar1 == 0)) {
-    FUN_00407a41(heap, param_1);
+  if ((heap.u32(param_1) != 0) && (iVar1 = (((regs.eax = FUN_00407b91(heap, param_1))) >>> 0), iVar1 == 0)) {
+    (regs.eax = FUN_00407a41(heap, param_1));
   }
   return 0;
 }

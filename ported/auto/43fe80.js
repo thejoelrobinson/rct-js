@@ -4,25 +4,28 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0043feb6 } from "./43feb6.js";
 import { FUN_005e43de } from "./5e43de.js";
 export function FUN_0043fe80(heap) {
   let uVar1 = 0;
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   let bVar2 = 0;
-  bVar2 = 0xff8bc46b < heap.u32((unaff_ESI + 0x30)) << 8;
-  uVar1 = FUN_0043feb6(heap);
+  LAB_0043feb2: {
+  bVar2 = ((0xff8bc46b < heap.u32((unaff_ESI + 0x30)) << 8) & 0xff);
+  uVar1 = (((regs.eax = FUN_0043feb6(heap))) >>> 0);
   if (bVar2) {
-    uVar1 = uVar1 | 0x10000;
+    uVar1 = ((uVar1 | 0x10000) >>> 0);
     if ((heap.u32((unaff_ESI + 0x10)) >>> 0x10 & 1) != 0) {
-      /* goto LAB_0043feb2 */ throw new Error("goto LAB_0043feb2 not supported");
+      break LAB_0043feb2;
     }
   } else {
     if ((heap.u32((unaff_ESI + 0x10)) >>> 0x10 & 1) == 0) {
-    /* goto LAB_0043feb2 */ throw new Error("goto LAB_0043feb2 not supported");
+    break LAB_0043feb2;
   }
   }
-  uVar1 = FUN_005e43de(heap);
-  LAB_0043feb2: heap.setU32((unaff_ESI + 0x10), (uVar1) >>> 0);
+  uVar1 = (((regs.eax = FUN_005e43de(heap))) >>> 0);
+  }
+  heap.setU32((unaff_ESI + 0x10), (uVar1) & 0xffffffff);
   return;
 }

@@ -6,6 +6,5 @@
 
 import { RtlUnwind } from "../../runtime/ghidra-builtins.js";
 export function FUN_0041a0c0(heap, TargetFrame, TargetIp, ExceptionRecord, ReturnValue) {
-  RtlUnwind(TargetFrame, TargetIp, ExceptionRecord, ReturnValue);
-  return;
+  return RtlUnwind(TargetFrame, TargetIp, ExceptionRecord, ReturnValue);
 }

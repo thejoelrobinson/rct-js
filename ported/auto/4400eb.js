@@ -4,25 +4,19 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0043fe80 } from "./43fe80.js";
 import { FUN_005e3c3c } from "./5e3c3c.js";
 export function FUN_004400eb(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_00628cf0 = __sp + 0;
-  try {
-  let in_AX = 0;
-  let unaff_ESI = 0;
-  FUN_005e3c3c(heap);
-  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_00628cf0) >>> 0);
-  heap.setU32((unaff_ESI + 0xc), (heap.u32(0x00629180)) >>> 0);
-  heap.setU32((unaff_ESI + 0x30), (in_AX) >>> 0);
-  heap.setU32((unaff_ESI + 0x164), (0) >>> 0);
-  heap.setU32((unaff_ESI + 0x15c), (0) >>> 0);
-  heap.setU32((unaff_ESI + 0x168), (0) >>> 0);
-  heap.setU32((unaff_ESI + 0x16a), (0) >>> 0);
-  FUN_0043fe80(heap);
-  return;
-} finally {
-    heap.freeFrame(4);
-  }
+  let in_AX = regs.eax & 0xffff;
+  let unaff_ESI = regs.esi >>> 0;
+  (regs.eax = FUN_005e3c3c(heap));
+  heap.setU32((unaff_ESI + 0x1c), (0x00628cf0) & 0xffffffff);
+  heap.setU32((unaff_ESI + 0xc), (heap.u32(0x00629180)) & 0xffffffff);
+  heap.setU16((unaff_ESI + 0x30), (in_AX) & 0xffff);
+  heap.setU16((unaff_ESI + 0x164), (0) & 0xffff);
+  heap.setU16((unaff_ESI + 0x15c), (0) & 0xffff);
+  heap.setU16((unaff_ESI + 0x168), (0) & 0xffff);
+  heap.setU16((unaff_ESI + 0x16a), (0) & 0xffff);
+  return (regs.eax = FUN_0043fe80(heap));
 }

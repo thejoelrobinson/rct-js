@@ -8,8 +8,8 @@ import { GetDC, RealizePalette, ReleaseDC, SelectPalette } from "../../runtime/w
 export function FUN_0040ee1c(heap) {
   let hdc = 0;
   let hPal = 0;
-  if ((heap.u32(0x005ec07c) != 0x0) && (hdc = GetDC(heap, heap.u32(0x005e916c)), hdc != 0x0)) {
-    hPal = SelectPalette(heap, hdc, heap.u32(0x005ec07c), 0);
+  if ((heap.u32(0x005ec07c) != 0x0) && (hdc = ((GetDC(heap, heap.u32(0x005e916c))) >>> 0), hdc != ((0x0) >>> 0))) {
+    hPal = ((SelectPalette(heap, hdc, heap.u32(0x005ec07c), 0)) >>> 0);
     RealizePalette(heap, hdc);
     SelectPalette(heap, hdc, hPal, 1);
     ReleaseDC(heap, heap.u32(0x005e916c), hdc);

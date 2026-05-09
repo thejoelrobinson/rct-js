@@ -5,13 +5,14 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_0040d575 } from "./40d575.js";
 export function FUN_0045432a(heap) {
-  let in_EAX = 0;
-  let in_EDX = 0;
-  if (((heap.u32(0x006323f8) & 1) != 0) && (heap.u32(0x0063297c) != '\0')) {
-    FUN_0040d575(heap, 3);
+  let in_EAX = regs.eax >>> 0;
+  let in_EDX = regs.edx >>> 0;
+  if (((heap.u32(0x006323f8) & 1) != 0) && (heap.u8(0x0063297c) != 0)) {
+    (regs.eax = FUN_0040d575(heap, 3));
   }
-  heap.setU32(0x0063297c, (0) >>> 0);
-  return CONCAT44(in_EDX, in_EAX);
+  heap.setU8(0x0063297c, (0) & 0xff);
+  return 1;
 }

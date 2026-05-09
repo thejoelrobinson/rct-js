@@ -5,16 +5,10 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0042f6b3(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f88b0 = __sp + 0;
-  try {
-  heap.setU32(0x005f88a8, (__addr_DAT_005f88b0) >>> 0);
-  heap.setU32(0x005f88ac, (0) >>> 0);
-  heap.setU32(0x005f88ae, (0) >>> 0);
-  heap.setU32(0x005f88af, (0) >>> 0);
-  heap.setU32(0x005f8d36, (0) >>> 0);
+  heap.setU32(0x005f88a8, (0x005f88b0) >>> 0);
+  heap.setU8(0x005f88ac, (0) & 0xff);
+  heap.setU8(0x005f88ae, (0) & 0xff);
+  heap.setU8(0x005f88af, (0) & 0xff);
+  heap.setU8(0x005f8d36, (0) & 0xff);
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

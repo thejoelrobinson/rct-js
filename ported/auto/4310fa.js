@@ -4,8 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_004310fa(heap) {
-  let unaff_ESI = 0;
-  heap.setU32((unaff_ESI + 0x10), (0) >>> 0);
+  let unaff_ESI = regs.esi >>> 0;
+  heap.setU32((unaff_ESI + 0x10), (0) & 0xffffffff);
   return;
 }

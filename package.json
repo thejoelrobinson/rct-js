@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run --root .",
     "test:watch": "vitest --root .",
-    "lift": "node lifter/cli.js"
+    "lift": "node lifter/cli.js",
+    "dev": "npx http-server -p 3000 -c-1 -s ."
   },
   "engines": {
     "node": ">=20"

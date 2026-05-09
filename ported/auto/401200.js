@@ -6,6 +6,5 @@
 
 import { MessageBoxA } from "../../runtime/win32.js";
 export function FUN_00401200(heap) {
-  MessageBoxA(heap, heap.u32(0x005e916c), 0x005e90dc, 0x005e90f4, 0);
-  return;
+  return MessageBoxA(heap, heap.u32(0x005e916c), 0x005e90dc, 0x005e90f4, 0);
 }

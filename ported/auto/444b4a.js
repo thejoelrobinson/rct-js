@@ -6,39 +6,31 @@
 
 import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 export function FUN_00444b4a(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_DAT_00991f8e = __sp + 0;
-  const __addr_DAT_00743b94 = __sp + 4;
-  const __addr_DAT_0087c394 = __sp + 8;
-  try {
   let uVar1 = 0;
   let iVar2 = 0;
   let pcVar3 = 0;
   let puVar4 = 0;
   let uVar5 = 0;
-  puVar4 = __addr_DAT_00991f8e;
-  for (iVar2 = 0x4001; iVar2 != 0; iVar2 = iVar2 + -1) {
-    heap.setU32(puVar4, (0xffff) >>> 0);
-    puVar4 = puVar4 + 1;
+  puVar4 = ((0x00991f8e) >>> 0);
+  for (iVar2 = ((0x4001) >>> 0); iVar2 != 0; iVar2 = (((iVar2 + -1) >>> 0)) >>> 0) {
+    heap.setU32(puVar4, (0xffff) & 0xffffffff);
+    puVar4 = ((puVar4 + ((1) * 2)) >>> 0);
   }
-  pcVar3 = __addr_DAT_00743b94;
+  pcVar3 = ((0x00743b94) >>> 0);
   do {
-    if (heap.u32(pcVar3) != -1) {
-      if (heap.u32((pcVar3 + 0xe)) == 0x8000) {
-        uVar5 = 0x4000;
+    if ((heap.i8(pcVar3) | 0) != -1) {
+      if (heap.u16((pcVar3 + 0xe)) == 0x8000) {
+        uVar5 = ((0x4000) >>> 0);
       } else {
-        uVar5 = ((heap.u32((pcVar3 + 0xe)) & 0xfe0) << 2 | heap.u32((pcVar3 + 0x10)) >>> 5);
+        uVar5 = (((((heap.u16((pcVar3 + 0xe)) & 0xfe0) << 2 | heap.u16((pcVar3 + 0x10)) >>> 5) >>> 0)) >>> 0);
       }
       LOCK();
-      uVar1 = heap.u32((__addr_DAT_00991f8e) + (uVar5) * 4);
-      heap.setU32(((__addr_DAT_00991f8e) + (uVar5) * 4), (heap.u32((pcVar3 + 10))) >>> 0);
+      uVar1 = ((heap.u32((0x00991f8e) + (uVar5) * 4)) & 0xffff);
+      heap.setU32(((0x00991f8e) + (uVar5) * 4), (heap.u16((pcVar3 + 10))) & 0xffffffff);
       UNLOCK();
-      heap.setU32((pcVar3 + 2), (uVar1) >>> 0);
+      heap.setU16((pcVar3 + 2), (uVar1) & 0xffff);
     }
-    pcVar3 = pcVar3 + 0x100;
-  } while (pcVar3 < __addr_DAT_0087c394);
+    pcVar3 = ((pcVar3 + 0x100) >>> 0);
+  } while (pcVar3 < 0x0087c394);
   return;
-} finally {
-    heap.freeFrame(12);
-  }
 }

@@ -4,68 +4,56 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_004571c1(heap) {
-  const __sp = heap.allocFrame(32);
-  const __addr_DAT_00743bc2 = __sp + 0;
-  const __addr_DAT_00743ba2 = __sp + 4;
-  const __addr_DAT_00743ba6 = __sp + 8;
-  const __addr_DAT_00743ba4 = __sp + 12;
-  const __addr_DAT_00743bbf = __sp + 16;
-  const __addr_DAT_00743bcf = __sp + 20;
-  const __addr_DAT_00743c0e = __sp + 24;
-  const __addr_DAT_00743b98 = __sp + 28;
-  try {
   let pbVar1 = 0;
   let bVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   let uVar5 = 0;
   let iVar6 = 0;
-  uVar4 = heap.u32(0x0087c398);
+  uVar4 = ((heap.u32(0x0087c398)) & 0xffff);
   while (uVar4 != 0xffff) {
-    uVar5 = uVar4;
-    iVar6 = uVar5 * 0x100;
-    if ((heap.u32((__addr_DAT_00743bc2) + (iVar6) * 4) == '\0') && (heap.u32((__addr_DAT_00743ba2) + (uVar5 * 0x80) * 4) != -0x8000)) {
-      uVar4 = heap.u32((__addr_DAT_00743ba6) + (uVar5 * 0x80) * 4) - heap.u32((unaff_ESI + 0x12));
-      if (uVar4 < 0) {
-        uVar4 = -uVar4;
+    uVar5 = ((((uVar4) >>> 0)) >>> 0);
+    iVar6 = ((uVar5 * 0x100) >>> 0);
+    if ((heap.u32((0x00743bc2) + (iVar6) * 4) == 0) && (heap.u32((0x00743ba2) + (uVar5 * 0x80) * 4) != -0x8000)) {
+      uVar4 = ((heap.u32((0x00743ba6) + (uVar5 * 0x80) * 4) - heap.i16((unaff_ESI + 0x12))) & 0xffff);
+      if (((uVar4) << 16 >> 16) < 0) {
+        uVar4 = ((-uVar4) & 0xffff);
       }
       if (uVar4 < 0x31) {
-        uVar4 = heap.u32((__addr_DAT_00743ba2) + (uVar5 * 0x80) * 4) - heap.u32((unaff_ESI + 0xe));
-        if (uVar4 < 0) {
-          uVar4 = -uVar4;
+        uVar4 = ((heap.u32((0x00743ba2) + (uVar5 * 0x80) * 4) - heap.i16((unaff_ESI + 0xe))) & 0xffff);
+        if (((uVar4) << 16 >> 16) < 0) {
+          uVar4 = ((-uVar4) & 0xffff);
         }
-        uVar3 = heap.u32((__addr_DAT_00743ba4) + (uVar5 * 0x80) * 4) - heap.u32((unaff_ESI + 0x10));
-        if (uVar3 < 0) {
-          uVar3 = -uVar3;
+        uVar3 = ((heap.u32((0x00743ba4) + (uVar5 * 0x80) * 4) - heap.i16((unaff_ESI + 0x10))) & 0xffff);
+        if (((uVar3) << 16 >> 16) < 0) {
+          uVar3 = ((-uVar3) & 0xffff);
         }
         if ((uVar4 < 0x61) && (uVar3 < 0x61)) {
-          if (heap.u32((__addr_DAT_00743bbf) + (iVar6) * 4) == '\x05') {
-            pbVar1 = __addr_DAT_00743bcf + iVar6;
-            bVar2 = heap.u32(pbVar1);
-            heap.setU32(pbVar1, (heap.u32(pbVar1) + 4) >>> 0);
+          if (heap.u32((0x00743bbf) + (iVar6) * 4) == 5) {
+            pbVar1 = ((0x00743bcf + iVar6) >>> 0);
+            bVar2 = ((heap.u8(pbVar1)) & 0xff);
+            heap.setU32(pbVar1, (heap.u8(pbVar1) + 4) & 0xffffffff);
             if (0xfb < bVar2) {
-              heap.setU32(((__addr_DAT_00743bcf) + (iVar6) * 4), (0xff) >>> 0);
+              heap.setU32(((0x00743bcf) + (iVar6) * 4), (0xff) & 0xffffffff);
             }
           } else {
-            if (heap.u32((__addr_DAT_00743bbf) + (iVar6) * 4) == '\x06') {
-            heap.setU32((__addr_DAT_00743c0e + iVar6), (heap.u32((__addr_DAT_00743c0e + iVar6)) + -200) >>> 0);
-            pbVar1 = __addr_DAT_00743bcf + iVar6;
-            bVar2 = heap.u32(pbVar1);
-            heap.setU32(pbVar1, (heap.u32(pbVar1) + 3) >>> 0);
+            if (heap.u32((0x00743bbf) + (iVar6) * 4) == 6) {
+            heap.setI16((0x00743c0e + iVar6), (heap.i16((0x00743c0e + iVar6)) + -200) & 0xffff);
+            pbVar1 = ((0x00743bcf + iVar6) >>> 0);
+            bVar2 = ((heap.u8(pbVar1)) & 0xff);
+            heap.setU32(pbVar1, (heap.u8(pbVar1) + 3) & 0xffffffff);
             if (0xfc < bVar2) {
-              heap.setU32(((__addr_DAT_00743bcf) + (iVar6) * 4), (0xff) >>> 0);
+              heap.setU32(((0x00743bcf) + (iVar6) * 4), (0xff) & 0xffffffff);
             }
           }
           }
         }
       }
     }
-    uVar4 = heap.u32((__addr_DAT_00743b98) + (uVar5 * 0x80) * 4);
+    uVar4 = ((heap.u32((0x00743b98) + (uVar5 * 0x80) * 4)) & 0xffff);
   }
   return;
-} finally {
-    heap.freeFrame(32);
-  }
 }

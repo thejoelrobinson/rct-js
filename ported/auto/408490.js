@@ -6,6 +6,5 @@
 
 import { FindClose } from "../../runtime/win32.js";
 export function FUN_00408490(heap, param_1) {
-  FindClose(heap, param_1);
-  return;
+  return FindClose(heap, param_1);
 }

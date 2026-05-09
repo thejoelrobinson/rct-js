@@ -4,51 +4,43 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0042c711 } from "./42c711.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_004440ac(heap) {
-  const __sp = heap.allocFrame(16);
-  const __addr_DAT_0087d0da = __sp + 0;
-  const __addr_DAT_0087d0ee = __sp + 4;
-  const __addr_DAT_00887442 = __sp + 8;
-  const __addr_DAT_00887444 = __sp + 12;
-  try {
   let puVar1 = 0;
   let pcVar2 = 0;
   let uVar3 = 0;
   let bVar4 = 0;
   let uVar5 = 0;
-  uVar5 = 0;
+  uVar5 = ((0) >>> 0);
   do {
-    if (heap.u32((__addr_DAT_0087d0da) + (uVar5) * 4) != '\0') {
-      FUN_005e5301(heap);
-      puVar1 = (__addr_DAT_0087d0da + uVar5);
-      uVar3 = heap.u32(puVar1);
-      heap.setU32(puVar1, (heap.u32(puVar1) & 0xff7f) >>> 0);
+    if (heap.u32((0x0087d0da) + (uVar5) * 4) != 0) {
+      (regs.eax = FUN_005e5301(heap));
+      puVar1 = (((0x0087d0da + uVar5)) >>> 0);
+      uVar3 = ((heap.u16(puVar1)) & 0xffff);
+      heap.setU32(puVar1, (heap.u16(puVar1) & 0xff7f) & 0xffffffff);
       if ((uVar3 >>> 7 & 1) == 0) {
-        pcVar2 = __addr_DAT_0087d0da + uVar5;
-        heap.setU32(pcVar2, (heap.u32(pcVar2) + -1) >>> 0);
-        if (heap.u32(pcVar2) == '\0') {
-          bVar4 = heap.u32((__addr_DAT_0087d0ee) + (uVar5) * 4);
+        pcVar2 = ((0x0087d0da + uVar5) >>> 0);
+        heap.setU32(pcVar2, (heap.i8(pcVar2) + -1) & 0xffffffff);
+        if (heap.i8(pcVar2) == 0) {
+          bVar4 = ((heap.u32((0x0087d0ee) + (uVar5) * 4)) & 0xff);
           switch (uVar5) {
             default:
               break;
             case 1:
             case 5:
-              (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004440ac"); })();
-              unique0x00017200 = heap.u32((__addr_DAT_00887444) + (bVar4 * 0x98) * 4);
+              heap.setU16((0x00971e86 + 0), (heap.u32((0x00887442) + (((bVar4) >>> 0) * 0x130) * 4)) & 0xffff);
+              unique0x00017200 = ((heap.u32((0x00887444) + (((bVar4) >>> 0) * 0x98) * 4)) >>> 0);
               break;
             case 3:
-              (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004440ac"); })();
+              heap.setU16((0x00971e86 + 0), (bVar4 + 0x709) & 0xffff);
           }
-          FUN_0042c711(heap);
+          (regs.eax = FUN_0042c711(heap));
         }
       }
     }
-    uVar5 = uVar5 + 1;
+    uVar5 = ((uVar5 + 1) >>> 0);
   } while (uVar5 < 6);
   return;
-} finally {
-    heap.freeFrame(16);
-  }
 }

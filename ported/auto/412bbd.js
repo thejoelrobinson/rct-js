@@ -5,49 +5,52 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { GlobalAlloc, GlobalFree, mmioClose } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00411fd0 } from "./411fd0.js";
 import { FUN_00412224 } from "./412224.js";
 import { FUN_004122a3 } from "./4122a3.js";
 export function FUN_00412bbd(heap, param_1, param_2, param_3, param_4, param_5) {
-  const __sp = heap.allocFrame(32);
-  const __addr_local_34 = __sp + 0;
+  const __sp = heap.allocFrame(56);
+  const __addr_local_34 = __sp + 8;
   const __addr_local_38 = __sp + 4;
-  const __addr_local_30 = __sp + 8;
-  const __addr_local_1c = __sp + 28;
+  const __addr_local_30 = __sp + 12;
+  const __addr_local_1c = __sp + 32;
+  const __addr_local_18 = __sp + 36;
+  const __addr_local_8 = __sp + 52;
   try {
   let pvVar1 = 0;
-  let local_18 = 0;
-  let local_8 = 0;
-  heap.setU32(param_5, (0) >>> 0);
-  heap.setU32(param_4, (0) >>> 0);
-  heap.setU32(param_2, (0) >>> 0);
-  local_8 = FUN_00411fd0(heap, param_1, __addr_local_34, param_4, __addr_local_30);
-  if ((local_8 == 0) && (local_8 = FUN_00412224(heap, __addr_local_34, __addr_local_1c, __addr_local_30), local_8 == 0)) {
-    pvVar1 = GlobalAlloc(heap, 0, local_18);
-    heap.setU32(param_5, (pvVar1) >>> 0);
+  LAB_00412cd9: {
+  heap.setU32(param_5, (0) & 0xffffffff);
+  heap.setU32(param_4, (0) & 0xffffffff);
+  heap.setU32(param_2, (0) & 0xffffffff);
+  heap.setU32(__addr_local_8, ((regs.eax = FUN_00411fd0(heap, param_1, __addr_local_34, param_4, __addr_local_30))) >>> 0);
+  if ((heap.u32(__addr_local_8) == 0) && (heap.setU32(__addr_local_8, ((regs.eax = FUN_00412224(heap, __addr_local_34, __addr_local_1c, __addr_local_30))) >>> 0), heap.u32(__addr_local_8) == 0)) {
+    pvVar1 = ((GlobalAlloc(heap, 0, heap.u32(__addr_local_18))) >>> 0);
+    heap.setU32(param_5, (((pvVar1) >>> 0)) & 0xffffffff);
     if (heap.u32(param_5) == 0) {
-      local_8 = 0xe000;
+      heap.setU32(__addr_local_8, (0xe000) >>> 0);
     } else {
-      local_8 = FUN_004122a3(heap, heap.u32(__addr_local_34), local_18, heap.u32(param_5), __addr_local_1c, __addr_local_38);
-      if (local_8 == 0) {
-        heap.setU32(param_2, (heap.u32(__addr_local_38)) >>> 0);
-        /* goto LAB_00412cd9 */ throw new Error("goto LAB_00412cd9 not supported");
+      heap.setU32(__addr_local_8, ((regs.eax = FUN_004122a3(heap, heap.u32(__addr_local_34), heap.u32(__addr_local_18), heap.u32(param_5), __addr_local_1c, __addr_local_38))) >>> 0);
+      if (heap.u32(__addr_local_8) == 0) {
+        heap.setU32(param_2, (heap.u32(__addr_local_38)) & 0xffffffff);
+        break LAB_00412cd9;
       }
     }
   }
   if (heap.u32(param_5) != 0) {
-    GlobalFree(heap, heap.u32(param_5));
-    heap.setU32(param_5, (0) >>> 0);
+    GlobalFree(heap, ((heap.u32(param_5)) >>> 0));
+    heap.setU32(param_5, (0) & 0xffffffff);
   }
   if (heap.u32(param_4) != 0) {
-    GlobalFree(heap, heap.u32(param_4));
-    heap.setU32(param_4, (0) >>> 0);
+    GlobalFree(heap, ((heap.u32(param_4)) >>> 0));
+    heap.setU32(param_4, (0) & 0xffffffff);
   }
-  LAB_00412cd9: if (heap.u32(__addr_local_34) != 0x0) {
+  }
+  if (heap.u32(__addr_local_34) != ((0x0) >>> 0)) {
     mmioClose(heap, heap.u32(__addr_local_34), 0);
   }
-  return local_8;
+  return heap.u32(__addr_local_8);
 } finally {
-    heap.freeFrame(32);
+    heap.freeFrame(56);
   }
 }

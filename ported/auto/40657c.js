@@ -5,6 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CreateFontIndirectA, _memset } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_0040657c(heap, param_1, param_2, param_3, param_4, param_5) {
   const __sp = heap.allocFrame(128);
@@ -16,9 +17,8 @@ export function FUN_0040657c(heap, param_1, param_2, param_3, param_4, param_5) 
   heap.setU8((__addr_local_40 + 23), (0x81) & 0xff);
   heap.setU8((__addr_local_40 + 21), (param_4) & 0xff);
   heap.setU8((__addr_local_40 + 22), (param_5) & 0xff);
-  FUN_00413170(heap, heap.u8((__addr_local_40 + 28)), param_1);
-  CreateFontIndirectA(heap, __addr_local_40);
-  return;
+  (regs.eax = FUN_00413170(heap, heap.u8((__addr_local_40 + 28)), param_1));
+  return CreateFontIndirectA(heap, __addr_local_40);
 } finally {
     heap.freeFrame(128);
   }

@@ -7,6 +7,6 @@
 import { mciSendStringA } from "../../runtime/win32.js";
 export function FUN_004116dc(heap) {
   let MVar1 = 0;
-  MVar1 = mciSendStringA(heap, 0x005ec21c, 0x0, 0, 0x0);
+  MVar1 = ((mciSendStringA(heap, 0x005ec21c, ((0x0) >>> 0), 0, ((0x0) >>> 0))) >>> 0);
   return MVar1 == 0;
 }

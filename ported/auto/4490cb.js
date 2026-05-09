@@ -5,20 +5,15 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT11, CONCAT22, CONCAT24 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_004490cb(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_00652478 = __sp + 0;
-  try {
-  let in_EAX = 0;
+  let in_EAX = regs.eax >>> 0;
   let cVar1 = 0;
   let uVar2 = 0;
-  cVar1 = (heap.u32(0x00630b16) >>> 2);
-  uVar2 = CONCAT11(heap.u32(0x00630b28), cVar1);
-  if ((heap.u32(0x00630b19) != '\0') && (heap.u32(0x00630b19) != '\x02')) {
-    uVar2 = CONCAT11(heap.u32(0x00630b28), cVar1 + -4);
+  cVar1 = (((((heap.u8(0x00630b16) >>> 2)) << 24 >> 24)) & 0xff);
+  uVar2 = ((CONCAT11(heap.u32(0x00630b28), cVar1)) & 0xffff);
+  if ((heap.u8(0x00630b19) != 0) && (heap.u8(0x00630b19) != 2)) {
+    uVar2 = ((CONCAT11(heap.u32(0x00630b28), cVar1 + -4)) & 0xffff);
   }
-  return CONCAT24(uVar2, CONCAT22((in_EAX >>> 0x10), heap.u32(0x00630b12) + heap.u32((__addr_DAT_00652478) + (heap.u32(0x00630b18) * 2) * 4)));
-} finally {
-    heap.freeFrame(4);
-  }
+  return CONCAT24(uVar2, CONCAT22((((((in_EAX) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x00630b12) + heap.u32((0x00652478) + (((heap.u8(0x00630b18)) >>> 0) * 2) * 4)));
 }

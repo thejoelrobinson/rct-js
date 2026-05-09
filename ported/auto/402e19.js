@@ -5,11 +5,11 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { UnhandledExceptionFilter } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00402ce0 } from "./402ce0.js";
 import { FUN_004061b9 } from "./4061b9.js";
 export function FUN_00402e19(heap, param_1) {
-  FUN_004061b9(heap);
-  FUN_00402ce0(heap);
-  UnhandledExceptionFilter(heap, param_1);
-  return;
+  (regs.eax = FUN_004061b9(heap));
+  (regs.eax = FUN_00402ce0(heap));
+  return UnhandledExceptionFilter(heap, param_1);
 }

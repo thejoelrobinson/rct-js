@@ -17,7 +17,7 @@ export function FUN_00404cf0(heap, param_1, param_2) {
   heap.setU32((__addr_local_5c + 16), (param_1) >>> 0);
   if (param_2 != 0x0) {
     _strncpy(heap, heap.u8((__addr_local_5c + 24)), param_2, 0x3f);
-    heap.setU32((heap.u8((__addr_local_5c + 24)) + (0x3f) * 4), ('\0') >>> 0);
+    heap.setU32((heap.u8((__addr_local_5c + 24)) + (0x3f) * 4), (0) & 0xffffffff);
     heap.setU32((__addr_local_5c + 12), (heap.u32((__addr_local_5c + 12)) | 4) >>> 0);
   }
   heap.setU32(0x005e93fc, (Shell_NotifyIconA(heap, 0, __addr_local_5c)) >>> 0);

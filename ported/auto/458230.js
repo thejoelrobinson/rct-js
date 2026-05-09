@@ -6,15 +6,19 @@
 
 import { int3 } from "../../runtime/win32.js";
 import { CONCAT31 } from "../../runtime/ghidra-builtins.js";
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_009b438b } from "./9b438b.js";
 export function FUN_00458230(heap) {
-  const __sp = heap.allocFrame(36);
-  const __addr_DAT_0099a508 = __sp + 0;
-  const __addr_DAT_008dc0b8 = __sp + 4;
-  const __addr_DAT_006432d8 = __sp + 8;
-  const __addr_DAT_008dffb4 = __sp + 12;
-  const __addr_DAT_006439ea = __sp + 16;
-  const __addr_local_50 = __sp + 20;
+  const __sp = heap.allocFrame(82);
+  const __addr_local_50 = __sp + 0;
+  const __addr_local_10 = __sp + 64;
+  const __addr_local_c = __sp + 68;
+  const __addr_local_a = __sp + 70;
+  const __addr_local_8 = __sp + 72;
+  const __addr_local_6 = __sp + 74;
+  const __addr_local_4 = __sp + 76;
+  const __addr_local_2 = __sp + 78;
   try {
   let cVar1 = 0;
   let bVar2 = 0;
@@ -26,104 +30,97 @@ export function FUN_00458230(heap) {
   let puVar8 = 0;
   let pcVar9 = 0;
   let puVar10 = 0;
-  let local_10 = 0;
-  let local_c = 0;
-  let local_a = 0;
-  let local_8 = 0;
-  let local_6 = 0;
-  let local_4 = 0;
-  let local_2 = 0;
-  pcVar9 = __addr_DAT_0099a508;
-  uVar6 = 0x5a1e;
+  pcVar9 = ((0x0099a508) >>> 0);
+  uVar6 = ((0x5a1e) >>> 0);
   do {
-    cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10));
-    uVar5 = uVar6;
+    cVar1 = ((((heap.u16((0x008dc0b8 + uVar6 * 0x10))) << 24 >> 24)) & 0xff);
+    uVar5 = ((((uVar6) & 0xffff)) & 0xffff);
     if ((0x5a78 < uVar5) && (uVar5 < 0x5a9d)) {
-      cVar1 = '\0';
+      cVar1 = ((0) & 0xff);
     }
-    heap.setU32(pcVar9, (cVar1) >>> 0);
-    pcVar9 = pcVar9 + 1;
-    uVar6 = (uVar5 + 1);
-  } while ((uVar5 + 1) < 0x5afe);
-  uVar6 = 0x5afe;
+    heap.setU32(pcVar9, (cVar1) & 0xffffffff);
+    pcVar9 = ((pcVar9 + 1) >>> 0);
+    uVar6 = ((((uVar5 + 1) >>> 0)) >>> 0);
+  } while (((uVar5 + 1) & 0xffff) < 0x5afe);
+  uVar6 = ((0x5afe) >>> 0);
   do {
-    cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10));
-    uVar5 = uVar6;
+    cVar1 = ((((heap.u16((0x008dc0b8 + uVar6 * 0x10))) << 24 >> 24)) & 0xff);
+    uVar5 = ((((uVar6) & 0xffff)) & 0xffff);
     if ((0x5b58 < uVar5) && (uVar5 < 0x5b7d)) {
-      cVar1 = '\0';
+      cVar1 = ((0) & 0xff);
     }
-    heap.setU32(pcVar9, (cVar1) >>> 0);
-    pcVar9 = pcVar9 + 1;
-    uVar6 = (uVar5 + 1);
-  } while ((uVar5 + 1) < 0x5bde);
-  uVar6 = 0x5bde;
+    heap.setU32(pcVar9, (cVar1) & 0xffffffff);
+    pcVar9 = ((pcVar9 + 1) >>> 0);
+    uVar6 = ((((uVar5 + 1) >>> 0)) >>> 0);
+  } while (((uVar5 + 1) & 0xffff) < 0x5bde);
+  uVar6 = ((0x5bde) >>> 0);
   do {
-    cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10)) + '\x01';
-    uVar5 = uVar6;
+    cVar1 = ((((heap.u16((0x008dc0b8 + uVar6 * 0x10))) << 24 >> 24) + 1) & 0xff);
+    uVar5 = ((((uVar6) & 0xffff)) & 0xffff);
     if ((0x5c38 < uVar5) && (uVar5 < 0x5c5d)) {
-      cVar1 = '\0';
+      cVar1 = ((0) & 0xff);
     }
-    heap.setU32(pcVar9, (cVar1) >>> 0);
-    pcVar9 = pcVar9 + 1;
-    uVar6 = (uVar5 + 1);
-  } while ((uVar5 + 1) < 0x5cbe);
-  uVar6 = 0x5cbe;
+    heap.setU32(pcVar9, (cVar1) & 0xffffffff);
+    pcVar9 = ((pcVar9 + 1) >>> 0);
+    uVar6 = ((((uVar5 + 1) >>> 0)) >>> 0);
+  } while (((uVar5 + 1) & 0xffff) < 0x5cbe);
+  uVar6 = ((0x5cbe) >>> 0);
   do {
-    cVar1 = heap.u32((__addr_DAT_008dc0b8 + uVar6 * 0x10)) + '\x01';
-    uVar5 = uVar6;
+    cVar1 = ((((heap.u16((0x008dc0b8 + uVar6 * 0x10))) << 24 >> 24) + 1) & 0xff);
+    uVar5 = ((((uVar6) & 0xffff)) & 0xffff);
     if ((0x5d18 < uVar5) && (uVar5 < 0x5d3d)) {
-      cVar1 = '\0';
+      cVar1 = ((0) & 0xff);
     }
-    heap.setU32(pcVar9, (cVar1) >>> 0);
-    pcVar9 = pcVar9 + 1;
-    uVar6 = (uVar5 + 1);
-  } while ((uVar5 + 1) < 0x5d9e);
-  local_10 = __addr_local_50;
-  local_c = 0;
-  local_a = 0;
-  local_8 = 8;
-  local_6 = 8;
-  local_4 = 0;
-  local_2 = 0;
-  uVar6 = 0;
+    heap.setU32(pcVar9, (cVar1) & 0xffffffff);
+    pcVar9 = ((pcVar9 + 1) >>> 0);
+    uVar6 = ((((uVar5 + 1) >>> 0)) >>> 0);
+  } while (((uVar5 + 1) & 0xffff) < 0x5d9e);
+  heap.setU32(__addr_local_10, (__addr_local_50) >>> 0);
+  heap.setU32(__addr_local_c, (0) >>> 0);
+  heap.setU32(__addr_local_a, (0) >>> 0);
+  heap.setU32(__addr_local_8, (8) >>> 0);
+  heap.setU32(__addr_local_6, (8) >>> 0);
+  heap.setU32(__addr_local_4, (0) >>> 0);
+  heap.setU32(__addr_local_2, (0) >>> 0);
+  uVar6 = ((0) >>> 0);
   do {
-    puVar8 = local_10;
-    for (iVar4 = 0x10; iVar4 != 0; iVar4 = iVar4 + -1) {
-      heap.setU32(puVar8, (0) >>> 0);
-      puVar8 = puVar8 + 1;
+    puVar8 = ((heap.u32(__addr_local_10)) >>> 0);
+    for (iVar4 = ((0x10) >>> 0); iVar4 != 0; iVar4 = (((iVar4 + -1) >>> 0)) >>> 0) {
+      heap.setU32(puVar8, (0) & 0xffffffff);
+      puVar8 = ((puVar8 + ((1) * 4)) >>> 0);
     }
-    FUN_009b438b(heap);
-    uVar7 = 0;
+    (regs.eax = FUN_009b438b(heap));
+    uVar7 = ((0) >>> 0);
     do {
-      pcVar9 = (local_10 + uVar7);
-      iVar4 = 8;
-      uVar3 = 0;
+      pcVar9 = (((((heap.u32(__addr_local_10)) >>> 0) + uVar7)) >>> 0);
+      iVar4 = ((8) >>> 0);
+      uVar3 = ((0) >>> 0);
       do {
-        bVar2 = uVar3 + heap.u32(pcVar9);
-        uVar3 = CONCAT31((int3)(uVar3 >>> 8), bVar2) >>> 1 | ((bVar2 & 1) != 0) << 0x1f;
-        pcVar9 = pcVar9 + 8;
-        iVar4 = iVar4 + -1;
+        bVar2 = ((((uVar3) << 24 >> 24) + heap.i8(pcVar9)) & 0xff);
+        uVar3 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar3 >>> 8)), bVar2) >>> 1 | (((bVar2 & 1) != 0) >>> 0) << 0x1f) >>> 0);
+        pcVar9 = ((pcVar9 + 8) >>> 0);
+        iVar4 = ((iVar4 + -1) >>> 0);
       } while (iVar4 != 0);
-      heap.setU32(((__addr_DAT_006432d8) + (uVar6 * 8 + uVar7) * 4), ((uVar3 >>> 0x18)) >>> 0);
-      uVar7 = uVar7 + 1;
+      heap.setU32(((0x006432d8) + (uVar6 * 8 + uVar7) * 4), ((((uVar3 >>> 0x18)) << 24 >> 24)) & 0xffffffff);
+      uVar7 = ((uVar7 + 1) >>> 0);
     } while (uVar7 < 8);
-    uVar6 = uVar6 + 1;
+    uVar6 = ((uVar6 + 1) >>> 0);
   } while (uVar6 < 0xe0);
-  puVar8 = __addr_DAT_008dffb4;
-  puVar10 = __addr_DAT_006439ea;
-  iVar4 = 0x10;
+  puVar8 = ((0x008dffb4) >>> 0);
+  puVar10 = ((0x006439ea) >>> 0);
+  iVar4 = ((0x10) >>> 0);
   do {
-    heap.setU32(puVar8, (puVar10) >>> 0);
-    heap.setU32((puVar8 + 1), (0x40) >>> 0);
-    heap.setU32((puVar8 + 6), (0x20) >>> 0);
-    heap.setU32(puVar10, (0xffff) >>> 0);
-    heap.setU32((puVar10 + 7), (0) >>> 0);
-    puVar8 = puVar8 + 4;
-    puVar10 = puVar10 + 0x409;
-    iVar4 = iVar4 + -1;
+    heap.setU32(puVar8, (puVar10) & 0xffffffff);
+    heap.setU16((puVar8 + ((1) * 4)), (0x40) & 0xffff);
+    heap.setU16((((puVar8) >>> 0) + 6), (0x20) & 0xffff);
+    heap.setU32(puVar10, (0xffff) & 0xffffffff);
+    heap.setU32((puVar10 + ((7) * 2)), (0) & 0xffffffff);
+    puVar8 = ((puVar8 + ((4) * 4)) >>> 0);
+    puVar10 = ((puVar10 + ((0x409) * 2)) >>> 0);
+    iVar4 = ((iVar4 + -1) >>> 0);
   } while (iVar4 != 0);
   return;
 } finally {
-    heap.freeFrame(36);
+    heap.freeFrame(82);
   }
 }

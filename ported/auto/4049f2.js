@@ -10,32 +10,32 @@ export function FUN_004049f2(heap, param_1) {
   let hdc = 0;
   let uVar2 = 0;
   let iVar3 = 0;
-  iVar1 = GetSystemMetrics(heap, 0);
-  heap.setU32(param_1, (iVar1) >>> 0);
-  iVar1 = GetSystemMetrics(heap, 1);
-  heap.setU32((param_1 + (1) * 4), (iVar1) >>> 0);
-  hdc = GetDC(heap, 0x0);
-  if (hdc == 0x0) {
-    heap.setU32((param_1 + 3), (0) >>> 0);
-    heap.setU32((param_1 + 7), (0) >>> 0);
-    heap.setU32((param_1 + (6) * 4), (0) >>> 0);
-    heap.setU32((param_1 + (8) * 4), (0) >>> 0);
+  iVar1 = ((GetSystemMetrics(heap, 0)) >>> 0);
+  heap.setU32(param_1, (((iVar1) << 16 >> 16)) & 0xffffffff);
+  iVar1 = ((GetSystemMetrics(heap, 1)) >>> 0);
+  heap.setU32((param_1 + (1) * 4), (((iVar1) << 16 >> 16)) & 0xffffffff);
+  hdc = ((GetDC(heap, ((0x0) >>> 0))) >>> 0);
+  if (hdc == ((0x0) >>> 0)) {
+    heap.setU8((param_1 + 3), (0) & 0xff);
+    heap.setU8((((param_1) >>> 0) + 7), (0) & 0xff);
+    heap.setU32((param_1 + (6) * 4), (0) & 0xffffffff);
+    heap.setU32((param_1 + (8) * 4), (0) & 0xffffffff);
   } else {
-    uVar2 = GetDeviceCaps(heap, hdc, 0x26);
-    iVar1 = GetDeviceCaps(heap, hdc, 0x68);
-    iVar3 = GetDeviceCaps(heap, hdc, 0xc);
-    heap.setU32((param_1 + 3), (iVar3) >>> 0);
-    heap.setU32((param_1 + 7), ((uVar2 & 0x100) != 0) >>> 0);
-    heap.setU32((param_1 + (6) * 4), (iVar1) >>> 0);
-    iVar1 = GetDeviceCaps(heap, hdc, 0x6c);
-    heap.setU32((param_1 + (8) * 4), (iVar1 / 3) >>> 0);
-    ReleaseDC(heap, 0x0, hdc);
+    uVar2 = ((GetDeviceCaps(heap, hdc, 0x26)) >>> 0);
+    iVar1 = ((GetDeviceCaps(heap, hdc, 0x68)) >>> 0);
+    iVar3 = ((GetDeviceCaps(heap, hdc, 0xc)) >>> 0);
+    heap.setI8((param_1 + 3), (((iVar3) << 24 >> 24)) & 0xff);
+    heap.setU32((((param_1) >>> 0) + 7), ((uVar2 & 0x100) != 0) & 0xffffffff);
+    heap.setU32((param_1 + (6) * 4), (((iVar1) << 16 >> 16)) & 0xffffffff);
+    iVar1 = ((GetDeviceCaps(heap, hdc, 0x6c)) >>> 0);
+    heap.setU32((param_1 + (8) * 4), (((iVar1) & 0xff) / 3) & 0xffffffff);
+    ReleaseDC(heap, ((0x0) >>> 0), hdc);
   }
-  heap.setU32((param_1 + (4) * 4), (0) >>> 0);
-  heap.setU32((param_1 + (5) * 4), (0) >>> 0);
-  heap.setU32((param_1 + 2), (0) >>> 0);
-  heap.setU32((param_1 + 5), (0) >>> 0);
-  heap.setU32((param_1 + 7), (0) >>> 0);
-  heap.setU32((param_1 + 0xf), (0) >>> 0);
+  heap.setU32((param_1 + (4) * 4), (0) & 0xffffffff);
+  heap.setU32((param_1 + (5) * 4), (0) & 0xffffffff);
+  heap.setU8((param_1 + 2), (0) & 0xff);
+  heap.setU8((((param_1) >>> 0) + 5), (0) & 0xff);
+  heap.setU8((param_1 + 7), (0) & 0xff);
+  heap.setU8((((param_1) >>> 0) + 0xf), (0) & 0xff);
   return;
 }

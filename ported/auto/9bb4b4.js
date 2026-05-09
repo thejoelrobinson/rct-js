@@ -4,42 +4,43 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00401220 } from "./401220.js";
 import { FUN_0042f3a2 } from "./42f3a2.js";
 export function FUN_009bb4b4(heap) {
-  let in_AL = 0;
+  let in_AL = regs.eax & 0xff;
   let cVar1 = 0;
-  if (in_AL == '\x01') {
-    LAB_009bb511: heap.setU32(0x005f8d5b, (1) >>> 0);
-    cVar1 = FUN_00401220(heap, 3);
-    if (cVar1 != '\0') {
-      /* goto LAB_009bb526 */ throw new Error("goto LAB_009bb526 not supported");
+  LAB_009bb526: {
+  if (in_AL == 1) {
+    LAB_009bb511: heap.setU8(0x005f8d5b, (1) & 0xff);
+    cVar1 = (((regs.eax = FUN_00401220(heap, 3))) & 0xff);
+    if (cVar1 != 0) {
+      break LAB_009bb526;
     }
   } else {
-    if (in_AL == '\x02') {
-      LAB_009bb4fc: heap.setU32(0x005f8d5b, (2) >>> 0);
-      cVar1 = FUN_00401220(heap, 4);
-      if (cVar1 != '\0') {
-        /* goto LAB_009bb526 */ throw new Error("goto LAB_009bb526 not supported");
+    if (in_AL == 2) {
+      LAB_009bb4fc: heap.setU8(0x005f8d5b, (2) & 0xff);
+      cVar1 = (((regs.eax = FUN_00401220(heap, 4))) & 0xff);
+      if (cVar1 != 0) {
+        break LAB_009bb526;
       }
-      /* goto LAB_009bb511 */ throw new Error("goto LAB_009bb511 not supported");
+      /* goto LAB_009bb511 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009bb4b4/LAB_009bb511"); return 0;
     }
-    if (in_AL == '\x03') {
-      heap.setU32(0x005f8d5b, (3) >>> 0);
-      cVar1 = FUN_00401220(heap, 5);
-      if (cVar1 != '\0') {
-        /* goto LAB_009bb526 */ throw new Error("goto LAB_009bb526 not supported");
+    if (in_AL == 3) {
+      heap.setU8(0x005f8d5b, (3) & 0xff);
+      cVar1 = (((regs.eax = FUN_00401220(heap, 5))) & 0xff);
+      if (cVar1 != 0) {
+        break LAB_009bb526;
       }
-      /* goto LAB_009bb4fc */ throw new Error("goto LAB_009bb4fc not supported");
+      /* goto LAB_009bb4fc — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009bb4b4/LAB_009bb4fc"); return 0;
     }
   }
-  heap.setU32(0x005f8d5b, (0) >>> 0);
-  cVar1 = FUN_00401220(heap, 1);
-  if (cVar1 == '\0') {
-    heap.setU32(0x005f8d5b, (1) >>> 0);
-    FUN_00401220(heap, 3);
-    return;
+  heap.setU8(0x005f8d5b, (0) & 0xff);
+  cVar1 = (((regs.eax = FUN_00401220(heap, 1))) & 0xff);
+  if (cVar1 == 0) {
+    heap.setU8(0x005f8d5b, (1) & 0xff);
+    return (regs.eax = FUN_00401220(heap, 3));
   }
-  LAB_009bb526: FUN_0042f3a2(heap);
-  return;
+  }
+  return (regs.eax = FUN_0042f3a2(heap));
 }

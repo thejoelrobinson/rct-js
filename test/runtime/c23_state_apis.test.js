@@ -209,6 +209,10 @@ describe("user32 window + message subsystem", () => {
       return 42;
     });
 
+    // CreateWindowExA now auto-posts WM_SIZE (matches real Win32). Drain
+    // the queue before testing the explicit Post→Peek round-trip.
+    state.messageQueue.length = 0;
+
     // Post WM_TIMER (0x113), wParam=7, lParam=0
     PostMessageA(heap, hwnd, 0x113, 7, 0);
     expect(state.messageQueue.length).toBe(1);

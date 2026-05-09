@@ -4,26 +4,21 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_005e5b80 } from "./5e5b80.js";
 import { FUN_005e5bd8 } from "./5e5bd8.js";
 export function FUN_005dfc0c(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_009a013c = __sp + 0;
-  try {
   let puVar1 = 0;
   let puVar2 = 0;
-  FUN_005e5b80(heap);
-  puVar2 = heap.u32(0x009a1164);
-  while (__addr_DAT_009a013c <= puVar2 + -0x178) {
-    puVar1 = (puVar2 + -0x146);
-    puVar2 = puVar2 + -0x178;
-    if ((heap.u32(puVar1) & 3) == 0) {
-      FUN_005e5bd8(heap);
-      puVar2 = heap.u32(0x009a1164);
+  (regs.eax = FUN_005e5b80(heap));
+  puVar2 = ((heap.u32(0x009a1164)) >>> 0);
+  while (0x009a013c <= puVar2 + -0x178) {
+    puVar1 = (((puVar2 + -0x146)) >>> 0);
+    puVar2 = ((puVar2 + -0x178) >>> 0);
+    if ((heap.u16(puVar1) & 3) == 0) {
+      (regs.eax = FUN_005e5bd8(heap));
+      puVar2 = ((heap.u32(0x009a1164)) >>> 0);
     }
   }
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

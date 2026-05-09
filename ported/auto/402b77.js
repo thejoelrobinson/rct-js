@@ -10,11 +10,11 @@ export function FUN_00402b77(heap) {
   let dwPriorityClass = 0;
   let nPriority = 0;
   if ((heap.u32(0x005e9128) != 0) && (heap.setU32(0x005e915c, (heap.u32(0x005e915c) + -1) >>> 0), heap.u32(0x005e915c) == 0)) {
-    dwPriorityClass = heap.u32(0x005f2408);
-    pvVar1 = GetCurrentProcess(heap);
+    dwPriorityClass = ((heap.u32(0x005f2408)) >>> 0);
+    pvVar1 = ((GetCurrentProcess(heap)) >>> 0);
     SetPriorityClass(heap, pvVar1, dwPriorityClass);
-    nPriority = heap.u32(0x005f1fe8);
-    pvVar1 = GetCurrentThread(heap);
+    nPriority = ((heap.u32(0x005f1fe8)) >>> 0);
+    pvVar1 = ((GetCurrentThread(heap)) >>> 0);
     SetThreadPriority(heap, pvVar1, nPriority);
     heap.setU32(0x005e9128, (0) >>> 0);
   }

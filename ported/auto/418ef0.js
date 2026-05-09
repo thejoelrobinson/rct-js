@@ -7,11 +7,11 @@
 export function FUN_00418ef0(heap, param_1, param_2, param_3) {
   let uVar1 = 0;
   let uVar2 = 0;
-  uVar2 = 0;
-  uVar1 = param_2 + param_1;
+  uVar2 = ((0) >>> 0);
+  uVar1 = ((param_2 + param_1) >>> 0);
   if ((uVar1 < param_1) || (uVar1 < param_2)) {
-    uVar2 = 1;
+    uVar2 = ((1) >>> 0);
   }
-  heap.setU32(param_3, (uVar1) >>> 0);
+  heap.setU32(param_3, (uVar1) & 0xffffffff);
   return uVar2;
 }

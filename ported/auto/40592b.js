@@ -4,6 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-export function FUN_0040592b(heap, ...args) {
-  throw new Error("c-to-js: parse failed for FUN_0040592b — function not translated");
+import { SetCursorPos } from "../../runtime/win32.js";
+export function FUN_0040592b(heap, param_1, param_2) {
+  let pHVar1 = 0;
+  pHVar1 = ((SetCursorPos(heap, ((param_1) >>> 0), param_2)) >>> 0);
+  return pHVar1;
 }

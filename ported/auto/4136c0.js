@@ -4,22 +4,12 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { FUN_004167c0 } from "./4167c0.js";
 export function FUN_004136c0(heap) {
-  const __sp = heap.allocFrame(16);
-  const __addr_LAB_00416820 = __sp + 0;
-  const __addr_LAB_00416c60 = __sp + 4;
-  const __addr_LAB_004168b0 = __sp + 8;
-  const __addr_LAB_00416890 = __sp + 12;
-  try {
-  PTR_FUN_005ee534 = __addr_LAB_00416820;
-  PTR_FUN_005ee530 = __addr_LAB_00416c60;
-  PTR_FUN_005ee538 = __addr_LAB_004168b0;
-  PTR_FUN_005ee53c = FUN_004167c0;
-  PTR_FUN_005ee540 = __addr_LAB_00416890;
-  PTR_FUN_005ee544 = __addr_LAB_00416c60;
+  heap.setU32(0x005ee534, (0x00416820) >>> 0);
+  heap.setU32(0x005ee530, (0x00416c60) >>> 0);
+  heap.setU32(0x005ee538, (0x004168b0) >>> 0);
+  heap.setU32(0x005ee53c, (0x004167c0) >>> 0);
+  heap.setU32(0x005ee540, (0x00416890) >>> 0);
+  heap.setU32(0x005ee544, (0x00416c60) >>> 0);
   return;
-} finally {
-    heap.freeFrame(16);
-  }
 }

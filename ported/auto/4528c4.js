@@ -5,6 +5,6 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_004528c4(heap) {
-  heap.setU32(0x006326bc, (heap.u32(0x006326bc) + -1) >>> 0);
+  heap.setU8(0x006326bc, (heap.u8(0x006326bc) + -1) & 0xff);
   return;
 }

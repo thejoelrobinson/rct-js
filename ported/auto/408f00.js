@@ -7,8 +7,8 @@
 import { _memset } from "../../runtime/win32.js";
 export function FUN_00408f00(heap, param_1) {
   _memset(heap, param_1, 0, 0xa8);
-  _memset(heap, (param_1 + 0x14), 0, 0x6c);
-  heap.setU32((param_1 + 0x14), (0x6c) >>> 0);
-  heap.setU32((param_1 + 0x80), (heap.u32(0x005ebf34)) >>> 0);
+  _memset(heap, (((param_1) >>> 0) + 0x14), 0, 0x6c);
+  heap.setU32((((param_1) >>> 0) + 0x14), (0x6c) & 0xffffffff);
+  heap.setU32((((param_1) >>> 0) + 0x80), (heap.u32(0x005ebf34)) & 0xffffffff);
   return 1;
 }

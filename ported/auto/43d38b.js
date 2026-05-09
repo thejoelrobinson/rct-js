@@ -4,14 +4,14 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00423677 } from "./423677.js";
 export function FUN_0043d38b(heap) {
   let bVar1 = 0;
-  let unaff_ESI = 0;
-  bVar1 = heap.u32((unaff_ESI + 0x29));
+  let unaff_ESI = regs.esi >>> 0;
+  bVar1 = ((heap.u8((unaff_ESI + 0x29))) & 0xff);
   if ((bVar1 & 0x18) != 0) {
-    FUN_00423677(heap);
-    return;
+    return (regs.eax = FUN_00423677(heap));
   }
   if ((bVar1 & 4) != 0) {
     switch (bVar1 & 3) {

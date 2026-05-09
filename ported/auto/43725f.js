@@ -5,32 +5,29 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_0043725f(heap) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_00887420 = __sp + 0;
-  const __addr_DAT_006e1ecc = __sp + 4;
-  try {
   let bVar1 = 0;
-  let in_EAX = 0;
-  let in_EDX = 0;
-  let unaff_ESI = 0;
-  bVar1 = heap.u32(unaff_ESI) & 0x3c;
+  let in_EAX = regs.eax >>> 0;
+  let in_EDX = regs.edx >>> 0;
+  let unaff_ESI = regs.esi >>> 0;
+  bVar1 = ((heap.u8(unaff_ESI) & 0x3c) & 0xff);
   if (bVar1 == 0) {
     heap.setU32(0x00991efc, (0x3b7) >>> 0);
   } else {
     if (bVar1 == 8) {
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0043725f"); })();
+    heap.setU16((0x00971e86 + 0), (heap.u32(((0x00887420) & 0xff) + (((heap.u8(unaff_ESI + (7))) >>> 0) * 0x260) * 4) + 0x101) & 0xffff);
     heap.setU32(0x00991efc, (0x5a4) >>> 0);
   } else {
     if (bVar1 == 0xc) {
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0043725f"); })();
+    heap.setU16((0x00971e86 + 0), (heap.i16((0x006e1ecc + ((heap.u8(unaff_ESI + (4))) >>> 0) * 8))) & 0xffff);
     heap.setU32(0x00991efc, (0x5a4) >>> 0);
   } else {
     if (bVar1 == 4) {
     heap.setU32(0x00991efc, (0x4db) >>> 0);
   } else {
     if (bVar1 == 0x10) {
-    bVar1 = heap.u32(unaff_ESI + (4) * 4);
+    bVar1 = ((heap.u8(unaff_ESI + (4))) & 0xff);
     if (bVar1 == 0) {
       heap.setU32(0x00991efc, (0x3b8) >>> 0);
     } else {
@@ -46,7 +43,7 @@ export function FUN_0043725f(heap) {
     }
   } else {
     if (bVar1 == 0x18) {
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0043725f"); })();
+    heap.setU16((0x00971e86 + 0), ((heap.u16((unaff_ESI + 4)) & 0x3ff) + 0x7de) & 0xffff);
     heap.setU32(0x00991efc, (0x5a4) >>> 0);
   } else {
     heap.setU32(0x00991efc, (0x38a) >>> 0);
@@ -56,8 +53,5 @@ export function FUN_0043725f(heap) {
   }
   }
   }
-  return CONCAT44(in_EDX, in_EAX);
-} finally {
-    heap.freeFrame(8);
-  }
+  return 1;
 }

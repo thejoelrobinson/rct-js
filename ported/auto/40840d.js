@@ -8,11 +8,11 @@ import { DeleteFileA } from "../../runtime/win32.js";
 export function FUN_0040840d(heap, param_1) {
   let BVar1 = 0;
   let uVar2 = 0;
-  BVar1 = DeleteFileA(heap, param_1);
+  BVar1 = ((DeleteFileA(heap, param_1)) >>> 0);
   if (BVar1 == 0) {
-    uVar2 = 0xffffffff;
+    uVar2 = ((0xffffffff) >>> 0);
   } else {
-    uVar2 = 0;
+    uVar2 = ((0) >>> 0);
   }
   return uVar2;
 }

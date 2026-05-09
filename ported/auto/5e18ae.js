@@ -4,14 +4,15 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_005e18ae(heap) {
-  let in_AX = 0;
-  let unaff_BX = 0;
-  let unaff_ESI = 0;
-  if ((heap.u32((unaff_ESI + 0x16e)) == -1) && ((heap.u32((unaff_ESI + 0x32)) & 4) == 0)) {
-    heap.setU32((unaff_ESI + 0x170), (in_AX) >>> 0);
-    heap.setU32((unaff_ESI + 0x172), (unaff_BX) >>> 0);
-    heap.setU32((unaff_ESI + 0x32), (heap.u32((unaff_ESI + 0x32)) | 8) >>> 0);
+  let in_AX = regs.eax & 0xffff;
+  let unaff_BX = regs.ebx & 0xffff;
+  let unaff_ESI = regs.esi >>> 0;
+  if (((heap.i16((unaff_ESI + 0x16e)) | 0) == -1) && ((heap.u16((unaff_ESI + 0x32)) & 4) == 0)) {
+    heap.setU16((unaff_ESI + 0x170), (in_AX) & 0xffff);
+    heap.setU16((unaff_ESI + 0x172), (unaff_BX) & 0xffff);
+    heap.setU16((unaff_ESI + 0x32), (heap.u16((unaff_ESI + 0x32)) | 8) & 0xffff);
   }
   return;
 }

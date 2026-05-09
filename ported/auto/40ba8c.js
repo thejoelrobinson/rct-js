@@ -4,20 +4,16 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_0040ba8c(heap, param_1) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f0960 = __sp + 0;
-  try {
   if (param_1 == 0) {
-    (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x50))))(heap.u32(0x005ebf30), heap.u32(0x005e916c), 0xb);
+    (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x50)), heap.u32(0x005ebf30), heap.u32(0x005e916c), 0xb));
   } else {
-    (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x50))))(heap.u32(0x005ebf30), heap.u32(0x005e916c), 0x13);
+    (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x50)), heap.u32(0x005ebf30), heap.u32(0x005e916c), 0x13));
   }
   if (heap.u32(0x005ebf3c) != 0x0) {
-    (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf3c)) + 0x18))))(heap.u32(0x005ebf3c), 0, 0, 0x100, __addr_DAT_005f0960);
+    (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf3c)) + 0x18)), heap.u32(0x005ebf3c), 0, 0, 0x100, 0x005f0960));
   }
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

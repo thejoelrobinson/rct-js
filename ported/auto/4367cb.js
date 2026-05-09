@@ -4,13 +4,11 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_004367cb(heap) {
-  const __sp = heap.allocFrame(8);
-  const __addr_PTR_LAB_004368c8 = __sp + 0;
-  const __addr_PTR_LAB_00436a8c = __sp + 4;
-  try {
-  let in_AX = 0;
-  let in_CX = 0;
+  let in_AX = regs.eax & 0xffff;
+  let in_CX = regs.ecx & 0xffff;
   if ((((in_AX < 0xfe0) && (in_CX < 0xfe0)) && (0x1f < in_AX)) && (0x1f < in_CX)) {
     heap.setU32(0x00991f04, (0xffff) >>> 0);
     heap.setU32(0x00991f08, (0xffff) >>> 0);
@@ -23,20 +21,15 @@ export function FUN_004367cb(heap) {
     heap.setU32(0x00991f24, (0xffff) >>> 0);
     heap.setU32(0x00991f28, (0xffff) >>> 0);
     heap.setU32(0x00991f2c, (0xffff) >>> 0);
-    heap.setU32(0x0099c165, (0) >>> 0);
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
+    heap.setU8(0x0099c165, (0) & 0xff);
+    heap.setU8((0x00999f9a + 0), (0xff) & 0xff);
+    heap.setU8((0x00999fdc + 0), (0xff) & 0xff);
     heap.setU32(0x0099a01e, (0xff) >>> 0);
     heap.setU32(0x00991f72, (in_AX) >>> 0);
     heap.setU32(0x00991f76, (in_CX) >>> 0);
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
-    (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_004367cb"); })();
-    (heap.u32(heap.u32((__addr_PTR_LAB_004368c8) + (heap.u32(0x00991f88)) * 4)))();
-    return;
+    heap.setU16((0x00991f7c + 0), (in_AX) & 0xffff);
+    heap.setU16((0x00991f7c + 2), (in_CX) & 0xffff);
+    return (regs.eax = callIndirect(heap, heap.u32((0x004368c8) + (heap.u8(0x00991f88)) * 4)));
   }
-  (heap.u32(heap.u32((__addr_PTR_LAB_00436a8c) + (heap.u32(0x00991f88)) * 4)))();
-  return;
-} finally {
-    heap.freeFrame(8);
-  }
+  return (regs.eax = callIndirect(heap, heap.u32((0x00436a8c) + (heap.u8(0x00991f88)) * 4)));
 }

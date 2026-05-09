@@ -6,6 +6,5 @@
 
 import { DirectInputCreateA } from "../../runtime/win32.js";
 export function FUN_0041b188(heap) {
-  DirectInputCreateA(heap);
-  return;
+  return DirectInputCreateA(heap);
 }

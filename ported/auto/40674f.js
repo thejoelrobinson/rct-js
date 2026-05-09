@@ -13,8 +13,8 @@ export function FUN_0040674f(heap, param_1, param_2) {
     heap.setU32((param_1 + 8), (0) >>> 0);
     heap.setU32((param_1 + 4), (0) >>> 0);
     heap.setU32((param_1 + 12), (0) >>> 0);
-    format = 0xc20;
-    cchText = _strlen(heap, param_2);
+    format = ((0xc20) >>> 0);
+    cchText = ((_strlen(heap, param_2)) >>> 0);
     DrawTextA(heap, heap.u32(0x005ebe48), param_2, cchText, param_1, format);
   }
   return;

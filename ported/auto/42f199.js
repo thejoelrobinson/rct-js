@@ -5,38 +5,30 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0042f199(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_DAT_005f8ea4 = __sp + 0;
-  const __addr_DAT_005f91d9 = __sp + 4;
-  const __addr_DAT_008dbe94 = __sp + 8;
-  try {
   let cVar1 = 0;
   let pcVar2 = 0;
   let pcVar3 = 0;
   let pcVar4 = 0;
-  pcVar2 = __addr_DAT_005f8ea4;
-  pcVar3 = __addr_DAT_005f91d9;
+  pcVar2 = ((0x005f8ea4) >>> 0);
+  pcVar3 = ((0x005f91d9) >>> 0);
   do {
-    pcVar4 = pcVar3;
-    cVar1 = heap.u32(pcVar2);
-    heap.setU32(pcVar4, (cVar1) >>> 0);
-    pcVar2 = pcVar2 + 1;
-    pcVar3 = pcVar4 + 1;
-  } while (cVar1 != '\0');
-  if (heap.u32(__addr_DAT_008dbe94) != '\0') {
-    pcVar3 = __addr_DAT_008dbe94;
+    pcVar4 = ((pcVar3) >>> 0);
+    cVar1 = ((heap.i8(pcVar2)) & 0xff);
+    heap.setU32(pcVar4, (cVar1) & 0xffffffff);
+    pcVar2 = ((pcVar2 + 1) >>> 0);
+    pcVar3 = ((pcVar4 + 1) >>> 0);
+  } while (cVar1 != 0);
+  if (heap.u8(0x008dbe94) != 0) {
+    pcVar3 = ((0x008dbe94) >>> 0);
     do {
-      pcVar2 = pcVar4;
-      cVar1 = heap.u32(pcVar3);
-      heap.setU32(pcVar2, (cVar1) >>> 0);
-      pcVar3 = pcVar3 + 1;
-      pcVar4 = pcVar2 + 1;
-    } while (cVar1 != '\0');
-    heap.setU32(pcVar2, (heap.u32(0x005f92db)) >>> 0);
-    heap.setU32((pcVar2 + (4) * 4), ('\0') >>> 0);
+      pcVar2 = ((pcVar4) >>> 0);
+      cVar1 = ((heap.i8(pcVar3)) & 0xff);
+      heap.setU32(pcVar2, (cVar1) & 0xffffffff);
+      pcVar3 = ((pcVar3 + 1) >>> 0);
+      pcVar4 = ((pcVar2 + 1) >>> 0);
+    } while (cVar1 != 0);
+    heap.setU32(pcVar2, (heap.u32(0x005f92db)) & 0xffffffff);
+    heap.setI8((pcVar2 + (4)), (0) & 0xff);
   }
   return;
-} finally {
-    heap.freeFrame(12);
-  }
 }

@@ -5,6 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { DeleteObject, GetModuleHandleA, LoadImageA } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00411a34 } from "./411a34.js";
 export function FUN_004119a0(heap, param_1, param_2) {
   let hInst = 0;
@@ -15,20 +16,20 @@ export function FUN_004119a0(heap, param_1, param_2) {
   let cy = 0;
   let fuLoad = 0;
   let local_c = 0;
-  fuLoad = 0x2000;
-  cy = 0;
-  cx = 0;
-  type = 0;
-  name = param_2;
-  hInst = GetModuleHandleA(heap, 0x0);
-  local_c = LoadImageA(heap, hInst, name, type, cx, cy, fuLoad);
+  fuLoad = ((0x2000) >>> 0);
+  cy = ((0) >>> 0);
+  cx = ((0) >>> 0);
+  type = ((0) >>> 0);
+  name = ((param_2) >>> 0);
+  hInst = ((GetModuleHandleA(heap, ((0x0) >>> 0))) >>> 0);
+  local_c = ((LoadImageA(heap, hInst, name, type, cx, cy, fuLoad)) >>> 0);
   if (local_c == 0x0) {
-    local_c = LoadImageA(heap, 0x0, param_2, 0, 0, 0, 0x2010);
+    local_c = ((LoadImageA(heap, ((0x0) >>> 0), param_2, 0, 0, 0, 0x2010)) >>> 0);
   }
-  if (local_c == 0x0) {
-    uVar1 = 0x80004005;
+  if (local_c == ((0x0) >>> 0)) {
+    uVar1 = ((0x80004005) >>> 0);
   } else {
-    uVar1 = FUN_00411a34(heap, param_1, local_c, 0, 0, 0, 0);
+    uVar1 = (((regs.eax = FUN_00411a34(heap, param_1, local_c, 0, 0, 0, 0))) >>> 0);
     DeleteObject(heap, local_c);
   }
   return uVar1;

@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_004269d0 } from "./4269d0.js";
 import { FUN_004269da } from "./4269da.js";
 import { FUN_00427247 } from "./427247.js";
@@ -27,31 +28,31 @@ import { FUN_005ddf20 } from "./5ddf20.js";
 import { FUN_005e0d60 } from "./5e0d60.js";
 import { FUN_005e6028 } from "./5e6028.js";
 export function FUN_00438a1f(heap) {
-  if ((heap.u32(0x0099c169) & 1) != 0) {
-    FUN_00427247(heap);
+  if ((heap.u8(0x0099c169) & 1) != 0) {
+    (regs.eax = FUN_00427247(heap));
   }
   heap.setU32(0x0099a500, (heap.u32(0x0099a500) | 1) >>> 0);
-  FUN_004269d0(heap);
-  FUN_0045a895(heap);
-  FUN_00444a79(heap);
-  FUN_0044a381(heap);
-  FUN_0043910f(heap);
-  FUN_00454520(heap);
-  FUN_0043645c(heap);
-  FUN_004269da(heap);
-  FUN_0045aaf8(heap);
-  FUN_0045abea(heap);
-  FUN_005ddf20(heap);
-  FUN_0044a363(heap);
-  FUN_004390dc(heap);
-  FUN_00454518(heap);
-  FUN_00436558(heap);
-  FUN_00444b4a(heap);
-  FUN_005e0d60(heap);
-  FUN_0042c6f3(heap);
-  FUN_004298a0(heap);
-  FUN_004306d5(heap);
-  FUN_005e6028(heap);
+  (regs.eax = FUN_004269d0(heap));
+  (regs.eax = FUN_0045a895(heap));
+  (regs.eax = FUN_00444a79(heap));
+  (regs.eax = FUN_0044a381(heap));
+  (regs.eax = FUN_0043910f(heap));
+  (regs.eax = FUN_00454520(heap));
+  (regs.eax = FUN_0043645c(heap));
+  (regs.eax = FUN_004269da(heap));
+  (regs.eax = FUN_0045aaf8(heap));
+  (regs.eax = FUN_0045abea(heap));
+  (regs.eax = FUN_005ddf20(heap));
+  (regs.eax = FUN_0044a363(heap));
+  (regs.eax = FUN_004390dc(heap));
+  (regs.eax = FUN_00454518(heap));
+  (regs.eax = FUN_00436558(heap));
+  (regs.eax = FUN_00444b4a(heap));
+  (regs.eax = FUN_005e0d60(heap));
+  (regs.eax = FUN_0042c6f3(heap));
+  (regs.eax = FUN_004298a0(heap));
+  (regs.eax = FUN_004306d5(heap));
+  (regs.eax = FUN_005e6028(heap));
   heap.setU32(0x0099a4fe, (0) >>> 0);
   return;
 }

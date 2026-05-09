@@ -6,6 +6,5 @@
 
 import { LoadCursorA } from "../../runtime/win32.js";
 export function FUN_00404bc3(heap, param_1) {
-  LoadCursorA(heap, heap.u32(0x005f1398), param_1);
-  return;
+  return LoadCursorA(heap, heap.u32(0x005f1398), param_1);
 }

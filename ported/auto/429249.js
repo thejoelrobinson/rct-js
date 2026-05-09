@@ -4,40 +4,35 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00429249(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_00971ef4 = __sp + 0;
-  try {
   let bVar1 = 0;
   let sVar2 = 0;
   let uVar3 = 0;
   let uVar4 = 0;
   let pbVar5 = 0;
-  sVar2 = 0;
-  uVar3 = 0;
+  sVar2 = ((0) & 0xffff);
+  uVar3 = ((0) & 0xffff);
   do {
-    uVar4 = 0;
+    uVar4 = ((0) & 0xffff);
     do {
-      pbVar5 = heap.u32((__addr_DAT_00971ef4) + (((uVar4 << 7 | uVar4 >>> 9 | uVar3) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
-      bVar1 = heap.u32(pbVar5);
+      pbVar5 = ((heap.u32((0x00971ef4) + (((((uVar4 << 7 | uVar4 >>> 9 | uVar3) & 0xffff) >>> 5 | (uVar4 >>> 9) << 0xb) & 0xffff)) * 4)) >>> 0);
+      bVar1 = ((heap.u8(pbVar5)) & 0xff);
       while ((bVar1 & 0x3c) != 0) {
-        pbVar5 = pbVar5 + 8;
-        bVar1 = heap.u32(pbVar5);
+        pbVar5 = ((pbVar5 + 8) >>> 0);
+        bVar1 = ((heap.u8(pbVar5)) & 0xff);
       }
-      if ((heap.u32(pbVar5 + (7) * 4) & 0x30) != 0) {
-        sVar2 = sVar2 + 1;
+      if ((heap.u8(pbVar5 + (7)) & 0x30) != 0) {
+        sVar2 = ((sVar2 + 1) & 0xffff);
       }
-      uVar4 = uVar4 + 0x20;
+      uVar4 = ((uVar4 + 0x20) & 0xffff);
     } while (uVar4 < 0x1000);
-    uVar3 = uVar3 + 0x20;
+    uVar3 = ((uVar3 + 0x20) & 0xffff);
   } while (uVar3 < 0x1000);
-  if (sVar2 != heap.u32(0x0087d0c2)) {
-    heap.setU32(0x0087d0c2, (sVar2) >>> 0);
-    FUN_005e5301(heap);
+  if (sVar2 != heap.u8(0x0087d0c2)) {
+    heap.setU8(0x0087d0c2, (sVar2) & 0xff);
+    (regs.eax = FUN_005e5301(heap));
   }
   return;
-} finally {
-    heap.freeFrame(4);
-  }
 }

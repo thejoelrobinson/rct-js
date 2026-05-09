@@ -6,6 +6,5 @@
 
 import { GetCurrentDirectoryA } from "../../runtime/win32.js";
 export function FUN_004084a5(heap, param_1) {
-  GetCurrentDirectoryA(heap, 0x80, param_1);
-  return;
+  return GetCurrentDirectoryA(heap, 0x80, param_1);
 }

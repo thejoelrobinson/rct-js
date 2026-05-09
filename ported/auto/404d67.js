@@ -11,7 +11,7 @@ export function FUN_00404d67(heap, param_1, param_2) {
   try {
   let BVar1 = 0;
   if (heap.u32(0x005e93fc) == 0) {
-    BVar1 = 0;
+    BVar1 = ((0) >>> 0);
   } else {
     heap.setU32(__addr_local_5c, (0x58) >>> 0);
     heap.setU32((__addr_local_5c + 4), (heap.u32(0x005e916c)) >>> 0);
@@ -20,10 +20,10 @@ export function FUN_00404d67(heap, param_1, param_2) {
     heap.setU32((__addr_local_5c + 16), (param_1) >>> 0);
     if (param_2 != 0x0) {
       _strncpy(heap, heap.u8((__addr_local_5c + 24)), param_2, 0x3f);
-      heap.setU32((heap.u8((__addr_local_5c + 24)) + (0x3f) * 4), ('\0') >>> 0);
+      heap.setU32((heap.u8((__addr_local_5c + 24)) + (0x3f) * 4), (0) & 0xffffffff);
       heap.setU32((__addr_local_5c + 12), (heap.u32((__addr_local_5c + 12)) | 4) >>> 0);
     }
-    BVar1 = Shell_NotifyIconA(heap, 1, __addr_local_5c);
+    BVar1 = ((Shell_NotifyIconA(heap, 1, __addr_local_5c)) >>> 0);
     heap.setU32(0x005e93fc, (BVar1) >>> 0);
   }
   return BVar1;

@@ -5,15 +5,9 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { SetWindowTextA } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00413170 } from "./413170.js";
 export function FUN_004034b4(heap, param_1) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f1ba0 = __sp + 0;
-  try {
-  FUN_00413170(heap, __addr_DAT_005f1ba0, param_1);
-  SetWindowTextA(heap, heap.u32(0x005e916c), __addr_DAT_005f1ba0);
-  return;
-} finally {
-    heap.freeFrame(4);
-  }
+  (regs.eax = FUN_00413170(heap, 0x005f1ba0, param_1));
+  return SetWindowTextA(heap, heap.u32(0x005e916c), 0x005f1ba0);
 }

@@ -4,36 +4,26 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0040871f } from "./40871f.js";
 import { FUN_004528a0 } from "./4528a0.js";
 import { FUN_004528c4 } from "./4528c4.js";
 import { FUN_00458bcf } from "./458bcf.js";
 export function FUN_0042f2de(heap) {
-  const __sp = heap.allocFrame(20);
-  const __addr_DAT_005f91d9 = __sp + 0;
-  const __addr_DAT_0099aa88 = __sp + 4;
-  const __addr_DAT_0099a888 = __sp + 8;
-  const __addr_DAT_005f92da = __sp + 12;
-  const __addr_DAT_0099a988 = __sp + 16;
-  try {
   let cVar1 = 0;
   let pcVar2 = 0;
   let pcVar3 = 0;
-  FUN_00458bcf(heap);
-  pcVar2 = __addr_DAT_005f91d9;
-  pcVar3 = __addr_DAT_0099aa88;
+  (regs.eax = FUN_00458bcf(heap));
+  pcVar2 = ((0x005f91d9) >>> 0);
+  pcVar3 = ((0x0099aa88) >>> 0);
   do {
-    cVar1 = heap.u32(pcVar2);
-    heap.setU32(pcVar3, (cVar1) >>> 0);
-    pcVar2 = pcVar2 + 1;
-    pcVar3 = pcVar3 + 1;
-  } while (cVar1 != '\0');
-  FUN_00458bcf(heap);
-  FUN_004528a0(heap);
-  FUN_0040871f(heap, 2, __addr_DAT_0099a888, __addr_DAT_0099aa88, __addr_DAT_005f92da, __addr_DAT_0099a988);
-  FUN_004528c4(heap);
-  return;
-} finally {
-    heap.freeFrame(20);
-  }
+    cVar1 = ((heap.i8(pcVar2)) & 0xff);
+    heap.setU32(pcVar3, (cVar1) & 0xffffffff);
+    pcVar2 = ((pcVar2 + 1) >>> 0);
+    pcVar3 = ((pcVar3 + 1) >>> 0);
+  } while (cVar1 != 0);
+  (regs.eax = FUN_00458bcf(heap));
+  (regs.eax = FUN_004528a0(heap));
+  (regs.eax = FUN_0040871f(heap, 2, 0x0099a888, 0x0099aa88, 0x005f92da, 0x0099a988));
+  return (regs.eax = FUN_004528c4(heap));
 }

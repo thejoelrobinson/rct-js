@@ -4,8 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_00449126(heap) {
-  let in_EDX = 0;
+  let in_EDX = regs.edx >>> 0;
   if ((in_EDX & 4) != 0) {
     switch (in_EDX & 3) {
       case 0:

@@ -6,12 +6,12 @@
 
 export function FUN_0041ffd2(heap) {
   let uVar1 = 0;
-  uVar1 = heap.u32(0x008ae980);
+  uVar1 = ((((heap.u32(0x008ae980)) >>> 0)) >>> 0);
   if (uVar1 != 0) {
-    uVar1 = uVar1 + 10;
+    uVar1 = ((uVar1 + 10) >>> 0);
   }
   if (0x14 < uVar1) {
-    uVar1 = 0x14;
+    uVar1 = ((0x14) >>> 0);
   }
   return uVar1 * 0x28000 >>> 0x10;
 }

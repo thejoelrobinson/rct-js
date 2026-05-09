@@ -8,9 +8,9 @@ import { SelectObject } from "../../runtime/win32.js";
 export function FUN_004065ea(heap, param_1) {
   let pvVar1 = 0;
   if (heap.u32(0x005ebe44) != 0) {
-    if (heap.u32((heap.u32(0x005f12b0) + 0xa0)) == 0) {
-      pvVar1 = SelectObject(heap, heap.u32(0x005ebe48), param_1);
-      heap.setU32((heap.u32(0x005f12b0) + 0xa0), (pvVar1) >>> 0);
+    if (heap.i32((heap.u32(0x005f12b0) + 0xa0)) == 0) {
+      pvVar1 = ((SelectObject(heap, heap.u32(0x005ebe48), param_1)) >>> 0);
+      heap.setI32((heap.u32(0x005f12b0) + 0xa0), (pvVar1) & 0xffffffff);
     } else {
       SelectObject(heap, heap.u32(0x005ebe48), param_1);
     }

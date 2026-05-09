@@ -6,6 +6,5 @@
 
 import { DirectSoundEnumerateA } from "../../runtime/win32.js";
 export function FUN_0041b1a0(heap) {
-  DirectSoundEnumerateA(heap);
-  return;
+  return DirectSoundEnumerateA(heap);
 }

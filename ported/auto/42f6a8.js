@@ -4,11 +4,12 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0042f77c } from "./42f77c.js";
 export function FUN_0042f6a8(heap) {
   let extraout_ECX = 0;
   do {
-    FUN_0042f77c(heap);
+    (regs.eax = FUN_0042f77c(heap));
   } while (extraout_ECX != 1);
   return;
 }

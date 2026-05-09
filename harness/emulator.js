@@ -28,7 +28,7 @@ function getImage() {
 // pushes never collides with anything mapped.
 const STACK_SIZE = 0x10000; // 64 KB — far more than we need
 
-export function runOriginal({ funcAddr, init = {}, observe = [] }) {
+export function runOriginal({ funcAddr, init = {}, observe = [], limit, returnMemory = false }) {
   const image = getImage();
 
   // Allocate a buffer large enough to hold the image plus a stack region at
@@ -56,7 +56,7 @@ export function runOriginal({ funcAddr, init = {}, observe = [] }) {
   if (init.regs) Object.assign(cpu.regs, init.regs);
 
   const stackTop = stackBase + STACK_SIZE;
-  const steps = runFunction(cpu, funcAddr, { stackTop });
+  const steps = runFunction(cpu, funcAddr, { stackTop, ...(limit !== undefined ? { limit } : {}) });
 
   // Read back observed memory locations.
   const memOut = {};
@@ -69,5 +69,9 @@ export function runOriginal({ funcAddr, init = {}, observe = [] }) {
     regs: { ...cpu.regs },
     mem32: memOut,
     steps,
+    // For void-function diffs: return the post-call memory image so the
+    // caller can compare with a baseline. Stack region is excluded — only
+    // the data sections matter for "did the function mutate globals".
+    memory: returnMemory ? memory.slice(0, stackBase) : undefined,
   };
 }

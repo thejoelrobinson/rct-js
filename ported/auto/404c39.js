@@ -6,6 +6,5 @@
 
 import { LoadImageA } from "../../runtime/win32.js";
 export function FUN_00404c39(heap, param_1) {
-  LoadImageA(heap, 0x0, param_1, 1, 0, 0, 0x10);
-  return;
+  return LoadImageA(heap, ((0x0) >>> 0), param_1, 1, 0, 0, 0x10);
 }

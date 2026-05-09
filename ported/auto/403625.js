@@ -6,10 +6,6 @@
 
 import { EndDialog, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA, _strlen } from "../../runtime/win32.js";
 export function FUN_00403625(heap, param_1, param_2, param_3) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_005e91f0 = __sp + 0;
-  const __addr_DAT_005e92f8 = __sp + 4;
-  try {
   let sVar1 = 0;
   let hWnd = 0;
   if (param_2 == 0x110) {
@@ -22,13 +18,13 @@ export function FUN_00403625(heap, param_1, param_2, param_3) {
     }
     SetWindowTextA(heap, param_1, heap.u32(0x005f1fd4));
     SetDlgItemTextA(heap, param_1, 0x3ea, heap.u32(0x005f1fc8));
-    SetDlgItemTextA(heap, param_1, 1, __addr_DAT_005e91f0);
-    SetDlgItemTextA(heap, param_1, 2, __addr_DAT_005e92f8);
-    sVar1 = _strlen(heap, heap.u32(0x005f1390));
+    SetDlgItemTextA(heap, param_1, 1, 0x005e91f0);
+    SetDlgItemTextA(heap, param_1, 2, 0x005e92f8);
+    sVar1 = ((_strlen(heap, heap.u32(0x005f1390))) >>> 0);
     if (sVar1 != 0) {
       SetDlgItemTextA(heap, param_1, 1000, heap.u32(0x005f1390));
     }
-    hWnd = GetDlgItem(heap, param_1, 1000);
+    hWnd = ((GetDlgItem(heap, param_1, 1000)) >>> 0);
     SetFocus(heap, hWnd);
   } else {
     if (param_2 == 0x111) {
@@ -43,7 +39,4 @@ export function FUN_00403625(heap, param_1, param_2, param_3) {
   }
   }
   return 0;
-} finally {
-    heap.freeFrame(8);
-  }
 }

@@ -4,13 +4,14 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_009b438b } from "./9b438b.js";
 export function FUN_004289e2(heap) {
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   if ((heap.u32((unaff_ESI + 0x10)) >>> 5 & 1) == 0) {
-    FUN_009b438b(heap);
-    FUN_009b438b(heap, heap.u32(0x005f4b1e) + heap.u32((unaff_ESI + 0x22)) + 1, heap.u32(0x005f4b1a) + heap.u32((unaff_ESI + 0x20)) + 7, unaff_ESI);
-    FUN_009b438b(heap);
+    (regs.eax = FUN_009b438b(heap));
+    (regs.eax = FUN_009b438b(heap, heap.u32(0x005f4b1e) + heap.i16((unaff_ESI + 0x22)) + 1, heap.u32(0x005f4b1a) + heap.i16((unaff_ESI + 0x20)) + 7, unaff_ESI));
+    (regs.eax = FUN_009b438b(heap));
   }
   return;
 }

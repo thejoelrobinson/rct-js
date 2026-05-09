@@ -7,7 +7,7 @@
 import { ShowWindow } from "../../runtime/win32.js";
 export function FUN_00406270(heap) {
   let bVar1 = 0;
-  bVar1 = heap.u32(0x005e916c) != 0x0;
+  bVar1 = ((heap.u32(0x005e916c) != ((0x0) >>> 0)) & 0xff);
   if (bVar1) {
     ShowWindow(heap, heap.u32(0x005e916c), 5);
   }

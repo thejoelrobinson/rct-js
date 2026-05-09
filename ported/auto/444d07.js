@@ -6,9 +6,9 @@
 
 export function FUN_00444d07(heap) {
   let sVar1 = 0;
-  sVar1 = heap.u32(0x0087c3a0) + -300 + heap.u32(0x0087c3a6);
+  sVar1 = ((heap.u32(0x0087c3a0) + -300 + heap.u32(0x0087c3a6)) & 0xffff);
   if (sVar1 < 0) {
-    sVar1 = 0;
+    sVar1 = ((0) & 0xffff);
   }
   return sVar1;
 }

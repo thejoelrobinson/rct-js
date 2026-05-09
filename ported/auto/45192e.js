@@ -5,27 +5,21 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_0042c711 } from "./42c711.js";
 import { FUN_0044a3ba } from "./44a3ba.js";
 export function FUN_0045192e(heap) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_00887442 = __sp + 0;
-  const __addr_DAT_00887444 = __sp + 4;
-  try {
   let puVar1 = 0;
-  let in_EAX = 0;
-  let in_EDX = 0;
-  let unaff_ESI = 0;
-  FUN_0044a3ba(heap);
-  if (heap.u32((unaff_ESI + 8)) != 0) {
-    puVar1 = (heap.u32((unaff_ESI + 8)) + 0x12);
-    heap.setU32(puVar1, (heap.u32(puVar1) | 0x800) >>> 0);
+  let in_EAX = regs.eax >>> 0;
+  let in_EDX = regs.edx >>> 0;
+  let unaff_ESI = regs.esi >>> 0;
+  (regs.eax = FUN_0044a3ba(heap));
+  if (heap.i32((unaff_ESI + 8)) != 0) {
+    puVar1 = (((heap.i32((unaff_ESI + 8)) + 0x12)) >>> 0);
+    heap.setU32(puVar1, (heap.u16(puVar1) | 0x800) & 0xffffffff);
   }
-  (function(){ throw new Error("c-to-js: unhandled LHS form field_expression in FUN_0045192e"); })();
-  unique0x00017200 = heap.u32((__addr_DAT_00887444) + ((in_EDX & 0xff) * 0x98) * 4);
-  FUN_0042c711(heap);
-  return CONCAT44(in_EDX, in_EAX);
-} finally {
-    heap.freeFrame(8);
-  }
+  heap.setU16((0x00971e86 + 0), (heap.u32((0x00887442) + ((in_EDX & 0xff) * 0x130) * 4)) & 0xffff);
+  unique0x00017200 = ((heap.u32((0x00887444) + ((in_EDX & 0xff) * 0x98) * 4)) >>> 0);
+  (regs.eax = FUN_0042c711(heap));
+  return 1;
 }

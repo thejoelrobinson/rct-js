@@ -5,28 +5,18 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_0044290a(heap) {
-  const __sp = heap.allocFrame(20);
-  const __addr_DAT_00743b98 = __sp + 0;
-  const __addr_DAT_00743bc2 = __sp + 4;
-  const __addr_DAT_00743bbe = __sp + 8;
-  const __addr_DAT_00743bbf = __sp + 12;
-  const __addr_DAT_00743c89 = __sp + 16;
-  try {
   let pcVar1 = 0;
   let uVar2 = 0;
   let iVar3 = 0;
-  for (uVar2 = heap.u32(0x0087c398); uVar2 != 0xffff; uVar2 = heap.u32((__addr_DAT_00743b98) + (uVar2 * 0x80) * 4)) {
-    iVar3 = uVar2 * 0x100;
-    if (((heap.u32((__addr_DAT_00743bc2) + (iVar3) * 4) == '\0') && (heap.u32((__addr_DAT_00743bbe) + (iVar3) * 4) == '\0')) && (heap.u32((__addr_DAT_00743bbf) + (iVar3) * 4) == '\x06')) {
-      pcVar1 = __addr_DAT_00743c89 + iVar3;
-      heap.setU32(pcVar1, (heap.u32(pcVar1) + '\x01') >>> 0);
-      if (heap.u32(pcVar1) == '\0') {
-        heap.setU32(((__addr_DAT_00743c89) + (iVar3) * 4), (heap.u32((__addr_DAT_00743c89) + (iVar3) * 4) + -1) >>> 0);
+  for (uVar2 = ((heap.u32(0x0087c398)) & 0xffff); uVar2 != 0xffff; uVar2 = (((heap.u32((0x00743b98) + (((uVar2) >>> 0) * 0x80) * 4)) & 0xffff)) >>> 0) {
+    iVar3 = ((((uVar2) >>> 0) * 0x100) >>> 0);
+    if (((heap.u32((0x00743bc2) + (iVar3) * 4) == 0) && (heap.u32((0x00743bbe) + (iVar3) * 4) == 0)) && (heap.u32((0x00743bbf) + (iVar3) * 4) == 6)) {
+      pcVar1 = ((0x00743c89 + iVar3) >>> 0);
+      heap.setU32(pcVar1, (heap.i8(pcVar1) + 1) & 0xffffffff);
+      if (heap.i8(pcVar1) == 0) {
+        heap.setU32(((0x00743c89) + (iVar3) * 4), (heap.u32((0x00743c89) + (iVar3) * 4) + -1) & 0xffffffff);
       }
     }
   }
   return;
-} finally {
-    heap.freeFrame(20);
-  }
 }

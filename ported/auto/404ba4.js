@@ -7,6 +7,5 @@
 import { SetCursor } from "../../runtime/win32.js";
 export function FUN_00404ba4(heap, param_1) {
   heap.setU32(0x005e91c8, (param_1) >>> 0);
-  SetCursor(heap, param_1);
-  return;
+  return SetCursor(heap, param_1);
 }

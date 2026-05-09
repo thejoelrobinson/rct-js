@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00440072 } from "./440072.js";
 import { FUN_0044b9db } from "./44b9db.js";
 import { FUN_0044ba3c } from "./44ba3c.js";
@@ -13,96 +14,89 @@ import { FUN_005e412c } from "./5e412c.js";
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e5fcb } from "./5e5fcb.js";
 export function FUN_0044a3ba(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_DAT_00743b94 = __sp + 0;
-  const __addr_DAT_00743bd2 = __sp + 4;
-  const __addr_DAT_0088747e = __sp + 8;
-  try {
   let puVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
   let uVar4 = 0;
-  let in_EDX = 0;
+  let in_EDX = regs.edx >>> 0;
   let puVar5 = 0;
   let extraout_EDX = 0;
   let psVar6 = 0;
   let uVar7 = 0;
   let sVar8 = 0;
   let uVar9 = 0;
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   let bVar10 = 0;
   let uVar11 = 0;
-  puVar1 = in_EDX;
+  LAB_0044a489: {
+  puVar1 = ((in_EDX) >>> 0);
   do {
-    puVar5 = puVar1;
-    puVar1 = __addr_DAT_00743b94 + heap.u32((puVar5 + 0x40)) * 0x100;
-  } while (heap.u32((__addr_DAT_00743bd2 + heap.u32((puVar5 + 0x40)) * 0x100)) != -1);
-  psVar6 = (__addr_DAT_0088747e + heap.u32(puVar5 + (0x30) * 4) * 0x260);
-  uVar9 = 1;
+    puVar5 = ((puVar1) >>> 0);
+    puVar1 = ((0x00743b94 + heap.u32((puVar5 + 0x40)) * 0x100) >>> 0);
+  } while ((heap.i16((0x00743bd2 + heap.u32((puVar5 + 0x40)) * 0x100)) | 0) != -1);
+  psVar6 = (((0x0088747e + ((((heap.u8(puVar5 + (0x30))) & 0xff)) >>> 0) * 0x260)) >>> 0);
+  uVar9 = ((1) >>> 0);
   while (true) {
-    bVar10 = heap.u32((puVar5 + 10)) == heap.u32(psVar6);
-    sVar8 = uVar9;
+    bVar10 = ((heap.i16((puVar5 + 10)) == heap.i16(psVar6)) & 0xff);
+    sVar8 = ((((uVar9) << 16 >> 16)) & 0xffff);
     if (bVar10) {
       break;
     }
-    psVar6 = psVar6 + 1;
-    uVar9 = (sVar8 + 1);
+    psVar6 = ((psVar6 + ((1) * 2)) >>> 0);
+    uVar9 = ((((sVar8 + 1) >>> 0)) >>> 0);
   }
-  heap.setU32(0x00631ca0, (in_EDX) >>> 0);
-  uVar2 = FUN_005e3b2b(heap);
-  puVar1 = heap.u32(0x00631ca0);
+  heap.setU8(0x00631ca0, (in_EDX) & 0xff);
+  uVar2 = (((regs.eax = FUN_005e3b2b(heap))) >>> 0);
+  puVar1 = ((heap.u8(0x00631ca0)) >>> 0);
   if (!bVar10) {
-    uVar11 = false;
-    if (sVar8 == heap.u32((unaff_ESI + 0x15a))) {
-      uVar7 = 0;
-      uVar4 = heap.u32(heap.u32(0x00631ca0) + (0xb3) * 4);
+    uVar11 = ((false) & 0xff);
+    if (sVar8 == heap.i16((((unaff_ESI) >>> 0) + 0x15a))) {
+      uVar7 = ((0) >>> 0);
+      uVar4 = ((((((heap.u32(heap.u8(0x00631ca0) + (0xb3) * 4)) & 0xff)) >>> 0)) >>> 0);
       do {
-        sVar8 = uVar9;
-        uVar11 = true;
-        if (uVar4 == '\0') {
+        sVar8 = ((((uVar9) << 16 >> 16)) & 0xffff);
+        uVar11 = ((true) & 0xff);
+        if (((uVar4) << 24 >> 24) == 0) {
           break;
         }
-        if (heap.u32((puVar1 + uVar7 * 2 + 0x52)) != -1) {
-          bVar3 = uVar4 - 1;
-          uVar4 = bVar3;
-          bVar10 = bVar3 == 0;
-          FUN_005e3b2b(heap, uVar4, uVar9, uVar2);
-          sVar8 = uVar9;
+        if ((heap.i16((puVar1 + uVar7 * 2 + 0x52)) | 0) != -1) {
+          bVar3 = ((((uVar4) << 24 >> 24) - 1) & 0xff);
+          uVar4 = ((((bVar3) >>> 0)) >>> 0);
+          bVar10 = ((bVar3 == 0) & 0xff);
+          (regs.eax = FUN_005e3b2b(heap, uVar4, uVar9, uVar2));
+          sVar8 = ((((uVar9) << 16 >> 16)) & 0xffff);
           if (bVar10) {
-            uVar11 = (extraout_EDX & 0xffff) * 0x100 == -0x743b94;
-            FUN_00440072(heap);
-            FUN_005e3b2b(heap);
-            /* goto joined_r0x0044a466 */ throw new Error("goto joined_r0x0044a466 not supported");
+            uVar11 = (((extraout_EDX & 0xffff) * 0x100 == -0x743b94) & 0xff);
+            (regs.eax = FUN_00440072(heap));
+            (regs.eax = FUN_005e3b2b(heap));
+            /* goto joined_r0x0044a466 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0044a3ba/joined_r0x0044a466"); return 0;
           }
         }
-        sVar8 = uVar9;
-        uVar7 = uVar7 + 1;
-        uVar11 = uVar7 == 0x20;
+        sVar8 = ((((uVar9) << 16 >> 16)) & 0xffff);
+        uVar7 = ((uVar7 + 1) >>> 0);
+        uVar11 = ((uVar7 == 0x20) & 0xff);
       } while (uVar7 < 0x20);
     }
-    FUN_005e5fcb(heap);
+    (regs.eax = FUN_005e5fcb(heap));
     joined_r0x0044a466: if (!uVar11) {
-      /* goto LAB_0044a489 */ throw new Error("goto LAB_0044a489 not supported");
+      break LAB_0044a489;
     }
   }
-  FUN_0044b9db(heap);
-  heap.setU32((unaff_ESI + (0x57) * 4), (0xffffffff) >>> 0);
-  LAB_0044a489: heap.setU32((unaff_ESI + 0x59), (0) >>> 0);
-  heap.setU32((unaff_ESI + 9), (0x100) >>> 0);
-  heap.setU32((unaff_ESI + 0x26), (0xc6) >>> 0);
-  FUN_005e43de(heap);
-  heap.setU32((unaff_ESI + (7) * 4), (heap.u32(0x00631bcc)) >>> 0);
-  heap.setU32((unaff_ESI + (3) * 4), (heap.u32(0x00631c2c)) >>> 0);
-  heap.setU32((unaff_ESI + (6) * 4), (heap.u32(0x00631c4c)) >>> 0);
-  heap.setU32(unaff_ESI, (heap.u32(0x00631bec)) >>> 0);
-  heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00631c0c)) >>> 0);
-  heap.setU32((unaff_ESI + (5) * 4), (0) >>> 0);
-  FUN_0044ba3c(heap);
-  FUN_005e412c(heap);
-  heap.setU32((unaff_ESI + 0x15a), (sVar8) >>> 0);
-  FUN_0044c464(heap);
-  return;
-} finally {
-    heap.freeFrame(12);
+  (regs.eax = FUN_0044b9db(heap));
+  heap.setU32((unaff_ESI + (0x57) * 4), (0xffffffff) & 0xffffffff);
   }
+  heap.setU16((unaff_ESI + ((0x59) * 4)), (0) & 0xffff);
+  heap.setU16((unaff_ESI + ((9) * 4)), (0x100) & 0xffff);
+  heap.setU16((((unaff_ESI) >>> 0) + 0x26), (0xc6) & 0xffff);
+  (regs.eax = FUN_005e43de(heap));
+  heap.setU32((unaff_ESI + (7) * 4), (heap.u32(0x00631bcc)) & 0xffffffff);
+  heap.setU32((unaff_ESI + (3) * 4), (heap.u32(0x00631c2c)) & 0xffffffff);
+  heap.setU32((unaff_ESI + (6) * 4), (heap.u32(0x00631c4c)) & 0xffffffff);
+  heap.setU32(unaff_ESI, (heap.u32(0x00631bec)) & 0xffffffff);
+  heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00631c0c)) & 0xffffffff);
+  heap.setU32((unaff_ESI + (5) * 4), (0) & 0xffffffff);
+  (regs.eax = FUN_0044ba3c(heap));
+  (regs.eax = FUN_005e412c(heap));
+  heap.setI16((((unaff_ESI) >>> 0) + 0x15a), (sVar8) & 0xffff);
+  return (regs.eax = FUN_0044c464(heap));
 }

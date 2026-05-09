@@ -5,12 +5,9 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { DestroyWindow, GetDlgItem, GetDlgItemTextA, SendDlgItemMessageA, SendMessageA, SetDlgItemTextA, SetFocus, SetWindowTextA, _strlen } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00401120 } from "./401120.js";
 export function FUN_004037cf(heap, param_1, param_2, param_3) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_005e91f0 = __sp + 0;
-  const __addr_DAT_005e92f8 = __sp + 4;
-  try {
   let sVar1 = 0;
   let hWnd = 0;
   let uVar2 = 0;
@@ -24,14 +21,14 @@ export function FUN_004037cf(heap, param_1, param_2, param_3) {
     }
     SetWindowTextA(heap, param_1, heap.u32(0x005f1fd4));
     SetDlgItemTextA(heap, param_1, 0x3ea, heap.u32(0x005f1fc8));
-    SetDlgItemTextA(heap, param_1, 1, __addr_DAT_005e91f0);
-    SetDlgItemTextA(heap, param_1, 2, __addr_DAT_005e92f8);
-    sVar1 = _strlen(heap, heap.u32(0x005f1390));
+    SetDlgItemTextA(heap, param_1, 1, 0x005e91f0);
+    SetDlgItemTextA(heap, param_1, 2, 0x005e92f8);
+    sVar1 = ((_strlen(heap, heap.u32(0x005f1390))) >>> 0);
     if (sVar1 != 0) {
       SetDlgItemTextA(heap, param_1, 1000, heap.u32(0x005f1390));
       SendDlgItemMessageA(heap, param_1, 1000, 0xb1, 0, -1);
     }
-    hWnd = GetDlgItem(heap, param_1, 1000);
+    hWnd = ((GetDlgItem(heap, param_1, 1000)) >>> 0);
     SetFocus(heap, hWnd);
     return 0;
   }
@@ -40,20 +37,17 @@ export function FUN_004037cf(heap, param_1, param_2, param_3) {
       GetDlgItemTextA(heap, param_1, 1000, heap.u32(0x005f1390), 0x104);
     } else {
       if (param_3 != 2) {
-      /* goto LAB_004039ae */ throw new Error("goto LAB_004039ae not supported");
+      /* goto LAB_004039ae — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004037cf/LAB_004039ae"); return 0;
     }
     }
-    heap.setU32(heap.u32(0x005f1ca8), (param_3) >>> 0);
-    heap.setU32(heap.u32(0x005f13b0), (1) >>> 0);
+    heap.setU32(heap.u32(0x005f1ca8), (param_3) & 0xffffffff);
+    heap.setU32(heap.u32(0x005f13b0), (1) & 0xffffffff);
     DestroyWindow(heap, param_1);
     heap.setU32(0x005e91e0, (0) >>> 0);
-    FUN_00401120(heap, 0);
-    uVar2 = 1;
+    (regs.eax = FUN_00401120(heap, 0));
+    uVar2 = ((1) >>> 0);
   } else {
-    LAB_004039ae: uVar2 = 0;
+    LAB_004039ae: uVar2 = ((0) >>> 0);
   }
   return uVar2;
-} finally {
-    heap.freeFrame(8);
-  }
 }

@@ -4,8 +4,10 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_004070be(heap) {
-  (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebefc)) + 0x20))))(heap.u32(0x005ebefc));
+  (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebefc)) + 0x20)), heap.u32(0x005ebefc)));
   heap.setU32(0x005ebf04, (0) >>> 0);
   return;
 }

@@ -4,60 +4,49 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00429aff } from "./429aff.js";
 import { FUN_005e3f31 } from "./5e3f31.js";
 import { FUN_005e412c } from "./5e412c.js";
 import { FUN_005e429d } from "./5e429d.js";
 export function FUN_004298a0(heap) {
-  const __sp = heap.allocFrame(20);
-  const __addr_DAT_005f5110 = __sp + 0;
-  const __addr_DAT_005f5124 = __sp + 4;
-  const __addr_DAT_005f5268 = __sp + 8;
-  const __addr_DAT_005f531c = __sp + 12;
-  const __addr_DAT_005f5360 = __sp + 16;
-  try {
-  let unaff_ESI = 0;
-  let unaff_EDI = 0;
+  let unaff_ESI = regs.esi >>> 0;
+  let unaff_EDI = regs.edi >>> 0;
   heap.setU32(0x005f5118, (heap.u32(0x00971ed8) + -0x40) >>> 0);
   if ((heap.u32(0x0099a500) & 1) != 0) {
     heap.setU32(0x005f5118, (heap.u32(0x00971ed8)) >>> 0);
   }
   heap.setU32(0x005f5114, (heap.u32(0x00971ed6)) >>> 0);
-  FUN_005e3f31(heap);
-  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_005f5110) >>> 0);
-  FUN_005e429d(heap);
-  heap.setU32((unaff_EDI + 0x12), (heap.u32((unaff_EDI + 0x12)) | 0x800) >>> 0);
-  heap.setU32(0x00991f88, (0) >>> 0);
-  heap.setU32(0x005f4948, (0) >>> 0);
-  heap.setU32(0x0099fde0, (0) >>> 0);
-  heap.setU32(0x006522aa, (0) >>> 0);
-  heap.setU32(0x005f494a, (0) >>> 0);
-  heap.setU32(0x005f494b, (0) >>> 0);
+  (regs.eax = FUN_005e3f31(heap));
+  heap.setU32((unaff_ESI + 0x1c), (0x005f5110) & 0xffffffff);
+  (regs.eax = FUN_005e429d(heap));
+  heap.setU16((unaff_EDI + 0x12), (heap.u16((unaff_EDI + 0x12)) | 0x800) & 0xffff);
+  heap.setU8(0x00991f88, (0) & 0xff);
+  heap.setU8(0x005f4948, (0) & 0xff);
+  heap.setU8(0x0099fde0, (0) & 0xff);
+  heap.setU8(0x006522aa, (0) & 0xff);
+  heap.setU8(0x005f494a, (0) & 0xff);
+  heap.setU8(0x005f494b, (0) & 0xff);
   heap.setU32(0x00630b28, (1) >>> 0);
   if ((heap.u32(0x0099a500) & 1) == 0) {
-    FUN_005e3f31(heap);
-    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_005f5124) >>> 0);
-    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0xfffff) >>> 0);
-    FUN_005e412c(heap);
-    FUN_005e3f31(heap);
-    heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_005f5268) >>> 0);
-    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x1fc) >>> 0);
-    heap.setU32((unaff_ESI + 0x168), (0) >>> 0);
-    FUN_005e412c(heap);
-    FUN_00429aff(heap);
-    return;
+    (regs.eax = FUN_005e3f31(heap));
+    heap.setU32((unaff_ESI + 0x1c), (0x005f5124) & 0xffffffff);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0xfffff) & 0xffffffff);
+    (regs.eax = FUN_005e412c(heap));
+    (regs.eax = FUN_005e3f31(heap));
+    heap.setU32((unaff_ESI + 0x1c), (0x005f5268) & 0xffffffff);
+    heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x1fc) & 0xffffffff);
+    heap.setU16((unaff_ESI + 0x168), (0) & 0xffff);
+    (regs.eax = FUN_005e412c(heap));
+    return (regs.eax = FUN_00429aff(heap));
   }
-  FUN_005e3f31(heap);
-  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_005f531c) >>> 0);
-  heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0xf) >>> 0);
-  FUN_005e412c(heap);
-  FUN_005e3f31(heap);
-  heap.setU32((unaff_ESI + 0x1c), (__addr_DAT_005f5360) >>> 0);
-  FUN_005e412c(heap);
-  heap.setU32((unaff_ESI + 0x32), (heap.u32((unaff_ESI + 0x32)) | 0x10) >>> 0);
-  FUN_00429aff(heap);
-  return;
-} finally {
-    heap.freeFrame(20);
-  }
+  (regs.eax = FUN_005e3f31(heap));
+  heap.setU32((unaff_ESI + 0x1c), (0x005f531c) & 0xffffffff);
+  heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0xf) & 0xffffffff);
+  (regs.eax = FUN_005e412c(heap));
+  (regs.eax = FUN_005e3f31(heap));
+  heap.setU32((unaff_ESI + 0x1c), (0x005f5360) & 0xffffffff);
+  (regs.eax = FUN_005e412c(heap));
+  heap.setU16((unaff_ESI + 0x32), (heap.u16((unaff_ESI + 0x32)) | 0x10) & 0xffff);
+  return (regs.eax = FUN_00429aff(heap));
 }

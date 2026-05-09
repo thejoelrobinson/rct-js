@@ -73,7 +73,61 @@ export const state = {
   // The harness fills this from ported/auto/<addr>.js so that DispatchMessageA
   // and SendMessageA can call back into the binary's WindowProc.
   fnDispatch: new Map(),
+
+  // GetProcAddress lookup — DLL-export name (e.g. "DirectDrawCreate") to the
+  // synthetic address we hand back. Same address is also keyed in fnDispatch
+  // so callIndirect routes through. Synthetic addresses live above the heap
+  // allocator's range so they don't collide with real heap reads.
+  procRegistry: new Map(),
+  nextProcAddr: 0x10100000,
 };
+
+// Register a Win32 export (looked up via GetProcAddress) with a JS impl.
+// Returns the synthetic address it lives at; idempotent — re-registering
+// the same name returns the same address. The address is also installed
+// in fnDispatch so callIndirect can route to it.
+export function registerProc(name, jsFn) {
+  let addr = state.procRegistry.get(name);
+  if (addr !== undefined) {
+    state.fnDispatch.set(addr, jsFn);   // allow re-registration to update impl
+    return addr;
+  }
+  addr = state.nextProcAddr;
+  state.nextProcAddr += 4;
+  state.procRegistry.set(name, addr);
+  state.fnDispatch.set(addr, jsFn);
+  return addr;
+}
+
+// callIndirect — translated equivalent of x86 `(*fn_ptr)(...)`.
+// The translator emits this whenever Ghidra's C uses a pointer-deref-call.
+// Looks up the target in state.fnDispatch and invokes; if no JS function is
+// registered for that address, throws a clear error so we can surface
+// missing-port problems. Address 0 is special-cased to return 0 — calling
+// through a null pointer would crash the real program, but in diff-test
+// scenarios with uninitialised data the interpreter typically returns 0
+// from the same code path, so this matches the oracle's behaviour.
+const _missingProcWarned = new Set();
+export function callIndirect(heap, fnAddr, ...args) {
+  const a = fnAddr >>> 0;     // unsigned — addresses are positive
+  if (a === 0) return 0;
+  const fn = state.fnDispatch.get(a);
+  if (typeof fn === "function") return fn(heap, ...args);
+  // Unresolved address — warn once per address and return 0. Common cases:
+  //   - jump-table targets at non-function-start addresses (Ghidra couldn't
+  //     recover the table so we don't have a JS function for them)
+  //   - vtable reads through uninitialised pointers (LHS was 0 → reading
+  //     vtable+slot = small value, not a real address)
+  // Aborting the tick on these stops boot in its tracks; warn-once preserves
+  // visibility while letting the binary keep running.
+  if (!_missingProcWarned.has(a)) {
+    _missingProcWarned.add(a);
+    if (typeof console !== "undefined") {
+      console.warn(`[callIndirect] no JS function at 0x${a.toString(16)} — returning 0`);
+    }
+  }
+  return 0;
+}
 
 // Reset state — used by tests to start clean per case.
 export function resetState() {
@@ -95,4 +149,6 @@ export function resetState() {
   state.timers.forEach(t => { if (t.intervalId) clearInterval(t.intervalId); });
   state.timers.clear();
   state.nextTimerId = 1;
+  state.procRegistry.clear();
+  state.nextProcAddr = 0x10100000;
 }

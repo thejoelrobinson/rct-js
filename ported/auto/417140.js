@@ -4,32 +4,33 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00417a60 } from "./417a60.js";
 export function FUN_00417140(heap, param_1) {
   let uVar1 = 0;
   let iVar2 = 0;
   let uVar3 = 0;
   let iVar4 = 0;
-  uVar3 = 0;
-  if (((heap.u32(param_1 + (3) * 4) & 3) == 2) && ((heap.u32(param_1 + (3) * 4) & 0x108) != 0)) {
-    iVar4 = heap.u32(param_1) - heap.u32(param_1 + (2) * 4);
+  uVar3 = ((0) >>> 0);
+  if (((((heap.u32(param_1 + (3) * 4)) & 0xff) & 3) == 2) && ((heap.u32(param_1 + (3) * 4) & 0x108) != 0)) {
+    iVar4 = ((heap.u32(param_1) - heap.u32(param_1 + (2) * 4)) >>> 0);
     if (0 < iVar4) {
-      iVar2 = FUN_00417a60(heap, heap.u32(param_1 + (4) * 4), heap.u32(param_1 + (2) * 4), iVar4);
-      uVar1 = heap.u32(param_1 + (3) * 4);
+      iVar2 = (((regs.eax = FUN_00417a60(heap, heap.u32(param_1 + (4) * 4), heap.u32(param_1 + (2) * 4), iVar4))) >>> 0);
+      uVar1 = ((heap.u32(param_1 + (3) * 4)) >>> 0);
       if (iVar2 == iVar4) {
         if ((uVar1 & 0x80) != 0) {
-          heap.setU32((param_1 + (1) * 4), (0) >>> 0);
-          heap.setU32((param_1 + (3) * 4), (uVar1 & 0xfffffffd) >>> 0);
-          heap.setU32(param_1, (heap.u32(param_1 + (2) * 4)) >>> 0);
+          heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+          heap.setU32((param_1 + (3) * 4), (uVar1 & 0xfffffffd) & 0xffffffff);
+          heap.setU32(param_1, (heap.u32(param_1 + (2) * 4)) & 0xffffffff);
           return 0;
         }
       } else {
-        uVar3 = 0xffffffff;
-        heap.setU32((param_1 + (3) * 4), (uVar1 | 0x20) >>> 0);
+        uVar3 = ((0xffffffff) >>> 0);
+        heap.setU32((param_1 + (3) * 4), (uVar1 | 0x20) & 0xffffffff);
       }
     }
   }
-  heap.setU32((param_1 + (1) * 4), (0) >>> 0);
-  heap.setU32(param_1, (heap.u32(param_1 + (2) * 4)) >>> 0);
+  heap.setU32((param_1 + (1) * 4), (0) & 0xffffffff);
+  heap.setU32(param_1, (heap.u32(param_1 + (2) * 4)) & 0xffffffff);
   return uVar3;
 }

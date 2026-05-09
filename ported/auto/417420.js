@@ -4,82 +4,80 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_004175a0 } from "./4175a0.js";
 export function FUN_00417420(heap, param_1) {
-  const __sp = heap.allocFrame(16);
-  const __addr_DAT_005f0288 = __sp + 0;
-  const __addr_DAT_005f0294 = __sp + 4;
-  const __addr_DAT_005f028c = __sp + 8;
-  const __addr_DAT_005f0290 = __sp + 12;
-  try {
   let iVar1 = 0;
   let iVar2 = 0;
   let iVar3 = 0;
   let pcVar4 = 0;
   let iVar5 = 0;
   let puVar6 = 0;
-  iVar2 = param_1;
+  LAB_00417516: {
+  iVar2 = ((param_1) >>> 0);
   switch (param_1) {
     case 2:
-      puVar6 = __addr_DAT_005f0288;
-      pcVar4 = heap.u32(__addr_DAT_005f0288);
+      puVar6 = ((0x005f0288) >>> 0);
+      pcVar4 = ((heap.u32(0x005f0288)) >>> 0);
       break;
     default:
       return 0xffffffff;
     case 4:
     case 8:
     case 0xb:
-      iVar3 = FUN_004175a0(heap, param_1);
-      puVar6 = (iVar3 + 8);
-      pcVar4 = heap.u32(puVar6);
+      iVar3 = (((regs.eax = FUN_004175a0(heap, param_1))) >>> 0);
+      puVar6 = (((iVar3 + 8)) >>> 0);
+      pcVar4 = ((heap.u32(puVar6)) >>> 0);
       break;
     case 0xf:
-      puVar6 = __addr_DAT_005f0294;
-      pcVar4 = heap.u32(__addr_DAT_005f0294);
+      puVar6 = ((0x005f0294) >>> 0);
+      pcVar4 = ((heap.u32(0x005f0294)) >>> 0);
       break;
     case 0x15:
-      puVar6 = __addr_DAT_005f028c;
-      pcVar4 = heap.u32(__addr_DAT_005f028c);
+      puVar6 = ((0x005f028c) >>> 0);
+      pcVar4 = ((heap.u32(0x005f028c)) >>> 0);
       break;
     case 0x16:
-      puVar6 = __addr_DAT_005f0290;
-      pcVar4 = heap.u32(__addr_DAT_005f0290);
+      puVar6 = ((0x005f0290) >>> 0);
+      pcVar4 = ((heap.u32(0x005f0290)) >>> 0);
   }
-  iVar1 = heap.u32(0x005eff0c);
-  iVar3 = heap.u32(0x005ec364);
+  iVar1 = ((heap.u32(0x005eff0c)) >>> 0);
+  iVar3 = ((heap.u32(0x005ec364)) >>> 0);
   if (pcVar4 == 0x1) {
     return 0;
   }
   if (pcVar4 == 0x0) {
     __exit(3);
   }
-  if (((param_1 == 8) || (param_1 == 0xb)) || (iVar5 = param_1, param_1 == 4)) {
+  if (((param_1 == 8) || (param_1 == 0xb)) || (iVar5 = ((param_1) >>> 0), param_1 == 4)) {
     heap.setU32(0x005eff0c, (0) >>> 0);
-    iVar5 = iVar1;
+    iVar5 = ((iVar1) >>> 0);
     if (param_1 == 8) {
       heap.setU32(0x005ec364, (0x8c) >>> 0);
-      param_1 = iVar3;
-      /* goto LAB_004174df */ throw new Error("goto LAB_004174df not supported");
+      param_1 = ((iVar3) >>> 0);
+      /* goto LAB_004174df — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00417420/LAB_004174df"); return 0;
     }
   } else {
     LAB_004174df: if (iVar2 == 8) {
       if (heap.u32(0x005ec358) < heap.u32(0x005ec35c) + heap.u32(0x005ec358)) {
-        iVar3 = (heap.u32(0x005ec35c) + heap.u32(0x005ec358)) - heap.u32(0x005ec358);
-        puVar6 = (heap.u32(0x005ec358) * 0xc + 0x5ec2e8);
+        iVar3 = (((heap.u32(0x005ec35c) + heap.u32(0x005ec358)) - heap.u32(0x005ec358)) >>> 0);
+        puVar6 = (((heap.u32(0x005ec358) * 0xc + 0x5ec2e8)) >>> 0);
         do {
-          heap.setU32(puVar6, (0) >>> 0);
-          puVar6 = puVar6 + 3;
-          iVar3 = iVar3 + -1;
+          heap.setU32(puVar6, (0) & 0xffffffff);
+          puVar6 = ((puVar6 + ((3) * 4)) >>> 0);
+          iVar3 = ((iVar3 + -1) >>> 0);
         } while (iVar3 != 0);
       }
-      /* goto LAB_00417516 */ throw new Error("goto LAB_00417516 not supported");
+      break LAB_00417516;
     }
   }
-  heap.setU32(puVar6, (0) >>> 0);
-  LAB_00417516: if (iVar2 == 8) {
-    (heap.u32(pcVar4))(8, heap.u32(0x005ec364));
+  heap.setU32(puVar6, (0) & 0xffffffff);
+  }
+  if (iVar2 == 8) {
+    (regs.eax = callIndirect(heap, pcVar4, 8, heap.u32(0x005ec364)));
   } else {
-    (heap.u32(pcVar4))(iVar2);
+    (regs.eax = callIndirect(heap, pcVar4, iVar2));
     if ((iVar2 != 0xb) && (iVar2 != 4)) {
       return 0;
     }
@@ -89,7 +87,4 @@ export function FUN_00417420(heap, param_1) {
   }
   heap.setU32(0x005eff0c, (iVar5) >>> 0);
   return 0;
-} finally {
-    heap.freeFrame(16);
-  }
 }

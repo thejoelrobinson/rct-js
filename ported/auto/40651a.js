@@ -17,9 +17,9 @@ export function FUN_0040651a(heap, param_1, param_2, param_3, param_4) {
     heap.setU32((__addr_local_14 + 4), (param_2) >>> 0);
     heap.setU32((__addr_local_14 + 12), (param_2) >>> 0);
     heap.setU32((__addr_local_14 + 8), (param_1 + param_4) >>> 0);
-    format = heap.u32(0x005ebe4c) | 0x910;
-    lprc = __addr_local_14;
-    cchText = _strlen(heap, param_3);
+    format = ((heap.u32(0x005ebe4c) | 0x910) >>> 0);
+    lprc = ((__addr_local_14) >>> 0);
+    cchText = ((_strlen(heap, param_3)) >>> 0);
     DrawTextA(heap, heap.u32(0x005ebe48), param_3, cchText, lprc, format);
   }
   return;

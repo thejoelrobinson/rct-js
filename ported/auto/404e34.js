@@ -4,13 +4,14 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_004049f2 } from "./4049f2.js";
 export function FUN_00404e34(heap) {
   const __sp = heap.allocFrame(4);
   const __addr_local_18 = __sp + 0;
   try {
-  FUN_004049f2(heap, __addr_local_18);
-  if ((heap.u32(__addr_local_18) & 0xffff) < heap.u32(0x005f1cac) + heap.u32(0x005f15c4)) {
+  (regs.eax = FUN_004049f2(heap, __addr_local_18));
+  if ((((heap.u32(__addr_local_18) & 0xffff)) >>> 0) < heap.u32(0x005f1cac) + heap.u32(0x005f15c4)) {
     heap.setU32(0x005f18e0, ((heap.u32(__addr_local_18) & 0xffff) - heap.u32(0x005f1cac)) >>> 0);
   } else {
     heap.setU32(0x005f18e0, (heap.u32(0x005f15c4)) >>> 0);
@@ -23,8 +24,8 @@ export function FUN_00404e34(heap) {
     heap.setU32(0x005f13a4, (heap.u32(0x005f1cac)) >>> 0);
     heap.setU32(0x005f1fc4, (0) >>> 0);
   }
-  if ((((heap.u32(__addr_local_18)) >>> 16) & 0xffff) < heap.u32(0x005f1cb0) + heap.u32(0x005f1b34)) {
-    heap.setU32(0x005f1b24, ((((heap.u32(__addr_local_18)) >>> 16) & 0xffff) - heap.u32(0x005f1cb0)) >>> 0);
+  if ((((((((heap.u32(__addr_local_18)) >>> 16) & 0xffff)) >>> 0)) >>> 0) < heap.u32(0x005f1cb0) + heap.u32(0x005f1b34)) {
+    heap.setU32(0x005f1b24, ((((((heap.u32(__addr_local_18)) >>> 16) & 0xffff)) >>> 0) - heap.u32(0x005f1cb0)) >>> 0);
   } else {
     heap.setU32(0x005f1b24, (heap.u32(0x005f1b34)) >>> 0);
   }

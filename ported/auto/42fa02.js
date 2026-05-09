@@ -4,18 +4,12 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00408342 } from "./408342.js";
 export function FUN_0042fa02(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_005f88b0 = __sp + 0;
-  try {
-  heap.setU32(0x005f88b0, (heap.u32(0x005f8d36) + 0x1a67c) >>> 0);
-  if (heap.u32(0x005f8d35) != '\0') {
-    heap.setU32(0x005f88b0, (heap.u32(0x005f8d36) + -0x1a67c) >>> 0);
+  heap.setU8(0x005f88b0, (heap.u8(0x005f8d36) + 0x1a67c) & 0xff);
+  if (heap.u8(0x005f8d35) != 0) {
+    heap.setU8(0x005f88b0, (heap.u8(0x005f8d36) + -0x1a67c) & 0xff);
   }
-  FUN_00408342(heap, heap.u32(0x005f88a4), __addr_DAT_005f88b0, 4);
-  return;
-} finally {
-    heap.freeFrame(4);
-  }
+  return (regs.eax = FUN_00408342(heap, heap.u32(0x005f88a4), 0x005f88b0, 4));
 }

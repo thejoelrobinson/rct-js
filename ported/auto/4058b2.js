@@ -6,6 +6,5 @@
 
 import { SetWindowPos } from "../../runtime/win32.js";
 export function FUN_004058b2(heap) {
-  SetWindowPos(heap, heap.u32(0x005e916c), 0x0, 0, 0, 0, 0, 3);
-  return;
+  return SetWindowPos(heap, heap.u32(0x005e916c), ((0x0) >>> 0), 0, 0, 0, 0, 3);
 }

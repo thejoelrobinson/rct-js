@@ -6,7 +6,7 @@
 
 export function FUN_005df40c(heap) {
   let uVar1 = 0;
-  uVar1 = heap.u32(0x006e3b88);
+  uVar1 = ((heap.u32(0x006e3b88)) >>> 0);
   heap.setU32(0x006e3b88, (heap.u32(0x006e3b88) + ((heap.u32(0x006e3b8c) ^ 0x1234567f) >>> 7 | (heap.u32(0x006e3b8c) ^ 0x1234567f) << 0x19)) >>> 0);
   heap.setU32(0x006e3b8c, (uVar1 >>> 3 | uVar1 << 0x1d) >>> 0);
   return;

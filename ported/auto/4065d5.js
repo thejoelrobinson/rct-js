@@ -6,6 +6,5 @@
 
 import { DeleteObject } from "../../runtime/win32.js";
 export function FUN_004065d5(heap, param_1) {
-  DeleteObject(heap, param_1);
-  return;
+  return DeleteObject(heap, param_1);
 }

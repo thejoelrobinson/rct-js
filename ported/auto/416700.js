@@ -8,8 +8,8 @@ import { CONCAT22 } from "../../runtime/ghidra-builtins.js";
 export function FUN_00416700(heap, param_1) {
   let puVar1 = 0;
   let puVar2 = 0;
-  puVar1 = heap.u32(param_1);
-  puVar2 = puVar1 + 2;
-  heap.setU32(param_1, (puVar2) >>> 0);
-  return CONCAT22((puVar2 >>> 0x10), heap.u32(puVar1));
+  puVar1 = ((heap.u32(param_1)) >>> 0);
+  puVar2 = ((puVar1 + ((2) * 2)) >>> 0);
+  heap.setU32(param_1, (puVar2) & 0xffffffff);
+  return CONCAT22((((((puVar2) >>> 0) >>> 0x10)) << 16 >> 16), heap.u16(puVar1));
 }

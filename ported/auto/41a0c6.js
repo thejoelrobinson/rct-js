@@ -7,6 +7,6 @@
 import { GetSaveFileNameA } from "../../runtime/win32.js";
 export function FUN_0041a0c6(heap, param_1) {
   let BVar1 = 0;
-  BVar1 = GetSaveFileNameA(heap, param_1);
+  BVar1 = ((GetSaveFileNameA(heap, param_1)) >>> 0);
   return BVar1;
 }

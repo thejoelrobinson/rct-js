@@ -4,14 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_005d9220(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_PTR_LAB_0065e3c4 = __sp + 0;
-  try {
-  let unaff_ESI = 0;
-  (heap.u32(heap.u32((__addr_PTR_LAB_0065e3c4) + (heap.u32((unaff_ESI + 0x36)) >>> 2) * 4)))();
-  return;
-} finally {
-    heap.freeFrame(4);
-  }
+  let unaff_ESI = regs.esi >>> 0;
+  return (regs.eax = callIndirect(heap, heap.u32((0x0065e3c4) + (heap.u16((unaff_ESI + 0x36)) >>> 2) * 4)));
 }

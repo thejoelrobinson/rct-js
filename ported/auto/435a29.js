@@ -4,40 +4,36 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00423677 } from "./423677.js";
 import { FUN_00431510 } from "./431510.js";
 export function FUN_00435a29(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_PTR_LAB_00435ad8 = __sp + 0;
-  try {
   let sVar1 = 0;
   let uVar2 = 0;
   let extraout_CX = 0;
   let extraout_EDX = 0;
   let cVar3 = 0;
-  let unaff_BX = 0;
-  sVar1 = FUN_00431510(heap);
-  cVar3 = unaff_BX;
-  if (cVar3 != '\0') {
+  let unaff_BX = regs.ebx & 0xffff;
+  sVar1 = (((regs.eax = FUN_00431510(heap))) & 0xffff);
+  cVar3 = ((((unaff_BX) << 24 >> 24)) & 0xff);
+  if (cVar3 != 0) {
     heap.setU32(0x00628a36, (extraout_CX + 0x1f) >>> 0);
     heap.setU32(0x00628a34, (sVar1 + 0x1f) >>> 0);
     heap.setU32(0x00628a2c, (extraout_EDX) >>> 0);
     heap.setU32(0x00628a30, (sVar1) >>> 0);
     heap.setU32(0x00628a32, (extraout_CX) >>> 0);
     heap.setU32(0x00628a3a, (cVar3) >>> 0);
-    if (cVar3 == '\x04') {
-      heap.setU32(0x00628a38, ((heap.u32((extraout_EDX + 5)) & 0x1f) << 4) >>> 0);
+    if (cVar3 == 4) {
+      heap.setU32(0x00628a38, ((heap.u8((extraout_EDX + 5)) & 0x1f) << 4) >>> 0);
       heap.setU32(0x00628a34, (sVar1 + 0x1f) >>> 0);
       heap.setU32(0x00628a36, (extraout_CX + 0x1f) >>> 0);
     } else {
       heap.setU32(0x00628a38, (unaff_BX) >>> 0);
-      FUN_00423677(heap);
+      (regs.eax = FUN_00423677(heap));
     }
-    uVar2 = (heap.u32(heap.u32((__addr_PTR_LAB_00435ad8) + (heap.u32(0x00991f88)) * 4)))();
+    uVar2 = (((regs.eax = callIndirect(heap, heap.u32((0x00435ad8) + (heap.u8(0x00991f88)) * 4)))) & 0xffff);
     return uVar2;
   }
   return 0x8000;
-} finally {
-    heap.freeFrame(4);
-  }
 }

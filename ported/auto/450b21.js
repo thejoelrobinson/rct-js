@@ -5,22 +5,16 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_00450b21(heap) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_008874a4 = __sp + 0;
-  const __addr_DAT_008ae9c4 = __sp + 4;
-  try {
   let bVar1 = 0;
-  let in_DL = 0;
+  let in_DL = regs.edx & 0xff;
   LOCK();
-  bVar1 = heap.u32((__addr_DAT_008874a4) + (in_DL * 0x260) * 4);
-  heap.setU32(((__addr_DAT_008874a4) + (in_DL * 0x260) * 4), (0xff) >>> 0);
+  bVar1 = ((heap.u32((0x008874a4) + (((in_DL) >>> 0) * 0x260) * 4)) & 0xff);
+  heap.setU32(((0x008874a4) + (((in_DL) >>> 0) * 0x260) * 4), (0xff) & 0xffffffff);
   UNLOCK();
   if (bVar1 != 0xff) {
-    heap.setU32(((__addr_DAT_008ae9c4) + (bVar1 * 0x4b0c) * 4), (0xff) >>> 0);
+    heap.setU32(((0x008ae9c4) + (((bVar1) >>> 0) * 0x4b0c) * 4), (0xff) & 0xffffffff);
   }
   return;
-} finally {
-    heap.freeFrame(8);
-  }
 }

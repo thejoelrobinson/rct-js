@@ -12,15 +12,15 @@ export function FUN_00402ada(heap) {
   if (heap.u32(0x005e912c) != 0) {
     if (heap.u32(0x005e9128) == 0) {
       heap.setU32(0x005e915c, (1) >>> 0);
-      pvVar1 = GetCurrentProcess(heap);
+      pvVar1 = ((GetCurrentProcess(heap)) >>> 0);
       heap.setU32(0x005f2408, (GetPriorityClass(heap, pvVar1)) >>> 0);
-      pvVar1 = GetCurrentThread(heap);
+      pvVar1 = ((GetCurrentThread(heap)) >>> 0);
       heap.setU32(0x005f1fe8, (GetThreadPriority(heap, pvVar1)) >>> 0);
-      dwPriorityClass = 0x100;
-      pvVar1 = GetCurrentProcess(heap);
+      dwPriorityClass = ((0x100) >>> 0);
+      pvVar1 = ((GetCurrentProcess(heap)) >>> 0);
       SetPriorityClass(heap, pvVar1, dwPriorityClass);
-      nPriority = 0xf;
-      pvVar1 = GetCurrentThread(heap);
+      nPriority = ((0xf) >>> 0);
+      pvVar1 = ((GetCurrentThread(heap)) >>> 0);
       SetThreadPriority(heap, pvVar1, nPriority);
       heap.setU32(0x005e9128, (1) >>> 0);
     } else {

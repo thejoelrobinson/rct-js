@@ -105,8 +105,22 @@ export function CreateWindowExA(heap, dwExStyle, lpClassName, lpWindowName, dwSt
     atom = 0;
   }
   const hwnd = state.nextHwnd++;
-  state.windows.set(hwnd, { atom, x, y, w, h });
+  // Default size if caller passed CW_USEDEFAULT (0x80000000) or zero.
+  const cw = (w | 0) > 0 ? w : 640;
+  const ch = (h | 0) > 0 ? h : 480;
+  state.windows.set(hwnd, { atom, x, y, w: cw, h: ch });
   if (!state.firstHwnd) state.firstHwnd = hwnd;
+  // Post the WM_SIZE that real Win32 fires during window creation. The
+  // binary's WindowProc (FUN_00403d79 case 4) reads this to populate
+  // DAT_005f15c4 (screen width) / DAT_005f1b34 (screen height) — both of
+  // which gate the title-screen render in FUN_009bb9f5.
+  // wParam = SIZE_RESTORED (0); lParam = (height << 16) | width
+  postWindowMessage(hwnd, 0x0005, 0, ((ch & 0xffff) << 16) | (cw & 0xffff));
+  // Post WM_ACTIVATEAPP (0x1C) wParam=1 — tells the binary the window is
+  // active. WindowProc sets DAT_005e9174 = wParam, which gates the per-frame
+  // render setup in FUN_009bb9f5 (without it, that function takes its
+  // early-return path and never sets up the framebuffer description).
+  postWindowMessage(hwnd, 0x001C, 1, 0);
   return hwnd;
 }
 export function CreateWindowExW(heap, ...args) {
@@ -180,10 +194,19 @@ export function SetCursorPos(heap, x, y) { return 1; }
 export function ValidateRect(heap, hWnd, lpRect) { return 1; }
 export function InvalidateRect(heap, hWnd, lpRect, bErase) { return 1; }
 export function GetUpdateRect(heap, hWnd, lpRect, bErase) {
-  if (lpRect) writeRect(heap, lpRect, 0, 0, 0, 0);
-  return 0;
+  // Report a full-screen invalidation. The binary's WM_PAINT path
+  // (FUN_00403d79 case 0xf → FUN_00401120) reads this rect and feeds it
+  // to FUN_004015f0 (invalidate-rect), which marks the dirty mask that
+  // gates FUN_004026ec / FUN_00401972 (the actual paint dispatchers).
+  // Returning an empty rect leaves the dirty mask empty → no paint.
+  if (lpRect) writeRect(heap, lpRect, 0, 0, 640, 480);
+  return 1;
 }
-export function GetUpdateRgn(heap, hWnd, hRgn, bErase) { return 1; }   // SIMPLEREGION
+// Win32 region-type returns: 1=NULLREGION (empty), 2=SIMPLEREGION
+// (single rect — FUN_00401120 then calls FUN_004015f0 with the RECT we
+// passed to it), 3=COMPLEXREGION (walk via GetRegionData). Returning 2
+// makes 401120 take the SIMPLEREGION path with our full-screen rect.
+export function GetUpdateRgn(heap, hWnd, hRgn, bErase) { return 2; }
 export function BeginPaint(heap, hWnd, lpPaint) { return 0x20000001; }
 export function EndPaint(heap, hWnd, lpPaint) { return 1; }
 
@@ -347,11 +370,12 @@ export function GetAsyncKeyState(heap, vKey) { return 0; }
 
 export function SystemParametersInfoA(heap, uiAction, uiParam, pvParam, fWinIni) {
   // Most callers just want the current screen size or font metrics — return
-  // success with zero-filled buffers; binary's defaults take over.
-  if (pvParam) {
-    // Conservatively zero a small buffer — caller-visible behaviour is "nothing changed".
-    for (let i = 0; i < 64; i++) heap.setU8(pvParam + i, 0);
-  }
+  // success with zero-filled output; binary's defaults take over.
+  // We don't know the buffer size from the caller (it varies per uiAction),
+  // and writing too much overruns the caller's stack slot. Write only a
+  // single 4-byte int — covers SPI_GET* actions that return a BOOL/UINT
+  // and is small enough for the most common stack alloc.
+  if (pvParam) heap.setU32(pvParam, 0);
   return 1;
 }
 

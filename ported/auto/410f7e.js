@@ -6,7 +6,7 @@
 
 export function FUN_00410f7e(heap, param_1) {
   let local_8 = 0;
-  for (local_8 = heap.u32(0x005ec14c); (local_8 != 0x0 && (heap.u32(local_8) != param_1)); local_8 = heap.u32(local_8 + (0x13) * 4)) {
+  for (local_8 = ((heap.u32(0x005ec14c)) >>> 0); (local_8 != 0x0 && (heap.i32(local_8) != param_1)); local_8 = (((heap.i32(local_8 + (0x13) * 4)) >>> 0)) >>> 0) {
   
   }
   return local_8;

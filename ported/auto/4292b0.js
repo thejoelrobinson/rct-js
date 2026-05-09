@@ -5,25 +5,18 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_004292b0(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_DAT_00887420 = __sp + 0;
-  const __addr_DAT_005f5d07 = __sp + 4;
-  const __addr_DAT_008ad1c0 = __sp + 8;
-  try {
-  let in_EDX = 0;
+  let in_EDX = regs.edx >>> 0;
   let pbVar1 = 0;
   let local_1c = 0;
-  local_1c = 0;
-  pbVar1 = __addr_DAT_00887420;
+  local_1c = ((0) >>> 0);
+  pbVar1 = ((0x00887420) >>> 0);
   do {
-    if ((heap.u32(pbVar1) != 0xff) && (heap.u32((pbVar1 + 0xf6)) != 0xffff)) {
-      local_1c = local_1c + ((heap.u32((pbVar1 + 0xd4)) + heap.u32((pbVar1 + 0xd6)) + heap.u32((pbVar1 + 0xd8)) + heap.u32((pbVar1 + 0xda)) + heap.u32((pbVar1 + 0xdc)) + heap.u32((pbVar1 + 0xde)) + heap.u32((pbVar1 + 0xe0)) + heap.u32((pbVar1 + 0xe2)) + heap.u32((pbVar1 + 0xe4)) + heap.u32((pbVar1 + 0xe6))) + heap.u32((__addr_DAT_005f5d07) + (heap.u32(pbVar1) * 8) * 4) * 4) * heap.u32((pbVar1 + 0xf6));
+    if ((heap.u8(pbVar1) != 0xff) && (heap.u16((pbVar1 + 0xf6)) != 0xffff)) {
+      local_1c = ((local_1c + (((heap.i16((pbVar1 + 0xd4)) + heap.i16((pbVar1 + 0xd6)) + heap.i16((pbVar1 + 0xd8)) + heap.i16((pbVar1 + 0xda)) + heap.i16((pbVar1 + 0xdc)) + heap.i16((pbVar1 + 0xde)) + heap.i16((pbVar1 + 0xe0)) + heap.i16((pbVar1 + 0xe2)) + heap.i16((pbVar1 + 0xe4)) + heap.i16((pbVar1 + 0xe6))) >>> 0) + heap.u32(((0x005f5d07) >>> 0) + (heap.u32(pbVar1) * 8) * 4) * 4) * (0) * (pbVar1 + 0xf6)) >>> 0);
     }
-    pbVar1 = pbVar1 + 0x260;
-  } while (pbVar1 < __addr_DAT_008ad1c0);
-  return CONCAT44(in_EDX, local_1c + heap.u32(0x0087c81c) * 0x1e);
-} finally {
-    heap.freeFrame(12);
-  }
+    pbVar1 = ((pbVar1 + 0x260) >>> 0);
+  } while (pbVar1 < 0x008ad1c0);
+  return CONCAT44(in_EDX, local_1c + ((heap.u32(0x0087c81c)) >>> 0) * 0x1e);
 }

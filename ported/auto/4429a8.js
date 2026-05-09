@@ -4,9 +4,10 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_004429a8(heap) {
-  let unaff_EBP = 0;
-  if ((((-1 < unaff_EBP) && ((heap.u32(0x0099c163) & 0xf0) == 0)) && (0 < unaff_EBP)) && (heap.u32(0x0087c3b4) < unaff_EBP)) {
+  let unaff_EBP = regs.ebp >>> 0;
+  if ((((-1 < (unaff_EBP | 0)) && ((heap.u8(0x0099c163) & 0xf0) == 0)) && (0 < unaff_EBP)) && (heap.u32(0x0087c3b4) < unaff_EBP)) {
     heap.setU32(0x00971e86, (unaff_EBP) >>> 0);
     heap.setU32(0x00991efc, (0x33a) >>> 0);
     return;

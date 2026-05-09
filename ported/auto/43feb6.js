@@ -4,17 +4,12 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_0043feb6(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_0062d434 = __sp + 0;
-  try {
-  let in_EAX = 0;
-  let unaff_ESI = 0;
-  if ((heap.u32((__addr_DAT_0062d434) + (heap.u32((unaff_ESI + 0x2b))) * 4) & 1) != 0) {
+  let in_EAX = regs.eax >>> 0;
+  let unaff_ESI = regs.esi >>> 0;
+  if ((heap.u32((0x0062d434) + (heap.u8((unaff_ESI + 0x2b))) * 4) & 1) != 0) {
     return in_EAX;
   }
   return in_EAX;
-} finally {
-    heap.freeFrame(4);
-  }
 }

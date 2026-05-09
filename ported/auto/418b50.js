@@ -5,6 +5,5 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00418b50(heap) {
-  __amsg_exit(2);
-  return;
+  return __amsg_exit(2);
 }

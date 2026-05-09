@@ -1,36 +1,28 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/9bb766.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+//
+// Source: decompiled/c/9bb766.c — palette fade. unaff_EBX = palette-table
+// index, in_CL = brightness multiplier. Without caller setting regs.ebx /
+// regs.ecx, EBX = 0 and we'd index into garbage. Bail in that case.
 
-/** @typedef {import("../../runtime/heap.js").Heap} Heap */
-
+import { regs } from "../../runtime/regs.js";
 import { FUN_00405cc0 } from "./405cc0.js";
+
 export function FUN_009bb766(heap) {
-  const __sp = heap.allocFrame(16);
-  const __addr_DAT_008dc0b4 = __sp + 0;
-  const __addr_DAT_005f2000 = __sp + 4;
-  const __addr_DAT_008dc0bc = __sp + 8;
-  const __addr_DAT_008dc0b8 = __sp + 12;
-  try {
-  let in_CL = 0;
-  let unaff_EBX = 0;
-  let uVar1 = 0;
-  let pbVar2 = 0;
-  let puVar3 = 0;
-  pbVar2 = heap.u32((__addr_DAT_008dc0b4) + (unaff_EBX * 4) * 4);
-  puVar3 = __addr_DAT_005f2000 + heap.u32((__addr_DAT_008dc0bc + unaff_EBX * 0x10)) * 4;
-  uVar1 = heap.u32((__addr_DAT_008dc0b8 + unaff_EBX * 0x10));
+  const ebx = regs.ebx | 0;
+  if (ebx === 0) return;  // no caller-supplied table index
+  const cl = regs.ecx & 0xff;
+  let pbVar2 = heap.u32(0x008dc0b4 + ebx * 4);
+  if (pbVar2 === 0) return;
+  let puVar3 = (0x005f2000 + heap.u16(0x008dc0bc + ebx * 0x10) * 4) >>> 0;
+  let uVar1 = heap.u16(0x008dc0b8 + ebx * 0x10);
+  if (uVar1 === 0) return;
   do {
-    heap.setU32(puVar3, (((heap.u32(pbVar2) * in_CL) >>> 8)) >>> 0);
-    heap.setU32((puVar3 + (1) * 4), (((heap.u32(pbVar2 + (1) * 4) * in_CL) >>> 8)) >>> 0);
-    heap.setU32((puVar3 + (2) * 4), (((heap.u32(pbVar2 + (2) * 4) * in_CL) >>> 8)) >>> 0);
-    pbVar2 = pbVar2 + 3;
-    puVar3 = puVar3 + 4;
-    uVar1 = uVar1 - 1;
-  } while (uVar1 != 0);
-  FUN_00405cc0(heap, __addr_DAT_005f2000, 10, 0xec);
-  return;
-} finally {
-    heap.freeFrame(16);
-  }
+    heap.setU8(puVar3, ((heap.u8(pbVar2)     * cl) >>> 8) & 0xff);
+    heap.setU8(puVar3 + 1, ((heap.u8(pbVar2 + 1) * cl) >>> 8) & 0xff);
+    heap.setU8(puVar3 + 2, ((heap.u8(pbVar2 + 2) * cl) >>> 8) & 0xff);
+    pbVar2 = (pbVar2 + 3) >>> 0;
+    puVar3 = (puVar3 + 4) >>> 0;
+    uVar1 = (uVar1 - 1) >>> 0;
+  } while (uVar1 !== 0);
+  FUN_00405cc0(heap, 0x005f2000, 10, 0xec);
 }

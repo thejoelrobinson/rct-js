@@ -10,6 +10,10 @@ generated/
 frames/
 sprites/
 
+# Diff-test reports — regenerable via tools/bulk-diff-test.js
+tools/bulk-diff-report.json
+tools/c-to-js/translation-report.json
+
 # Ghidra project state (binary, regenerable from binary/rct.exe)
 decompiled/ghidra-project/
 

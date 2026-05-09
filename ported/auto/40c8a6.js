@@ -5,25 +5,19 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { InterlockedExchange } from "../../runtime/win32.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_0040bc20 } from "./40bc20.js";
 export function FUN_0040c8a6(heap, param_1, param_2, param_3, param_4, param_5) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_005ebfe4 = __sp + 0;
-  const __addr_DAT_005f03a0 = __sp + 4;
-  try {
   let LVar1 = 0;
   let local_8 = 0;
-  LVar1 = InterlockedExchange(heap, __addr_DAT_005ebfe4, 1);
+  LVar1 = ((InterlockedExchange(heap, 0x005ebfe4, 1)) >>> 0);
   if (LVar1 == 0) {
-    for (local_8 = 0; local_8 < 4; local_8 = local_8 + 1) {
-      if (heap.u32((__addr_DAT_005f03a0 + local_8 * 0x16c)) != 0) {
-        FUN_0040bc20(heap, param_1, param_2, param_3, param_4, param_5, local_8);
+    for (local_8 = ((0) >>> 0); local_8 < 4; local_8 = (((local_8 + 1) >>> 0)) >>> 0) {
+      if (heap.i32((0x005f03a0 + local_8 * 0x16c)) != 0) {
+        (regs.eax = FUN_0040bc20(heap, param_1, param_2, param_3, param_4, param_5, local_8));
       }
     }
-    InterlockedExchange(heap, __addr_DAT_005ebfe4, 0);
+    InterlockedExchange(heap, 0x005ebfe4, 0);
   }
   return;
-} finally {
-    heap.freeFrame(8);
-  }
 }

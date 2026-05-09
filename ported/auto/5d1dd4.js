@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_005cfac0 } from "./5cfac0.js";
 import { FUN_005cfac7 } from "./5cfac7.js";
 import { FUN_005cfe66 } from "./5cfe66.js";
@@ -17,52 +18,49 @@ export function FUN_005d1dd4(heap) {
   let extraout_CX_00 = 0;
   let extraout_DX = 0;
   let extraout_DX_00 = 0;
-  let unaff_ESI = 0;
-  let unaff_EDI = 0;
+  let unaff_ESI = regs.esi >>> 0;
+  let unaff_EDI = regs.edi >>> 0;
   let bVar3 = 0;
-  if (heap.u32(0x00652288) == '\x03') {
-    FUN_005d21fa(heap);
-    uVar1 = heap.u32(0x00652291);
-    bVar3 = false;
-    FUN_005cfe66(heap);
+  if (heap.u8(0x00652288) == 3) {
+    (regs.eax = FUN_005d21fa(heap));
+    uVar1 = ((heap.u8(0x00652291)) & 0xff);
+    bVar3 = ((false) & 0xff);
+    (regs.eax = FUN_005cfe66(heap));
     if (bVar3) {
-      heap.setU32(0x00652288, (0) >>> 0);
-      FUN_005d13e2(heap);
-      return;
+      heap.setU8(0x00652288, (0) & 0xff);
+      return (regs.eax = FUN_005d13e2(heap));
     }
-    uVar2 = FUN_005cfac7(heap);
-    heap.setU32(0x0065228c, (extraout_CX_00) >>> 0);
-    heap.setU32(0x0065228e, (extraout_DX_00) >>> 0);
+    uVar2 = (((regs.eax = FUN_005cfac7(heap))) & 0xffff);
+    heap.setU8(0x0065228c, (extraout_CX_00) & 0xff);
+    heap.setU8(0x0065228e, (extraout_DX_00) & 0xff);
     if (bVar3) {
-      heap.setU32(0x00652288, (1) >>> 0);
-      heap.setU32(0x00652290, (uVar1) >>> 0);
-      heap.setU32(0x00652291, (heap.u32(unaff_EDI + (4) * 4)) >>> 0);
-      heap.setU32(0x00652292, (0) >>> 0);
-      heap.setU32(0x00652293, (0) >>> 0);
-      heap.setU32(0x0065228a, (uVar2) >>> 0);
-      FUN_005d22f8(heap);
-      FUN_005d13e2(heap);
-      return;
+      heap.setU8(0x00652288, (1) & 0xff);
+      heap.setU8(0x00652290, (uVar1) & 0xff);
+      heap.setU8(0x00652291, (heap.u8(unaff_EDI + (4))) & 0xff);
+      heap.setU8(0x00652292, (0) & 0xff);
+      heap.setU8(0x00652293, (0) & 0xff);
+      heap.setU8(0x0065228a, (uVar2) & 0xff);
+      (regs.eax = FUN_005d22f8(heap));
+      return (regs.eax = FUN_005d13e2(heap));
     }
-    LAB_005d1e67: heap.setU32(0x00652290, (heap.u32(unaff_EDI) & 3) >>> 0);
-    heap.setU32(0x00652291, (heap.u32(unaff_EDI + (4) * 4)) >>> 0);
-    heap.setU32(0x00652292, (0) >>> 0);
-    heap.setU32(0x00652293, (0) >>> 0);
-    heap.setU32(0x0065228a, (uVar2) >>> 0);
-    FUN_005d13e2(heap);
-    return;
+    LAB_005d1e67: heap.setU8(0x00652290, (heap.u8(unaff_EDI) & 3) & 0xff);
+    heap.setU8(0x00652291, (heap.u8(unaff_EDI + (4))) & 0xff);
+    heap.setU8(0x00652292, (0) & 0xff);
+    heap.setU8(0x00652293, (0) & 0xff);
+    heap.setU8(0x0065228a, (uVar2) & 0xff);
+    return (regs.eax = FUN_005d13e2(heap));
   }
-  if (heap.u32(0x00652288) == '\x02') {
-    FUN_005d21fa(heap);
-    heap.setU32(0x00652470, (heap.u32(0x00652289)) >>> 0);
-    bVar3 = false;
-    uVar2 = FUN_005cfac0(heap);
+  if (heap.u8(0x00652288) == 2) {
+    (regs.eax = FUN_005d21fa(heap));
+    heap.setU32(0x00652470, (heap.u8(0x00652289)) >>> 0);
+    bVar3 = ((false) & 0xff);
+    uVar2 = (((regs.eax = FUN_005cfac0(heap))) & 0xffff);
     if (!bVar3) {
-      heap.setU32(0x00652288, ('\x03') >>> 0);
-      heap.setU32(0x0065228c, (extraout_CX) >>> 0);
-      heap.setU32(0x0065228e, (extraout_DX) >>> 0);
-      unaff_EDI = unaff_ESI;
-      /* goto LAB_005d1e67 */ throw new Error("goto LAB_005d1e67 not supported");
+      heap.setU8(0x00652288, (3) & 0xff);
+      heap.setU8(0x0065228c, (extraout_CX) & 0xff);
+      heap.setU8(0x0065228e, (extraout_DX) & 0xff);
+      unaff_EDI = ((unaff_ESI) >>> 0);
+      /* goto LAB_005d1e67 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_005d1dd4/LAB_005d1e67"); return 0;
     }
   }
   return;

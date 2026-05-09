@@ -4,15 +4,17 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00408d5d } from "./408d5d.js";
 export function FUN_0040a503(heap) {
   let iVar1 = 0;
   if (((heap.u32(0x005ebf54) == 0) && (heap.u32(0x005ebf34) != 0x0)) && (heap.u32(0x005ebf3c) != 0)) {
-    iVar1 = (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x7c))))(heap.u32(0x005ebf34), heap.u32(0x005ebf3c));
+    iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x7c)), heap.u32(0x005ebf34), heap.u32(0x005ebf3c)))) >>> 0);
     if (iVar1 == -0x7789fe3e) {
-      iVar1 = FUN_00408d5d(heap);
+      iVar1 = (((regs.eax = FUN_00408d5d(heap))) >>> 0);
       if (iVar1 != 0) {
-        (heap.u32(heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x7c))))(heap.u32(0x005ebf34), heap.u32(0x005ebf3c));
+        (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x7c)), heap.u32(0x005ebf34), heap.u32(0x005ebf3c)));
       }
     }
   }

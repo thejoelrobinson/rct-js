@@ -6,6 +6,5 @@
 
 import { DestroyIcon } from "../../runtime/win32.js";
 export function FUN_00404cdb(heap, param_1) {
-  DestroyIcon(heap, param_1);
-  return;
+  return DestroyIcon(heap, param_1);
 }

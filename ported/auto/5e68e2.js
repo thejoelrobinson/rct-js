@@ -4,24 +4,19 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 export function FUN_005e68e2(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_009a013c = __sp + 0;
-  try {
-  let in_AX = 0;
+  let in_AX = regs.eax & 0xffff;
   let puVar1 = 0;
-  puVar1 = __addr_DAT_009a013c;
+  puVar1 = ((0x009a013c) >>> 0);
   while (true) {
     if (heap.u32(0x009a1164) <= puVar1) {
       return in_AX;
     }
-    if (heap.u32(puVar1 + (0x174) * 4) == '\0') {
+    if (heap.u8(puVar1 + (0x174)) == 0) {
       break;
     }
-    puVar1 = puVar1 + 0x178;
+    puVar1 = ((puVar1 + 0x178) >>> 0);
   }
   return in_AX;
-} finally {
-    heap.freeFrame(4);
-  }
 }

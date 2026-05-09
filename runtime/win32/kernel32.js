@@ -154,10 +154,44 @@ export function LoadLibraryA(heap, lpFilename) {
   return 0x10020000;
 }
 export function FreeLibrary(heap, hModule) { return 1; }
-export function GetProcAddress(heap, hModule, lpProcName) {
-  // Without a real symbol table, we can't return real fn pointers. Return
-  // 0 to make most paths fall through to a fallback.
+// CRT functions Ghidra surfaces as `_memset` / `_memcpy` etc. — used heavily
+// to zero/init structs before passing to Win32 APIs. Stubbing these to no-op
+// silently corrupts every call that depends on a zeroed struct.
+export function _memset(heap, dest, value, count) {
+  const bytes = heap.bytes;
+  const v = value & 0xff;
+  for (let i = 0; i < count; i++) bytes[dest + i] = v;
+  return dest;
+}
+export function _memcpy(heap, dest, src, count) {
+  const bytes = heap.bytes;
+  // Use copyWithin for speed; handles overlap.
+  bytes.copyWithin(dest, src, src + count);
+  return dest;
+}
+export function _memcmp(heap, lhs, rhs, count) {
+  const bytes = heap.bytes;
+  for (let i = 0; i < count; i++) {
+    const d = bytes[lhs + i] - bytes[rhs + i];
+    if (d) return d > 0 ? 1 : -1;
+  }
   return 0;
+}
+export function _strlen(heap, s) {
+  const bytes = heap.bytes;
+  let n = 0;
+  while (bytes[s + n] !== 0) n++;
+  return n;
+}
+
+export function GetProcAddress(heap, hModule, lpProcName) {
+  if (!lpProcName) return 0;
+  // The binary uses LoadLibraryA + GetProcAddress to bind dynamic DLL
+  // exports — DDraw, DSound, WinMM extensions, etc. We register JS impls
+  // under their export name in state.procRegistry; the synthetic address
+  // we return routes through callIndirect → fnDispatch.
+  const name = heap.readCStr(lpProcName);
+  return state.procRegistry.get(name) || 0;
 }
 
 export function FindResourceA(heap, hModule, lpName, lpType) { return 0; }

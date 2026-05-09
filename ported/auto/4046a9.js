@@ -6,6 +6,5 @@
 
 import { PostQuitMessage } from "../../runtime/win32.js";
 export function FUN_004046a9(heap) {
-  PostQuitMessage(heap, 0);
-  return;
+  return PostQuitMessage(heap, 0);
 }

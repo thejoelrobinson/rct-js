@@ -4,13 +4,9 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_005dde9c(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_PTR_DAT_006e2758 = __sp + 0;
-  const __addr_PTR_DAT_006e2788 = __sp + 4;
-  const __addr_DAT_006e1d80 = __sp + 8;
-  try {
   let uVar1 = 0;
   let psVar2 = 0;
   let sVar3 = 0;
@@ -18,42 +14,38 @@ export function FUN_005dde9c(heap) {
   let puVar5 = 0;
   let puVar6 = 0;
   let uVar7 = 0;
-  uVar7 = 0;
+  uVar7 = ((0) >>> 0);
   do {
-    puVar5 = heap.u32((__addr_PTR_DAT_006e2758) + (uVar7) * 4);
-    puVar4 = heap.u32((__addr_PTR_DAT_006e2788) + (uVar7) * 4);
+    puVar5 = ((heap.u32((0x006e2758) + (uVar7) * 4)) >>> 0);
+    puVar4 = ((heap.u32((0x006e2788) + (uVar7) * 4)) >>> 0);
     while (true) {
-      uVar1 = heap.u32(puVar5);
+      uVar1 = ((heap.u16(puVar5)) & 0xffff);
       if (uVar1 == 0xffff) {
         break;
       }
-      if ((heap.u32(((uVar1 >>> 5) * 4 + 0x87cba8 + ((uVar1 & 0x1f) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
-        heap.setU32(puVar4, (uVar1) >>> 0);
-        puVar4 = puVar4 + 1;
+      if ((heap.u8((((uVar1 >>> 5) >>> 0) * 4 + 0x87cba8 + ((((uVar1 & 0x1f)) >>> 0) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
+        heap.setU32(puVar4, (uVar1) & 0xffffffff);
+        puVar4 = ((puVar4 + ((1) * 2)) >>> 0);
       }
-      puVar5 = puVar5 + 1;
+      puVar5 = ((puVar5 + ((1) * 2)) >>> 0);
     }
-    heap.setU32(puVar4, (0xffff) >>> 0);
-    uVar7 = uVar7 + 1;
+    heap.setU32(puVar4, (0xffff) & 0xffffffff);
+    uVar7 = ((uVar7 + 1) >>> 0);
   } while (uVar7 < 0xc);
-  uVar7 = 0;
-  puVar6 = __addr_DAT_006e1d80;
-  sVar3 = 4;
+  uVar7 = ((0) >>> 0);
+  puVar6 = ((0x006e1d80) >>> 0);
+  sVar3 = ((4) & 0xffff);
   do {
-    psVar2 = heap.u32((__addr_PTR_DAT_006e2788) + (uVar7) * 4);
-    heap.setU32(puVar6, (0) >>> 0);
-    if (heap.u32(psVar2) != -1) {
-      heap.setU32(puVar6, (5) >>> 0);
-      heap.setU32((puVar6 + 2), (sVar3) >>> 0);
-      heap.setU32((puVar6 + 4), (sVar3 + 0x22) >>> 0);
-      sVar3 = sVar3 + 0x23;
+    psVar2 = ((heap.u32((0x006e2788) + (uVar7) * 4)) >>> 0);
+    heap.setU32(puVar6, (0) & 0xffffffff);
+    if ((heap.i16(psVar2) | 0) != -1) {
+      heap.setU32(puVar6, (5) & 0xffffffff);
+      heap.setI16((puVar6 + 2), (sVar3) & 0xffff);
+      heap.setI16((puVar6 + 4), (sVar3 + 0x22) & 0xffff);
+      sVar3 = ((sVar3 + 0x23) & 0xffff);
     }
-    uVar7 = uVar7 + 1;
-    puVar6 = puVar6 + 0x10;
+    uVar7 = ((uVar7 + 1) >>> 0);
+    puVar6 = ((puVar6 + 0x10) >>> 0);
   } while (uVar7 < 0xc);
-  FUN_005e5301(heap);
-  return;
-} finally {
-    heap.freeFrame(12);
-  }
+  return (regs.eax = FUN_005e5301(heap));
 }

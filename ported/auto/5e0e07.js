@@ -4,65 +4,59 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_009b30f1 } from "./9b30f1.js";
 export function FUN_005e0e07(heap) {
-  const __sp = heap.allocFrame(8);
-  const __addr_DAT_0099ac8b = __sp + 0;
-  const __addr_DAT_009a147c = __sp + 4;
-  try {
-  let unaff_EBP = 0;
+  let unaff_EBP = regs.ebp >>> 0;
   let uVar1 = 0;
-  let unaff_SI = 0;
+  let unaff_SI = regs.esi & 0xffff;
   let uVar2 = 0;
   if ((unaff_EBP & 0x80) == 0) {
-    uVar2 = heap.u32((__addr_DAT_0099ac8b + unaff_EBP * 8 + 3));
+    uVar2 = ((heap.u16((((0x0099ac8b) >>> 0) + unaff_EBP * 8 + 3))) & 0xffff);
     if ((unaff_SI & 8) == 0) {
       if ((unaff_SI & 0x20) == 0) {
-        FUN_009b30f1(heap, uVar2);
-        FUN_009b30f1(heap);
-        FUN_009b30f1(heap);
-        FUN_009b30f1(heap);
+        (regs.eax = FUN_009b30f1(heap, uVar2));
+        (regs.eax = FUN_009b30f1(heap));
+        (regs.eax = FUN_009b30f1(heap));
+        (regs.eax = FUN_009b30f1(heap));
         if ((unaff_SI & 0x10) == 0) {
-          FUN_009b30f1(heap, uVar2);
+          (regs.eax = FUN_009b30f1(heap, uVar2));
         }
       } else {
-        FUN_009b30f1(heap, uVar2);
-        FUN_009b30f1(heap);
-        FUN_009b30f1(heap);
-        FUN_009b30f1(heap);
+        (regs.eax = FUN_009b30f1(heap, uVar2));
+        (regs.eax = FUN_009b30f1(heap));
+        (regs.eax = FUN_009b30f1(heap));
+        (regs.eax = FUN_009b30f1(heap));
         if ((unaff_SI & 0x10) == 0) {
-          FUN_009b30f1(heap, uVar2);
+          (regs.eax = FUN_009b30f1(heap, uVar2));
         }
       }
     } else {
-      FUN_009b30f1(heap, uVar2);
+      (regs.eax = FUN_009b30f1(heap, uVar2));
     }
     return;
   }
-  uVar1 = heap.u32((__addr_DAT_009a147c) + (unaff_EBP) * 4) | 0x2000000;
+  uVar1 = ((heap.u32(((0x009a147c) & 0xff) + (unaff_EBP) * 4) | 0x2000000) >>> 0);
   if ((unaff_SI & 8) == 0) {
     if ((unaff_SI & 0x20) == 0) {
-      FUN_009b30f1(heap, uVar1);
-      FUN_009b30f1(heap);
-      FUN_009b30f1(heap);
-      FUN_009b30f1(heap);
+      (regs.eax = FUN_009b30f1(heap, uVar1));
+      (regs.eax = FUN_009b30f1(heap));
+      (regs.eax = FUN_009b30f1(heap));
+      (regs.eax = FUN_009b30f1(heap));
       if ((unaff_SI & 0x10) == 0) {
-        FUN_009b30f1(heap, uVar1);
+        (regs.eax = FUN_009b30f1(heap, uVar1));
       }
     } else {
-      FUN_009b30f1(heap, uVar1);
-      FUN_009b30f1(heap);
-      FUN_009b30f1(heap);
-      FUN_009b30f1(heap);
+      (regs.eax = FUN_009b30f1(heap, uVar1));
+      (regs.eax = FUN_009b30f1(heap));
+      (regs.eax = FUN_009b30f1(heap));
+      (regs.eax = FUN_009b30f1(heap));
       if ((unaff_SI & 0x10) == 0) {
-        FUN_009b30f1(heap, uVar1);
+        (regs.eax = FUN_009b30f1(heap, uVar1));
       }
     }
   } else {
-    FUN_009b30f1(heap, uVar1);
+    (regs.eax = FUN_009b30f1(heap, uVar1));
   }
   return;
-} finally {
-    heap.freeFrame(8);
-  }
 }

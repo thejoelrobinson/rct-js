@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0042913a } from "./42913a.js";
 import { FUN_00429249 } from "./429249.js";
 import { FUN_00429361 } from "./429361.js";
@@ -21,53 +22,47 @@ import { FUN_0044a246 } from "./44a246.js";
 import { FUN_00451d6e } from "./451d6e.js";
 import { FUN_0045818d } from "./45818d.js";
 export function FUN_0045ab15(heap) {
-  const __sp = heap.allocFrame(4);
-  const __addr_DAT_0064bc60 = __sp + 0;
-  try {
   let sVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
-  if (((heap.u32(0x006e3b82) + 4) * heap.u32((__addr_DAT_0064bc60 + (heap.u32(0x006e3b80) & 7) * 2)) >>> 0x10) != (heap.u32(0x006e3b82) * heap.u32((__addr_DAT_0064bc60 + (heap.u32(0x006e3b80) & 7) * 2)) >>> 0x10)) {
-    FUN_0044470e(heap);
-    FUN_0044290a(heap);
+  if ((((((heap.u32(0x006e3b82) + 4) >>> 0) * (0) * (0x0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) << 24 >> 24) != (((((heap.u32(0x006e3b82)) >>> 0) * (0) * (0x0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) << 24 >> 24)) {
+    (regs.eax = FUN_0044470e(heap));
+    (regs.eax = FUN_0044290a(heap));
   }
-  if (0xffee < (heap.u32(0x006e3b82) << 2)) {
-    FUN_0045818d(heap);
-    FUN_004314c5(heap);
-    FUN_0044408f(heap);
-    FUN_004440ac(heap);
-    FUN_00442516(heap);
-    FUN_00451d6e(heap);
-    uVar2 = (heap.u32(0x006e3b80) & 7) == 0;
+  if (0xffee < ((heap.u32(0x006e3b82) << 2) & 0xffff)) {
+    (regs.eax = FUN_0045818d(heap));
+    (regs.eax = FUN_004314c5(heap));
+    (regs.eax = FUN_0044408f(heap));
+    (regs.eax = FUN_004440ac(heap));
+    (regs.eax = FUN_00442516(heap));
+    (regs.eax = FUN_00451d6e(heap));
+    uVar2 = (((heap.u32(0x006e3b80) & 7) == 0) & 0xff);
     if ((heap.u32(0x006e3b80) & 7) < 2) {
-      sVar1 = 100;
+      sVar1 = ((100) & 0xffff);
       do {
-        FUN_0042e9e5(heap);
+        (regs.eax = FUN_0042e9e5(heap));
         if (!uVar2) {
           break;
         }
-        sVar1 = sVar1 + -1;
+        sVar1 = ((sVar1 + -1) & 0xffff);
       } while (sVar1 != 0);
     }
-    FUN_0042913a(heap);
-    FUN_00429249(heap);
+    (regs.eax = FUN_0042913a(heap));
+    (regs.eax = FUN_00429249(heap));
   }
-  sVar1 = heap.u32(0x006e3b82) * 2 + 8;
-  if (0xfff7 < (heap.u32(0x006e3b82) * 2)) {
-    sVar1 = FUN_0044a246(heap);
+  sVar1 = ((heap.u32(0x006e3b82) * 2 + 8) & 0xffff);
+  if (0xfff7 < ((heap.u32(0x006e3b82) * 2) & 0xffff)) {
+    sVar1 = (((regs.eax = FUN_0044a246(heap))) & 0xffff);
   }
-  bVar3 = 0xfffb < heap.u32(0x006e3b82);
+  bVar3 = ((0xfffb < heap.u32(0x006e3b82)) & 0xff);
   heap.setU32(0x006e3b82, (heap.u32(0x006e3b82) + 4) >>> 0);
   if (bVar3) {
     heap.setU32(0x006e3b80, (heap.u32(0x006e3b80) + 1) >>> 0);
     heap.setU32(0x005f54ec, (heap.u32(0x005f54ec) | 2) >>> 0);
-    FUN_00443f36(heap);
-    FUN_00429361(heap);
-    FUN_004294a2(heap);
-    sVar1 = FUN_00429502(heap);
+    (regs.eax = FUN_00443f36(heap));
+    (regs.eax = FUN_00429361(heap));
+    (regs.eax = FUN_004294a2(heap));
+    sVar1 = (((regs.eax = FUN_00429502(heap))) & 0xffff);
   }
   return sVar1;
-} finally {
-    heap.freeFrame(4);
-  }
 }

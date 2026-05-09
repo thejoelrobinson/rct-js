@@ -6,6 +6,5 @@
 
 import { DirectSoundCreate } from "../../runtime/win32.js";
 export function FUN_0041b19a(heap) {
-  DirectSoundCreate(heap);
-  return;
+  return DirectSoundCreate(heap);
 }

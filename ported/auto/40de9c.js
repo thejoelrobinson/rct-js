@@ -7,12 +7,12 @@
 export function FUN_0040de9c(heap, param_1) {
   let iVar1 = 0;
   if (heap.u32(0x005ec050) == 0x0) {
-    iVar1 = 0;
+    iVar1 = ((0) >>> 0);
   } else {
     if (param_1 < heap.u32(heap.u32(0x005ec050))) {
-    iVar1 = heap.u32(0x005ec050) + heap.u32(heap.u32(0x005ec050) + (param_1 + 1) * 4);
+    iVar1 = ((((heap.u32(0x005ec050)) >>> 0) + heap.u32(heap.u32(0x005ec050) + (param_1 + 1) * 4)) >>> 0);
   } else {
-    iVar1 = 0;
+    iVar1 = ((0) >>> 0);
   }
   }
   return iVar1;

@@ -10,9 +10,9 @@ export function FUN_004058f8(heap, param_1, param_2) {
   const __addr_local_10 = __sp + 0;
   try {
   let BVar1 = 0;
-  BVar1 = GetCursorPos(heap, __addr_local_10);
-  heap.setU32(param_1, (heap.u32(__addr_local_10)) >>> 0);
-  heap.setU32(param_2, (heap.u32((__addr_local_10 + 4))) >>> 0);
+  BVar1 = ((GetCursorPos(heap, __addr_local_10)) >>> 0);
+  heap.setU32(param_1, (heap.u32(__addr_local_10)) & 0xffffffff);
+  heap.setU32(param_2, (heap.u32((__addr_local_10 + 4))) & 0xffffffff);
   return BVar1;
 } finally {
     heap.freeFrame(128);

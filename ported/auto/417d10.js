@@ -14,19 +14,19 @@ export function FUN_00417d10(heap, param_1, param_2) {
   try {
   let lpMultiByteStr = 0;
   let iVar1 = 0;
-  lpMultiByteStr = heap.u32(__addr_param_1);
-  if (heap.u32(__addr_param_1) == 0x0) {
+  lpMultiByteStr = ((heap.u32(__addr_param_1)) >>> 0);
+  if (heap.u32(__addr_param_1) == ((0x0) >>> 0)) {
     return 0;
   }
   if (heap.u32(0x005f0270) == 0) {
-    if (heap.u32(__addr_param_2) < 0x100) {
-      heap.setU32(heap.u32(__addr_param_1), (heap.u32(__addr_param_2)) >>> 0);
+    if (((heap.u32(__addr_param_2)) & 0xffff) < 0x100) {
+      heap.setU32(heap.u32(__addr_param_1), (((heap.u32(__addr_param_2)) >>> 0)) & 0xffffffff);
       return 1;
     }
   } else {
-    heap.setU32(__addr_param_1, (0x0) >>> 0);
-    iVar1 = WideCharToMultiByte(heap, heap.u32(0x005f0280), 0x220, __addr_param_2, 1, lpMultiByteStr, heap.u32(0x005ee754), 0x0, __addr_param_1);
-    if ((iVar1 != 0) && (heap.u32(__addr_param_1) == 0x0)) {
+    heap.setU32(__addr_param_1, (((0x0) >>> 0)) >>> 0);
+    iVar1 = ((WideCharToMultiByte(heap, heap.u32(0x005f0280), 0x220, __addr_param_2, 1, lpMultiByteStr, heap.u32(0x005ee754), ((0x0) >>> 0), ((__addr_param_1) >>> 0))) >>> 0);
+    if ((iVar1 != 0) && (heap.u32(__addr_param_1) == ((0x0) >>> 0))) {
       return iVar1;
     }
   }

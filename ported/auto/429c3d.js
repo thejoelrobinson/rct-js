@@ -4,64 +4,51 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00423677 } from "./423677.js";
 export function FUN_00429c3d(heap) {
-  const __sp = heap.allocFrame(36);
-  const __addr_DAT_00887448 = __sp + 0;
-  const __addr_DAT_00743ba2 = __sp + 4;
-  const __addr_DAT_00743bbf = __sp + 8;
-  const __addr_DAT_00887422 = __sp + 12;
-  const __addr_DAT_00743bfc = __sp + 16;
-  const __addr_DAT_0088747e = __sp + 20;
-  const __addr_DAT_00743bfe = __sp + 24;
-  const __addr_DAT_00743bff = __sp + 28;
-  const __addr_DAT_00743bd2 = __sp + 32;
-  try {
   let uVar1 = 0;
   let sVar2 = 0;
   let cVar3 = 0;
-  let in_ECX = 0;
-  let in_DL = 0;
+  let in_ECX = regs.ecx >>> 0;
+  let in_DL = regs.edx & 0xff;
   let iVar4 = 0;
-  if (in_DL == '\x01') {
-    if (heap.u32((__addr_DAT_00887448 + in_ECX * 0x260)) != -1) {
-      sVar2 = FUN_00423677(heap);
+  if (in_DL == 1) {
+    if ((heap.i16((0x00887448 + in_ECX * 0x260)) | 0) != -1) {
+      sVar2 = (((regs.eax = FUN_00423677(heap))) & 0xffff);
       return sVar2;
     }
   } else {
-    if (in_DL == '\x02') {
-      iVar4 = (in_ECX & 0xffff) * 0x100;
-      sVar2 = heap.u32((__addr_DAT_00743ba2) + ((in_ECX & 0xffff) * 0x80) * 4);
+    if (in_DL == 2) {
+      iVar4 = (((in_ECX & 0xffff) * 0x100) >>> 0);
+      sVar2 = ((heap.u32((0x00743ba2) + ((in_ECX & 0xffff) * 0x80) * 4)) & 0xffff);
       if (sVar2 == -0x8000) {
-        if ((heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) != '\x03') && (heap.u32((__addr_DAT_00743bbf) + (iVar4) * 4) != '\a')) {
+        if ((heap.u32((0x00743bbf) + (iVar4) * 4) != 3) && (heap.u32((0x00743bbf) + (iVar4) * 4) != NaN)) {
           return -0x8000;
         }
-        if ((heap.u32((__addr_DAT_00887422) + (heap.u32((__addr_DAT_00743bfc) + (iVar4) * 4) * 0x130) * 4) & 1) == 0) {
+        if ((heap.u32((0x00887422) + (heap.u32(((0x00743bfc) >>> 0) + (iVar4) * 4) * 0x130) * 4) & 1) == 0) {
           return -0x8000;
         }
-        uVar1 = heap.u32((__addr_DAT_0088747e + heap.u32((__addr_DAT_00743bfe) + (iVar4) * 4) * 2 + heap.u32((__addr_DAT_00743bfc) + (iVar4) * 4) * 0x260));
-        cVar3 = heap.u32((__addr_DAT_00743bff) + (iVar4) * 4);
+        uVar1 = ((heap.u16((0x0088747e + heap.u32(((0x00743bfe) >>> 0) + (iVar4) * 4) * 2 + heap.u32(((0x00743bfc) >>> 0) + (iVar4) * 4) * 0x260))) & 0xffff);
+        cVar3 = ((heap.u32((0x00743bff) + (iVar4) * 4)) & 0xff);
         while (true) {
-          if (cVar3 == '\0') {
+          if (cVar3 == 0) {
             break;
           }
-          cVar3 = cVar3 + -1;
-          uVar1 = heap.u32((__addr_DAT_00743bd2 + uVar1 * 0x100));
+          cVar3 = ((cVar3 + -1) & 0xff);
+          uVar1 = ((heap.u16((0x00743bd2 + ((uVar1) >>> 0) * 0x100))) & 0xffff);
         }
-        sVar2 = heap.u32((__addr_DAT_00743ba2) + (uVar1 * 0x80) * 4);
+        sVar2 = ((heap.u32((0x00743ba2) + (((uVar1) >>> 0) * 0x80) * 4)) & 0xffff);
       }
       return sVar2;
     }
-    if (in_DL == '\x03') {
-      return heap.u32((__addr_DAT_00743ba2) + ((in_ECX & 0xffff) * 0x80) * 4);
+    if (in_DL == 3) {
+      return heap.u32((0x00743ba2) + ((in_ECX & 0xffff) * 0x80) * 4);
     }
-    if (in_DL == '\x05') {
-      sVar2 = FUN_00423677(heap);
+    if (in_DL == 5) {
+      sVar2 = (((regs.eax = FUN_00423677(heap))) & 0xffff);
       return sVar2;
     }
   }
   return -0x8000;
-} finally {
-    heap.freeFrame(36);
-  }
 }

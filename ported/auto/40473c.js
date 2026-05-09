@@ -6,6 +6,5 @@
 
 import { timeGetTime } from "../../runtime/win32.js";
 export function FUN_0040473c(heap) {
-  timeGetTime(heap);
-  return;
+  return timeGetTime(heap);
 }

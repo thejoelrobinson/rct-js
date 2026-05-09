@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_004090e3 } from "./4090e3.js";
 export function FUN_0040a497(heap) {
   if (heap.u32(0x005ebf54) != 0) {
@@ -12,7 +13,7 @@ export function FUN_0040a497(heap) {
     } else {
       heap.setU32(0x005ebf4c, (0) >>> 0);
       if (heap.u32(0x005ebf50) != 0) {
-        FUN_004090e3(heap);
+        (regs.eax = FUN_004090e3(heap));
         heap.setU32(0x005ebf50, (0) >>> 0);
       }
     }

@@ -1,0 +1,111 @@
+// runtime/input.js — DOM events → Win32 message queue.
+//
+// Wires the canvas's mouse and keyboard events to postWindowMessage with
+// the standard Win32 message codes so ported code (which is the binary's
+// native message-loop) can consume them just like it would on Win32.
+//
+// Coordinate space: canvas client coords (after CSS scaling) are mapped to
+// canvas-pixel coords before being packed into lParam. The binary expects
+// pixel coords matching the DIB/screen size.
+//
+// Usage:
+//   import { attachInput } from "./runtime/input.js";
+//   attachInput(canvas);
+
+import { state } from "./win32/context.js";
+import { postWindowMessage } from "./win32/user32.js";
+
+const WM_MOUSEMOVE   = 0x0200;
+const WM_LBUTTONDOWN = 0x0201;
+const WM_LBUTTONUP   = 0x0202;
+const WM_RBUTTONDOWN = 0x0204;
+const WM_RBUTTONUP   = 0x0205;
+const WM_MBUTTONDOWN = 0x0207;
+const WM_MBUTTONUP   = 0x0208;
+const WM_MOUSEWHEEL  = 0x020A;
+const WM_KEYDOWN     = 0x0100;
+const WM_KEYUP       = 0x0101;
+const WM_CHAR        = 0x0102;
+
+// Subset of VK_ codes — extend as needed.
+const VK = {
+  Backspace: 0x08, Tab: 0x09, Enter: 0x0d, Escape: 0x1b, Space: 0x20,
+  ArrowLeft: 0x25, ArrowUp: 0x26, ArrowRight: 0x27, ArrowDown: 0x28,
+  Delete: 0x2e,
+  PageUp: 0x21, PageDown: 0x22, End: 0x23, Home: 0x24,
+  F1: 0x70, F2: 0x71, F3: 0x72, F4: 0x73, F5: 0x74, F6: 0x75,
+  F7: 0x76, F8: 0x77, F9: 0x78, F10: 0x79, F11: 0x7a, F12: 0x7b,
+};
+
+function vkFor(e) {
+  if (VK[e.key] !== undefined) return VK[e.key];
+  if (e.key.length === 1) {
+    const c = e.key.toUpperCase().charCodeAt(0);
+    return c;  // letters/digits map directly to their ASCII codes for VK_
+  }
+  return 0;
+}
+
+function packLParam(x, y) {
+  return ((y & 0xffff) << 16) | (x & 0xffff);
+}
+
+export function attachInput(canvas) {
+  const post = (msg, wParam, lParam) => {
+    const hwnd = state.firstHwnd || 0;
+    if (!hwnd) return;
+    postWindowMessage(hwnd, msg, wParam | 0, lParam | 0);
+  };
+
+  function canvasCoords(e) {
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width;
+    const sy = canvas.height / rect.height;
+    const x = Math.max(0, Math.min(canvas.width - 1, (e.clientX - rect.left) * sx)) | 0;
+    const y = Math.max(0, Math.min(canvas.height - 1, (e.clientY - rect.top) * sy)) | 0;
+    return [x, y];
+  }
+
+  canvas.addEventListener("mousemove", (e) => {
+    const [x, y] = canvasCoords(e);
+    post(WM_MOUSEMOVE, 0, packLParam(x, y));
+  });
+
+  canvas.addEventListener("mousedown", (e) => {
+    const [x, y] = canvasCoords(e);
+    if (e.button === 0)      post(WM_LBUTTONDOWN, 1, packLParam(x, y));
+    else if (e.button === 1) post(WM_MBUTTONDOWN, 0x10, packLParam(x, y));
+    else if (e.button === 2) post(WM_RBUTTONDOWN, 2, packLParam(x, y));
+    e.preventDefault();
+  });
+
+  canvas.addEventListener("mouseup", (e) => {
+    const [x, y] = canvasCoords(e);
+    if (e.button === 0)      post(WM_LBUTTONUP, 0, packLParam(x, y));
+    else if (e.button === 1) post(WM_MBUTTONUP, 0, packLParam(x, y));
+    else if (e.button === 2) post(WM_RBUTTONUP, 0, packLParam(x, y));
+    e.preventDefault();
+  });
+
+  // Suppress the right-click context menu so RBUTTON events can be used.
+  canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  canvas.addEventListener("wheel", (e) => {
+    const [x, y] = canvasCoords(e);
+    // wParam high word = wheel delta (signed); low word = key flags.
+    const delta = e.deltaY < 0 ? 120 : -120;
+    post(WM_MOUSEWHEEL, (delta & 0xffff) << 16, packLParam(x, y));
+    e.preventDefault();
+  }, { passive: false });
+
+  // Key events go to the document — canvas isn't focusable by default.
+  document.addEventListener("keydown", (e) => {
+    const vk = vkFor(e);
+    if (vk) post(WM_KEYDOWN, vk, 1);
+    if (e.key.length === 1) post(WM_CHAR, e.key.charCodeAt(0), 1);
+  });
+  document.addEventListener("keyup", (e) => {
+    const vk = vkFor(e);
+    if (vk) post(WM_KEYUP, vk, 1);
+  });
+}

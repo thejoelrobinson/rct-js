@@ -4,33 +4,23 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_0045174b(heap) {
-  const __sp = heap.allocFrame(24);
-  const __addr_DAT_00887422 = __sp + 0;
-  const __addr_DAT_0088755c = __sp + 4;
-  const __addr_DAT_0088755d = __sp + 8;
-  const __addr_DAT_0088757c = __sp + 12;
-  const __addr_DAT_0088757d = __sp + 16;
-  const __addr_PTR_LAB_00451798 = __sp + 20;
-  try {
-  let in_DL = 0;
-  let unaff_EBX = 0;
+  let in_DL = regs.edx & 0xff;
+  let unaff_EBX = regs.ebx >>> 0;
   let uVar1 = 0;
   let iVar2 = 0;
-  uVar1 = in_DL;
-  iVar2 = uVar1 * 0x260;
-  if ((heap.u32((__addr_DAT_00887422) + (uVar1 * 0x130) * 4) & 0x4c0) == 0) {
-    heap.setU32(((__addr_DAT_00887422) + (uVar1 * 0x130) * 4), (heap.u32((__addr_DAT_00887422) + (uVar1 * 0x130) * 4) & 0xfeff) >>> 0);
-    heap.setU32(((__addr_DAT_00887422) + (uVar1 * 0x130) * 4), (heap.u32((__addr_DAT_00887422) + (uVar1 * 0x130) * 4) | 0x40) >>> 0);
-    heap.setU32(((__addr_DAT_0088755c) + (iVar2) * 4), (unaff_EBX) >>> 0);
-    heap.setU32(((__addr_DAT_0088755d) + (iVar2) * 4), (0) >>> 0);
-    heap.setU32(((__addr_DAT_0088757c) + (iVar2) * 4), (0) >>> 0);
-    heap.setU32(((__addr_DAT_0088757d) + (iVar2) * 4), (0) >>> 0);
-    (heap.u32(heap.u32((__addr_PTR_LAB_00451798) + (unaff_EBX) * 4)))();
-    return;
+  uVar1 = ((((in_DL) >>> 0)) >>> 0);
+  iVar2 = ((uVar1 * 0x260) >>> 0);
+  if ((heap.u32((0x00887422) + (uVar1 * 0x130) * 4) & 0x4c0) == 0) {
+    heap.setU32(((0x00887422) + (uVar1 * 0x130) * 4), (heap.u32((0x00887422) + (uVar1 * 0x130) * 4) & 0xfeff) & 0xffffffff);
+    heap.setU32(((0x00887422) + (uVar1 * 0x130) * 4), (heap.u32((0x00887422) + (uVar1 * 0x130) * 4) | 0x40) & 0xffffffff);
+    heap.setU32(((0x0088755c) + (iVar2) * 4), (((unaff_EBX) << 24 >> 24)) & 0xffffffff);
+    heap.setU32(((0x0088755d) + (iVar2) * 4), (0) & 0xffffffff);
+    heap.setU32(((0x0088757c) + (iVar2) * 4), (0) & 0xffffffff);
+    heap.setU32(((0x0088757d) + (iVar2) * 4), (0) & 0xffffffff);
+    return (regs.eax = callIndirect(heap, heap.u32((0x00451798) + (unaff_EBX) * 4)));
   }
   return;
-} finally {
-    heap.freeFrame(24);
-  }
 }

@@ -5,51 +5,41 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_0042cb29(heap) {
-  const __sp = heap.allocFrame(24);
-  const __addr_DAT_008d8a3c = __sp + 0;
-  const __addr_DAT_008dbe94 = __sp + 4;
-  const __addr_DAT_008dbd88 = __sp + 8;
-  const __addr_DAT_008d7eb8 = __sp + 12;
-  const __addr_DAT_008d7fc4 = __sp + 16;
-  const __addr_DAT_008d8930 = __sp + 20;
-  try {
-  let in_EAX = 0;
-  let in_EDX = 0;
+  let in_EAX = regs.eax >>> 0;
+  let in_EDX = regs.edx >>> 0;
   let puVar1 = 0;
   let pcVar2 = 0;
-  if (heap.u32(__addr_DAT_008d7eb8) != '\0') {
-    pcVar2 = __addr_DAT_008d8a3c;
+  if (heap.u8(0x008d7eb8) != 0) {
+    pcVar2 = ((0x008d8a3c) >>> 0);
     do {
-      if (heap.u32(pcVar2) == '\0') {
-        /* goto LAB_0042cb65 */ throw new Error("goto LAB_0042cb65 not supported");
+      if (heap.i8(pcVar2) == 0) {
+        /* goto LAB_0042cb65 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0042cb29/LAB_0042cb65"); return 0;
       }
-      pcVar2 = pcVar2 + 0x10c;
-    } while (pcVar2 < __addr_DAT_008dbe94);
-    pcVar2 = __addr_DAT_008d8a3c;
+      pcVar2 = ((pcVar2 + 0x10c) >>> 0);
+    } while (pcVar2 < 0x008dbe94);
+    pcVar2 = ((0x008d8a3c) >>> 0);
     do {
-      heap.setU32(pcVar2, (heap.u32((pcVar2 + 0x10c))) >>> 0);
-      pcVar2 = pcVar2 + 2;
-    } while (pcVar2 < __addr_DAT_008dbd88);
-    LAB_0042cb65: puVar1 = __addr_DAT_008d7eb8;
+      heap.setU16(pcVar2, (heap.u16((pcVar2 + 0x10c))) & 0xffff);
+      pcVar2 = ((pcVar2 + 2) >>> 0);
+    } while (pcVar2 < 0x008dbd88);
+    LAB_0042cb65: puVar1 = ((0x008d7eb8) >>> 0);
     do {
-      heap.setU32(pcVar2, (heap.u32(puVar1)) >>> 0);
-      puVar1 = puVar1 + 1;
-      pcVar2 = pcVar2 + 2;
-    } while (puVar1 < __addr_DAT_008d7fc4);
-    if (pcVar2 < __addr_DAT_008dbe94) {
-      heap.setU32(pcVar2, ('\0') >>> 0);
+      heap.setU16(pcVar2, (heap.u16(puVar1)) & 0xffff);
+      puVar1 = ((puVar1 + ((1) * 2)) >>> 0);
+      pcVar2 = ((pcVar2 + 2) >>> 0);
+    } while (puVar1 < 0x008d7fc4);
+    if (pcVar2 < 0x008dbe94) {
+      heap.setU32(pcVar2, (0) & 0xffffffff);
     }
-    FUN_005e5301(heap);
-    puVar1 = __addr_DAT_008d7eb8;
+    (regs.eax = FUN_005e5301(heap));
+    puVar1 = ((0x008d7eb8) >>> 0);
     do {
-      heap.setU32(puVar1, (heap.u32(puVar1 + (0x86) * 4)) >>> 0);
-      puVar1 = puVar1 + 1;
-    } while (puVar1 < __addr_DAT_008d8930);
+      heap.setU32(puVar1, (heap.u16(puVar1 + (0x86) * 2)) & 0xffffffff);
+      puVar1 = ((puVar1 + ((1) * 2)) >>> 0);
+    } while (puVar1 < 0x008d8930);
   }
-  return CONCAT44(in_EDX, in_EAX);
-} finally {
-    heap.freeFrame(24);
-  }
+  return 1;
 }

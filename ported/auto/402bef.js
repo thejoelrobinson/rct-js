@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_0040473c } from "./40473c.js";
 export function FUN_00402bef(heap) {
   if (heap.u32(0x005e9160) != 0) {
@@ -13,13 +14,13 @@ export function FUN_00402bef(heap) {
     heap.setU32(0x005e9124, (0) >>> 0);
     heap.setU32(0x005e9160, (0) >>> 0);
   }
-  heap.setU32(0x005e9110, (FUN_0040473c(heap)) >>> 0);
+  heap.setU32(0x005e9110, ((regs.eax = FUN_0040473c(heap))) >>> 0);
   heap.setU32(0x005e9114, (heap.u32(0x005e9110) - heap.u32(0x005eee80)) >>> 0);
   heap.setU32(0x005e911c, (heap.u32(0x005e9110) - heap.u32(0x005e9118)) >>> 0);
   if (heap.u32(0x005e9114) == 0) {
     heap.setU32(0x005e9120, (1000) >>> 0);
   } else {
-    heap.setU32(0x005e9120, ((1000 / heap.u32(0x005e9114))) >>> 0);
+    heap.setU32(0x005e9120, (((1000 / ((heap.u32(0x005e9114)) >>> 0)) >>> 0)) >>> 0);
   }
   heap.setU32(0x005eee80, (heap.u32(0x005e9110)) >>> 0);
   heap.setU32(0x005eee88, (heap.u32(0x005eee88) + heap.u32(0x005e9114)) >>> 0);

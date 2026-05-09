@@ -4,17 +4,19 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_00407d1a(heap, param_1) {
   let uVar1 = 0;
   let iVar2 = 0;
   if (heap.u32(param_1) == 0) {
-    uVar1 = 0;
+    uVar1 = ((0) >>> 0);
   } else {
-    iVar2 = (heap.u32(heap.u32((heap.u32(heap.u32(param_1)) + 0x48))))(heap.u32(param_1));
+    iVar2 = (((regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(param_1)) + 0x48)), heap.u32(param_1)))) >>> 0);
     if (iVar2 == 0) {
-      uVar1 = 1;
+      uVar1 = ((1) >>> 0);
     } else {
-      uVar1 = 0;
+      uVar1 = ((0) >>> 0);
     }
   }
   return uVar1;

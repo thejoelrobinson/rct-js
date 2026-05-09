@@ -13,15 +13,15 @@ export function FUN_00408276(heap, param_1, param_2, param_3) {
   let lDistanceToMove = 0;
   let DVar2 = 0;
   if (param_3 == 0xffffffff) {
-    lDistanceToMove = SetFilePointer(heap, param_1, 0, 0x0, 1);
-    DVar2 = SetFilePointer(heap, param_1, 0, 0x0, 2);
+    lDistanceToMove = ((SetFilePointer(heap, param_1, 0, 0x0, 1)) >>> 0);
+    DVar2 = ((SetFilePointer(heap, param_1, 0, 0x0, 2)) >>> 0);
     SetFilePointer(heap, param_1, lDistanceToMove, 0x0, 0);
-    BVar1 = ReadFile(heap, param_1, param_2, DVar2 - lDistanceToMove, __addr_local_8, 0x0);
+    BVar1 = ((ReadFile(heap, param_1, param_2, DVar2 - lDistanceToMove, __addr_local_8, ((0x0) >>> 0))) >>> 0);
     if (BVar1 == 0) {
       heap.setU32(__addr_local_8, (0xffffffff) >>> 0);
     }
   } else {
-    BVar1 = ReadFile(heap, param_1, param_2, param_3, __addr_local_8, 0x0);
+    BVar1 = ((ReadFile(heap, param_1, param_2, param_3, __addr_local_8, ((0x0) >>> 0))) >>> 0);
     if (BVar1 == 0) {
       heap.setU32(__addr_local_8, (0xffffffff) >>> 0);
     }

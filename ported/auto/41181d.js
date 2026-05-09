@@ -7,7 +7,7 @@
 import { midiOutSetVolume } from "../../runtime/win32.js";
 export function FUN_0041181d(heap, param_1, param_2) {
   let MVar1 = 0;
-  if ((heap.u32(0x005ec1d0) != 0) && (MVar1 = midiOutSetVolume(heap, 0xffffffff, param_2 * 0x10000 + param_1), MVar1 == 0)) {
+  if ((heap.u32(0x005ec1d0) != 0) && (MVar1 = ((midiOutSetVolume(heap, 0xffffffff, param_2 * 0x10000 + param_1)) >>> 0), MVar1 == 0)) {
     heap.setU32(0x005ec1d4, (1) >>> 0);
     return 1;
   }

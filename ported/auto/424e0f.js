@@ -4,6 +4,7 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
+import { regs } from "../../runtime/regs.js";
 import { FUN_00425432 } from "./425432.js";
 import { FUN_00426f56 } from "./426f56.js";
 import { FUN_0042e48a } from "./42e48a.js";
@@ -12,11 +13,6 @@ import { FUN_005df1ff } from "./5df1ff.js";
 import { FUN_005df40c } from "./5df40c.js";
 import { FUN_005e56d3 } from "./5e56d3.js";
 export function FUN_00424e0f(heap) {
-  const __sp = heap.allocFrame(12);
-  const __addr_DAT_00971ef4 = __sp + 0;
-  const __addr_DAT_00887420 = __sp + 4;
-  const __addr_DAT_008ad1c0 = __sp + 8;
-  try {
   let pbVar1 = 0;
   let uVar2 = 0;
   let sVar3 = 0;
@@ -30,112 +26,116 @@ export function FUN_00424e0f(heap) {
   let iVar8 = 0;
   let pbVar9 = 0;
   let pcVar10 = 0;
-  let unaff_EDI = 0;
+  let unaff_EDI = regs.edi >>> 0;
   let pbVar11 = 0;
   let bVar12 = 0;
-  code_r0x00424e0f: iVar8 = 10;
-  LAB_00424e14: uVar6 = (((((((heap.u32(0x008d4228) >>> 1 & 1) != 0) << 1 | ((heap.u32(0x008d4228) >>> 3 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 5 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 7 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 9 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xb & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xd & 1) != 0);
-  uVar2 = ((((((((heap.u32(0x008d4228) & 1) != 0) << 1 | ((heap.u32(0x008d4228) >>> 2 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 4 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 6 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 8 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 10 & 1) != 0)) << 1 | ((heap.u32(0x008d4228) >>> 0xc & 1) != 0)) << 5;
-  uVar4 = uVar6 << 5;
-  pbVar9 = heap.u32((__addr_DAT_00971ef4) + (((uVar6 << 0xc | uVar2) >>> 5 | (uVar4 >>> 9) << 0xb)) * 4);
+  code_r0x00424fca: {
+  LAB_00424fb3: {
+  LAB_00424f60: {
+  LAB_00424f08: {
+  code_r0x00424e0f: iVar8 = ((10) >>> 0);
+  LAB_00424e14: uVar6 = ((((((((((heap.u32(0x008d4228) >>> 1 & 1) != 0) & 0xffff) << 1 | (((heap.u32(0x008d4228) >>> 3 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 5 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 7 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 9 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 0xb & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 0xd & 1) != 0) & 0xffff)) & 0xffff);
+  uVar2 = (((((((((((heap.u32(0x008d4228) & 1) != 0) & 0xffff) << 1 | (((heap.u32(0x008d4228) >>> 2 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 4 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 6 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 8 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 10 & 1) != 0) & 0xffff)) << 1 | (((heap.u32(0x008d4228) >>> 0xc & 1) != 0) & 0xffff)) << 5) & 0xffff);
+  uVar4 = ((uVar6 << 5) & 0xffff);
+  pbVar9 = ((heap.u32((0x00971ef4) + (((((uVar6 << 0xc | uVar2) & 0xffff) >>> 5 | (uVar4 >>> 9) << 0xb) & 0xffff)) * 4)) >>> 0);
   do {
-    if ((heap.u32(pbVar9) & 0x3c) == 0) {
-      pbVar11 = unaff_EDI;
-      if ((heap.u32(pbVar9 + (5) * 4) & 0xe0) != 0) {
-        /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
+    if ((heap.u8(pbVar9) & 0x3c) == 0) {
+      pbVar11 = ((unaff_EDI) >>> 0);
+      if ((heap.u8(pbVar9 + (5)) & 0xe0) != 0) {
+        break LAB_00424f60;
       }
-      bVar5 = (heap.u32(pbVar9 + (5) * 4) & 0x1f) << 2;
-      bVar12 = bVar5 < heap.u32(pbVar9 + (2) * 4);
-      if (!bVar12 && bVar5 != heap.u32(pbVar9 + (2) * 4)) {
-        /* goto LAB_00424f13 */ throw new Error("goto LAB_00424f13 not supported");
+      bVar5 = (((heap.u8(pbVar9 + (5)) & 0x1f) << 2) & 0xff);
+      bVar12 = ((bVar5 < heap.u8(pbVar9 + (2))) & 0xff);
+      if (!bVar12 && bVar5 != heap.u8(pbVar9 + (2))) {
+        /* goto LAB_00424f13 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00424e0f/LAB_00424f13"); return 0;
       }
-      uVar2 = FUN_00425432(heap);
-      uVar4 = extraout_CX;
+      uVar2 = (((regs.eax = FUN_00425432(heap))) & 0xffff);
+      uVar4 = ((extraout_CX) & 0xffff);
       if (bVar12) {
-        /* goto LAB_00424f08 */ throw new Error("goto LAB_00424f08 not supported");
+        break LAB_00424f08;
       }
-      bVar5 = heap.u32(pbVar9 + (2) * 4);
-      bVar7 = bVar5 + 4;
-      unaff_EDI = pbVar9;
-      if ((heap.u32(pbVar9 + (4) * 4) & 0x10) != 0) {
-        bVar7 = bVar5 + 8;
+      bVar5 = ((heap.u8(pbVar9 + (2))) & 0xff);
+      bVar7 = ((bVar5 + 4) & 0xff);
+      unaff_EDI = ((pbVar9) >>> 0);
+      if ((heap.u8(pbVar9 + (4)) & 0x10) != 0) {
+        bVar7 = ((bVar5 + 8) & 0xff);
       }
-      /* goto LAB_00424eeb */ throw new Error("goto LAB_00424eeb not supported");
+      /* goto LAB_00424eeb — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00424e0f/LAB_00424eeb"); return 0;
     }
-    pbVar11 = pbVar9 + 1;
-    pbVar9 = pbVar9 + 8;
-  } while ((heap.u32(pbVar11) & 0x80) == 0);
-  /* goto LAB_00424fb3 */ throw new Error("goto LAB_00424fb3 not supported");
-  while ((unaff_EDI = pbVar11 + 8, (heap.u32(unaff_EDI) & 0x3c) == 0x14 || (heap.u32(pbVar11 + (0xb) * 4) <= bVar5)) || (bVar7 < heap.u32(pbVar11 + (10) * 4))) {
-    LAB_00424eeb: pbVar11 = unaff_EDI;
-    if ((heap.u32(pbVar11 + (1) * 4) & 0x80) != 0) {
-      pbVar1 = pbVar9 + 6;
-      bVar5 = heap.u32(pbVar1);
-      heap.setU32(pbVar1, (heap.u32(pbVar1) + 0x10) >>> 0);
+    pbVar11 = ((pbVar9 + 1) >>> 0);
+    pbVar9 = ((pbVar9 + 8) >>> 0);
+  } while ((heap.u8(pbVar11) & 0x80) == 0);
+  break LAB_00424fb3;
+  while ((unaff_EDI = ((pbVar11 + 8) >>> 0), (heap.u8(unaff_EDI) & 0x3c) == 0x14 || (heap.u8(pbVar11 + (0xb)) <= bVar5)) || (bVar7 < heap.u8(pbVar11 + (10)))) {
+    LAB_00424eeb: pbVar11 = ((unaff_EDI) >>> 0);
+    if ((heap.u8(pbVar11 + (1)) & 0x80) != 0) {
+      pbVar1 = ((pbVar9 + 6) >>> 0);
+      bVar5 = ((heap.u8(pbVar1)) & 0xff);
+      heap.setU32(pbVar1, (heap.u8(pbVar1) + 0x10) & 0xffffffff);
       if (bVar5 < 0xf0) {
-        /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
+        break LAB_00424f60;
       }
-      heap.setU32((pbVar9 + (6) * 4), (heap.u32(pbVar9 + (6) * 4) ^ 8) >>> 0);
-      if ((heap.u32(pbVar9 + (6) * 4) & 8) != 0) {
-        bVar5 = FUN_005df40c(heap);
-        heap.setU32((pbVar9 + (6) * 4), (heap.u32(pbVar9 + (6) * 4) | bVar5 & 0x70) >>> 0);
-        uVar4 = extraout_CX_00;
-        /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
+      heap.setU8((pbVar9 + (6)), (heap.u8(pbVar9 + (6)) ^ 8) & 0xff);
+      if ((heap.u8(pbVar9 + (6)) & 8) != 0) {
+        bVar5 = (((regs.eax = FUN_005df40c(heap))) & 0xff);
+        heap.setU8((pbVar9 + (6)), (heap.u8(pbVar9 + (6)) | bVar5 & 0x70) & 0xff);
+        uVar4 = ((extraout_CX_00) & 0xffff);
+        break LAB_00424f60;
       }
-      if ((heap.u32(pbVar9 + (6) * 4) & 7) == 6) {
-        /* goto LAB_00424f60 */ throw new Error("goto LAB_00424f60 not supported");
+      if ((heap.u8(pbVar9 + (6)) & 7) == 6) {
+        break LAB_00424f60;
       }
-      heap.setU32((pbVar9 + (6) * 4), ((heap.u32(pbVar9 + (6) * 4) & 7) + 1) >>> 0);
-      /* goto LAB_00424f47 */ throw new Error("goto LAB_00424f47 not supported");
+      heap.setU8((pbVar9 + (6)), ((heap.u8(pbVar9 + (6)) & 7) + 1) & 0xff);
+      /* goto LAB_00424f47 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00424e0f/LAB_00424f47"); return 0;
     }
   }
-  LAB_00424f08: pbVar11 = unaff_EDI;
-  if ((heap.u32(pbVar9 + (6) * 4) & 7) != 1) {
-    LAB_00424f13: heap.setU32((pbVar9 + (6) * 4), (1) >>> 0);
-    LAB_00424f47: uVar2 = FUN_005e56d3(heap, pbVar9, pbVar11);
-    uVar4 = extraout_CX_01;
   }
-  LAB_00424f60: uVar2 = uVar4 << 7 | uVar4 >>> 9 | uVar2;
-  pbVar9 = heap.u32((__addr_DAT_00971ef4) + ((uVar2 >>> 5 | uVar2 << 0xb)) * 4);
+  pbVar11 = ((unaff_EDI) >>> 0);
+  if ((heap.u8(pbVar9 + (6)) & 7) != 1) {
+    LAB_00424f13: heap.setU8((pbVar9 + (6)), (1) & 0xff);
+    LAB_00424f47: uVar2 = (((regs.eax = FUN_005e56d3(heap, pbVar9, pbVar11))) & 0xffff);
+    uVar4 = ((extraout_CX_01) & 0xffff);
+  }
+  }
+  uVar2 = ((uVar4 << 7 | uVar4 >>> 9 | uVar2) & 0xffff);
+  pbVar9 = ((heap.u32((0x00971ef4) + (((uVar2 >>> 5 | uVar2 << 0xb) & 0xffff)) * 4)) >>> 0);
   do {
-    if ((heap.u32(pbVar9) & 0x3c) == 0xc) {
-      FUN_005df1ff(heap);
+    if ((heap.u8(pbVar9) & 0x3c) == 0xc) {
+      (regs.eax = FUN_005df1ff(heap));
     } else {
-      if (((heap.u32(pbVar9) & 0x3c) == 4) && ((heap.u32(pbVar9 + (5) * 4) & 0xf) == 5)) {
-      FUN_0042e48a(heap);
+      if (((heap.u8(pbVar9) & 0x3c) == 4) && ((heap.u8(pbVar9 + (5)) & 0xf) == 5)) {
+      (regs.eax = FUN_0042e48a(heap));
     }
     }
-    pbVar1 = pbVar9 + 1;
-    pbVar9 = pbVar9 + 8;
-    unaff_EDI = pbVar11;
-  } while ((heap.u32(pbVar1) & 0x80) == 0);
-  LAB_00424fb3: heap.setU32(0x008d4228, (heap.u32(0x008d4228) + 1) >>> 0);
-  heap.setU32(0x008d4228, (heap.u32(0x008d4228) & 0x3fff) >>> 0);
-  iVar8 = iVar8 + -1;
-  if (iVar8 == 0) {
-    /* goto code_r0x00424fca */ throw new Error("goto code_r0x00424fca not supported");
+    pbVar1 = ((pbVar9 + 1) >>> 0);
+    pbVar9 = ((pbVar9 + 8) >>> 0);
+    unaff_EDI = ((pbVar11) >>> 0);
+  } while ((heap.u8(pbVar1) & 0x80) == 0);
   }
-  /* goto LAB_00424e14 */ throw new Error("goto LAB_00424e14 not supported");
-  code_r0x00424fca: sVar3 = FUN_004314ed(heap);
+  heap.setU32(0x008d4228, (heap.u32(0x008d4228) + 1) >>> 0);
+  heap.setU32(0x008d4228, (heap.u32(0x008d4228) & 0x3fff) >>> 0);
+  iVar8 = ((iVar8 + -1) >>> 0);
+  if (iVar8 == 0) {
+    break code_r0x00424fca;
+  }
+  /* goto LAB_00424e14 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00424e0f/LAB_00424e14"); return 0;
+  }
+  sVar3 = (((regs.eax = FUN_004314ed(heap))) & 0xffff);
   if (-sVar3 == heap.u32(0x0087d7a2)) {
-    if (((0x70 < heap.u32(0x008dbed2)) && (heap.u32(0x008dbed2) < 0x80)) && ((-sVar3 < -1 || (300000 < heap.u32(0x0087c3b4))))) {
-      uVar4 = FUN_005df40c(heap);
+    if (((0x70 < heap.u32(0x008dbed2)) && (heap.u32(0x008dbed2) < 0x80)) && (((-sVar3 | 0) < -1 || (300000 < heap.u32(0x0087c3b4))))) {
+      uVar4 = (((regs.eax = FUN_005df40c(heap))) & 0xffff);
       if (uVar4 < 0x42) {
-        pcVar10 = __addr_DAT_00887420;
+        pcVar10 = ((0x00887420) >>> 0);
         do {
-          if (heap.u32(pcVar10) != -1) {
-            FUN_00426f56(heap);
-            return;
+          if ((heap.i8(pcVar10) | 0) != -1) {
+            return (regs.eax = FUN_00426f56(heap));
           }
-          pcVar10 = pcVar10 + 0x260;
-        } while (pcVar10 < __addr_DAT_008ad1c0);
+          pcVar10 = ((pcVar10 + 0x260) >>> 0);
+        } while (pcVar10 < 0x008ad1c0);
       }
       return;
     }
     return;
   }
-  /* goto code_r0x00424e0f */ throw new Error("goto code_r0x00424e0f not supported");
-} finally {
-    heap.freeFrame(12);
-  }
+  /* goto code_r0x00424e0f — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00424e0f/code_r0x00424e0f"); return 0;
 }

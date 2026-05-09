@@ -5,15 +5,14 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { Ordinal_2 } from "../../runtime/win32.js";
-import { FUN_00410810 } from "./410810.js";
 export function FUN_004108b9(heap) {
   let iVar1 = 0;
   let bVar2 = 0;
   if (heap.u32(0x005ec124) == 0) {
-    iVar1 = Ordinal_2(heap, FUN_00410810, 0);
-    bVar2 = iVar1 == 0;
+    iVar1 = ((Ordinal_2(heap, 0x00410810, 0)) >>> 0);
+    bVar2 = ((iVar1 == 0) & 0xff);
   } else {
-    bVar2 = true;
+    bVar2 = ((true) & 0xff);
   }
   return bVar2;
 }

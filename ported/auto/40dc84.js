@@ -7,9 +7,9 @@
 export function FUN_0040dc84(heap, param_1) {
   let uVar1 = 0;
   if (param_1 == heap.u32(0x005ec058)) {
-    uVar1 = 0;
+    uVar1 = ((0) >>> 0);
   } else {
-    uVar1 = heap.u32((param_1 + 0x10));
+    uVar1 = ((heap.u32((param_1 + 0x10))) >>> 0);
   }
   return uVar1;
 }

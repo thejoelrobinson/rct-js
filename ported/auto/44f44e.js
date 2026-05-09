@@ -5,41 +5,37 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_005df40c } from "./5df40c.js";
 export function FUN_0044f44e(heap) {
-  const __sp = heap.allocFrame(8);
-  const __addr_PTR_DAT_005f5f4c = __sp + 0;
-  const __addr_DAT_00887420 = __sp + 4;
-  try {
   let pbVar1 = 0;
   let bVar2 = 0;
-  let in_EAX = 0;
+  let in_EAX = regs.eax >>> 0;
   let iVar3 = 0;
   let extraout_ECX = 0;
   let extraout_DL = 0;
-  let in_EDX = 0;
+  let in_EDX = regs.edx >>> 0;
   let pcVar4 = 0;
-  let unaff_ESI = 0;
+  let unaff_ESI = regs.esi >>> 0;
   let uVar5 = 0;
-  heap.setU32((unaff_ESI + 5), (0) >>> 0);
-  pbVar1 = heap.u32((__addr_PTR_DAT_005f5f4c) + (in_EDX & 0xff) * 4);
-  iVar3 = 200;
+  LAB_0044f4a3: {
+  heap.setU8((unaff_ESI + 5), (0) & 0xff);
+  pbVar1 = ((heap.u32((0x005f5f4c) + (in_EDX & 0xff) * 4)) >>> 0);
+  iVar3 = ((200) >>> 0);
   while (iVar3 != 1) {
-    bVar2 = FUN_005df40c(heap);
-    uVar5 = (((bVar2 * heap.u32(pbVar1)) >>> 8) * 3);
-    pcVar4 = __addr_DAT_00887420;
-    while ((extraout_DL != heap.u32(pcVar4) || (heap.u32((pbVar1 + uVar5 + 1)) != heap.u32((pcVar4 + 0x1e)))) || (iVar3 = extraout_ECX, heap.u32(pbVar1 + (uVar5 + 3) * 4) != heap.u32(pcVar4 + (0x20) * 4))) {
-      pcVar4 = pcVar4 + 0x260;
+    bVar2 = (((regs.eax = FUN_005df40c(heap))) & 0xff);
+    uVar5 = (((((((((bVar2) & 0xffff) * (0) * pbVar1) & 0xffff) >>> 8) * 3) >>> 0)) >>> 0);
+    pcVar4 = ((0x00887420) >>> 0);
+    while ((extraout_DL != heap.i8(pcVar4) || (heap.i16((pbVar1 + uVar5 + 1)) != heap.i16((pcVar4 + 0x1e)))) || (iVar3 = ((extraout_ECX) >>> 0), heap.u8(pbVar1 + (uVar5 + 3)) != heap.i8(pcVar4 + (0x20)))) {
+      pcVar4 = ((pcVar4 + 0x260) >>> 0);
       if (0x8ad1bf < pcVar4) {
-        /* goto LAB_0044f4a3 */ throw new Error("goto LAB_0044f4a3 not supported");
+        break LAB_0044f4a3;
       }
     }
   }
-  uVar5 = 0;
-  LAB_0044f4a3: heap.setU32((unaff_ESI + 0x1e), (heap.u32((pbVar1 + uVar5 + 1))) >>> 0);
-  heap.setU32((unaff_ESI + 0x20), (heap.u32(pbVar1 + (uVar5 + 3) * 4)) >>> 0);
-  return CONCAT44(in_EDX, in_EAX);
-} finally {
-    heap.freeFrame(8);
+  uVar5 = ((0) >>> 0);
   }
+  heap.setU16((unaff_ESI + 0x1e), (heap.u16((pbVar1 + uVar5 + 1))) & 0xffff);
+  heap.setU8((unaff_ESI + 0x20), (heap.u8(pbVar1 + (uVar5 + 3))) & 0xff);
+  return 1;
 }

@@ -6,10 +6,10 @@
 
 import { ReleaseDC, SelectPalette } from "../../runtime/win32.js";
 export function FUN_0040ef6e(heap) {
-  if (heap.u32(0x005ec080) != 0x0) {
+  if (heap.u32(0x005ec080) != ((0x0) >>> 0)) {
     SelectPalette(heap, heap.u32(0x005ec080), heap.u32(0x005ef298), 1);
     ReleaseDC(heap, heap.u32(0x005e916c), heap.u32(0x005ec080));
-    heap.setU32(0x005ec080, (0x0) >>> 0);
+    heap.setU32(0x005ec080, (((0x0) >>> 0)) >>> 0);
     heap.setU32(0x005ec084, (0) >>> 0);
     heap.setU32(0x005ec088, (0) >>> 0);
   }

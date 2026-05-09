@@ -4,6 +4,10 @@
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-export function FUN_00405ede(heap, ...args) {
-  throw new Error("c-to-js: parse failed for FUN_00405ede — function not translated");
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
+export function FUN_00405ede(heap, param_1, param_2, param_3) {
+  let pcVar1 = 0;
+  pcVar1 = (((regs.eax = callIndirect(heap, heap.u32(0x005ebeb4), param_1, param_2, param_3))) >>> 0);
+  return pcVar1;
 }

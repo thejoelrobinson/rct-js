@@ -6,6 +6,5 @@
 
 import { CreateFileA } from "../../runtime/win32.js";
 export function FUN_004083b5(heap, param_1) {
-  CreateFileA(heap, param_1, 0x80000000, 1, 0x0, 3, 0x10000080, 0x0);
-  return;
+  return CreateFileA(heap, param_1, 0x80000000, 1, ((0x0) >>> 0), 3, 0x10000080, 0x0);
 }

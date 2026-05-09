@@ -6,6 +6,5 @@
 
 import { Ordinal_1 } from "../../runtime/win32.js";
 export function FUN_0041b194(heap) {
-  Ordinal_1(heap);
-  return;
+  return Ordinal_1(heap);
 }

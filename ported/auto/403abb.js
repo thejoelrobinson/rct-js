@@ -7,11 +7,11 @@
 import { SendMessageA } from "../../runtime/win32.js";
 export function FUN_00403abb(heap) {
   let bVar1 = 0;
-  if (heap.u32(0x005e91e0) == 0x0) {
-    bVar1 = false;
+  if (heap.u32(0x005e91e0) == ((0x0) >>> 0)) {
+    bVar1 = ((false) & 0xff);
   } else {
     SendMessageA(heap, heap.u32(0x005e91e0), 0x111, 2, 0);
-    bVar1 = heap.u32(0x005e91e0) == 0x0;
+    bVar1 = ((heap.u32(0x005e91e0) == ((0x0) >>> 0)) & 0xff);
   }
   return bVar1;
 }

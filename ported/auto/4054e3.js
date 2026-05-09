@@ -5,49 +5,48 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CoCreateInstance, CoInitialize, MultiByteToWideChar } from "../../runtime/win32.js";
+import { callIndirect } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
 export function FUN_004054e3(heap, param_1, param_2, param_3) {
-  const __sp = heap.allocFrame(280);
-  const __addr_DAT_005e78b0 = __sp + 0;
-  const __addr_DAT_005e7c70 = __sp + 4;
-  const __addr_local_8 = __sp + 8;
-  const __addr_DAT_005e7ca0 = __sp + 12;
-  const __addr_local_10 = __sp + 16;
-  const __addr_local_218 = __sp + 20;
+  const __sp = heap.allocFrame(1048);
+  const __addr_local_8 = __sp + 536;
+  const __addr_local_10 = __sp + 528;
+  const __addr_local_218 = __sp + 8;
+  const __addr_local_c = __sp + 532;
   try {
   let uVar1 = 0;
-  let local_c = 0;
-  CoInitialize(heap, 0x0);
-  local_c = CoCreateInstance(heap, __addr_DAT_005e78b0, 0x0, 1, __addr_DAT_005e7c70, __addr_local_8);
-  if (local_c < 0) {
-    uVar1 = 0;
+  CoInitialize(heap, ((0x0) >>> 0));
+  heap.setU32(__addr_local_c, (CoCreateInstance(heap, 0x005e78b0, 0x0, 1, 0x005e7c70, __addr_local_8)) >>> 0);
+  if (heap.u32(__addr_local_c) < 0) {
+    uVar1 = ((0) >>> 0);
   } else {
-    local_c = (heap.u32(heap.u32(heap.u32(heap.u32(__addr_local_8)))))(heap.u32(__addr_local_8), __addr_DAT_005e7ca0, __addr_local_10);
-    if (local_c < 0) {
-      (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 8))))(heap.u32(__addr_local_8));
-      uVar1 = 0;
+    heap.setU32(__addr_local_c, ((regs.eax = callIndirect(heap, heap.u32(heap.i32(heap.u32(__addr_local_8))), heap.u32(__addr_local_8), 0x005e7ca0, __addr_local_10))) >>> 0);
+    if (heap.u32(__addr_local_c) < 0) {
+      (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 8)), heap.u32(__addr_local_8)));
+      uVar1 = ((0) >>> 0);
     } else {
-      local_c = (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 0x50))))(heap.u32(__addr_local_8), param_1);
-      if (local_c < 0) {
-        (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_10)) + 8))))(heap.u32(__addr_local_10));
-        (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 8))))(heap.u32(__addr_local_8));
-        uVar1 = 0;
+      heap.setU32(__addr_local_c, ((regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 0x50)), heap.u32(__addr_local_8), param_1))) >>> 0);
+      if (heap.u32(__addr_local_c) < 0) {
+        (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_10)) + 8)), heap.u32(__addr_local_10)));
+        (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 8)), heap.u32(__addr_local_8)));
+        uVar1 = ((0) >>> 0);
       } else {
-        local_c = (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 0x1c))))(heap.u32(__addr_local_8), param_3);
-        if (local_c < 0) {
-          (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_10)) + 8))))(heap.u32(__addr_local_10));
-          (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 8))))(heap.u32(__addr_local_8));
-          uVar1 = 0;
+        heap.setU32(__addr_local_c, ((regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 0x1c)), heap.u32(__addr_local_8), param_3))) >>> 0);
+        if (heap.u32(__addr_local_c) < 0) {
+          (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_10)) + 8)), heap.u32(__addr_local_10)));
+          (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 8)), heap.u32(__addr_local_8)));
+          uVar1 = ((0) >>> 0);
         } else {
           MultiByteToWideChar(heap, 0, 0, param_2, -1, __addr_local_218, 0x104);
-          local_c = (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_10)) + 0x18))))(heap.u32(__addr_local_10), __addr_local_218, 1);
-          if (local_c < 0) {
-            (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_10)) + 8))))(heap.u32(__addr_local_10));
-            (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 8))))(heap.u32(__addr_local_8));
-            uVar1 = 0;
+          heap.setU32(__addr_local_c, ((regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_10)) + 0x18)), heap.u32(__addr_local_10), __addr_local_218, 1))) >>> 0);
+          if (heap.u32(__addr_local_c) < 0) {
+            (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_10)) + 8)), heap.u32(__addr_local_10)));
+            (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 8)), heap.u32(__addr_local_8)));
+            uVar1 = ((0) >>> 0);
           } else {
-            (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_8)) + 8))))(heap.u32(__addr_local_8));
-            (heap.u32(heap.u32((heap.u32(heap.u32(__addr_local_10)) + 8))))(heap.u32(__addr_local_10));
-            uVar1 = 1;
+            (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_8)) + 8)), heap.u32(__addr_local_8)));
+            (regs.eax = callIndirect(heap, heap.u32((heap.i32(heap.u32(__addr_local_10)) + 8)), heap.u32(__addr_local_10)));
+            uVar1 = ((1) >>> 0);
           }
         }
       }
@@ -55,6 +54,6 @@ export function FUN_004054e3(heap, param_1, param_2, param_3) {
   }
   return uVar1;
 } finally {
-    heap.freeFrame(280);
+    heap.freeFrame(1048);
   }
 }

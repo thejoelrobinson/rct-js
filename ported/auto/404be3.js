@@ -6,6 +6,5 @@
 
 import { LoadIconA } from "../../runtime/win32.js";
 export function FUN_00404be3(heap, param_1) {
-  LoadIconA(heap, heap.u32(0x005f1398), param_1);
-  return;
+  return LoadIconA(heap, heap.u32(0x005f1398), param_1);
 }

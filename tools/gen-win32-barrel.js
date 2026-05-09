@@ -33,7 +33,7 @@ const allImpl = new Set();
 for (const f of subModules) {
   const src = readFileSync(resolve(WIN32_DIR, f), "utf8");
   const exports = new Set();
-  const re = /export\s+function\s+([A-Z][A-Za-z0-9_]*)\b/g;
+  const re = /export\s+function\s+([A-Za-z_][A-Za-z0-9_]*)\b/g;
   for (const m of src.matchAll(re)) {
     exports.add(m[1]);
     allImpl.add(m[1]);

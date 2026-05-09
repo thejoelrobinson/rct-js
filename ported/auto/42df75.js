@@ -5,22 +5,23 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
+import { regs } from "../../runtime/regs.js";
 import { FUN_00444927 } from "./444927.js";
 import { FUN_00444bd4 } from "./444bd4.js";
 export function FUN_0042df75(heap) {
-  let in_EAX = 0;
-  let in_EDX = 0;
-  let unaff_ESI = 0;
-  let in_ZF = 0;
-  FUN_00444bd4(heap);
+  let in_EAX = regs.eax >>> 0;
+  let in_EDX = regs.edx >>> 0;
+  let unaff_ESI = regs.esi >>> 0;
+  let in_ZF = regs.zf | 0;
+  (regs.eax = FUN_00444bd4(heap));
   if (!in_ZF) {
-    heap.setU32((unaff_ESI + (0x14) * 4), (0x19) >>> 0);
-    heap.setU32((unaff_ESI + (9) * 4), (0x55) >>> 0);
-    heap.setU32((unaff_ESI + (0x15) * 4), (8) >>> 0);
-    heap.setU32(unaff_ESI, (2) >>> 0);
-    FUN_00444927(heap);
-    heap.setU32((unaff_ESI + (1) * 4), (5) >>> 0);
-    heap.setU32((unaff_ESI + 0x26), (0) >>> 0);
+    heap.setU8((unaff_ESI + (0x14)), (0x19) & 0xff);
+    heap.setU8((unaff_ESI + (9)), (0x55) & 0xff);
+    heap.setU8((unaff_ESI + (0x15)), (8) & 0xff);
+    heap.setU32(unaff_ESI, (2) & 0xffffffff);
+    (regs.eax = FUN_00444927(heap));
+    heap.setU8((unaff_ESI + (1)), (5) & 0xff);
+    heap.setU16((unaff_ESI + 0x26), (0) & 0xffff);
   }
-  return CONCAT44(in_EDX, in_EAX);
+  return 1;
 }
