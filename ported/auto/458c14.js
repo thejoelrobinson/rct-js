@@ -80,7 +80,7 @@ export function FUN_00458c14(heap) {
   }
   switch (bVar3) {
     case 0x7b:
-      (regs.eax = FUN_0045905e(heap));
+      (regs.eax = 0x1, regs.edi = 0xc, regs.eax = FUN_0045905e(heap));
       in_ECX = ((extraout_ECX) >>> 0);
       unaff_ESI = ((pbVar8) >>> 0);
       /* goto code_r0x00458c14 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00458c14/code_r0x00458c14"); return 0;
@@ -95,7 +95,7 @@ export function FUN_00458c14(heap) {
       unaff_ESI = ((pbVar8) >>> 0);
       /* goto code_r0x00458c14 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00458c14/code_r0x00458c14"); return 0;
     case 0x7e:
-      (regs.eax = FUN_0045905e(heap));
+      (regs.eax = 0x1, regs.edi = 0xc, regs.eax = FUN_0045905e(heap));
       in_ECX = ((extraout_ECX_02) >>> 0);
       unaff_ESI = ((pbVar8) >>> 0);
       /* goto code_r0x00458c14 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00458c14/code_r0x00458c14"); return 0;
@@ -149,12 +149,12 @@ export function FUN_00458c14(heap) {
       /* goto code_r0x00458c14 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00458c14/code_r0x00458c14"); return 0;
     case 0x87:
       if (heap.u8(0x005f8d60) == 0) {
-        (regs.eax = FUN_0045905e(heap));
+        (regs.eax = 0x1, regs.edi = 0xc, regs.eax = FUN_0045905e(heap));
         ppuVar5 = ((0x0064015b) >>> 0);
         in_ECX = ((extraout_ECX_10) >>> 0);
         pbVar9 = ((unaff_EDI) >>> 0);
       } else {
-        (regs.eax = FUN_0045905e(heap));
+        (regs.eax = 0x1, regs.edi = 0xc, regs.eax = FUN_0045905e(heap));
         ppuVar5 = ((0x0064015f) >>> 0);
         in_ECX = ((extraout_ECX_11) >>> 0);
         pbVar9 = ((unaff_EDI) >>> 0);
@@ -211,12 +211,12 @@ export function FUN_00458c14(heap) {
       break;
     case 0x8c:
       if (heap.u8(0x005f8d60) == 0) {
-        (regs.eax = FUN_0045905e(heap));
+        (regs.eax = 0x1, regs.edi = 0xc, regs.eax = FUN_0045905e(heap));
         ppuVar5 = ((0x00640180) >>> 0);
         in_ECX = ((extraout_ECX_04) >>> 0);
         pbVar9 = ((unaff_EDI) >>> 0);
       } else {
-        (regs.eax = FUN_0045905e(heap));
+        (regs.eax = 0x1, regs.edi = 0xc, regs.eax = FUN_0045905e(heap));
         ppuVar5 = ((0x00640183) >>> 0);
         in_ECX = ((extraout_ECX_05) >>> 0);
         pbVar9 = ((unaff_EDI) >>> 0);

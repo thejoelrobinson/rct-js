@@ -37,19 +37,28 @@ const regConsumers = scanRegConsumers(PORTED_DIR);
 console.error(`Pre-scan: ${regConsumers.size} functions consume registers.`);
 
 let callsiteRegs = new Map();
-try {
-  const raw = JSON.parse(readFileSync(resolve(HERE, "callsite-regs.json"), "utf8"));
-  for (const [callerHex, byCallee] of Object.entries(raw)) {
-    const inner = new Map();
-    for (const [calleeHex, regs] of Object.entries(byCallee)) {
-      inner.set(parseInt(calleeHex, 16), regs);
+function mergeCallsiteFile(path) {
+  try {
+    const raw = JSON.parse(readFileSync(path, "utf8"));
+    for (const [callerHex, byCallee] of Object.entries(raw)) {
+      const callerAddr = parseInt(callerHex, 16);
+      let inner = callsiteRegs.get(callerAddr);
+      if (!inner) { inner = new Map(); callsiteRegs.set(callerAddr, inner); }
+      for (const [calleeHex, regs] of Object.entries(byCallee)) {
+        const calleeAddr = parseInt(calleeHex, 16);
+        // Don't overwrite existing entries (instant-return trace is generally
+        // more reliable than deep-execution which uses noop shims).
+        if (!inner.has(calleeAddr)) inner.set(calleeAddr, regs);
+      }
     }
-    callsiteRegs.set(parseInt(callerHex, 16), inner);
+  } catch (e) {
+    console.error(`Skipped ${path}: ${e.code || e.message}`);
   }
-  console.error(`Loaded ${callsiteRegs.size} caller register snapshots.`);
-} catch (e) {
-  console.error(`No callsite-regs.json (${e.code || e.message}) — caller-side propagation disabled.`);
 }
+mergeCallsiteFile(resolve(HERE, "callsite-regs.json"));
+mergeCallsiteFile(resolve(HERE, "callsite-regs-deep.json"));
+const totalSites = [...callsiteRegs.values()].reduce((s, m) => s + m.size, 0);
+console.error(`Loaded ${callsiteRegs.size} callers (${totalSites} unique call-site bindings).`);
 
 const files = readdirSync(C_DIR).filter(f => f.endsWith(".c"));
 console.error(`Translating ${files.length} files...`);

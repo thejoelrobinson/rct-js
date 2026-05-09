@@ -36,7 +36,7 @@ export function FUN_005e412c(heap) {
         puVar1 = (((iVar3 + 0x34 + unaff_ESI)) >>> 0);
         heap.setU32(puVar1, (heap.u16(puVar1) | 0x10) & 0xffffffff);
       }
-      iVar2 = (((regs.eax = FUN_005e4198(heap))) >>> 0);
+      iVar2 = (((regs.edi = 0x5f8160, regs.eax = FUN_005e4198(heap))) >>> 0);
       iVar2 = ((iVar2 + 1) >>> 0);
       iVar3 = ((iVar3 + 0x12) >>> 0);
     }

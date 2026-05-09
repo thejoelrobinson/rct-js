@@ -14,6 +14,6 @@ export function FUN_00458622(heap) {
   (regs.eax = FUN_00458bcf(heap));
   heap.setU32(0x00971e84, (0xe0) >>> 0);
   (regs.esi = 0x99a888, regs.eax = FUN_00458a7c(heap, 0x0099a888));
-  uVar1 = (((regs.eax = FUN_009ba943(heap, extraout_CX))) >>> 0);
+  uVar1 = (((regs.esi = 0x99a888, regs.eax = FUN_009ba943(heap, extraout_CX))) >>> 0);
   return uVar1;
 }
