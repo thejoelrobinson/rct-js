@@ -1,7 +1,7 @@
 // @manual — do not regenerate.
 // Source: decompiled/c/5e3f31.c
 //
-// Translator bug: `DAT_009a1164 = DAT_009a1164 + 0x5e;` in Ghidra C means
+// Translator bug #1: `DAT_009a1164 = DAT_009a1164 + 0x5e;` in Ghidra C means
 // "advance the undefined4* pointer by 0x5e elements" → +0x178 bytes. The
 // auto-translator emits `heap.u32(0x009a1164) + 0x5e` (raw +0x5e bytes),
 // because once we read the pointer as a u32 value the type info is gone.
@@ -10,6 +10,27 @@
 // All the iteration sites (line 31, line 42 etc.) properly scale `+0x5e*4`;
 // only the write at the bottom is unscaled. The fix is the single literal
 // substitution `+ 0x5e` → `+ 0x178` on the final write to DAT_009a1164.
+//
+// Translator bug #2: the Ghidra C synthesizes a 64-bit `undefined8 uVar5`
+// to model the EDX:EAX pair (since `*(undefined4 *)(puVar3 + 0x20) = EAX`
+// and `*(undefined4 *)(puVar3 + 0x4) = EDX` are written from the same
+// CONCAT44(EDX, EAX) source). The auto-translator emits
+// `uVar5 = CONCAT44(in_EDX, in_EAX) >>> 0` — the `>>> 0` truncates to
+// 32 bits, losing EDX. Then `uVar2 = uVar5 >>> 0x20` shifts by 32, which
+// in JS bitwise (5-bit shift count mask) is `>>> 0` — so uVar2 is also
+// just EAX. End result: `[esi+0x4] = EAX` instead of EDX.
+//
+// In context: caller MainOpen passes EDX = widget-handler proc address
+// (e.g. 0x42b076), and the binary writes that to window+0x4. With the
+// translator bug, window+0x4 ended up with EAX (=0x1e0000 — the packed
+// view-y), and `[esi+0x20] = EAX` happened to write EAX too (coincident
+// with the truncation), so by luck the rect's view_y/view_x came out
+// correct. But the widget-proc field (window+0x4) was garbage, and code
+// that read it during paint observed `0x1e0000` and used it as a callable
+// → the famous `[callIndirect] no JS function at 0x1e0000` warning.
+//
+// Fix below: read in_EAX into [esi+0x20], in_EDX into [esi+0x4] directly,
+// no CONCAT44/shift dance.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -68,13 +89,20 @@ export function FUN_005e3f31(heap) {
     heap.setU16((((puVar3) >>> 0) + 0x32), (heap.u16((((puVar3) >>> 0) + 0x32)) | 0x600) & 0xffff);
     (regs.eax = FUN_00452fce(heap));
   }
-  uVar2 = ((((((uVar5) >>> 0) >>> 0x20) >>> 0)) >>> 0);
+  // Hand-fix: model EDX:EAX pair as two separate 32-bit values rather
+  // than via CONCAT44 (which the translator truncates to 32 bits with
+  // `>>> 0`). Binary disasm @ 5e4001..5e4011:
+  //   mov [esi + 0x20], eax     ; window+0x20 = EAX  (view_y << 16 | view_x)
+  //   mov [esi + 0x24], ebx     ; window+0x24 = EBX  (view_h << 16 | view_w)
+  //   mov [esi + 0x08], 0       ; viewport ptr — cleared
+  //   mov [esi + 0x04], edx     ; window+0x04 = EDX  (typically widget-handler proc)
+  //   mov [esi + 0x00], ebp     ; window+0x00 = EBP  (window proc)
   heap.setU16((puVar3 + ((0xc) * 4)), (0) & 0xffff);
-  heap.setU32((puVar3 + (8) * 4), (((uVar5) >>> 0)) & 0xffffffff);
-  heap.setU32((puVar3 + (9) * 4), (unaff_EBX) & 0xffffffff);
-  heap.setU32((puVar3 + (2) * 4), (0) & 0xffffffff);
-  heap.setU32((puVar3 + (1) * 4), (uVar2) & 0xffffffff);
-  heap.setU32(puVar3, (unaff_EBP) & 0xffffffff);
+  heap.setU32((puVar3 + (8) * 4),  in_EAX  >>> 0);    // [esi + 0x20]
+  heap.setU32((puVar3 + (9) * 4),  unaff_EBX >>> 0);  // [esi + 0x24]
+  heap.setU32((puVar3 + (2) * 4),  0);                // [esi + 0x08]
+  heap.setU32((puVar3 + (1) * 4),  in_EDX  >>> 0);    // [esi + 0x04]
+  heap.setU32(puVar3,              unaff_EBP >>> 0);  // [esi + 0x00]
   heap.setU32((puVar3 + (3) * 4), (0) & 0xffffffff);
   heap.setU32((puVar3 + (4) * 4), (0) & 0xffffffff);
   heap.setU32((puVar3 + (5) * 4), (0) & 0xffffffff);
