@@ -24,14 +24,14 @@ export function FUN_00411b58(heap, param_1, param_2) {
   try {
   let uVar1 = 0;
   let hResData = 0;
-  for (heap.setU32(__addr_local_18, (0) >>> 0); ((heap.u32(__addr_local_18)) >>> 0) < 0x100; heap.setU32(__addr_local_18, (heap.u32(__addr_local_18) + 1) >>> 0)) {
+  for (heap.setU32(__addr_local_18, (0) >>> 0); ((heap.u32(__addr_local_18)) | 0) < 0x100; heap.setU32(__addr_local_18, (heap.u32(__addr_local_18) + 1) >>> 0)) {
     heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4) * 4), ((((((heap.u32(__addr_local_18) >>> 5 & 7) * 0xff) / 7)) << 24 >> 24)) & 0xffffffff);
     heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 1) * 4), ((((((heap.u32(__addr_local_18) >>> 2 & 7) * 0xff) / 7)) << 24 >> 24)) & 0xffffffff);
     heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 2) * 4), ((((((heap.u32(__addr_local_18) & 3) * 0xff) / 3)) << 24 >> 24)) & 0xffffffff);
     heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 3) * 4), (0) & 0xffffffff);
   }
-  if ((param_2 == ((0x0) >>> 0)) || (heap.setU32(__addr_local_10, (FindResourceA(heap, ((0x0) >>> 0), param_2, ((0x2) >>> 0))) >>> 0), heap.u32(__addr_local_10) == ((0x0) >>> 0))) {
-    if ((param_2 != ((0x0) >>> 0)) && (heap.setU32(__addr_local_c, (_lopen(heap, param_2, 0)) >>> 0), (heap.u32(__addr_local_c) | 0) != -1)) {
+  if ((param_2 == ((0x0) | 0)) || (heap.setU32(__addr_local_10, (FindResourceA(heap, ((0x0) | 0), param_2, ((0x2) | 0))) >>> 0), heap.u32(__addr_local_10) == ((0x0) | 0))) {
+    if ((param_2 != ((0x0) | 0)) && (heap.setU32(__addr_local_c, (_lopen(heap, param_2, 0)) >>> 0), (heap.u32(__addr_local_c) | 0) != -1)) {
       _lread(heap, heap.u32(__addr_local_c), __addr_local_430, 0xe);
       _lread(heap, heap.u32(__addr_local_c), __addr_local_458, 0x28);
       _lread(heap, heap.u32(__addr_local_c), __addr_local_41c, 0x400);
@@ -49,22 +49,22 @@ export function FUN_00411b58(heap, param_1, param_2) {
       } else {
         heap.setU32(__addr_local_420, (0) >>> 0);
       }
-      for (heap.setU32(__addr_local_18, (0) >>> 0); ((heap.u32(__addr_local_18)) >>> 0) < ((heap.u32(__addr_local_420)) >>> 0); heap.setU32(__addr_local_18, (heap.u32(__addr_local_18) + 1) >>> 0)) {
+      for (heap.setU32(__addr_local_18, (0) >>> 0); ((heap.u32(__addr_local_18)) | 0) < ((heap.u32(__addr_local_420)) | 0); heap.setU32(__addr_local_18, (heap.u32(__addr_local_18) + 1) >>> 0)) {
         uVar1 = ((heap.u32(__addr_local_41c + (heap.u32(__addr_local_18) * 4) * 4)) & 0xff);
         heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4) * 4), (heap.u32(__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 2) * 4)) & 0xffffffff);
         heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 2) * 4), (uVar1) & 0xffffffff);
       }
     }
   } else {
-    hResData = ((LoadResource(heap, ((0x0) >>> 0), heap.u32(__addr_local_10))) >>> 0);
+    hResData = ((LoadResource(heap, ((0x0) | 0), heap.u32(__addr_local_10))) >>> 0);
     heap.setU32(__addr_local_1c, (LockResource(heap, hResData)) >>> 0);
-    heap.setU32(__addr_local_8, (heap.u32(heap.u32(__addr_local_1c)) + ((heap.u32(__addr_local_1c)) >>> 0)) >>> 0);
+    heap.setU32(__addr_local_8, (heap.u32(heap.u32(__addr_local_1c)) + ((heap.u32(__addr_local_1c)) | 0)) >>> 0);
     if ((heap.u32(__addr_local_1c) == 0x0) || (heap.u32(heap.u32(__addr_local_1c)) < 0x28)) {
       heap.setU32(__addr_local_420, (0) >>> 0);
     } else {
-      if (heap.u16((((heap.u32(__addr_local_1c)) >>> 0) + 0xe)) < 9) {
+      if (heap.u16((((heap.u32(__addr_local_1c)) | 0) + 0xe)) < 9) {
       if (heap.u32(heap.u32(__addr_local_1c) + (8) * 4) == 0) {
-        heap.setU32(__addr_local_420, (1 << (heap.u8((((heap.u32(__addr_local_1c)) >>> 0) + 0xe)) & 0x1f)) >>> 0);
+        heap.setU32(__addr_local_420, (1 << (heap.u8((((heap.u32(__addr_local_1c)) | 0) + 0xe)) & 0x1f)) >>> 0);
       } else {
         heap.setU32(__addr_local_420, (heap.u32(heap.u32(__addr_local_1c) + (8) * 4)) >>> 0);
       }
@@ -72,7 +72,7 @@ export function FUN_00411b58(heap, param_1, param_2) {
       heap.setU32(__addr_local_420, (0) >>> 0);
     }
     }
-    for (heap.setU32(__addr_local_18, (0) >>> 0); ((heap.u32(__addr_local_18)) >>> 0) < ((heap.u32(__addr_local_420)) >>> 0); heap.setU32(__addr_local_18, (heap.u32(__addr_local_18) + 1) >>> 0)) {
+    for (heap.setU32(__addr_local_18, (0) >>> 0); ((heap.u32(__addr_local_18)) | 0) < ((heap.u32(__addr_local_420)) | 0); heap.setU32(__addr_local_18, (heap.u32(__addr_local_18) + 1) >>> 0)) {
       heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4) * 4), (heap.u8((heap.u32(__addr_local_8) + 2 + heap.u32(__addr_local_18) * 4))) & 0xffffffff);
       heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 1) * 4), (heap.u8((heap.u32(__addr_local_8) + 1 + heap.u32(__addr_local_18) * 4))) & 0xffffffff);
       heap.setU32((__addr_local_41c + (heap.u32(__addr_local_18) * 4 + 2) * 4), (heap.u8((heap.u32(__addr_local_8) + heap.u32(__addr_local_18) * 4))) & 0xffffffff);

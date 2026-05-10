@@ -25,7 +25,7 @@ export function FUN_0045ab15(heap) {
   let sVar1 = 0;
   let uVar2 = 0;
   let bVar3 = 0;
-  if ((((((heap.u32(0x006e3b82) + 4) >>> 0) * (0) * (0x0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) << 24 >> 24) != (((((heap.u32(0x006e3b82)) >>> 0) * (0) * (0x0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) << 24 >> 24)) {
+  if ((((((heap.u32(0x006e3b82) + 4) >>> 0) * (0) * (0x0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) << 24 >> 24) != (((heap.u32(0x006e3b82) * (0) * (0x0064bc60 + (heap.u32(0x006e3b80) & 7) * 2) >>> 0x10)) << 24 >> 24)) {
     (regs.eax = FUN_0044470e(heap));
     (regs.eax = FUN_0044290a(heap));
   }

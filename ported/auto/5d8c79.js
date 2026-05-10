@@ -25,10 +25,10 @@ export function FUN_005d8c79(heap) {
   let unaff_ESI = regs.esi >>> 0;
   let unaff_EDI = regs.edi >>> 0;
   LAB_005d90f1: {
-  if (heap.i8((unaff_ESI + 0x50)) == NaN) {
-    heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) | 2) & 0xffff);
-    heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) | 8) & 0xffff);
-    heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) & 0xfffb) & 0xffff);
+  if (heap.i8((unaff_ESI + 0x50)) == 7) {
+    heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) | 2) & 0xffff);
+    heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) | 8) & 0xffff);
+    heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) & 0xfffb) & 0xffff);
     heap.setU16((unaff_ESI + 0x48), (heap.u16((unaff_ESI + 0x48)) & 0xffdf) & 0xffff);
     return (regs.eax = FUN_005e5301(heap));
   }
@@ -38,7 +38,7 @@ export function FUN_005d8c79(heap) {
   }
   heap.setU32(((0x008874b1) + (unaff_EDI) * 4), (bVar9) & 0xffffffff);
   uVar4 = ((heap.u32((unaff_ESI + 0x28))) >>> 0);
-  if (((uVar4) >>> 0) < 0) {
+  if (((uVar4) | 0) < 0) {
     uVar4 = ((-uVar4) >>> 0);
   }
   if (heap.u32((0x008874a8 + unaff_EDI)) < uVar4) {

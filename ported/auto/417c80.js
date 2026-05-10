@@ -20,8 +20,8 @@ export function FUN_00417c80(heap, param_1) {
   }
   heap.setI32((param_1 + (6) * 4), (2) & 0xffffffff);
   heap.setI32((param_1 + (3) * 4), (heap.i32(param_1 + (3) * 4) | 4) & 0xffffffff);
-  heap.setI32((param_1 + (2) * 4), ((((param_1 + ((5) * 4))) >>> 0)) & 0xffffffff);
-  heap.setU32(param_1, ((((param_1 + ((5) * 4))) >>> 0)) & 0xffffffff);
+  heap.setI32((param_1 + (2) * 4), ((((param_1 + ((5) * 4))) | 0)) & 0xffffffff);
+  heap.setU32(param_1, ((((param_1 + ((5) * 4))) | 0)) & 0xffffffff);
   heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
   return;
 }

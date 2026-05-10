@@ -45,7 +45,7 @@ export function FUN_009ba943(heap) {
     /* goto LAB_009ba9dc — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009ba943/LAB_009ba9dc"); return 0;
   }
   heap.setU8(0x00971ef2, (heap.u8(0x00971ef2) | 1) & 0xff);
-  heap.setU8(0x0099ac89, (((CONCAT11(heap.u8((((0x0099ac8f) >>> 0) + (uVar5 & 0x1f) * 8 + 2)), heap.u8((0x0099ac8f + (uVar5 & 0x1f) * 2)))) >>> 0)) & 0xff);
+  heap.setU8(0x0099ac89, (((CONCAT11(heap.u8((((0x0099ac8f) | 0) + (uVar5 & 0x1f) * 8 + 2)), heap.u8((0x0099ac8f + (uVar5 & 0x1f) * 2)))) >>> 0)) & 0xff);
   do {
     heap.setU32(0x009a200c, (0x0099ac88) >>> 0);
     LAB_009baa14: do {
@@ -60,7 +60,7 @@ export function FUN_009ba943(heap) {
       }
       LAB_009baa36: bVar2 = ((heap.u8(puVar10)) & 0xff);
       in_DX = ((sVar9) & 0xffff);
-      puVar10 = (((((puVar10) >>> 0) + 1)) >>> 0);
+      puVar10 = (((((puVar10) | 0) + 1)) >>> 0);
       while (true) {
         if (bVar2 == 0) {
           return;
@@ -94,13 +94,13 @@ export function FUN_009ba943(heap) {
           cVar8 = (((((heap.u16(0x009aa064) >>> 8)) << 24 >> 24)) & 0xff);
           if (bVar3 == 0xe1) {
             uVar5 = ((heap.u32(puVar10)) >>> 0);
-            puVar10 = (((((puVar10) >>> 0) + 1)) >>> 0);
+            puVar10 = (((((puVar10) | 0) + 1)) >>> 0);
             in_CX = ((CONCAT11(cVar8 + CARRY1(bVar2, ((uVar5) & 0xff)), bVar2 + ((uVar5) & 0xff))) & 0xffff);
             /* goto LAB_009baa36 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009ba943/LAB_009baa36"); return 0;
           }
           if (bVar3 == 0xf1) {
             uVar5 = ((heap.u32(puVar10)) >>> 0);
-            puVar10 = (((((puVar10) >>> 0) + 2)) >>> 0);
+            puVar10 = (((((puVar10) | 0) + 2)) >>> 0);
             bVar3 = ((((((uVar5) << 16 >> 16)) & 0xff)) & 0xff);
             bVar6 = ((((((((uVar5) << 16 >> 16)) & 0xffff) >>> 8) & 0xff)) & 0xff);
             in_CX = ((CONCAT11(cVar8 + CARRY1(bVar2, bVar3), bVar2 + bVar3)) & 0xffff);
@@ -132,7 +132,7 @@ export function FUN_009ba943(heap) {
             /* goto LAB_009baa36 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009ba943/LAB_009baa36"); return 0;
           }
           if (bVar3 == 0xe2) {
-            unaff_ESI = (((((puVar10) >>> 0) + 1)) >>> 0);
+            unaff_ESI = (((((puVar10) | 0) + 1)) >>> 0);
             if ((heap.u8(0x00971ef2) & 1) == 0) {
               uVar4 = ((CONCAT11(1, heap.u8((heap.u32((0x008dc0b4) + (heap.i32((0x009aa06c + ((0) >>> 0) * puVar10 * 4)) * 4) * 4) + 0xf9)))) & 0xffff);
               if ((heap.u8(0x00971ef2) & 2) == 0) {
@@ -161,7 +161,7 @@ export function FUN_009ba943(heap) {
         }
         LAB_009bacae: while (true) {
           bVar2 = ((heap.u8(unaff_ESI)) & 0xff);
-          unaff_ESI = (((((unaff_ESI) >>> 0) + 1)) >>> 0);
+          unaff_ESI = (((((unaff_ESI) | 0) + 1)) >>> 0);
           puVar10 = ((unaff_ESI) >>> 0);
           if (bVar2 < 0x20) {
             break;

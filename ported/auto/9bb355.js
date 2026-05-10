@@ -11,5 +11,5 @@ export function FUN_009bb355(heap) {
   let in_CX = regs.ecx & 0xffff;
   let in_DX = regs.edx & 0xffff;
   let unaff_BX = regs.ebx & 0xffff;
-  return (regs.eax = FUN_004015f0(heap, ((in_AX) >>> 0), ((unaff_BX) >>> 0), ((in_CX) >>> 0), ((in_DX) >>> 0)));
+  return (regs.eax = FUN_004015f0(heap, ((in_AX) | 0), ((unaff_BX) | 0), ((in_CX) | 0), ((in_DX) | 0)));
 }

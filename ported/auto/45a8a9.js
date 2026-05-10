@@ -17,7 +17,6 @@ export function FUN_0045a8a9(heap) {
   let pcVar7 = 0;
   let unaff_EDI = regs.edi >>> 0;
   let pcVar8 = 0;
-  LAB_0045a920: {
   pcVar3 = ((0x0087f41c) >>> 0);
   uVar5 = ((0) & 0xffff);
   pcVar6 = ((0x0) >>> 0);
@@ -52,12 +51,11 @@ export function FUN_0045a8a9(heap) {
     heap.setU32(pcVar6, (cVar1) & 0xffffffff);
     unaff_EDI = ((unaff_EDI + 1) >>> 0);
     if (cVar1 == 0) {
-      break LAB_0045a920;
+      return (uVar2 | in_CX << 9) + 0x8000;
     }
     uVar5 = ((uVar5 + 1) & 0xffff);
     pcVar7 = ((pcVar6 + 1) >>> 0);
   } while (uVar5 < 0x20);
   heap.setU32(pcVar6, (0) & 0xffffffff);
-  }
-  return (uVar2 | in_CX << 9) + 0x8000;
+  LAB_0045a920: return (uVar2 | in_CX << 9) + 0x8000;
 }

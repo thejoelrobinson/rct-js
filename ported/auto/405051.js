@@ -50,7 +50,7 @@ export function FUN_00405051(heap, param_1, param_2, param_3, param_4, param_5) 
     puVar5 = ((puVar5 + ((1) * 4)) >>> 0);
   }
   heap.setU16(puVar5, (0) & 0xffff);
-  heap.setU8((((puVar5) >>> 0) + 2), (0) & 0xff);
+  heap.setU8((((puVar5) | 0) + 2), (0) & 0xff);
   pcVar4 = ((0x005ebd28) >>> 0);
   puVar5 = ((__addr_local_38) >>> 0);
   for (iVar3 = ((5) >>> 0); iVar3 != 0; iVar3 = (((iVar3 + -1) >>> 0)) >>> 0) {
@@ -68,37 +68,37 @@ export function FUN_00405051(heap, param_1, param_2, param_3, param_4, param_5) 
   heap.setU32(__addr_local_47, (0) >>> 0);
   heap.setU32(__addr_local_43, (0) >>> 0);
   heap.setU32(__addr_local_41, (0) >>> 0);
-  LVar1 = ((RegOpenKeyExA(heap, ((0x80000002) >>> 0), __addr_local_18, 0, 0xf003f, __addr_local_40)) >>> 0);
+  LVar1 = ((RegOpenKeyExA(heap, ((0x80000002) | 0), __addr_local_18, 0, 0xf003f, __addr_local_40)) >>> 0);
   if (LVar1 == 0) {
     RegCloseKey(heap, heap.u32(__addr_local_40));
     (regs.eax = FUN_00413170(heap, __addr_local_d4, __addr_local_18));
     (regs.eax = FUN_00413180(heap, __addr_local_d4, param_1));
-    LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) >>> 0), __addr_local_d4, 0, ((0x0) >>> 0), 0, 0xf003f, ((0x0) >>> 0), __addr_local_40, __addr_local_3c)) >>> 0);
+    LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) | 0), __addr_local_d4, 0, ((0x0) | 0), 0, 0xf003f, ((0x0) | 0), __addr_local_40, __addr_local_3c)) >>> 0);
     if (LVar1 == 0) {
-      LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) >>> 0), 0, 1, param_2, 1)) >>> 0);
+      LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) | 0), 0, 1, param_2, 1)) >>> 0);
       if (LVar1 == 0) {
         RegCloseKey(heap, heap.u32(__addr_local_40));
         (regs.eax = FUN_00413170(heap, __addr_local_d4, __addr_local_18));
         (regs.eax = FUN_00413180(heap, __addr_local_d4, param_2));
-        LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) >>> 0), __addr_local_d4, 0, ((0x0) >>> 0), 0, 0xf003f, ((0x0) >>> 0), __addr_local_40, __addr_local_3c)) >>> 0);
+        LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) | 0), __addr_local_d4, 0, ((0x0) | 0), 0, 0xf003f, ((0x0) | 0), __addr_local_40, __addr_local_3c)) >>> 0);
         if (LVar1 == 0) {
-          LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) >>> 0), 0, 1, param_3, 1)) >>> 0);
+          LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) | 0), 0, 1, param_3, 1)) >>> 0);
           if (LVar1 == 0) {
             (regs.eax = FUN_00413180(heap, __addr_local_d4, __addr_local_38));
-            LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) >>> 0), __addr_local_d4, 0, ((0x0) >>> 0), 0, 0xf003f, ((0x0) >>> 0), __addr_local_40, __addr_local_3c)) >>> 0);
+            LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) | 0), __addr_local_d4, 0, ((0x0) | 0), 0, 0xf003f, ((0x0) | 0), __addr_local_40, __addr_local_3c)) >>> 0);
             if (LVar1 == 0) {
-              LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) >>> 0), 0, 1, param_4, 4)) >>> 0);
+              LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) | 0), 0, 1, param_4, 4)) >>> 0);
               if (LVar1 == 0) {
                 RegCloseKey(heap, heap.u32(__addr_local_40));
                 (regs.eax = FUN_00413170(heap, __addr_local_d4, __addr_local_18));
                 (regs.eax = FUN_00413180(heap, __addr_local_d4, param_2));
                 (regs.eax = FUN_00413180(heap, __addr_local_d4, __addr_local_54));
-                LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) >>> 0), __addr_local_d4, 0, ((0x0) >>> 0), 0, 0xf003f, ((0x0) >>> 0), __addr_local_40, __addr_local_3c)) >>> 0);
+                LVar1 = ((RegCreateKeyExA(heap, ((0x80000002) | 0), __addr_local_d4, 0, ((0x0) | 0), 0, 0xf003f, ((0x0) | 0), __addr_local_40, __addr_local_3c)) >>> 0);
                 if (LVar1 == 0) {
-                  LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) >>> 0), 0, 1, param_5, 4)) >>> 0);
+                  LVar1 = ((RegSetValueExA(heap, heap.u32(__addr_local_40), ((0x0) | 0), 0, 1, param_5, 4)) >>> 0);
                   if (LVar1 == 0) {
                     RegCloseKey(heap, heap.u32(__addr_local_40));
-                    LVar1 = ((RegFlushKey(heap, ((0x80000002) >>> 0))) >>> 0);
+                    LVar1 = ((RegFlushKey(heap, ((0x80000002) | 0))) >>> 0);
                     if (LVar1 == 0) {
                       uVar2 = ((1) >>> 0);
                     } else {

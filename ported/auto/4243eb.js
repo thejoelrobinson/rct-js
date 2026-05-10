@@ -51,7 +51,7 @@ export function FUN_004243eb(heap) {
             puVar9 = (((iVar8 + 0x5f4272)) >>> 0);
             uVar7 = ((((((heap.u8(puVar9 + (unaff_EBX * 8))) & 0xff)) >>> 0)) >>> 0);
             if (uVar2 <= heap.u16((0x00991f04 + uVar7 * 4))) {
-              /* goto LAB_004247e0 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004243eb/LAB_004247e0"); return 0;
+              return 1;
             }
           }
         }

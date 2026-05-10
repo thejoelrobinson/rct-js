@@ -153,7 +153,7 @@ export function FUN_0042fdf4(heap) {
       } while (cVar1 != 0);
       (regs.eax = FUN_0042fd81(heap));
       if ((!bVar12) && ((heap.u32(0x008dbed2) < 0x28 || (99 < heap.u32(0x008dbed2))))) {
-        uVar9 = ((((heap.u32(0x008dbed2)) >>> 0)) >>> 0);
+        uVar9 = ((heap.u32(0x008dbed2)) >>> 0);
         pcVar7 = ((0x0099c96c + uVar9 * 0x40) >>> 0);
         pcVar8 = ((0x008dbe94) >>> 0);
         do {

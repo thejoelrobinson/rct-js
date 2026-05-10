@@ -7,7 +7,7 @@
 import { BitBlt } from "../../runtime/win32.js";
 export function FUN_0041058e(heap, param_1, param_2) {
   let bVar1 = 0;
-  bVar1 = ((heap.u32(0x005ec0e4) != ((0x0) >>> 0)) & 0xff);
+  bVar1 = ((heap.u32(0x005ec0e4) != ((0x0) | 0)) & 0xff);
   if (bVar1) {
     BitBlt(heap, heap.u32(0x005ec0e4), heap.i32(param_2), heap.i32(param_2 + (1) * 4), heap.i32(param_2 + (2) * 4) - heap.i32(param_2), heap.i32(param_2 + (3) * 4) - heap.i32(param_2 + (1) * 4), heap.u32(0x005ec0e8), heap.i32(param_1), heap.i32(param_1 + (1) * 4), 0xcc0020);
   }

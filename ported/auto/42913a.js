@@ -64,7 +64,7 @@ export function FUN_0042913a(heap) {
   } while (uVar8 < 0x80);
   (regs.eax = 0x1b, regs.edi = 0x20, regs.eax = FUN_005e5301(heap));
   if (1 < heap.u32(0x0087d310)) {
-    heap.setU32(0x0087d30c, (heap.u32(0x0087d30c) / ((((heap.u32(0x0087d310)) >>> 0)) >>> 0)) >>> 0);
+    heap.setU32(0x0087d30c, (heap.u32(0x0087d30c) / ((heap.u32(0x0087d310)) | 0)) >>> 0);
   }
   uVar8 = ((0) >>> 0);
   do {

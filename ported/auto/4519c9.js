@@ -28,7 +28,7 @@ export function FUN_004519c9(heap) {
     }
   }
   cVar2 = ((heap.u32((0x0088755c) + (iVar4) * 4)) & 0xff);
-  if (((cVar2 == 0) || (cVar2 == NaN)) || (cVar2 == 6)) {
+  if (((cVar2 == 0) || (cVar2 == 7)) || (cVar2 == 6)) {
     heap.setU32(((0x00887422) + (uVar3 * 0x130) * 4), (heap.u32((0x00887422) + (uVar3 * 0x130) * 4) | 0x80) & 0xffffffff);
     heap.setU32(((0x0088751d) + (iVar4) * 4), (heap.u32((0x0088751d) + (iVar4) * 4) | 0x1c) & 0xffffffff);
     heap.setU32(((0x0088755d) + (iVar4) * 4), (1) & 0xffffffff);

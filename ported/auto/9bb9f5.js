@@ -59,7 +59,7 @@ export function FUN_009bb9f5(heap) {
       heap.setU8(0x00971eef, (3) & 0xff);
       heap.setU32(0x00971ee4, (8) >>> 0);
       heap.setU32(0x00971eea, (heap.u32(0x005f1ff0) / 8) >>> 0);
-      heap.setU32(0x00971ee6, (((heap.u32(0x005f2400)) >>> 0) / ((heap.u32(0x00971ee2)) >>> 0)) >>> 0);
+      heap.setU32(0x00971ee6, (heap.u32(0x005f2400) / heap.u32(0x00971ee2)) >>> 0);
       puVar4 = ((0x0099ad63) >>> 0);
       heap.setU32(0x00971eda, (uVar1) >>> 0);
       heap.setU32(0x00971edc, (uVar3) >>> 0);

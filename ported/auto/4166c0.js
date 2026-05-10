@@ -7,6 +7,6 @@
 export function FUN_004166c0(heap, param_1) {
   let puVar1 = 0;
   puVar1 = ((heap.i32(param_1)) >>> 0);
-  heap.setU32(param_1, ((((puVar1 + ((1) * 4))) >>> 0)) & 0xffffffff);
+  heap.setU32(param_1, ((((puVar1 + ((1) * 4))) | 0)) & 0xffffffff);
   return heap.u32(puVar1);
 }

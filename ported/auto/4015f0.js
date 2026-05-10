@@ -34,11 +34,11 @@ export function FUN_004015f0(heap, param_1, param_2, param_3, param_4) {
       param_4 = ((heap.u32(0x005f1b34)) >>> 0);
     }
     if ((0 < param_3 - param_1) && (0 < param_4 - param_2)) {
-      iVar1 = (((((param_1 + (param_1 >>> 0x1f & 0x3f))) >>> 0) >>> 6) >>> 0);
-      iVar2 = (((((param_2 + (param_2 >>> 0x1f & 7))) >>> 0) >>> 3) >>> 0);
+      iVar1 = (((((param_1 + (param_1 >>> 0x1f & 0x3f))) | 0) >>> 6) >>> 0);
+      iVar2 = (((((param_2 + (param_2 >>> 0x1f & 7))) | 0) >>> 3) >>> 0);
       local_30 = ((iVar2 * 0x14 + iVar1) >>> 0);
-      iVar1 = (((((((param_3 + (param_3 >>> 0x1f & 0x3f))) >>> 0) >>> 6) - iVar1) + 1) >>> 0);
-      for (local_24 = ((0) >>> 0); local_24 < (((((param_4 + (param_4 >>> 0x1f & 7))) >>> 0) >>> 3) - iVar2) + 1; local_24 = (((local_24 + 1) >>> 0)) >>> 0) {
+      iVar1 = (((((((param_3 + (param_3 >>> 0x1f & 0x3f))) | 0) >>> 6) - iVar1) + 1) >>> 0);
+      for (local_24 = ((0) >>> 0); local_24 < (((((param_4 + (param_4 >>> 0x1f & 7))) | 0) >>> 3) - iVar2) + 1; local_24 = (((local_24 + 1) >>> 0)) >>> 0) {
         for (local_14 = ((0) >>> 0); local_14 < iVar1; local_14 = (((local_14 + 1) >>> 0)) >>> 0) {
           heap.setU32(((0x005f2420) + (local_30) * 4), (1) & 0xffffffff);
           local_30 = ((local_30 + 1) >>> 0);

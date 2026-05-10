@@ -6,7 +6,7 @@
 
 import { UnmapViewOfFile } from "../../runtime/win32.js";
 export function FUN_004081e4(heap, param_1) {
-  if (param_1 != ((0x0) >>> 0)) {
+  if (param_1 != ((0x0) | 0)) {
     UnmapViewOfFile(heap, param_1);
   }
   return;

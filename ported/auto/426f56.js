@@ -33,7 +33,7 @@ export function FUN_00426f56(heap) {
     if (uVar2 != 0x80000000) {
       if ((unaff_EBX & 1) != 0) {
         (regs.eax = callIndirect(heap, heap.u32((0x005f49a0) + (unaff_ESI) * 4)));
-        if ((unaff_EBX != 0x80000000) && (((unaff_EBX) >>> 0) <= ((uVar2) >>> 0))) {
+        if ((unaff_EBX != 0x80000000) && (((unaff_EBX) | 0) <= ((uVar2) | 0))) {
           uVar2 = ((unaff_EBX) >>> 0);
         }
         heap.setU8(0x005f4a6a, (heap.u8(0x005f4a6a) + -1) & 0xff);

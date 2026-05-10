@@ -63,7 +63,7 @@ export function FUN_00415b30(heap, param_1, param_2) {
       if (uVar2 == 0xffffffff) {
         puVar6 = ((0x005ec460) >>> 0);
       } else {
-        puVar6 = (((heap.u32((0x005f3e60) + (((uVar2) >>> 0) >>> 5) * 4) + (uVar2 & 0x1f) * 8)) >>> 0);
+        puVar6 = (((heap.u32((0x005f3e60) + (((uVar2) | 0) >>> 5) * 4) + (uVar2 & 0x1f) * 8)) >>> 0);
       }
       if ((heap.u8(puVar6 + (4)) & 0x20) != 0) {
         (regs.eax = FUN_004179a0(heap, uVar2, 0, 2));

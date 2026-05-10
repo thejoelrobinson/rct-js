@@ -9,14 +9,14 @@ export function FUN_0040fbdd(heap, param_1, param_2, param_3) {
   let hdc = 0;
   let hPal = 0;
   let local_10 = 0;
-  if ((heap.u32(0x005ec0d8) != 0x0) && (((param_2) >>> 0) < 0x100)) {
-    if (((param_2) >>> 0) < ((heap.u32(0x005ec0dc)) >>> 0)) {
+  if ((heap.u32(0x005ec0d8) != 0x0) && (((param_2) | 0) < 0x100)) {
+    if (((param_2) | 0) < heap.i32(0x005ec0dc)) {
       param_2 = ((heap.u32(0x005ec0dc)) >>> 0);
     }
-    if ((((heap.u32(0x005ec0e0) + heap.u32(0x005ec0dc))) >>> 0) < (((param_3 + param_2)) >>> 0)) {
+    if ((((heap.u32(0x005ec0e0) + heap.u32(0x005ec0dc))) | 0) < (((param_3 + param_2)) | 0)) {
       param_3 = ((heap.u32(0x005ec0e0) - param_2) >>> 0);
     }
-    for (local_10 = ((param_2) >>> 0); ((local_10) >>> 0) < (((param_3 + param_2)) >>> 0); local_10 = (((local_10 + 1) >>> 0)) >>> 0) {
+    for (local_10 = ((param_2) >>> 0); ((local_10) | 0) < (((param_3 + param_2)) | 0); local_10 = (((local_10 + 1) >>> 0)) >>> 0) {
       heap.setU32(((0x005ef6aa) + (local_10 * 4) * 4), (heap.u8((param_1 + 2 + local_10 * 4))) & 0xffffffff);
       heap.setU32(((0x005efaac) + (local_10 * 4) * 4), (heap.u32((0x005ef6aa) + (local_10 * 4) * 4)) & 0xffffffff);
       heap.setU32(((0x005ef6a9) + (local_10 * 4) * 4), (heap.u8((param_1 + 1 + local_10 * 4))) & 0xffffffff);

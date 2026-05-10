@@ -20,7 +20,7 @@ export function FUN_00417016(heap, param_1) {
     if (((uVar7) << 24 >> 24) == cVar6) {
       return param_1;
     }
-    param_1 = (((((param_1) >>> 0) + 1)) >>> 0);
+    param_1 = (((((param_1) | 0) + 1)) >>> 0);
     if (((uVar7) << 24 >> 24) == 0) {
       return 0x0;
     }
@@ -54,21 +54,21 @@ export function FUN_00417016(heap, param_1) {
     }
     cVar2 = (((((uVar1 >>> 8)) << 24 >> 24)) & 0xff);
     if (cVar2 == cVar6) {
-      return (((param_1) >>> 0) + 1);
+      return (((param_1) | 0) + 1);
     }
     if (cVar2 == 0) {
       return 0x0;
     }
     cVar2 = (((((uVar1 >>> 0x10)) << 24 >> 24)) & 0xff);
     if (cVar2 == cVar6) {
-      return (((param_1) >>> 0) + 2);
+      return (((param_1) | 0) + 2);
     }
     if (cVar2 == 0) {
       break;
     }
     cVar2 = (((((uVar1 >>> 0x18)) << 24 >> 24)) & 0xff);
     if (cVar2 == cVar6) {
-      return (((param_1) >>> 0) + 3);
+      return (((param_1) | 0) + 3);
     }
     param_1 = ((puVar5) >>> 0);
     if (cVar2 == 0) {

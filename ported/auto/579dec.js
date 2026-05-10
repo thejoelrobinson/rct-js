@@ -19,13 +19,13 @@ export function FUN_00579dec(heap, param_1) {
   let unaff_EDI = regs.edi >>> 0;
   let uVar6 = 0;
   heap.setU32(0x0099a4ec, (in_DX + 3) >>> 0);
-  uVar2 = ((((heap.u32(0x0099a4ec)) >>> 0)) >>> 0);
+  uVar2 = ((heap.u32(0x0099a4ec)) >>> 0);
   iVar4 = ((heap.u32((param_1 + 7)) * 0x260) >>> 0);
   heap.setU8(0x00651c60, (0xffffffff) & 0xff);
   heap.setU32(0x00651c68, (0) >>> 0);
   heap.setU32(0x00651c6c, (0) >>> 0);
   if ((heap.u32((0x00887422) + (heap.u32((param_1 + 7)) * 0x130) * 4) & 1) != 0) {
-    heap.setU8(0x00651c60, (((((heap.u16((0x0088747e + iVar4))) << 16 >> 16)) >>> 0)) & 0xff);
+    heap.setU8(0x00651c60, (((((heap.u16((0x0088747e + iVar4))) << 16 >> 16)) | 0)) & 0xff);
     if (heap.u8(0x00651c60) != 0xffffffff) {
       iVar3 = ((heap.u32((0x0088747e + iVar4)) * 0x100) >>> 0);
       heap.setU8(0x00651c60, (0x00743b94 + iVar3) & 0xff);

@@ -14,5 +14,5 @@ export function FUN_00416f30(heap, param_1, param_2) {
   if (heap.i8(pcVar1) != 0) {
     return param_2;
   }
-  return ((pcVar1) >>> 0) - ((param_1) >>> 0);
+  return ((pcVar1) | 0) - ((param_1) | 0);
 }

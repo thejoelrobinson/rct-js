@@ -15,7 +15,7 @@ export function FUN_004054e3(heap, param_1, param_2, param_3) {
   const __addr_local_c = __sp + 532;
   try {
   let uVar1 = 0;
-  CoInitialize(heap, ((0x0) >>> 0));
+  CoInitialize(heap, ((0x0) | 0));
   heap.setU32(__addr_local_c, (CoCreateInstance(heap, 0x005e78b0, 0x0, 1, 0x005e7c70, __addr_local_8)) >>> 0);
   if (heap.u32(__addr_local_c) < 0) {
     uVar1 = ((0) >>> 0);

@@ -23,7 +23,7 @@ export function FUN_004155e0(heap, param_1) {
       iVar3 = ((0x3ff000) >>> 0);
       do {
         if (heap.i32(piVar2) == 0xf0) {
-          BVar1 = ((VirtualFree(heap, (((heap.i32((puVar5 + 0x10)) + iVar3)) >>> 0), 0x1000, 0x4000)) >>> 0);
+          BVar1 = ((VirtualFree(heap, (((heap.i32((puVar5 + 0x10)) + iVar3)) | 0), 0x1000, 0x4000)) >>> 0);
           if (BVar1 != 0) {
             heap.setU32(piVar2, (-1) & 0xffffffff);
             heap.setU32(0x005f024c, (heap.u32(0x005f024c) + -1) >>> 0);

@@ -19,7 +19,7 @@ export function FUN_00419f50(heap, param_1, param_2, param_3) {
   let uStack_6 = 0;
   iVar3 = ((0x5eeb18) >>> 0);
   if (param_2 != 0) {
-    if (((param_2) >>> 0) < 0) {
+    if (((param_2) | 0) < 0) {
       param_2 = ((-param_2) >>> 0);
       iVar3 = ((0x5eec78) >>> 0);
     }
@@ -29,7 +29,7 @@ export function FUN_00419f50(heap, param_1, param_2, param_3) {
     while (param_2 != 0) {
       iVar3 = ((iVar3 + 0x54) >>> 0);
       uVar1 = ((param_2 & 7) >>> 0);
-      param_2 = ((((param_2) >>> 0) >>> 3) >>> 0);
+      param_2 = ((((param_2) | 0) >>> 3) >>> 0);
       if (uVar1 != 0) {
         puVar2 = (((iVar3 + uVar1 * 0xc)) >>> 0);
         if (0x7fff < heap.u16((iVar3 + uVar1 * 0xc))) {

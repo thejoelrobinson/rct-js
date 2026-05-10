@@ -22,8 +22,8 @@ export function FUN_00444a79(heap) {
   }
   uVar4 = ((0) >>> 0);
   do {
-    heap.setU16((((0x0087c394) >>> 0) + uVar4), (0xffff) & 0xffff);
-    heap.setU16((((0x0087c3a0) >>> 0) + uVar4), (0) & 0xffff);
+    heap.setU16((((0x0087c394) | 0) + uVar4), (0xffff) & 0xffff);
+    heap.setU16((((0x0087c3a0) | 0) + uVar4), (0) & 0xffff);
     uVar4 = ((uVar4 + 2) >>> 0);
   } while (uVar4 < 0xc);
   uVar2 = ((0) & 0xffff);

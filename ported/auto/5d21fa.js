@@ -21,7 +21,7 @@ export function FUN_005d21fa(heap) {
         heap.setU32(0x00652470, (heap.u8(0x00652289)) >>> 0);
         bVar1 = ((false) & 0xff);
         if ((heap.u8(0x006522a2) & 4) == 0) {
-          bVar1 = ((heap.u8(0x0065229e) < heap.u32(((0x0065247a) & 0xffff) + (((heap.u8(0x006522a2)) >>> 0) * 2) * 4)) & 0xff);
+          bVar1 = ((heap.u8(0x0065229e) < heap.u32(((0x0065247a) & 0xffff) + (heap.u32(0x006522a2) * 2) * 4)) & 0xff);
         }
         (regs.eax = FUN_005cfac0(heap));
         if (!bVar1) {

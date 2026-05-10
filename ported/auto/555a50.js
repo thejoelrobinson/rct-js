@@ -23,14 +23,14 @@ export function FUN_00555a50(heap, param_1) {
   let extraout_var = 0;
   puVar2 = ((heap.u32(0x00991f80)) >>> 0);
   heap.setU32(0x0099a4ec, (((in_EDX) << 16 >> 16) + 7) >>> 0);
-  uVar4 = ((((heap.u32(0x0099a4ec)) >>> 0)) >>> 0);
+  uVar4 = ((heap.u32(0x0099a4ec)) >>> 0);
   uVar7 = ((heap.u32((param_1 + 7))) >>> 0);
   puVar8 = (((uVar7 * 0x260)) >>> 0);
   puVar5 = ((0xffffffff) >>> 0);
   if ((heap.u32((0x00887422) + (uVar7 * 0x130) * 4) & 1) != 0) {
-    puVar5 = ((((((heap.u16((0x0088747e + ((puVar8) >>> 0)))) << 16 >> 16)) >>> 0)) >>> 0);
+    puVar5 = ((((((heap.u16((0x0088747e + ((puVar8) | 0)))) << 16 >> 16)) | 0)) >>> 0);
     if (puVar5 != 0xffffffff) {
-      puVar5 = ((0x00743b94 + heap.u32((0x0088747e + ((puVar8) >>> 0))) * 0x100) >>> 0);
+      puVar5 = ((0x00743b94 + heap.u32((0x0088747e + ((puVar8) | 0))) * 0x100) >>> 0);
       heap.setU8((0x00991f78 + 0), (2) & 0xff);
       heap.setU32(0x00991f80, (puVar5) >>> 0);
     }
@@ -39,7 +39,7 @@ export function FUN_00555a50(heap, param_1) {
   if (puVar5 != 0xffffffff) {
     heap.setU32(0x00651c40, (heap.u32(0x00651c40) + (((heap.u8(puVar5 + (0x1f))) & 0xff) & 7)) >>> 0);
   }
-  uVar6 = ((heap.u32((((0x00887426) >>> 0) + (((puVar8 + 1)) >>> 0))) << 0x18 | heap.u32((0x00887426 + uVar7 * 0x130)) << 0x11 | heap.u32(0x00651c40)) >>> 0);
+  uVar6 = ((heap.u32((((0x00887426) | 0) + (((puVar8 + 1)) | 0))) << 0x18 | heap.u32((0x00887426 + uVar7 * 0x130)) << 0x11 | heap.u32(0x00651c40)) >>> 0);
   heap.setU32(0x0099a4e8, (heap.u16((0x00651c24 + unaff_EDI * 8))) >>> 0);
   heap.setU32(0x0099a4ea, (heap.u16((0x00651c26 + unaff_EDI * 8))) >>> 0);
   uVar9 = ((CONCAT22(((((heap.u32((0x00887426 + uVar7 * 0x130)) << 0x11) >>> 0x10)) << 16 >> 16), heap.u16((0x00651c22 + unaff_EDI * 8)))) >>> 0);
@@ -48,8 +48,8 @@ export function FUN_00555a50(heap, param_1) {
   (regs.eax = callIndirect(heap, heap.u32((0x00432204) + (heap.u8(0x00991f88)) * 4), puVar8, uVar9, uVar7, uVar4));
   uVar3 = ((extraout_var) >>> 0);
   (regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4), puVar8, uVar9, uVar7, uVar4, extraout_var));
-  if ((heap.u16((heap.u32(0x00981ef8) + 0xe)) < 2) && ((heap.u16((((0x00887422) >>> 0) + ((puVar8) >>> 0))) & 1) != 0)) {
-    uVar1 = ((heap.u16((0x0088747e + ((puVar8) >>> 0)))) & 0xffff);
+  if ((heap.u16((heap.u32(0x00981ef8) + 0xe)) < 2) && ((heap.u16((((0x00887422) | 0) + ((puVar8) | 0))) & 1) != 0)) {
+    uVar1 = ((heap.u16((0x0088747e + ((puVar8) | 0)))) & 0xffff);
     puVar8 = ((((uVar1) >>> 0)) >>> 0);
     if (uVar1 != 0xffff) {
       puVar8 = ((0x00743b94 + ((uVar1) >>> 0) * 0x100) >>> 0);

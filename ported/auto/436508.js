@@ -13,12 +13,12 @@ export function FUN_00436508(heap) {
   let puVar4 = 0;
   let puVar5 = 0;
   let bVar6 = 0;
-  uVar1 = ((((heap.u32(0x008ae938)) >>> 0)) >>> 0);
+  uVar1 = ((heap.u32(0x008ae938)) >>> 0);
   bVar6 = ((false) & 0xff);
   if (uVar1 != 0) {
     puVar3 = ((0x008ad1c8) >>> 0);
     while (true) {
-      while ((regs.eax = callIndirect(heap, heap.u32((0x00628ab0) + (heap.u8((((puVar3) >>> 0) + 1))) * 4))), !bVar6) {
+      while ((regs.eax = callIndirect(heap, heap.u32((0x00628ab0) + (heap.u8((((puVar3) | 0) + 1))) * 4))), !bVar6) {
         bVar6 = ((0xfffffff9 < puVar3) & 0xff);
         puVar3 = ((puVar3 + ((3) * 2)) >>> 0);
         uVar1 = ((uVar1 - 1) >>> 0);
@@ -31,8 +31,8 @@ export function FUN_00436508(heap) {
       if (uVar1 == 0) {
         break;
       }
-      iVar2 = (((((((((uVar1) >>> 0)) >>> 0) * 3)) >>> 0)) >>> 0);
-      bVar6 = ((((iVar2) >>> 0) != ((((uVar1) >>> 0)) >>> 0) * 3) & 0xff);
+      iVar2 = (((((((((uVar1) | 0)) >>> 0) * 3)) | 0)) >>> 0);
+      bVar6 = ((((iVar2) >>> 0) != ((((uVar1) | 0)) >>> 0) * 3) & 0xff);
       puVar4 = ((puVar3 + ((3) * 2)) >>> 0);
       puVar5 = ((puVar3) >>> 0);
       for (; iVar2 != 0; iVar2 = (((iVar2 + -1) >>> 0)) >>> 0) {

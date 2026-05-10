@@ -43,11 +43,11 @@ export function FUN_009b8491(heap) {
     heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) << 1) & 0xffff);
     return uVar3;
   }
-  pbVar9 = ((heap.u32((((0x008dc0b4) >>> 0) + unaff_EBX))) >>> 0);
+  pbVar9 = ((heap.u32((((0x008dc0b4) | 0) + unaff_EBX))) >>> 0);
   uVar3 = ((heap.u32((0x008dc0b8 + unaff_EBX))) >>> 0);
   heap.setU32(0x009a2018, (heap.u32((0x008dc0bc + unaff_EBX))) >>> 0);
   heap.setU32(0x009a201c, (heap.u32((0x008dc0c0 + unaff_EBX))) >>> 0);
-  sVar7 = (((((((heap.u32(0x009a2018)) >>> 0) >>> 0x10)) << 16 >> 16)) & 0xffff);
+  sVar7 = (((((heap.u32(0x009a2018) >>> 0x10)) << 16 >> 16)) & 0xffff);
   heap.setU32(0x009a2014, (((uVar3) << 16 >> 16)) >>> 0);
   heap.setU32(0x009a2016, (((uVar3 >>> 0x10) & 0xffff)) >>> 0);
   heap.setU32(0x009a2010, (pbVar9) >>> 0);
@@ -85,7 +85,7 @@ export function FUN_009b8491(heap) {
       heap.setU32(0x009a2020, (heap.u32(0x009a2020) - uVar2) >>> 0);
       uVar2 = ((0) & 0xffff);
     } else {
-      uVar4 = ((((((((heap.u16((unaff_EDI + 8)) >>> 2) + heap.i16((unaff_EDI + 0xc)))) << 16 >> 16)) >>> 0) * (((((uVar2 >>> 2)) << 16 >> 16)) >>> 0)) >>> 0);
+      uVar4 = ((((((((heap.u16((unaff_EDI + 8)) >>> 2) + heap.i16((unaff_EDI + 0xc)))) << 16 >> 16)) | 0) * (((((uVar2 >>> 2)) << 16 >> 16)) | 0)) >>> 0);
     }
     sVar7 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar8 = (((uVar2 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -104,7 +104,7 @@ export function FUN_009b8491(heap) {
           heap.setU32(0x009a2024, (0) >>> 0);
           return uVar4;
         }
-        heap.setU32(0x009a2024, (-((sVar7) >>> 0)) >>> 0);
+        heap.setU32(0x009a2024, (-((sVar7) | 0)) >>> 0);
         sVar7 = ((0) & 0xffff);
       }
       sVar8 = ((heap.u32(0x009a2028)) & 0xffff);

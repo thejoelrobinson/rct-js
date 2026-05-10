@@ -16,7 +16,7 @@ export function FUN_004181f0(heap, param_1, param_2) {
   local_4 = ((0) >>> 0);
   bVar2 = ((((param_2 >>> 0x1f) & 0xff)) & 0xff);
   bVar2 = ((0x1f - (((((param_2) & 0xff) ^ bVar2) - bVar2 & 0x1f ^ bVar2) - bVar2)) & 0xff);
-  iVar3 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) >>> 0) >>> 5) >>> 0);
+  iVar3 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) | 0) >>> 5) >>> 0);
   if (((heap.u32((param_1 + iVar3 * 4)) & 1 << (bVar2 & 0x1f)) != 0) && (iVar1 = (((regs.eax = FUN_00418110(heap, param_1, param_2 + 1))) >>> 0), iVar1 == 0)) {
     local_4 = (((regs.eax = FUN_00418180(heap, param_1, param_2 + -1))) >>> 0);
   }

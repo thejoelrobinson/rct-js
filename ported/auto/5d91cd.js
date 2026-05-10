@@ -11,9 +11,9 @@ export function FUN_005d91cd(heap) {
   let iVar2 = 0;
   let unaff_ESI = regs.esi >>> 0;
   let unaff_EDI = regs.edi >>> 0;
-  heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) & 0xfffb) & 0xffff);
+  heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) & 0xfffb) & 0xffff);
   heap.setU16((unaff_ESI + 0x48), (heap.u16((unaff_ESI + 0x48)) & 0xffdf) & 0xffff);
-  heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) | 2) & 0xffff);
+  heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) | 2) & 0xffff);
   iVar2 = ((0) >>> 0);
   uVar1 = ((0) >>> 0);
   do {

@@ -39,12 +39,12 @@ export function FUN_005e3ace(heap) {
       uVar5 = (((regs.eax = FUN_005e3874(heap, unaff_EDI))) >>> 0);
       in_EAX = ((((uVar5) >>> 0)) >>> 0);
       in_ECX = ((extraout_ECX) >>> 0);
-      if (((((uVar5 >>> 0x20)) >>> 0) | 0) == -1) {
+      if (((((uVar5 >>> 0x20)) | 0) | 0) == -1) {
         /* goto LAB_005e3ad4 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_005e3ace/LAB_005e3ad4"); return 0;
       }
     }
     in_EAX = ((((uVar5) >>> 0)) >>> 0);
-    (regs.eax = callIndirect(heap, heap.u32((puVar4 + -0x174)), unaff_EDI, puVar3, unaff_EBP, __addr_stack0x00000000, unaff_EBX, (((uVar5 >>> 0x20)) >>> 0), in_ECX));
+    (regs.eax = callIndirect(heap, heap.u32((puVar4 + -0x174)), unaff_EDI, puVar3, unaff_EBP, __addr_stack0x00000000, unaff_EBX, (((uVar5 >>> 0x20)) | 0), in_ECX));
     puVar1 = ((heap.u32(0x009a1164)) >>> 0);
     if (puVar3 != 0x0) {
       return;

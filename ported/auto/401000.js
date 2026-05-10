@@ -31,20 +31,20 @@ export function FUN_00401000(heap) {
   let pBVar7 = 0;
   (regs.eax = FUN_00402bd5(heap));
   (regs.eax = FUN_00401120(heap, 0));
-  LVar2 = ((RegOpenKeyA(heap, ((0x80000002) >>> 0), 0x005e90a0, __addr_local_50)) >>> 0);
+  LVar2 = ((RegOpenKeyA(heap, ((0x80000002) | 0), 0x005e90a0, __addr_local_50)) >>> 0);
   if (LVar2 == 0) {
     heap.setU32(__addr_local_48, (4) >>> 0);
     heap.setU32(__addr_local_4c, (0) >>> 0);
-    LVar2 = ((RegQueryValueExA(heap, heap.u32(__addr_local_50), 0x005e9098, ((0x0) >>> 0), __addr_local_44, ((__addr_local_4c) >>> 0), __addr_local_48)) >>> 0);
+    LVar2 = ((RegQueryValueExA(heap, heap.u32(__addr_local_50), 0x005e9098, ((0x0) | 0), __addr_local_44, ((__addr_local_4c) | 0), __addr_local_48)) >>> 0);
     if (LVar2 == 0) {
       heap.setU32(0x005eee38, (heap.u32(__addr_local_4c)) >>> 0);
     }
     RegCloseKey(heap, heap.u32(__addr_local_50));
   }
-  LVar2 = ((RegOpenKeyA(heap, ((0x80000003) >>> 0), 0x005e9060, __addr_local_50)) >>> 0);
+  LVar2 = ((RegOpenKeyA(heap, ((0x80000003) | 0), 0x005e9060, __addr_local_50)) >>> 0);
   if (LVar2 == 0) {
     heap.setU32(__addr_local_48, (0x40) >>> 0);
-    LVar2 = ((RegQueryValueExA(heap, heap.u32(__addr_local_50), 0x005e9058, ((0x0) >>> 0), __addr_local_44, __addr_local_40, __addr_local_48)) >>> 0);
+    LVar2 = ((RegQueryValueExA(heap, heap.u32(__addr_local_50), 0x005e9058, ((0x0) | 0), __addr_local_44, __addr_local_40, __addr_local_48)) >>> 0);
     if (LVar2 == 0) {
       uVar4 = ((0xffffffff) >>> 0);
       heap.setU32(__addr_local_1, (0) >>> 0);

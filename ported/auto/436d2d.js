@@ -45,7 +45,7 @@ export function FUN_00436d2d(heap) {
     do {
       iVar13 = ((iVar7) >>> 0);
       sVar6 = ((heap.i16((iVar10 + 0x981dfb))) & 0xffff);
-      sVar1 = ((heap.i16((((0x00981ef8) >>> 0) + iVar10 + 3))) & 0xffff);
+      sVar1 = ((heap.i16((((0x00981ef8) | 0) + iVar10 + 3))) & 0xffff);
       bVar8 = ((((((sVar1) & 0xffff) >>> 8) & 0xff)) & 0xff);
       bVar11 = ((((sVar1) & 0xff)) & 0xff);
       if (bVar8 <= ((sVar1) & 0xff)) {

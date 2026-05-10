@@ -11,7 +11,7 @@ export function FUN_004364c2(heap) {
   let in_DX = regs.edx & 0xffff;
   let uVar1 = 0;
   let psVar2 = 0;
-  uVar1 = ((((heap.u32(0x008ae938)) >>> 0)) >>> 0);
+  uVar1 = ((heap.u32(0x008ae938)) >>> 0);
   psVar2 = ((0x008ad1c8) >>> 0);
   if (uVar1 != 0) {
     if (999 < uVar1) {

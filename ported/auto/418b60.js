@@ -12,7 +12,7 @@ export function FUN_00418b60(heap, param_1) {
   let BVar1 = 0;
   let DVar2 = 0;
   DVar2 = ((heap.u32(0x005efec4)) >>> 0);
-  if ((param_1 < heap.u32(0x005f3f60)) && ((heap.u8((heap.u32((0x005f3e60) + (((param_1) >>> 0) >>> 5) * 4) + 4 + (param_1 & 0x1f) * 8)) & 1) != 0)) {
+  if ((param_1 < heap.u32(0x005f3f60)) && ((heap.u8((heap.u32((0x005f3e60) + (((param_1) | 0) >>> 5) * 4) + 4 + (param_1 & 0x1f) * 8)) & 1) != 0)) {
     hFile = (((regs.eax = FUN_00418ea0(heap, param_1))) >>> 0);
     BVar1 = ((FlushFileBuffers(heap, hFile)) >>> 0);
     if (BVar1 == 0) {

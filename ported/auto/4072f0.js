@@ -33,7 +33,7 @@ export function FUN_004072f0(heap, param_1, param_2, param_3, param_4, param_5) 
   heap.setU32(0x005f0380, (1) >>> 0);
   heap.setU32(0x005f0382, (((param_3) & 0xffff)) >>> 0);
   heap.setU32(0x005f0384, (param_4) >>> 0);
-  uVar1 = (((((param_3 * param_5 + (param_3 * param_5 >>> 0x1f & 7))) >>> 0) >>> 3) >>> 0);
+  uVar1 = (((((param_3 * param_5 + (param_3 * param_5 >>> 0x1f & 7))) | 0) >>> 3) >>> 0);
   heap.setU32(0x005f038c, (((uVar1) & 0xffff)) >>> 0);
   heap.setU32(0x005f0388, ((uVar1 & 0xffff) * param_4) >>> 0);
   heap.setU32(0x005f038e, (((param_5) & 0xffff)) >>> 0);

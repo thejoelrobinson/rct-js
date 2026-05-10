@@ -23,7 +23,7 @@ export function FUN_005e39ff(heap) {
   }
   uVar4 = ((0) >>> 0);
   for (pcVar5 = ((heap.u32((unaff_ESI + 0x1c))) >>> 0); cVar1 = ((heap.i8(pcVar5)) & 0xff), cVar1 != 21; pcVar5 = (((pcVar5 + 0x10) >>> 0)) >>> 0) {
-    if ((((cVar1 == 4) || (cVar1 == 2)) && ((heap.u32((pcVar5 + 10)) & 0x80000000) != 0)) && ((((heap.u8((unaff_ESI + 0x14 + (((uVar4) >>> 0) >>> 3))) >>> (uVar4 & 7) & 1) != 0 || (((uVar2) << 16 >> 16) == ((uVar4) << 16 >> 16))) || (sVar3 == ((uVar4) << 16 >> 16))))) {
+    if ((((cVar1 == 4) || (cVar1 == 2)) && ((heap.u32((pcVar5 + 10)) & 0x80000000) != 0)) && ((((heap.u8((unaff_ESI + 0x14 + (((uVar4) | 0) >>> 3))) >>> (uVar4 & 7) & 1) != 0 || (((uVar2) << 16 >> 16) == ((uVar4) << 16 >> 16))) || (sVar3 == ((uVar4) << 16 >> 16))))) {
       (regs.eax = FUN_005e117d(heap));
     }
     uVar4 = ((uVar4 + 1) >>> 0);

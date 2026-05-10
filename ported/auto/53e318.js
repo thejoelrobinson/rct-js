@@ -22,12 +22,12 @@ export function FUN_0053e318(heap, param_1) {
   let unaff_EDI = regs.edi >>> 0;
   puVar1 = ((heap.u32(0x00991f80)) >>> 0);
   heap.setU32(0x0099a4ec, (((in_EDX) << 16 >> 16) + 7) >>> 0);
-  uVar2 = ((((heap.u32(0x0099a4ec)) >>> 0)) >>> 0);
+  uVar2 = ((heap.u32(0x0099a4ec)) >>> 0);
   uVar6 = ((heap.u32((param_1 + 7))) >>> 0);
   iVar7 = ((uVar6 * 0x260) >>> 0);
   puVar3 = ((0xffffffff) >>> 0);
   if ((heap.u32((0x00887422) + (uVar6 * 0x130) * 4) & 1) != 0) {
-    puVar3 = ((((((heap.u16((0x0088747e + iVar7))) << 16 >> 16)) >>> 0)) >>> 0);
+    puVar3 = ((((((heap.u16((0x0088747e + iVar7))) << 16 >> 16)) | 0)) >>> 0);
     if (puVar3 != 0xffffffff) {
       puVar3 = ((0x00743b94 + heap.u32((0x0088747e + iVar7)) * 0x100) >>> 0);
       heap.setU8((0x00991f78 + 0), (2) & 0xff);
@@ -35,7 +35,7 @@ export function FUN_0053e318(heap, param_1) {
     }
   }
   heap.setU32(0x00651bb0, (heap.u32((0x00651b70 + unaff_EDI * 4))) >>> 0);
-  if ((puVar3 != 0xffffffff) && (iVar4 = ((((((heap.u8(puVar3 + (0x1f))) << 24 >> 24)) >>> 0)) >>> 0), iVar4 != 0)) {
+  if ((puVar3 != 0xffffffff) && (iVar4 = ((((((heap.u8(puVar3 + (0x1f))) << 24 >> 24)) | 0)) >>> 0), iVar4 != 0)) {
     if ((unaff_EDI & 2) != 0) {
       iVar4 = ((-iVar4) >>> 0);
     }
@@ -44,7 +44,7 @@ export function FUN_0053e318(heap, param_1) {
     }
     heap.setU32(0x00651bb0, (heap.i32((0x00651b80 + unaff_EDI * 4)) + (iVar4 + -1) * 2) >>> 0);
   }
-  uVar5 = ((heap.u32((((0x00887426) >>> 0) + iVar7 + 1)) << 0x18 | heap.u32((0x00887426 + uVar6 * 0x130)) << 0x11 | heap.u32(0x00651bb0)) >>> 0);
+  uVar5 = ((heap.u32((((0x00887426) | 0) + iVar7 + 1)) << 0x18 | heap.u32((0x00887426 + uVar6 * 0x130)) << 0x11 | heap.u32(0x00651bb0)) >>> 0);
   heap.setU32(0x0099a4e8, (heap.u16((0x00651b94 + unaff_EDI * 8))) >>> 0);
   heap.setU32(0x0099a4ea, (heap.u16((0x00651b96 + unaff_EDI * 8))) >>> 0);
   uVar8 = ((CONCAT22(((((heap.u32((0x00887426 + uVar6 * 0x130)) << 0x11) >>> 0x10)) << 16 >> 16), heap.u16((0x00651b92 + unaff_EDI * 8)))) >>> 0);

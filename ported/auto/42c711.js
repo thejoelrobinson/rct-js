@@ -126,9 +126,9 @@ export function FUN_0042c711(heap) {
         heap.setU32((pcVar3 + 0x104), (heap.u32(0x0099ab80)) & 0xffffffff);
         heap.setU32((pcVar3 + 0x108), (uVar1) & 0xffffffff);
         heap.setI8((pcVar3 + (0x10b)), (0) & 0xff);
-        uVar2 = ((((heap.u32(0x006e3b80)) >>> 0)) >>> 0);
+        uVar2 = ((heap.u32(0x006e3b80)) >>> 0);
         heap.setU16((pcVar3 + 8), (heap.u32(0x006e3b80)) & 0xffff);
-        heap.setI8((pcVar3 + (10)), ((((((heap.u32(0x006e3b82)) >>> 0) * (0) * (0x0064bc60 + (uVar2 & 7) * 2) >>> 0x10)) << 24 >> 24) + 1) & 0xff);
+        heap.setI8((pcVar3 + (10)), ((((heap.u32(0x006e3b82) * (0) * (0x0064bc60 + (uVar2 & 7) * 2) >>> 0x10)) << 24 >> 24) + 1) & 0xff);
         return 1;
       }
       pcVar3 = ((pcVar3 + 0x10c) >>> 0);

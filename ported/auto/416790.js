@@ -12,9 +12,9 @@ export function FUN_00416790(heap) {
   let hModule = 0;
   let pFVar1 = 0;
   hModule = ((GetModuleHandleA(heap, "KERNEL32")) >>> 0);
-  if (hModule != ((0x0) >>> 0)) {
+  if (hModule != ((0x0) | 0)) {
     pFVar1 = ((GetProcAddress(heap, hModule, "IsProcessorFeaturePresent")) >>> 0);
-    if (pFVar1 != ((0x0) >>> 0)) {
+    if (pFVar1 != ((0x0) | 0)) {
       return (regs.eax = callIndirect(heap, pFVar1, 0));
     }
   }

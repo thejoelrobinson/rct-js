@@ -18,7 +18,7 @@ export function FUN_0057b232(heap, param_1) {
   if ((heap.u32((0x00887497) + (iVar2) * 4) == 0) || (((unaff_ESI) & 0xff) < heap.u32(((0x00887498) & 0xff) + (iVar2) * 4))) {
     heap.setU32(0x00651d10, (0xffffffff) >>> 0);
     if ((heap.u32((0x00887422) + (heap.u32((param_1 + 7)) * 0x130) * 4) & 1) != 0) {
-      heap.setU32(0x00651d10, (((((heap.u16((0x0088747e + unaff_ESI * 2 + iVar2))) << 16 >> 16)) >>> 0)) >>> 0);
+      heap.setU32(0x00651d10, (((((heap.u16((0x0088747e + unaff_ESI * 2 + iVar2))) << 16 >> 16)) | 0)) >>> 0);
       if (heap.u32(0x00651d10) != 0xffffffff) {
         heap.setU32(0x00651d10, (0x00743b94 + heap.u32((0x0088747e + unaff_ESI * 2 + iVar2)) * 0x100) >>> 0);
         heap.setU8((0x00991f78 + 0), (2) & 0xff);

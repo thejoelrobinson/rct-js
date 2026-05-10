@@ -90,14 +90,14 @@ export function FUN_0040ae98(heap) {
           if (heap.u32(__addr_local_474) == 0) {
             iVar2 = ((0) >>> 0);
             if (heap.u32(0x005f1380) == 8) {
-              heap.setU32(__addr_local_47c, (GetDC(heap, ((0x0) >>> 0))) >>> 0);
+              heap.setU32(__addr_local_47c, (GetDC(heap, ((0x0) | 0))) >>> 0);
               GetSystemPaletteEntries(heap, heap.u32(__addr_local_47c), 0, 10, __addr_local_404);
               for (heap.setU32(__addr_local_478, (0) >>> 0); heap.u32(__addr_local_478) < 10; heap.setU32(__addr_local_478, (heap.u32(__addr_local_478) + 1) >>> 0)) {
                 heap.setU8((heap.u32(__addr_local_404 + (heap.u32(__addr_local_478)) * 4) + 3), (2) & 0xff);
                 heap.setU8((heap.u32(__addr_local_2c + (heap.u32(__addr_local_478)) * 4) + 3), (2) & 0xff);
               }
-              GetSystemPaletteEntries(heap, heap.u32(__addr_local_47c), 0xf6, 10, (((__addr_aBStack_3dc + 0x3b0)) >>> 0));
-              ReleaseDC(heap, ((0x0) >>> 0), heap.u32(__addr_local_47c));
+              GetSystemPaletteEntries(heap, heap.u32(__addr_local_47c), 0xf6, 10, (((__addr_aBStack_3dc + 0x3b0)) | 0));
+              ReleaseDC(heap, ((0x0) | 0), heap.u32(__addr_local_47c));
               for (heap.setU32(__addr_local_478, (10) >>> 0); heap.u32(__addr_local_478) < 0xf6; heap.setU32(__addr_local_478, (heap.u32(__addr_local_478) + 1) >>> 0)) {
                 heap.setU8((heap.u32(__addr_local_404 + (heap.u32(__addr_local_478)) * 4) + 2), (((heap.u32(__addr_local_478)) << 24 >> 24) + 0xf7) & 0xff);
                 heap.setU8((heap.u32(__addr_local_404 + (heap.u32(__addr_local_478)) * 4) + 1), (heap.u8((heap.u32(__addr_local_404 + (heap.u32(__addr_local_478)) * 4) + 2))) & 0xff);

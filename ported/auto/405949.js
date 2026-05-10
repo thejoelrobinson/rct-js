@@ -17,7 +17,7 @@ export function FUN_00405949(heap, param_1) {
   (regs.eax = FUN_00413180(heap, __addr_local_108, 0x005ebdf4));
   hObject = ((OpenMutexA(heap, 0x1f0001, 0, __addr_local_108)) >>> 0);
   if (hObject == 0x0) {
-    CreateMutexA(heap, ((0x0) >>> 0), 0, __addr_local_108);
+    CreateMutexA(heap, ((0x0) | 0), 0, __addr_local_108);
   } else {
     CloseHandle(heap, hObject);
   }

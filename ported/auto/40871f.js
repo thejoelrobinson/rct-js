@@ -40,7 +40,7 @@ export function FUN_0040871f(heap, param_1, param_2, param_3, param_4, param_5) 
     puVar4 = ((puVar4 + ((1) * 4)) >>> 0);
   }
   heap.setU16(puVar4, (0) & 0xffff);
-  heap.setU8((((puVar4) >>> 0) + 2), (0) & 0xff);
+  heap.setU8((((puVar4) | 0) + 2), (0) & 0xff);
   heap.setU32(__addr_local_154, (heap.u32(0x005ebf28)) >>> 0);
   puVar4 = ((__addr_local_153) >>> 0);
   for (iVar3 = ((0x40) >>> 0); iVar3 != 0; iVar3 = (((iVar3 + -1) >>> 0)) >>> 0) {
@@ -48,7 +48,7 @@ export function FUN_0040871f(heap, param_1, param_2, param_3, param_4, param_5) 
     puVar4 = ((puVar4 + ((1) * 4)) >>> 0);
   }
   heap.setU16(puVar4, (0) & 0xffff);
-  heap.setU8((((puVar4) >>> 0) + 2), (0) & 0xff);
+  heap.setU8((((puVar4) | 0) + 2), (0) & 0xff);
   heap.setU32(__addr_local_158, (0x2e) >>> 0);
   heap.setU32(__addr_local_15c, (_strrchr(heap, param_3, 0x2e)) >>> 0);
   heap.setU32(__addr_local_158, (0x5c) >>> 0);
@@ -89,11 +89,11 @@ export function FUN_0040871f(heap, param_1, param_2, param_3, param_4, param_5) 
   }
   if (param_1 == 1) {
     heap.setU32(__addr_local_1c, (0xa1804) >>> 0);
-    local_26c = ((GetOpenFileNameA(heap, ((__addr_local_50) >>> 0))) >>> 0);
+    local_26c = ((GetOpenFileNameA(heap, ((__addr_local_50) | 0))) >>> 0);
   } else {
     if (param_1 == 2) {
     heap.setU32(__addr_local_1c, (0x82806) >>> 0);
-    local_26c = ((GetSaveFileNameA(heap, ((__addr_local_50) >>> 0))) >>> 0);
+    local_26c = ((GetSaveFileNameA(heap, ((__addr_local_50) | 0))) >>> 0);
   }
   }
   if ((heap.u32(0x005ebe3c) == 2) && (heap.u32(0x005ebf54) == 1)) {

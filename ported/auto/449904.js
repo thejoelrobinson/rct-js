@@ -38,9 +38,9 @@ export function FUN_00449904(heap) {
       if ((heap.u8(0x00630b19) != 6) && (iVar1 = ((0x11) >>> 0), heap.u8(0x00630b19) != 0)) {
         iVar1 = ((0x12) >>> 0);
       }
-      uVar2 = ((uVar2 | 1 << (((heap.u8(0x00630b18)) >>> 0) + heap.u8(0x00991f88) & 3) + 0xb | 1 << iVar1) >>> 0);
+      uVar2 = ((uVar2 | 1 << (heap.u32(0x00630b18) + heap.u8(0x00991f88) & 3) + 0xb | 1 << iVar1) >>> 0);
       if (heap.u32(0x00630b26) != 0xff) {
-        uVar3 = ((~(1 << (((heap.u32(0x00630b26)) >>> 0) + heap.u8(0x00991f88) & 3) + 0xb) & 0x7800) >>> 0);
+        uVar3 = ((~(1 << (heap.u32(0x00630b26) + heap.u8(0x00991f88) & 3) + 0xb) & 0x7800) >>> 0);
       }
     }
     heap.setU32((unaff_ESI + 0x14), (uVar2) & 0xffffffff);

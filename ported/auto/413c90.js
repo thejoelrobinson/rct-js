@@ -121,7 +121,7 @@ export function FUN_00413c90(heap, param_1, param_2) {
       pcVar8 = ((pcVar8 + 1) >>> 0);
     }
     pcStackY_340 = ((0x413d6a) >>> 0);
-    DVar3 = ((GetModuleFileNameA(heap, ((0x0) >>> 0), __addr_local_324, 0x104)) >>> 0);
+    DVar3 = ((GetModuleFileNameA(heap, ((0x0) | 0), __addr_local_324, 0x104)) >>> 0);
     if (DVar3 == 0) {
       pcVar7 = (("<program name unknown>") >>> 0);
       pCVar9 = ((__addr_local_324) >>> 0);

@@ -29,7 +29,7 @@ export function FUN_00433f8b(heap) {
       if (cVar2 == 6) {
       uVar1 = ((heap.u32(0x0062891c) & 0x20) & 0xffff);
     } else {
-      if (cVar2 == NaN) {
+      if (cVar2 == 7) {
       uVar1 = ((heap.u32(0x0062891c) & 0x40) & 0xffff);
     } else {
       if (cVar2 == 8) {

@@ -15,9 +15,9 @@ export function FUN_00413340(heap, _Str) {
       break LAB_00413360;
     }
     uVar1 = ((heap.u32(puVar2)) >>> 0);
-    puVar2 = (((((puVar2) >>> 0) + 1)) >>> 0);
+    puVar2 = (((((puVar2) | 0) + 1)) >>> 0);
   } while (((uVar1) << 24 >> 24) != 0);
-  LAB_00413393: return (((((puVar2) >>> 0) + (-1 - ((_Str) >>> 0)))) >>> 0);
+  LAB_00413393: return (((((puVar2) | 0) + (-1 - ((_Str) | 0)))) | 0);
   }
   do {
     do {
@@ -26,13 +26,13 @@ export function FUN_00413340(heap, _Str) {
     } while (((heap.u32(puVar3) ^ 0xffffffff ^ heap.u32(puVar3) + 0x7efefeff) & 0x81010100) == 0);
     uVar1 = ((heap.u32(puVar3)) >>> 0);
     if (((uVar1) << 24 >> 24) == 0) {
-      return ((puVar3) >>> 0) - ((_Str) >>> 0);
+      return ((puVar3) | 0) - ((_Str) | 0);
     }
     if ((((uVar1 >>> 8)) << 24 >> 24) == 0) {
-      return (((((puVar3) >>> 0) + (1 - ((_Str) >>> 0)))) >>> 0);
+      return (((((puVar3) | 0) + (1 - ((_Str) | 0)))) | 0);
     }
     if ((uVar1 & 0xff0000) == 0) {
-      return (((((puVar3) >>> 0) + (2 - ((_Str) >>> 0)))) >>> 0);
+      return (((((puVar3) | 0) + (2 - ((_Str) | 0)))) | 0);
     }
   } while ((uVar1 & 0xff000000) != 0);
   /* goto LAB_00413393 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00413340/LAB_00413393"); return 0;

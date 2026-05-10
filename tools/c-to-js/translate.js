@@ -261,7 +261,7 @@ function inlineForwardGotos(source) {
   // Find all `LABEL:` definitions and their following statement body up to
   // the next return/break/continue/closing-brace. Track the label's source
   // offset so we can verify gotos are forward (lower offset → label).
-  const labels = new Map();   // labelName → { body, defOffset }
+  const labels = new Map();   // labelName → { body, defOffset, extendedBody? }
   const LABEL_DEF = /^([ \t]*)([A-Za-z_]\w*):[ \t]*\n/gm;
   let m;
   while ((m = LABEL_DEF.exec(source)) !== null) {
@@ -272,24 +272,44 @@ function inlineForwardGotos(source) {
     // Read statements until a terminating one (return/break/continue/goto)
     // or until we hit a closing brace at less-than-current indent.
     const body = readLabelBody(source, bodyStart, indent);
-    if (body) labels.set(name, { body, defOffset });
+    if (body) {
+      labels.set(name, { body, defOffset });
+    } else {
+      // The local body doesn't terminate — try EXTENDED readout that walks
+      // past the enclosing scope's closing brace into the parent scope until
+      // hitting a terminator. Used for cross-branch goto extraction:
+      //   if (cond) { ... goto LAB; ... }
+      //   else { LAB: <a>; }       // <-- local body `<a>` doesn't terminate
+      //   <b>; <c>; return X;     // <-- continuation in parent scope
+      // The extended body is `<a>; <b>; <c>; return X;` — semantically what
+      // executes after the goto in the original C.
+      const extendedBody = readLabelBodyExtended(source, bodyStart, indent);
+      if (extendedBody) {
+        labels.set(name, { body: extendedBody, defOffset, isExtended: true });
+      }
+    }
   }
   if (labels.size === 0) return source;
   // Replace `goto LABEL;` (when alone in its block, preceded by an `if (...)`
   // or sitting on its own line) with the label's body, indented appropriately.
   let out = source;
-  for (const [name, { body, defOffset }] of labels) {
+  for (const [name, { body, defOffset, isExtended }] of labels) {
     // Skip switch-fallthrough labels — these live inside switch statements
     // and inlining their body at a goto site would put case_* code outside
     // a switch block (parse error).
     if (/^switchD_/.test(name)) continue;
-    // Skip "joined_*" labels — Ghidra emits these for joined return paths;
-    // their bodies are sometimes complex multi-block patterns we don't
-    // safely inline.
-    if (/^joined_/.test(name)) continue;
+    // Skip "joined_*" labels for the conventional inliner — Ghidra emits
+    // these for joined return paths; their bodies are sometimes complex
+    // multi-block patterns. Extended-bodies (cross-scope extraction) are
+    // permitted because they go through the same safety filter as normal
+    // forward gotos.
+    if (/^joined_/.test(name) && !isExtended) continue;
     // Only inline when label body terminates (last non-blank line is return/break/continue).
     if (!/(?:return\b[^;]*;|break\s*;|continue\s*;)\s*$/.test(body.trim())) continue;
-    if (body.split("\n").length > 14) continue;   // skip long bodies
+    // Allow longer extended bodies (cross-scope) — capped at 30 lines by
+    // readLabelBodyExtended itself.
+    const maxLines = isExtended ? 32 : 14;
+    if (body.split("\n").length > maxLines) continue;
     // Skip bodies containing break/continue at any non-final position —
     // those refer to the label's enclosing loop. Inlining at a different
     // loop site changes their target (or makes them illegal).
@@ -323,8 +343,84 @@ function inlineForwardGotos(source) {
       const reindented = lines.map(l => l.trim() ? gIndent + l.slice(minIndent) : "").join("\n");
       return `${reindented}\n`;
     });
+    // ALSO match `if (cond) goto NAME;` (goto on same line as if). Wrap the
+    // body in `{ ... }` so the if-statement gets a proper compound consequence.
+    out = inlineIfGoto(out, name, body);
   }
   return out;
+}
+
+// For each `if (cond) goto NAME;` site (single-line) preceding the label
+// definition in `out`, replace with `if (cond) { <body> }`. This handles
+// Ghidra's compact emission of single-statement if-bodies.
+function inlineIfGoto(out, name, body) {
+  const labelLine = `${name}:`;
+  const labelIdxInOut = out.indexOf(labelLine);
+  if (labelIdxInOut === -1) return out;
+  // Refuse to inline truncated bodies — when wrapped in `{ ... }` they'd
+  // produce mismatched braces and break the parser.
+  if (!isBraceBalanced(body)) return out;
+  // Conservative cap: only inline small bodies. Larger bodies often
+  // reference locals/regs that are only initialised in the label's enclosing
+  // path; inlining them at a sibling site can change behaviour.
+  const nonBlankLineCount = body.split("\n").filter(l => l.trim()).length;
+  if (nonBlankLineCount > 18) return out;
+  // Refuse to inline bodies with `goto` to other labels — those gotos may
+  // point to the label-site's enclosing scope, not the goto-site's, and
+  // their target may not be visible in the new context.
+  if (/\bgoto\s+\w+\s*;/.test(body)) return out;
+  const result = [];
+  let i = 0;
+  const gotoTok = `goto ${name};`;
+  while (i < out.length) {
+    const nextGoto = out.indexOf(gotoTok, i);
+    if (nextGoto === -1 || nextGoto >= labelIdxInOut) {
+      result.push(out.slice(i));
+      break;
+    }
+    const lineStart = out.lastIndexOf("\n", nextGoto) + 1;
+    const lineSegment = out.slice(lineStart, nextGoto);
+    // Match `if (...)` or `else if (...)`. The leading-indent capture
+    // becomes the indent of the inlined-body block.
+    const ifMatch = /^([ \t]*)(?:else[ \t]+)?if[ \t]*\(/.exec(lineSegment);
+    if (!ifMatch) {
+      result.push(out.slice(i, nextGoto + gotoTok.length));
+      i = nextGoto + gotoTok.length;
+      continue;
+    }
+    const condStart = lineStart + ifMatch[0].length;
+    let depth = 1;
+    let j = condStart;
+    while (j < out.length && depth > 0) {
+      const c = out[j++];
+      if (c === '(') depth++;
+      else if (c === ')') depth--;
+      else if (c === '\n') { depth = -1; break; }
+    }
+    if (depth !== 0) {
+      result.push(out.slice(i, nextGoto + gotoTok.length));
+      i = nextGoto + gotoTok.length;
+      continue;
+    }
+    const between = out.slice(j, nextGoto);
+    if (!/^\s*$/.test(between)) {
+      result.push(out.slice(i, nextGoto + gotoTok.length));
+      i = nextGoto + gotoTok.length;
+      continue;
+    }
+    const indent = ifMatch[1];
+    const bodyLines = body.trim().split("\n");
+    const minIndent = Math.min(...bodyLines.filter(l => l.trim()).map(l => l.match(/^[ \t]*/)[0].length));
+    const innerIndent = indent + "  ";
+    const reindented = bodyLines.map(l => l.trim() ? innerIndent + l.slice(minIndent) : "").join("\n");
+    const ifTail = out.slice(lineStart, j);
+    const tailEnd = out.indexOf("\n", nextGoto);
+    const tailEndIdx = tailEnd === -1 ? out.length : tailEnd + 1;
+    result.push(out.slice(i, lineStart));
+    result.push(ifTail + " {\n" + reindented + "\n" + indent + "}\n");
+    i = tailEndIdx;
+  }
+  return result.join("");
 }
 
 function readLabelBody(source, start, baseIndent) {
@@ -366,6 +462,356 @@ function readLabelBody(source, start, baseIndent) {
   return lines.join("\n");
 }
 
+// Extended label-body read: when the local body falls through (no
+// terminator), keep reading past the enclosing scope's closing brace and
+// accumulate parent-scope statements until reaching a `return X;` (the
+// function-level terminator) or hitting an unsafe boundary.
+//
+// Pattern targeted (cross-branch goto):
+//   if (cond) { ... goto LAB; ... }            <-- goto site (different branch)
+//   else { LAB: <a>; }                          <-- label in else
+//   <b>; <c>; return X;                         <-- continuation
+//
+// Extracted body: `<a>; <b>; <c>; return X;` — the linear sequence of C
+// statements that execute after `goto LAB;` in the original source.
+//
+// Safety constraints (return null if any tripped):
+//   - Total extracted lines ≤ 30.
+//   - The label's enclosing scope must close (we walk OUT of it once).
+//   - The continuation must reach a `return ...;` — no break/continue past
+//     loop boundaries (those would change semantics if the goto-site is in
+//     a different loop).
+//   - We refuse if any line contains `goto NAME;` to ANOTHER label — that
+//     goto's target may not be visible at the goto-site after extraction.
+//   - Brace balance must remain consistent (we only walk OUT of the label's
+//     enclosing scope; we don't track deep brace mismatches inside).
+function readLabelBodyExtended(source, start, baseIndent) {
+  const lines = [];
+  let i = start;
+  let bodyIndent = null;
+  let scopeExits = 0;
+  const maxScopeExits = 4;     // step out at most 4 nested scopes
+  const maxLines = 30;
+  let foundReturn = false;
+  while (i < source.length && lines.length < maxLines) {
+    const lineEnd = source.indexOf("\n", i);
+    const line = source.slice(i, lineEnd === -1 ? source.length : lineEnd);
+    if (lineEnd === -1) break;
+    const isBlank = !line.trim();
+    if (!isBlank && bodyIndent === null) {
+      bodyIndent = line.match(/^[ \t]*/)[0].length;
+    }
+    // When we encounter a `}` at less-than-current bodyIndent, that's the
+    // enclosing scope closing. Skip the brace itself (do not add to body —
+    // we're walking ACROSS scopes; the `}` belongs to the original C scope
+    // and would be a stray close-brace if we inlined it elsewhere). Decrement
+    // bodyIndent and continue reading parent-scope statements.
+    if (/^[ \t]*\}/.test(line)) {
+      const indent = line.match(/^[ \t]*/)[0].length;
+      // If bodyIndent is null (just reset after else-skip), treat this `}`
+      // as a scope exit — re-detect bodyIndent on next non-`}` line.
+      if (bodyIndent === null || indent < bodyIndent) {
+        scopeExits++;
+        if (scopeExits > maxScopeExits) return null;
+        // Special case: closing brace followed (on same line OR next line)
+        // by `else` means we're inside an if-clause and the else-clause is
+        // starting. The continuation we want is AFTER the entire if/else,
+        // not inside the else. Skip the else block(s).
+        const sameLineElse = /^\s*\}\s*else\b/.test(line);
+        // Look ahead for `else` on the next non-blank line.
+        let nextNonBlankStart = lineEnd + 1;
+        while (nextNonBlankStart < source.length) {
+          const nlEnd = source.indexOf("\n", nextNonBlankStart);
+          const nlLine = source.slice(nextNonBlankStart, nlEnd === -1 ? source.length : nlEnd);
+          if (nlLine.trim() === "") {
+            nextNonBlankStart = nlEnd + 1;
+            continue;
+          }
+          break;
+        }
+        const nextLineEnd = source.indexOf("\n", nextNonBlankStart);
+        const nextLine = source.slice(nextNonBlankStart, nextLineEnd === -1 ? source.length : nextLineEnd);
+        const nextLineElse = !sameLineElse && /^\s*else\b/.test(nextLine);
+        if (sameLineElse || nextLineElse) {
+          // Skip ALL chained `else if (...) { ... }` / `else { ... }` blocks.
+          // Start position: the `else` token on either current or next line.
+          let pos;
+          if (sameLineElse) {
+            const openBrace = line.indexOf("{");
+            if (openBrace === -1) return null;
+            pos = i + openBrace + 1;
+          } else {
+            // nextLine starts with `else`
+            const openBraceInNext = nextLine.indexOf("{");
+            if (openBraceInNext === -1) return null;
+            pos = nextNonBlankStart + openBraceInNext + 1;
+          }
+          // Skip the matching close-brace, then check if another `else` follows.
+          while (true) {
+            let depth = 1;
+            let k = pos;
+            while (k < source.length && depth > 0) {
+              if (source[k] === "{") depth++;
+              else if (source[k] === "}") depth--;
+              k++;
+              if (k > pos + 8000) return null;
+            }
+            if (depth !== 0) return null;
+            // k is just past the matching close-brace. Check for `else` on
+            // same or next non-blank line.
+            // First, find rest of current line after the close-brace.
+            let lineRest = "";
+            const ln = source.indexOf("\n", k);
+            lineRest = source.slice(k, ln === -1 ? source.length : ln);
+            if (/^\s*else\b/.test(lineRest)) {
+              const ob = lineRest.indexOf("{");
+              if (ob === -1) return null;
+              pos = k + ob + 1;
+              continue;
+            }
+            // Move to next non-blank line.
+            let nb = ln + 1;
+            while (nb < source.length) {
+              const ne = source.indexOf("\n", nb);
+              const nl = source.slice(nb, ne === -1 ? source.length : ne);
+              if (nl.trim() === "") { nb = ne + 1; continue; }
+              if (/^\s*else\b/.test(nl)) {
+                const ob = nl.indexOf("{");
+                if (ob === -1) return null;
+                pos = nb + ob + 1;
+                break;
+              }
+              break;
+            }
+            if (nb >= source.length) {
+              // Reached end of source — exit
+              i = source.length;
+              break;
+            }
+            // Check if we updated pos for another else iteration
+            const nlAtNb = source.indexOf("\n", nb);
+            const nlLineAtNb = source.slice(nb, nlAtNb === -1 ? source.length : nlAtNb);
+            if (/^\s*else\b/.test(nlLineAtNb) && pos > k) {
+              continue;     // another else iteration
+            }
+            // No more else; advance i past the close-brace's line.
+            while (k < source.length && source[k] !== "\n") k++;
+            i = k + 1;
+            break;
+          }
+          bodyIndent = null;
+          continue;
+        }
+        // Plain close-brace: step out (do not push to lines).
+        bodyIndent = indent;
+        i = lineEnd + 1;
+        continue;
+      }
+    }
+    // If we see an opening brace (line ends in `{`), absorb the entire
+    // matching `{...}` block as a single body element. This permits inline
+    // if-blocks and small loops inside the extended tail. Refuse if the
+    // block is too large (>15 lines) or if it contains any of the unsafe
+    // tokens (goto / break / continue / case / do-while close).
+    if (/\{\s*$/.test(line)) {
+      // Find the matching close brace.
+      let depth = 0;
+      let k = i;
+      let blockEnd = -1;
+      while (k < source.length) {
+        const ch = source[k];
+        if (ch === "{") depth++;
+        else if (ch === "}") {
+          depth--;
+          if (depth === 0) { blockEnd = k; break; }
+        }
+        k++;
+      }
+      if (blockEnd === -1) return null;
+      // Find the line containing blockEnd.
+      let lineEndK = source.indexOf("\n", blockEnd);
+      if (lineEndK === -1) lineEndK = source.length;
+      const block = source.slice(i, lineEndK);
+      // Safety: block ≤ 15 lines, no unsafe tokens (besides return).
+      const blockLines = block.split("\n");
+      if (blockLines.length > 15) return null;
+      // Allow nested ifs but disallow goto / break / continue / loop closes
+      // inside (they'd target outer loops that may not exist at the goto
+      // site).
+      if (/\bgoto\s+\w+\s*;/.test(block)) return null;
+      if (/\b(break|continue)\s*;/.test(block)) return null;
+      if (/^\s*\}\s*while\s*\(/m.test(block)) return null;
+      if (/\b(case\b|default\s*:)/.test(block)) return null;
+      // Push the whole block as one logical line group; don't push as one
+      // string with embedded newlines so re-indenting works downstream.
+      // Use the original lines so structure is preserved.
+      for (const bl of blockLines) lines.push(bl);
+      if (lines.length > maxLines) return null;
+      i = lineEndK + 1;
+      // After absorbing a block, the previous bodyIndent still applies.
+      continue;
+    }
+    // Refuse if we hit a closing brace AND the next line is `else` or
+    // `while (` (do-while close) — those mean the surrounding control flow
+    // is non-trivial; bail to keep semantics safe.
+    // Stop at another label definition.
+    if (/^[ \t]*[A-Za-z_]\w*:\s*$/.test(line) && line.trim() !== "") {
+      // Hitting another label — skip the label line but continue reading
+      // its body. In the original C, fall-through reaches both labels'
+      // bodies sequentially, so the extracted post-label tail must include
+      // them. (Stop only if the new label is a switch-case marker which
+      // would make case_*: appear inline outside a switch.)
+      if (/^switchD_|^case_/.test(line.trim().replace(/:.*$/, ""))) break;
+      i = lineEnd + 1;
+      continue;
+    }
+    // Refuse: gotos inside the extended body to OTHER labels (could be
+    // unsafe to inline at a different goto site).
+    if (/\bgoto\s+\w+\s*;/.test(line)) {
+      return null;
+    }
+    // Refuse: bare `break;` or `continue;` would target a different loop
+    // when inlined at a non-co-located goto site.
+    if (/^\s*(break|continue)\s*;\s*$/.test(line)) {
+      return null;
+    }
+    // Refuse: do-while `} while(...)` close — we're inside a loop and
+    // walking out would change loop semantics for the goto-site.
+    if (/^\s*\}\s*while\s*\(/.test(line)) {
+      return null;
+    }
+    // Refuse: switch case labels (we shouldn't be extracting across switch
+    // arms).
+    if (/^\s*(case\b|default\s*:)/.test(line)) {
+      return null;
+    }
+    lines.push(line);
+    if (/\breturn\b[^;]*;/.test(line)) {
+      foundReturn = true;
+      break;
+    }
+    i = lineEnd + 1;
+  }
+  if (!foundReturn) return null;
+  if (scopeExits === 0) return null;  // didn't actually extend; no benefit
+  return lines.join("\n");
+}
+
+// Return true iff `body` (raw string of source lines) is brace-balanced —
+// every opening brace inside the body is matched by a closing brace inside
+// it. Used by inlineIfGoto to refuse to inline truncated bodies that would
+// produce malformed JS when wrapped in `{ ... }`.
+function isBraceBalanced(body) {
+  let depth = 0;
+  for (let k = 0; k < body.length; k++) {
+    const c = body[k];
+    if (c === '"' || c === "'") {
+      const q = c;
+      k++;
+      while (k < body.length && body[k] !== q) {
+        if (body[k] === '\\') k++;
+        k++;
+      }
+      continue;
+    }
+    if (c === '/' && body[k + 1] === '/') {
+      // line comment — skip to end of line
+      while (k < body.length && body[k] !== '\n') k++;
+      continue;
+    }
+    if (c === '/' && body[k + 1] === '*') {
+      k += 2;
+      while (k < body.length && !(body[k] === '*' && body[k + 1] === '/')) k++;
+      k++; // consume `/`
+      continue;
+    }
+    if (c === '{') depth++;
+    else if (c === '}') depth--;
+  }
+  return depth === 0;
+}
+
+// CONCAT44(A,B) packs two 32-bit values into a 64-bit value. Ghidra often
+// emits this in patterns like:
+//   uVar = CONCAT44(in_EDX, in_EAX);
+//   ... (uVar >> 0x20) ...    // intended: in_EDX  (high half)
+//   ... uVar ...               // intended: in_EAX  (low half)
+//
+// JS bitwise operators mask shift counts to 5 bits, so `>>> 0x20` ≡ `>>> 0`
+// and the high half collapses to the low half — silently corrupting any
+// code that relies on the high half being EDX.
+//
+// This pass detects the pattern at SOURCE level and rewrites direct uses
+// of the var as either `A` (low) or `B` (high), bypassing the broken shift
+// emit. Conservative: only triggers when the variable is assigned exactly
+// once and only via `CONCAT44(<simple>, <simple>)`.
+function unpackConcat44Halves(source) {
+  // Find every `<type>? <name> = CONCAT44(<A>, <B>);` and `<name> = CONCAT44(...)` line.
+  // For each such name, we'll substitute uses across the function body.
+  // To stay safe, only rewrite within the SAME function (no cross-function
+  // contamination). Functions are top-level in Ghidra output: split on
+  // `\n}\n` for crude function boundaries.
+  const fnBlocks = source.split(/(?<=\n\})\n/);
+  return fnBlocks.map(block => unpackConcat44InFn(block)).join("\n");
+}
+
+function unpackConcat44InFn(block) {
+  // Detect: `[type ]NAME = CONCAT44(EXPR_A,EXPR_B);` (where the args are
+  // simple register-like identifiers / no nested commas).
+  const re = /^[ \t]*([A-Za-z_]\w*)\s*=\s*CONCAT44\(([^(),]+),\s*([^(),]+)\)\s*;\s*$/gm;
+  const assigns = [];
+  let m;
+  while ((m = re.exec(block)) !== null) {
+    assigns.push({ name: m[1], hi: m[2].trim(), lo: m[3].trim(), at: m.index });
+  }
+  if (assigns.length === 0) return block;
+  // For each unique name, count assignments. Only safe when assigned exactly
+  // once via CONCAT44.
+  const counts = new Map();
+  for (const a of assigns) counts.set(a.name, (counts.get(a.name) || 0) + 1);
+  // Also count any other assignments to that name elsewhere in the block.
+  // Pattern: `NAME = ` (not preceded by ==, !=, <=, >=, &=, |=, ^=, etc.).
+  let out = block;
+  for (const a of assigns) {
+    if (counts.get(a.name) !== 1) continue;
+    const rOther = new RegExp(`\\b${a.name}\\s*=(?!=)`, "g");
+    let other = 0;
+    let mm;
+    while ((mm = rOther.exec(block)) !== null) other++;
+    if (other !== 1) continue;
+    // Replace `((uVar) >>> 0x20)` (or with `>> 0x20`) → hi, and bare uses → lo.
+    // Be careful with operator precedence: only replace when the use is
+    // a clean read (not address-of, not assignment).
+    // Pattern A: `(unsigned)NAME >> 0x20`, `((NAME) >> 0x20)`, `NAME >> 0x20`
+    const hiPat = new RegExp(`\\b${a.name}\\s*>>>?\\s*0x20\\b`, "g");
+    out = out.replace(hiPat, `(${a.hi})`);
+    // Cast forms: `(short)((ulonglong)NAME >> 0x20)` already handled by the
+    // hiPat above replacing the `NAME >> 0x20` core, but the surrounding
+    // cast remains and is harmless.
+    // Pattern B: bare `NAME` reads → lo. Avoid the assignment line itself.
+    // Replace `(short)NAME`, `(int)NAME`, `(uint)NAME`, `NAME` in expressions.
+    // Conservative: only inside parenthesised cast contexts and direct
+    // expression-only use (avoid `&NAME`, `NAME =`).
+    // Skip the assignment line. Track its character position in `out`.
+    // (assigns[i].at is offset in original block — ok approximation since
+    // we replaced only `>> 0x20` forms above which kept length stable... actually no,
+    // length may differ. Recompute by re-finding the assignment).
+    const reAssign = new RegExp(`^[ \\t]*${a.name}\\s*=\\s*CONCAT44\\([^()]*\\)\\s*;\\s*$`, "m");
+    const assignMatch = reAssign.exec(out);
+    if (!assignMatch) continue;
+    const assignStart = assignMatch.index;
+    const assignEnd = assignStart + assignMatch[0].length;
+    // Replace uses outside the assignment line.
+    const before = out.slice(0, assignStart);
+    const middle = out.slice(assignStart, assignEnd);
+    const after = out.slice(assignEnd);
+    const usePat = new RegExp(`\\b${a.name}\\b`, "g");
+    const replaceUses = s => s.replace(usePat, `(${a.lo})`);
+    out = before + middle + replaceUses(after);
+  }
+  return out;
+}
+
 // Ghidra preserves C++-style symbols verbatim in C output, including
 // templates (`char_traits<char>::move`) and qualifiers (`__cdecl`). Tree-
 // sitter-c can't parse these — sanitise by flattening templates and dropping
@@ -390,7 +836,7 @@ function sanitiseCxxSymbols(source) {
 // like Win32 imports (RtlUnwind, _strlen, etc.) don't collide with their
 // runtime counterparts.
 export async function translateFunction(source, forceAddr, opts = {}) {
-  source = fixDanglingLabels(inlineForwardGotos(sanitiseCxxSymbols(stripWideStringPrefix(stripIntSuffixes(normalizeTypes(source))))));
+  source = unpackConcat44Halves(fixDanglingLabels(inlineForwardGotos(sanitiseCxxSymbols(stripWideStringPrefix(stripIntSuffixes(normalizeTypes(source)))))));
   const parser = await getParser();
   const tree = parser.parse(source);
   const ctx = {
@@ -1300,11 +1746,14 @@ function emitExpr(node, ctx) {
       else if (inner === "\\b") code = 8;
       else if (inner === "\\f") code = 12;
       else if (inner === "\\v") code = 11;
+      else if (inner === "\\a") code = 7;
+      else if (inner === "\\?") code = 63;
       else if (inner === "\\\\") code = 92;
       else if (inner === "\\'") code = 39;
       else if (inner === "\\\"") code = 34;
       else if (inner.startsWith("\\x") || inner.startsWith("\\X")) code = parseInt(inner.slice(2), 16);
-      else if (inner.startsWith("\\")) code = parseInt(inner.slice(1), 8);
+      else if (inner.startsWith("\\") && /^\\[0-7]+$/.test(inner)) code = parseInt(inner.slice(1), 8);
+      else if (inner.startsWith("\\")) code = inner.charCodeAt(1) || 0;
       else code = inner.charCodeAt(0) || 0;
       return String(code);
     }
@@ -1456,6 +1905,17 @@ function emitCast(node, ctx) {
       if (t === "byte" || t === "uchar" || t === "unsigned char" || t === "undefined1") return `heap.u8(${addr})`;
       if (t === "short")         return `heap.i16(${addr})`;
       if (t === "ushort" || t === "unsigned short" || t === "undefined2") return `heap.u16(${addr})`;
+      // `(int)DAT_xxx` is a SIGNED 32-bit read. Without this, the translator
+      // emits `heap.u32(addr) >>> 0` (unsigned), which makes comparisons like
+      // `(int)DAT < 0x1df` fail when the byte stored is 0xfffffdbc (signed -580
+      // → ~4.29B unsigned). Use the heap's signed-int accessor instead.
+      if (t === "int" || t === "long" || t === "signed int" || t === "signed long") {
+        return `heap.i32(${addr})`;
+      }
+      // `(uint)DAT_xxx` and `(undefined4)DAT_xxx` keep unsigned semantics.
+      if (t === "uint" || t === "unsigned int" || t === "ulong" || t === "unsigned long" || t === "undefined4") {
+        return `heap.u32(${addr})`;
+      }
     }
   }
   // Otherwise, apply width-narrow + sign-extend on the value.
@@ -1463,11 +1923,17 @@ function emitCast(node, ctx) {
   if (t === "byte" || t === "uchar" || t === "unsigned char" || t === "undefined1") return `((${valueExpr}) & 0xff)`;
   if (t === "short")            return `((${valueExpr}) << 16 >> 16)`;
   if (t === "ushort" || t === "unsigned short" || t === "undefined2") return `((${valueExpr}) & 0xffff)`;
-  if (t === "int" || t === "long" || t === "uint" || t === "unsigned int" ||
+  if (t === "int" || t === "long" || t === "signed int" || t === "signed long") {
+    // SIGNED 32-bit cast — C semantics treat the result as signed. Use `| 0`
+    // (sign-extend) so comparisons like `(int)X < 0x1df` behave correctly
+    // when X carries a value with the top bit set (e.g. 0xfffffdbc → -580
+    // < 479 is TRUE, but unsigned 4294966716 < 479 is FALSE).
+    return `((${valueExpr}) | 0)`;
+  }
+  if (t === "uint" || t === "unsigned int" ||
       t === "ulong" || t === "unsigned long" || t === "undefined4" ||
-      t === "signed int" || t === "longlong" || t === "ulonglong") {
-    // 32-bit width — JS Numbers are already 32-bit-clean for | 0 / >>> 0;
-    // emit unsigned by default since most Ghidra casts are reinterpret-only.
+      t === "longlong" || t === "ulonglong") {
+    // 32-bit unsigned width — JS Numbers wrap with `>>> 0`.
     return `((${valueExpr}) >>> 0)`;
   }
   // Unknown type — drop the cast (preserves prior behavior).

@@ -17,9 +17,9 @@ export function FUN_004134c0(heap, _Dest, _Source, _Count) {
   if ((((_Source) >>> 0) & 3) != 0) {
     while (true) {
       uVar4 = ((heap.u32(_Source)) >>> 0);
-      _Source = (((((_Source) >>> 0) + 1)) >>> 0);
+      _Source = (((((_Source) | 0) + 1)) >>> 0);
       heap.setI8(puVar5, (((uVar4) << 24 >> 24)) & 0xff);
-      puVar5 = (((((puVar5) >>> 0) + 1)) >>> 0);
+      puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
       _Count = ((_Count - 1) >>> 0);
       if (_Count == 0) {
         return _Dest;
@@ -37,12 +37,14 @@ export function FUN_004134c0(heap, _Dest, _Source, _Count) {
         uVar4 = ((_Count >>> 2) >>> 0);
         cVar3 = ((0) & 0xff);
         if (uVar4 == 0) {
-          /* goto LAB_0041353b — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004134c0/LAB_0041353b"); return 0;
+          heap.setI8(puVar5, (cVar3) & 0xff);
+          puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
+          return _Dest;
         }
         /* goto LAB_004135a9 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004134c0/LAB_004135a9"); return 0;
       }
       heap.setI8(puVar5, (0) & 0xff);
-      puVar5 = (((((puVar5) >>> 0) + 1)) >>> 0);
+      puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
       _Count = ((_Count - 1) >>> 0);
     } while (_Count != 0);
     return _Dest;
@@ -52,7 +54,7 @@ export function FUN_004134c0(heap, _Dest, _Source, _Count) {
     do {
       uVar1 = ((heap.u32(_Source)) >>> 0);
       uVar2 = ((heap.u32(_Source)) >>> 0);
-      _Source = (((((_Source) >>> 0) + 4)) >>> 0);
+      _Source = (((((_Source) | 0) + 4)) >>> 0);
       if (((uVar1 ^ 0xffffffff ^ uVar1 + 0x7efefeff) & 0x81010100) != 0) {
         if (((uVar2) << 24 >> 24) == 0) {
           heap.setU32(puVar5, (0) & 0xffffffff);
@@ -67,7 +69,9 @@ export function FUN_004134c0(heap, _Dest, _Source, _Count) {
           cVar3 = ((0) & 0xff);
           _Count = ((_Count & 3) >>> 0);
           if (_Count != 0) {
-            /* goto LAB_0041353b — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004134c0/LAB_0041353b"); return 0;
+            heap.setI8(puVar5, (cVar3) & 0xff);
+            puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
+            return _Dest;
           }
           return _Dest;
         }
@@ -96,13 +100,13 @@ export function FUN_004134c0(heap, _Dest, _Source, _Count) {
   }
   do {
     cVar3 = ((((heap.u32(_Source)) << 24 >> 24)) & 0xff);
-    _Source = (((((_Source) >>> 0) + 1)) >>> 0);
+    _Source = (((((_Source) | 0) + 1)) >>> 0);
     heap.setI8(puVar5, (cVar3) & 0xff);
-    puVar5 = (((((puVar5) >>> 0) + 1)) >>> 0);
+    puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
     if (cVar3 == 0) {
       while (_Count = ((_Count - 1) >>> 0), _Count != 0) {
         LAB_0041353b: heap.setI8(puVar5, (cVar3) & 0xff);
-        puVar5 = (((((puVar5) >>> 0) + 1)) >>> 0);
+        puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
       }
       return _Dest;
     }

@@ -9,7 +9,7 @@ export function FUN_00418110(heap, param_1, param_2) {
   let piVar2 = 0;
   let iVar3 = 0;
   bVar1 = ((((param_2 >>> 0x1f) & 0xff)) & 0xff);
-  iVar3 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) >>> 0) >>> 5) >>> 0);
+  iVar3 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) | 0) >>> 5) >>> 0);
   if ((heap.u32((param_1 + iVar3 * 4)) & ~(-1 << (0x1f - (((((param_2) & 0xff) ^ bVar1) - bVar1 & 0x1f ^ bVar1) - bVar1) & 0x1f))) != 0) {
     return 0;
   }

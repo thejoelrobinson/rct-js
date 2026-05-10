@@ -66,7 +66,7 @@ export function FUN_0043054e(heap) {
     (regs.eax = FUN_00444b4a(heap));
     heap.setU32(0x0099a500, (heap.u32(0x0099a500) & 0xfffe) >>> 0);
     (regs.eax = FUN_005e0d60(heap));
-    (regs.esi = 0x5f90c0, regs.edi = 0x99ab95, regs.eax = FUN_004298a0(heap));
+    (regs.esi = 0x5f90c0, regs.eax = FUN_004298a0(heap));
     (regs.eax = FUN_005e68e2(heap));
     iVar3 = ((heap.i32((pcVar9 + 9))) >>> 0);
     heap.setI8((pcVar9 + (0x16f)), (-1) & 0xff);

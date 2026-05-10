@@ -23,7 +23,7 @@ export function FUN_005dde9c(heap) {
       if (uVar1 == 0xffff) {
         break;
       }
-      if ((heap.u8((((uVar1 >>> 5) >>> 0) * 4 + 0x87cba8 + ((((uVar1 & 0x1f)) >>> 0) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
+      if ((heap.u8((((uVar1 >>> 5) >>> 0) * 4 + 0x87cba8 + ((((uVar1 & 0x1f)) | 0) >>> 3))) >>> (uVar1 & 7) & 1) != 0) {
         heap.setU32(puVar4, (uVar1) & 0xffffffff);
         puVar4 = ((puVar4 + ((1) * 2)) >>> 0);
       }

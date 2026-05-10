@@ -12,7 +12,7 @@ export function FUN_004182e0(heap, param_1, param_2) {
   let uVar5 = 0;
   let puVar6 = 0;
   let iVar7 = 0;
-  iVar1 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) >>> 0) >>> 5) >>> 0);
+  iVar1 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) | 0) >>> 5) >>> 0);
   bVar2 = ((((param_2 >>> 0x1f) & 0xff)) & 0xff);
   uVar5 = ((0) >>> 0);
   bVar2 = ((((((param_2) & 0xff) ^ bVar2) - bVar2 & 0x1f ^ bVar2) - bVar2) & 0xff);
@@ -29,9 +29,9 @@ export function FUN_004182e0(heap, param_1, param_2) {
   iVar3 = ((8) >>> 0);
   do {
     if (iVar7 < iVar1) {
-      heap.setU32((((param_1) >>> 0) + iVar3), (0) & 0xffffffff);
+      heap.setU32((((param_1) | 0) + iVar3), (0) & 0xffffffff);
     } else {
-      heap.setU32((((param_1) >>> 0) + iVar3), (heap.u32((((param_1) >>> 0) + iVar3 + iVar1 * -4))) & 0xffffffff);
+      heap.setU32((((param_1) | 0) + iVar3), (heap.u32((((param_1) | 0) + iVar3 + iVar1 * -4))) & 0xffffffff);
     }
     iVar7 = ((iVar7 + -1) >>> 0);
     iVar3 = ((iVar3 + -4) >>> 0);

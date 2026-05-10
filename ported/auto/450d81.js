@@ -69,11 +69,11 @@ export function FUN_00450d81(heap) {
   if ((heap.u32((0x005f5b78 + heap.u32(((0x00887420) >>> 0) + (iVar8) * 4) * 8)) & 0x80) != 0) {
     heap.setU32(((0x008ae9c5) + (iVar9) * 4), (heap.u32((0x008ae9c5) + (iVar9) * 4) | 4) & 0xffffffff);
   }
-  heap.setU16((((0x008ae9ca) >>> 0) + iVar9), (0) & 0xffff);
-  heap.setU16((((0x008ae9cc) >>> 0) + iVar9), (0) & 0xffff);
+  heap.setU16((((0x008ae9ca) | 0) + iVar9), (0) & 0xffff);
+  heap.setU16((((0x008ae9cc) | 0) + iVar9), (0) & 0xffff);
   }
   uVar1 = ((heap.u32(0x006e3b84)) >>> 0);
-  heap.setU32((((0x008ae9c6) >>> 0) + iVar9), (heap.u32(0x006e3b84)) & 0xffffffff);
+  heap.setU32((((0x008ae9c6) | 0) + iVar9), (heap.u32(0x006e3b84)) & 0xffffffff);
   if ((heap.u32((0x008ae9c5) + (iVar9) * 4) & 1) != 0) {
     return CONCAT44(in_EDX, CONCAT31((regs.eax = callIndirect(heap, int3, ((uVar1) >>> 0) >>> 8)), (((uVar3 >>> 8)) << 24 >> 24)));
   }

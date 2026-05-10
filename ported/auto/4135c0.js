@@ -15,13 +15,13 @@ export function FUN_004135c0(heap, _Dst, _Val, _Size) {
   uVar1 = ((_Val & 0xff) >>> 0);
   puVar4 = ((_Dst) >>> 0);
   if (3 < _Size) {
-    uVar2 = ((-((_Dst) >>> 0) & 3) >>> 0);
+    uVar2 = ((-((_Dst) | 0) & 3) >>> 0);
     sVar3 = ((_Size) >>> 0);
     if (uVar2 != 0) {
       sVar3 = ((_Size - uVar2) >>> 0);
       do {
         heap.setU8(puVar4, (((_Val) & 0xff)) & 0xff);
-        puVar4 = (((((puVar4) >>> 0) + 1)) >>> 0);
+        puVar4 = (((((puVar4) | 0) + 1)) >>> 0);
         uVar2 = ((uVar2 - 1) >>> 0);
       } while (uVar2 != 0);
     }
@@ -40,7 +40,7 @@ export function FUN_004135c0(heap, _Dst, _Val, _Size) {
   }
   do {
     heap.setI8(puVar4, (((uVar1) << 24 >> 24)) & 0xff);
-    puVar4 = (((((puVar4) >>> 0) + 1)) >>> 0);
+    puVar4 = (((((puVar4) | 0) + 1)) >>> 0);
     _Size = ((_Size - 1) >>> 0);
   } while (_Size != 0);
   return _Dst;

@@ -25,12 +25,12 @@ export function FUN_004062cb(heap) {
   heap.setU32(0x005ebe38, (iVar1) >>> 0);
   if (iVar1 != 0) {
     (regs.eax = FUN_004049f2(heap, iVar1));
-    hdc = ((GetDC(heap, ((0x0) >>> 0))) >>> 0);
-    if (hdc != ((0x0) >>> 0)) {
+    hdc = ((GetDC(heap, ((0x0) | 0))) >>> 0);
+    if (hdc != ((0x0) | 0)) {
       uVar3 = ((GetDeviceCaps(heap, hdc, 0x6a)) >>> 0);
-      heap.setI16((iVar1 + 8), (((((((uVar3 & 0xffff)) >>> 0) >>> 1)) << 16 >> 16)) & 0xffff);
+      heap.setI16((iVar1 + 8), (((((((uVar3 & 0xffff)) | 0) >>> 1)) << 16 >> 16)) & 0xffff);
       heap.setU16((iVar1 + 10), (heap.u16((iVar1 + 8))) & 0xffff);
-      ReleaseDC(heap, ((0x0) >>> 0), hdc);
+      ReleaseDC(heap, ((0x0) | 0), hdc);
     }
     uVar4 = (((regs.eax = FUN_0040f271(heap, 1))) >>> 0);
     (regs.eax = FUN_00408d19(heap, uVar4));

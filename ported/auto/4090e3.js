@@ -96,7 +96,7 @@ export function FUN_004090e3(heap) {
     while (iVar2 != 0) {
       iVar2 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x48)), heap.u32(0x005ebf34), 2))) >>> 0);
     }
-    if (heap.u32((0x005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) != heap.u32((0x005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4) && -1 < ((((heap.u32((0x005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) - heap.u32((0x005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4))) >>> 0) | 0)) {
+    if (heap.u32((0x005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) != heap.u32((0x005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4) && -1 < ((((heap.u32((0x005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) - heap.u32((0x005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4))) | 0) | 0)) {
       heap.setU32(__addr_local_8, (heap.u32((0x005f0f08) + (heap.u32(0x005f0ef4) * 4) * 4) - heap.u32((0x005f0f00) + (heap.u32(0x005f0ef4) * 4) * 4)) >>> 0);
       heap.setU32(__addr_local_18, (heap.u32((0x005f0f0c) + (heap.u32(0x005f0ef4) * 4) * 4) - heap.u32((0x005f0f04) + (heap.u32(0x005f0ef4) * 4) * 4)) >>> 0);
       heap.setU32(__addr_local_20, (0) >>> 0);

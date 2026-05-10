@@ -25,9 +25,9 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
   let local_41c = 0;
   let local_414 = 0;
   if (param_1 < heap.u32(0x005f3f60)) {
-    piVar1 = ((0x005f3e60 + (((param_1) >>> 0) >>> 5)) >>> 0);
+    piVar1 = ((0x005f3e60 + (((param_1) | 0) >>> 5)) >>> 0);
     iVar6 = (((param_1 & 0x1f) * 8) >>> 0);
-    bVar2 = ((heap.u8((iVar6 + 4 + heap.u32((0x005f3e60) + (((param_1) >>> 0) >>> 5) * 4)))) & 0xff);
+    bVar2 = ((heap.u8((iVar6 + 4 + heap.u32((0x005f3e60) + (((param_1) | 0) >>> 5) * 4)))) & 0xff);
     if ((bVar2 & 1) != 0) {
       local_41c = ((0) >>> 0);
       heap.setU32(__addr_local_40c, (0) >>> 0);
@@ -39,7 +39,7 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
         (regs.eax = FUN_004179a0(heap, param_1, 0, 2));
       }
       if ((heap.u8(((heap.i32(piVar1) + iVar6) + 1)) & 0x80) == 0) {
-        BVar5 = ((WriteFile(heap, heap.u32((heap.i32(piVar1) + iVar6)), param_2, param_3, __addr_local_410, ((0x0) >>> 0))) >>> 0);
+        BVar5 = ((WriteFile(heap, heap.u32((heap.i32(piVar1) + iVar6)), param_2, param_3, __addr_local_410, ((0x0) | 0))) >>> 0);
         if (BVar5 == 0) {
           local_414 = ((GetLastError(heap)) >>> 0);
         } else {
@@ -53,7 +53,7 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
           do {
             pcVar4 = ((__addr_local_404) >>> 0);
             do {
-              if (param_3 <= ((((pcVar7) >>> 0) - ((param_2) >>> 0)) >>> 0)) {
+              if (param_3 <= ((((pcVar7) | 0) - ((param_2) | 0)) >>> 0)) {
                 break;
               }
               cVar3 = ((heap.i8(pcVar7)) & 0xff);
@@ -65,14 +65,14 @@ export function FUN_00417a60(heap, param_1, param_2, param_3) {
               }
               heap.setU32(pcVar4, (cVar3) & 0xffffffff);
               pcVar4 = ((pcVar4 + 1) >>> 0);
-            } while (((pcVar4) >>> 0) - ((__addr_local_404) >>> 0) < 0x400);
-            BVar5 = ((WriteFile(heap, heap.u32((iVar6 + heap.i32(heap.u32(__addr_local_408)))), __addr_local_404, ((pcVar4) >>> 0) - ((__addr_local_404) >>> 0), __addr_local_410, ((0x0) >>> 0))) >>> 0);
+            } while (((pcVar4) | 0) - ((__addr_local_404) | 0) < 0x400);
+            BVar5 = ((WriteFile(heap, heap.u32((iVar6 + heap.i32(heap.u32(__addr_local_408)))), __addr_local_404, ((pcVar4) | 0) - ((__addr_local_404) | 0), __addr_local_410, ((0x0) | 0))) >>> 0);
             if (BVar5 == 0) {
               local_414 = ((GetLastError(heap)) >>> 0);
               break;
             }
             local_41c = ((local_41c + heap.u32(__addr_local_410)) >>> 0);
-            if ((((heap.u32(__addr_local_410)) >>> 0) < ((pcVar4) >>> 0) - ((__addr_local_404) >>> 0)) || (param_3 <= ((((pcVar7) >>> 0) - ((param_2) >>> 0)) >>> 0))) {
+            if ((((heap.u32(__addr_local_410)) | 0) < ((pcVar4) | 0) - ((__addr_local_404) | 0)) || (param_3 <= ((((pcVar7) | 0) - ((param_2) | 0)) >>> 0))) {
               break;
             }
           } while (true);

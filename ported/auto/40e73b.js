@@ -19,9 +19,9 @@ export function FUN_0040e73b(heap, param_1, param_2) {
     if (piVar2 != 0x0) {
       heap.setU32(piVar2, (iVar1) & 0xffffffff);
       heap.setI32((piVar2 + (1) * 4), (0) & 0xffffffff);
-      iVar3 = (((regs.eax = FUN_0040e814(heap, iVar1, ((param_1) >>> 0), ((param_2) >>> 0)))) >>> 0);
+      iVar3 = (((regs.eax = FUN_0040e814(heap, iVar1, ((param_1) | 0), ((param_2) | 0)))) >>> 0);
       if (iVar3 != 0) {
-        local_10 = ((((heap.u32(0x005ec074)) >>> 0)) >>> 0);
+        local_10 = ((heap.i32(0x005ec074)) >>> 0);
         if (heap.u32(0x005ec074) == 0x0) {
           heap.setU32(0x005ec074, (piVar2) >>> 0);
           return iVar1;

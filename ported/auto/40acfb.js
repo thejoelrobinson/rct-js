@@ -41,14 +41,14 @@ export function FUN_0040acfb(heap) {
     (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf3c)) + 8)), heap.u32(0x005ebf3c)));
     heap.setU32(0x005ebf3c, (0x0) >>> 0);
   }
-  if (heap.u32(0x005e916c) != ((0x0) >>> 0)) {
+  if (heap.u32(0x005e916c) != ((0x0) | 0)) {
     hdc = ((GetDC(heap, heap.u32(0x005e916c))) >>> 0);
-    if (hdc != ((0x0) >>> 0)) {
+    if (hdc != ((0x0) | 0)) {
       SetSystemPaletteUse(heap, hdc, 1);
       ReleaseDC(heap, heap.u32(0x005e916c), hdc);
     }
     DestroyWindow(heap, heap.u32(0x005e916c));
-    heap.setU32(0x005e916c, (((0x0) >>> 0)) >>> 0);
+    heap.setU32(0x005e916c, (((0x0) | 0)) >>> 0);
   }
   return;
 }

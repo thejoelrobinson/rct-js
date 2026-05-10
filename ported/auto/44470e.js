@@ -26,7 +26,7 @@ export function FUN_0044470e(heap) {
       iVar2 = ((iVar2 - heap.u32((0x00632f4c + heap.u32(((0x00743bc3) >>> 0) + (iVar4) * 4) * 2))) >>> 0);
     }
   }
-  iVar2 = (((iVar2 - heap.i32((0x005f96a4 + ((heap.u32(0x0087c3d7)) >>> 0) * 4))) - heap.u32(0x0087c3b8) / 600) >>> 0);
+  iVar2 = (((iVar2 - heap.i32((0x005f96a4 + heap.u32(0x0087c3d7) * 4))) - heap.u32(0x0087c3b8) / 600) >>> 0);
   pcVar5 = ((0x00887420) >>> 0);
   do {
     if ((((heap.i8(pcVar5) | 0) != -1) && (heap.i8(pcVar5 + (0x21)) != 0)) && (heap.u16((pcVar5 + 0x132)) != 0xffff)) {

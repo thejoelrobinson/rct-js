@@ -95,7 +95,7 @@ export function FUN_00412e80(heap) {
     uVar4 = (((((heap.u32(__addr_local_60)) >>> 384) & 0xffffffff) & 0xffff) >>> 0);
   }
   uVar8 = ((0) >>> 0);
-  pHVar5 = ((GetModuleHandleA(heap, ((0x0) >>> 0))) >>> 0);
+  pHVar5 = ((GetModuleHandleA(heap, ((0x0) | 0))) >>> 0);
   uVar8 = (((regs.eax = FUN_00402e9b(heap, pHVar5, uVar8, pbVar6, uVar4))) >>> 0);
   (regs.eax = FUN_00414210(heap, uVar8));
   void (heap.u32(__addr_local_14)) /* assign to ExceptionList elided (SEH not modelled) */;

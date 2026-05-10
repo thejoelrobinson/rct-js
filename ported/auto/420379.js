@@ -15,7 +15,7 @@ export function FUN_00420379(heap) {
   if ((heap.u16((unaff_EDI + 2)) & 0x20) != 0) {
     iVar1 = ((iVar1 + heap.u32((0x005f67a2 + iVar2))) >>> 0);
   }
-  heap.setI16((unaff_EDI + 0x132), (((((iVar1 + heap.u32((0x005f67a4 + iVar2)) * ((heap.u32(0x008ae984)) >>> 0) + heap.u32((0x005f67a6 + iVar2)) * ((heap.u32(0x008ae982)) >>> 0) + heap.u32((0x005f67a8 + iVar2)) * ((heap.u8(unaff_EDI + (0x78))) >>> 0) + heap.u32((0x005f67aa + iVar2)) * ((heap.u8(unaff_EDI + (0x79))) >>> 0) + heap.u32((0x005f67ac + iVar2)) * ((heap.u8(unaff_EDI + (0x77))) >>> 0)) * 10 >>> 4)) << 16 >> 16)) & 0xffff);
+  heap.setI16((unaff_EDI + 0x132), (((((iVar1 + heap.u32((0x005f67a4 + iVar2)) * heap.u32(0x008ae984) + heap.u32((0x005f67a6 + iVar2)) * heap.u32(0x008ae982) + heap.u32((0x005f67a8 + iVar2)) * ((heap.u8(unaff_EDI + (0x78))) >>> 0) + heap.u32((0x005f67aa + iVar2)) * ((heap.u8(unaff_EDI + (0x79))) >>> 0) + heap.u32((0x005f67ac + iVar2)) * ((heap.u8(unaff_EDI + (0x77))) >>> 0)) * 10 >>> 4)) << 16 >> 16)) & 0xffff);
   heap.setU8((unaff_EDI + (0xfd)), (heap.u8(unaff_EDI + (0xfd)) | 2) & 0xff);
   return;
 }

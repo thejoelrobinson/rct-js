@@ -12,7 +12,7 @@ export function FUN_005e0e07(heap) {
   let unaff_SI = regs.esi & 0xffff;
   let uVar2 = 0;
   if ((unaff_EBP & 0x80) == 0) {
-    uVar2 = ((heap.u16((((0x0099ac8b) >>> 0) + unaff_EBP * 8 + 3))) & 0xffff);
+    uVar2 = ((heap.u16((((0x0099ac8b) | 0) + unaff_EBP * 8 + 3))) & 0xffff);
     if ((unaff_SI & 8) == 0) {
       if ((unaff_SI & 0x20) == 0) {
         (regs.edx = 0xffff, regs.eax = FUN_009b30f1(heap, uVar2));

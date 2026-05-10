@@ -15,7 +15,6 @@ export function FUN_00440fe3(heap) {
   let uVar3 = 0;
   let uVar4 = 0;
   let unaff_ESI = regs.esi >>> 0;
-  LAB_00441052: {
   if (((heap.u32((0x0062d324) + ((in_EAX & 0xff) * 2) * 4) | 0) != -1) && (0xfd < heap.u8((unaff_ESI + 0x71)))) {
     heap.setU8((unaff_ESI + 0x71), (heap.u32((0x0062d324) + ((in_EAX & 0xff) * 2) * 4)) & 0xff);
     heap.setU8((unaff_ESI + 0x72), (0) & 0xff);
@@ -27,7 +26,19 @@ export function FUN_00440fe3(heap) {
   do {
     while (true) {
       if ((heap.i8((unaff_ESI + 0xb0 + uVar3 * 4)) | 0) == -1) {
-        break LAB_00441052;
+        uVar4 = ((0) >>> 0);
+        uVar3 = ((in_EAX & 0xffff) >>> 0);
+        do {
+          LOCK();
+          puVar1 = (((unaff_ESI + 0xb0 + uVar4 * 4)) >>> 0);
+          uVar2 = ((heap.u32(puVar1)) >>> 0);
+          heap.setU32(puVar1, (uVar3) & 0xffffffff);
+          UNLOCK();
+          uVar4 = ((uVar4 + 1) >>> 0);
+          uVar3 = ((uVar2) >>> 0);
+        } while (uVar4 < 5);
+        heap.setU8((unaff_ESI + 0x45), (heap.u8((unaff_ESI + 0x45)) | 1) & 0xff);
+        return;
       }
       uVar4 = ((uVar3) >>> 0);
       if (((in_EAX) << 16 >> 16) != heap.i16((unaff_ESI + 0xb0 + uVar3 * 4))) {
@@ -40,8 +51,7 @@ export function FUN_00440fe3(heap) {
     }
     uVar3 = ((uVar3 + 1) >>> 0);
   } while (uVar3 < 5);
-  }
-  uVar4 = ((0) >>> 0);
+  LAB_00441052: uVar4 = ((0) >>> 0);
   uVar3 = ((in_EAX & 0xffff) >>> 0);
   do {
     LOCK();

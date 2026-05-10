@@ -42,7 +42,7 @@ export function FUN_0042f4be(heap) {
       (regs.eax = FUN_0042f98e(heap));
       (regs.eax = FUN_00408387(heap, heap.u32(0x005f88a4)));
       sVar2 = (((regs.eax = FUN_004314ed(heap))) & 0xffff);
-      if ((((-sVar2 == heap.u32(0x0087d7a2)) && ((0x1f < heap.u32(0x008dbed2) || ((heap.u32(((0x0099fb78) & 0xff) + (((((heap.u32(0x008dbed2)) >>> 0)) >>> 0) >>> 3) * 4) >>> (heap.u32(0x008dbed2) & 7) & 1) == 0)))) && ((4 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0xf4241)))) && ((((8 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x4c4b41)) && ((0x10 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x7270e1)))) && ((0x50 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x2faf081)))))) {
+      if ((((-sVar2 == heap.u32(0x0087d7a2)) && ((0x1f < heap.u32(0x008dbed2) || ((heap.u32(((0x0099fb78) & 0xff) + (((heap.u32(0x008dbed2)) | 0) >>> 3) * 4) >>> (heap.u32(0x008dbed2) & 7) & 1) == 0)))) && ((4 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0xf4241)))) && ((((8 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x4c4b41)) && ((0x10 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x7270e1)))) && ((0x50 < heap.u32(0x006e3b80) || (heap.u32(0x0087c3b4) < 0x2faf081)))))) {
         (regs.eax = FUN_00436558(heap));
         (regs.eax = FUN_00444b4a(heap));
         if (heap.u32(0x0087c81c) < 0) {

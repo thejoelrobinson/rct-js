@@ -22,7 +22,7 @@ export function FUN_00417e00(heap, param_1, param_2, param_3, param_4) {
   uVar9 = ((param_2) >>> 0);
   uVar10 = ((param_3) >>> 0);
   if (param_4 == 0) {
-    iVar6 = ((((((((param_2) >>> 0) % ((param_3) >>> 0) << 0x20 | ((param_1) >>> 0)) % ((param_3) >>> 0))) >>> 0)) >>> 0);
+    iVar6 = ((((((((param_2) >>> 0) % ((param_3) >>> 0) << 0x20 | ((param_1) >>> 0)) % ((param_3) >>> 0))) | 0)) >>> 0);
     iVar7 = ((0) >>> 0);
   } else {
     do {
@@ -34,7 +34,7 @@ export function FUN_00417e00(heap, param_1, param_2, param_3, param_4) {
       uVar9 = ((uVar8) >>> 0);
     } while (uVar5 != 0);
     uVar1 = ((CONCAT44(uVar8, uVar3) / ((uVar10) >>> 0)) >>> 0);
-    uVar3 = ((((uVar1) >>> 0) * param_4) >>> 0);
+    uVar3 = ((((uVar1) | 0) * param_4) >>> 0);
     lVar2 = (((uVar1 & 0xffffffff) * ((param_3) >>> 0)) >>> 0);
     uVar9 = ((((((lVar2) >>> 0) >>> 0x20) >>> 0)) >>> 0);
     uVar4 = ((((lVar2) >>> 0)) >>> 0);

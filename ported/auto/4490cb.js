@@ -15,5 +15,5 @@ export function FUN_004490cb(heap) {
   if ((heap.u8(0x00630b19) != 0) && (heap.u8(0x00630b19) != 2)) {
     uVar2 = ((CONCAT11(heap.u32(0x00630b28), cVar1 + -4)) & 0xffff);
   }
-  return CONCAT24(uVar2, CONCAT22((((((in_EAX) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x00630b12) + heap.u32((0x00652478) + (((heap.u8(0x00630b18)) >>> 0) * 2) * 4)));
+  return CONCAT24(uVar2, CONCAT22((((((in_EAX) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x00630b12) + heap.u32((0x00652478) + (heap.u32(0x00630b18) * 2) * 4)));
 }

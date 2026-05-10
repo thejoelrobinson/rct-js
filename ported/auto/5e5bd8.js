@@ -28,8 +28,8 @@ export function FUN_005e5bd8(heap) {
     }
     (regs.eax = FUN_005e43de(heap));
     heap.setU32(0x009a1164, (heap.u32(0x009a1164) + -0x178) >>> 0);
-    if (heap.u32(0x009a1164) - ((unaff_ESI) >>> 0) != 0 && ((unaff_ESI) >>> 0) <= heap.u32(0x009a1164)) {
-      uVar1 = ((((heap.u32(0x009a1164) - ((unaff_ESI) >>> 0)) >>> 0) >>> 1) >>> 0);
+    if (heap.u32(0x009a1164) - ((unaff_ESI) | 0) != 0 && ((unaff_ESI) | 0) <= heap.u32(0x009a1164)) {
+      uVar1 = ((((heap.u32(0x009a1164) - ((unaff_ESI) | 0)) >>> 0) >>> 1) >>> 0);
       puVar2 = ((unaff_ESI + ((0xbc) * 2)) >>> 0);
       for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
         heap.setU32(unaff_ESI, (heap.u16(puVar2)) & 0xffffffff);

@@ -94,7 +94,7 @@ export function FUN_0045a95d(heap) {
         return;
       }
       if (-2 < (((uVar1) << 16 >> 16) | 0)) {
-        puVar12 = (((((psVar11) >>> 0) + uVar1 + 0x12)) >>> 0);
+        puVar12 = (((((psVar11) | 0) + uVar1 + 0x12)) >>> 0);
         bVar4 = ((heap.u8(pbVar8)) & 0xff);
         do {
           bVar13 = (((bVar4 & 1)) & 0xff);

@@ -93,7 +93,7 @@ export function FUN_005dcd40(heap) {
                             }
                             }
                           }
-                          if ((heap.u32((0x00743be4) + (iVar16) * 4) == NaN) && ((heap.i8(unaff_ESI + (0x50)) != 5 && (heap.i8(unaff_ESI + (0x50)) != 4)))) {
+                          if ((heap.u32((0x00743be4) + (iVar16) * 4) == 7) && ((heap.i8(unaff_ESI + (0x50)) != 5 && (heap.i8(unaff_ESI + (0x50)) != 4)))) {
                             return 1;
                           }
                         }

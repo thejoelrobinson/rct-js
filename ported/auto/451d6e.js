@@ -46,7 +46,7 @@ export function FUN_00451d6e(heap) {
         if (uVar5 != 0xffff) {
           uVar3 = (((uVar5 & 0xff) * 0x20) & 0xffff);
           uVar4 = (((uVar5 >>> 8) * 0x20) & 0xffff);
-          uVar6 = ((((heap.u8(0x00631d55)) >>> 0) << 8) >>> 0);
+          uVar6 = ((heap.u32(0x00631d55) << 8) >>> 0);
           pbVar9 = ((heap.u32((0x00971ef4) + ((((((uVar5 >>> 8) << 0xc | uVar3) & 0xffff) >>> 5 | (uVar4 >>> 9) << 0xb) & 0xffff)) * 4)) >>> 0);
           do {
             uVar6 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar6 >>> 8)), heap.u8(pbVar9)) & 0xffffff3c) >>> 0);

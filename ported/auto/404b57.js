@@ -19,8 +19,8 @@ export function FUN_00404b57(heap, param_1) {
   lpBuffer = ((__addr_local_108) >>> 0);
   dwLanguageId = ((0x400) >>> 0);
   dwMessageId = ((GetLastError(heap)) >>> 0);
-  FormatMessageA(heap, 0x1000, ((0x0) >>> 0), dwMessageId, dwLanguageId, lpBuffer, nSize, Arguments);
-  return MessageBoxA(heap, ((0x0) >>> 0), __addr_local_108, param_1, 0x40);
+  FormatMessageA(heap, 0x1000, ((0x0) | 0), dwMessageId, dwLanguageId, lpBuffer, nSize, Arguments);
+  return MessageBoxA(heap, ((0x0) | 0), __addr_local_108, param_1, 0x40);
 } finally {
     heap.freeFrame(1040);
   }

@@ -16,8 +16,8 @@ export function FUN_004186d0(heap) {
   try {
   (regs.eax = FUN_00418750(heap, __addr_local_c, __addr_stack0x00000004));
   heap.setU32(0x005f02d8, ((regs.eax = FUN_00419880(heap, heap.u32(__addr_local_c), heap.u32(__addr_local_8), heap.u32(__addr_local_4), 0x11, 0, 0x005f02b0))) >>> 0);
-  heap.setU32(0x005f02d0, (((heap.u32(0x005f02b2)) >>> 0)) >>> 0);
-  heap.setU32(0x005f02d4, (((heap.u32(0x005f02b0)) >>> 0)) >>> 0);
+  heap.setU32(0x005f02d0, (heap.i32(0x005f02b2)) >>> 0);
+  heap.setU32(0x005f02d4, (heap.i32(0x005f02b0)) >>> 0);
   heap.setU32(0x005f02dc, (0x005f02b4) >>> 0);
   return 0x005f02d0;
 } finally {

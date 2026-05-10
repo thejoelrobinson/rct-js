@@ -92,25 +92,20 @@ export function FUN_00453bf8(heap) {
             sVar6 = ((heap.i16((pcVar9 + 6))) & 0xffff);
             if (sVar6 != heap.i16((pcVar8 + 2))) {
               heap.setI16((pcVar8 + 2), (sVar6) & 0xffff);
-              (regs.eax = FUN_0040d777(heap, uVar4, ((sVar6) >>> 0), pcVar9, pcVar8, uVar4));
+              (regs.eax = FUN_0040d777(heap, uVar4, ((sVar6) | 0), pcVar9, pcVar8, uVar4));
             }
             sVar6 = ((heap.i16((pcVar9 + 8))) & 0xffff);
             if (sVar6 != heap.i16((pcVar8 + 4))) {
               heap.setI16((pcVar8 + 4), (sVar6) & 0xffff);
-              (regs.eax = FUN_0040d709(heap, uVar4, ((sVar6) >>> 0), pcVar9, pcVar8, uVar4));
+              (regs.eax = FUN_0040d709(heap, uVar4, ((sVar6) | 0), pcVar9, pcVar8, uVar4));
             }
             sVar6 = ((heap.i16((pcVar9 + 10))) & 0xffff);
             if (sVar6 != heap.i16((pcVar8 + 6))) {
               heap.setI16((pcVar8 + 6), (sVar6) & 0xffff);
-              (regs.eax = FUN_0040d69b(heap, uVar4, ((sVar6) >>> 0), pcVar9, pcVar8, uVar4));
+              (regs.eax = FUN_0040d69b(heap, uVar4, ((sVar6) | 0), pcVar9, pcVar8, uVar4));
             }
-            break LAB_00453ecf;
           }
-          if ((heap.i8(pcVar8) | 0) == -1) {
-            unaff_EBX = ((uVar4) >>> 0);
-          }
-          pcVar8 = ((pcVar8 + 8) >>> 0);
-          uVar4 = ((uVar4 + 1) >>> 0);
+          return;
         } while (uVar4 < 2);
         pcVar8 = ((0x006325f0 + unaff_EBX * 8) >>> 0);
         uVar7 = ((heap.u32(heap.u32(((0x006323b8) >>> 0) + (((heap.i8(pcVar9 + (1))) & 0xff)) * 4) + (8) * 4)) >>> 0);
@@ -129,7 +124,7 @@ export function FUN_00453bf8(heap) {
         }
         unaff_EBX = ((uVar7) >>> 0);
         uVar7 = ((heap.i32((pcVar9 + 2)) - 10000) >>> 0);
-        if (((uVar7) >>> 0) < 0) {
+        if (((uVar7) | 0) < 0) {
           uVar7 = ((0) >>> 0);
         }
         iVar5 = (((regs.eax = FUN_0040d432(heap, uVar4, unaff_EBX, uVar7 & 0xfffffff0, pcVar9, pcVar8, uVar4))) >>> 0);
@@ -137,7 +132,7 @@ export function FUN_00453bf8(heap) {
           heap.setU8(0x005f8d5a, (0) & 0xff);
         } else {
           unaff_EBX = ((heap.u32((pcVar9 + 10))) >>> 0);
-          iVar5 = (((regs.eax = FUN_0040d4b8(heap, uVar4, 0, ((heap.i16((pcVar9 + 6))) >>> 0), ((heap.i16((pcVar9 + 8))) >>> 0), unaff_EBX, pcVar9, pcVar8, uVar4, ((heap.i16((pcVar9 + 8))) >>> 0), ((heap.i16((pcVar9 + 6))) >>> 0)))) >>> 0);
+          iVar5 = (((regs.eax = FUN_0040d4b8(heap, uVar4, 0, ((heap.i16((pcVar9 + 6))) | 0), ((heap.i16((pcVar9 + 8))) | 0), unaff_EBX, pcVar9, pcVar8, uVar4, ((heap.i16((pcVar9 + 8))) | 0), ((heap.i16((pcVar9 + 6))) | 0)))) >>> 0);
           if (iVar5 != 0) {
             if (heap.i8(pcVar9 + (1)) == 13) {
               uVar1 = ((heap.u32(heap.u32((0x006323b8) + (((heap.i8(pcVar9 + (1))) & 0xff)) * 4) + (8) * 4)) & 0xff);

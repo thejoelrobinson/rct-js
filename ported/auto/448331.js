@@ -84,12 +84,12 @@ export function FUN_00448331(heap) {
           (regs.eax = FUN_00448d15(heap, uVar7, uVar4, uVar3));
         }
         uVar3 = ((((uVar11) & 0xffff) ^ 2) & 0xffff);
-        heap.setU8((pbVar13 + ((((((uVar3) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar3) << 16 >> 16)) >>> 0) >>> 3) + 6)) & ~(1 << (uVar3 & 7))) & 0xff);
+        heap.setU8((pbVar13 + ((((((uVar3) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar3) << 16 >> 16)) | 0) >>> 3) + 6)) & ~(1 << (uVar3 & 7))) & 0xff);
         uVar3 = ((uVar3 - 1 & 3) & 0xffff);
         uVar4 = ((uVar3 + 4) & 0xffff);
-        heap.setU8((pbVar13 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 6)) & ~(1 << (uVar4 & 7))) & 0xff);
+        heap.setU8((pbVar13 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 6)) & ~(1 << (uVar4 & 7))) & 0xff);
         uVar3 = (((uVar3 + 1 & 3) + 4) & 0xffff);
-        heap.setU8((pbVar13 + ((((((uVar3) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar3) << 16 >> 16)) >>> 0) >>> 3) + 6)) & ~(1 << (uVar3 & 7))) & 0xff);
+        heap.setU8((pbVar13 + ((((((uVar3) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar3) << 16 >> 16)) | 0) >>> 3) + 6)) & ~(1 << (uVar3 & 7))) & 0xff);
         uVar15 = (((regs.eax = FUN_005e56d3(heap, pbVar13, unaff_EDI))) >>> 0);
         uVar7 = ((((((uVar15) >>> 0) >>> 0x20) >>> 0)) >>> 0);
         uVar12 = ((uVar11 + 1 & 3) >>> 0);
@@ -113,8 +113,8 @@ export function FUN_00448331(heap) {
       LAB_00448460: if (((heap.u8(pbVar13) & 0x3c) == 4) && (((((uVar15) >>> 0) >>> 0x20) & 0xff) == heap.u8(pbVar13 + (2)))) {
         if ((heap.u8(pbVar13 + (4)) & 4) == 0) {
           uVar3 = (((((uVar12) << 16 >> 16) + 1 & 3) + 4) & 0xffff);
-          heap.setU8((pbVar13 + ((((((uVar3) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar3) << 16 >> 16)) >>> 0) >>> 3) + 6)) & ~(1 << (uVar3 & 7))) & 0xff);
-          (regs.eax = FUN_005e56d3(heap, pbVar13, unaff_EDI, extraout_ECX, uVar11, ((uVar15) >>> 0)));
+          heap.setU8((pbVar13 + ((((((uVar3) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar13 + ((((((uVar3) << 16 >> 16)) | 0) >>> 3) + 6)) & ~(1 << (uVar3 & 7))) & 0xff);
+          (regs.eax = FUN_005e56d3(heap, pbVar13, unaff_EDI, extraout_ECX, uVar11, ((uVar15) | 0)));
           uVar7 = ((extraout_EDX) >>> 0);
         }
         break;

@@ -8,5 +8,5 @@ export function FUN_00417ce0(heap, param_1) {
   if (heap.u32(0x005f3f60) <= param_1) {
     return 0;
   }
-  return heap.u8((heap.u32((0x005f3e60) + (((param_1) >>> 0) >>> 5) * 4) + 4 + (param_1 & 0x1f) * 8)) & 0x40;
+  return heap.u8((heap.u32((0x005f3e60) + (((param_1) | 0) >>> 5) * 4) + 4 + (param_1 & 0x1f) * 8)) & 0x40;
 }

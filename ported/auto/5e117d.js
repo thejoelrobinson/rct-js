@@ -38,7 +38,7 @@ export function FUN_005e117d(heap) {
     sVar3 = ((heap.i16(0x00971ee6)) & 0xffff);
     puVar6 = ((0x0099ad63 + ((uVar5 * sVar3 + uVar2) & 0xffff)) >>> 0);
     sVar4 = ((((((in_DX - 1) & 0xffff) >>> (heap.u8(0x00971eee) & 0x1f)) - uVar2) + 1) & 0xffff);
-    uVar1 = ((((heap.u32(0x00971ee6)) >>> 0) >>> 0x10) >>> 0);
+    uVar1 = ((heap.u32(0x00971ee6) >>> 0x10) >>> 0);
     sVar8 = ((sVar4) & 0xffff);
     do {
       do {

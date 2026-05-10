@@ -28,13 +28,13 @@ export function FUN_0055203e(heap, param_1) {
   iVar7 = ((uVar6 * 0x260) >>> 0);
   puVar4 = ((0xffffffff) >>> 0);
   if ((heap.u32((0x00887422) + (uVar6 * 0x130) * 4) & 1) != 0) {
-    puVar4 = ((((((heap.u16((0x0088747e + iVar7))) << 16 >> 16)) >>> 0)) >>> 0);
+    puVar4 = ((((((heap.u16((0x0088747e + iVar7))) << 16 >> 16)) | 0)) >>> 0);
     if (puVar4 != 0xffffffff) {
       iVar5 = ((heap.u32((0x0088747e + iVar7)) * 0x100) >>> 0);
       puVar4 = ((0x00743b94 + iVar5) >>> 0);
       heap.setU8((0x00991f78 + 0), (2) & 0xff);
       heap.setU32(0x00991f80, (puVar4) >>> 0);
-      if ((((heap.u32((0x00887422) + (uVar6 * 0x130) * 4) & 0xc0) != 0) && (heap.u32((0x0088755c) + (iVar7) * 4) == NaN)) && (0x7f < heap.u32(((0x0088757c) & 0xff) + (iVar7) * 4))) {
+      if ((((heap.u32((0x00887422) + (uVar6 * 0x130) * 4) & 0xc0) != 0) && (heap.u32((0x0088755c) + (iVar7) * 4) == 7)) && (0x7f < heap.u32(((0x0088757c) & 0xff) + (iVar7) * 4))) {
         uVar3 = ((((uVar2 + heap.i16((0x00651be8 + (heap.u16((0x00743be0 + iVar5)) >>> 1 & 7) * 2))) >>> 0)) >>> 0);
       }
     }
@@ -50,7 +50,7 @@ export function FUN_0055203e(heap, param_1) {
   uVar9 = ((0x18) >>> 0);
   heap.setU32(0x00651bc0, (unaff_EDI) >>> 0);
   (regs.eax = callIndirect(heap, heap.u32((0x00432204) + (heap.u8(0x00991f88)) * 4), iVar7, 0x18, 0x18, uVar3));
-  if (((heap.i16((heap.u32(0x00981ef8) + 0xe)) == 0) && ((heap.u16((((0x00887422) >>> 0) + iVar7)) & 1) != 0)) && ((heap.u16((0x0088747e + iVar7)) != 0xffff && (iVar7 = ((heap.u32((0x0088747e + iVar7)) * 0x100) >>> 0), puVar4 = ((0x00743b94 + iVar7) >>> 0), heap.u32((0x00743c47) + (iVar7) * 4) != 0)))) {
+  if (((heap.i16((heap.u32(0x00981ef8) + 0xe)) == 0) && ((heap.u16((((0x00887422) | 0) + iVar7)) & 1) != 0)) && ((heap.u16((0x0088747e + iVar7)) != 0xffff && (iVar7 = ((heap.u32((0x0088747e + iVar7)) * 0x100) >>> 0), puVar4 = ((0x00743b94 + iVar7) >>> 0), heap.u32((0x00743c47) + (iVar7) * 4) != 0)))) {
     if ((heap.u32(0x00651bc4) + heap.u32(0x00651bc8) & 0x7f) - 0xd < 0x44) {
       (regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4), puVar4, uVar8, uVar9, uVar3, in_ECX));
     }

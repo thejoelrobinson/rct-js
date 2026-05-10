@@ -43,7 +43,7 @@ export function FUN_005cfe66(heap) {
   puVar17 = ((0x0) >>> 0);
   puVar14 = ((heap.u32((0x00971ef4) + (((uVar12 >>> 5 | uVar12 << 0xb) & 0xffff)) * 4)) >>> 0);
   do {
-    if ((((((uVar8) << 24 >> 24) == ((heap.u16(puVar14 + (1) * 2)) << 24 >> 24)) && (uVar8 = ((CONCAT22((((uVar8 >>> 0x10)) << 16 >> 16), CONCAT11(((heap.u16(puVar14)) << 24 >> 24), ((uVar8) << 24 >> 24))) & 0xffff3cff) >>> 0), (((uVar8 >>> 8)) << 24 >> 24) == 8)) && (uVar8 = ((CONCAT22((((uVar8 >>> 0x10)) << 16 >> 16), CONCAT11(((heap.u16(puVar14)) << 24 >> 24), ((uVar8) << 24 >> 24))) & 0xffff03ff) >>> 0), ((uVar8 >>> 8) & 0xff) == unaff_BH)) && ((unaff_BL == ((heap.u16(puVar14 + (2) * 2)) & 0xff) && (puVar17 = ((puVar14) >>> 0), (heap.u8((((puVar14) >>> 0) + 5)) & 0xf) == 0)))) {
+    if ((((((uVar8) << 24 >> 24) == ((heap.u16(puVar14 + (1) * 2)) << 24 >> 24)) && (uVar8 = ((CONCAT22((((uVar8 >>> 0x10)) << 16 >> 16), CONCAT11(((heap.u16(puVar14)) << 24 >> 24), ((uVar8) << 24 >> 24))) & 0xffff3cff) >>> 0), (((uVar8 >>> 8)) << 24 >> 24) == 8)) && (uVar8 = ((CONCAT22((((uVar8 >>> 0x10)) << 16 >> 16), CONCAT11(((heap.u16(puVar14)) << 24 >> 24), ((uVar8) << 24 >> 24))) & 0xffff03ff) >>> 0), ((uVar8 >>> 8) & 0xff) == unaff_BH)) && ((unaff_BL == ((heap.u16(puVar14 + (2) * 2)) & 0xff) && (puVar17 = ((puVar14) >>> 0), (heap.u8((((puVar14) | 0) + 5)) & 0xf) == 0)))) {
       break LAB_005cfec3;
     }
     uVar12 = ((heap.u16(puVar14)) & 0xffff);
@@ -56,7 +56,7 @@ export function FUN_005cfe66(heap) {
   }
   uVar11 = ((((uVar8 >>> 0x10) & 0xffff)) & 0xffff);
   puVar1 = ((heap.u32((0x00652498) + (unaff_BL) * 4)) >>> 0);
-  iVar13 = (((heap.u16((((puVar14) >>> 0) + 5)) & 0xf) * 10) >>> 0);
+  iVar13 = (((heap.u16((((puVar14) | 0) + 5)) & 0xf) * 10) >>> 0);
   uVar15 = ((heap.u16(puVar14) & 3) >>> 0);
   uVar5 = ((((((in_EAX) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
   switch (uVar15) {

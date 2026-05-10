@@ -15,7 +15,7 @@ export function FUN_004179a0(heap, param_1, param_2, param_3) {
   let iVar3 = 0;
   if (param_1 < heap.u32(0x005f3f60)) {
     iVar3 = (((param_1 & 0x1f) * 8) >>> 0);
-    if ((heap.u8((heap.u32((0x005f3e60) + (((param_1) >>> 0) >>> 5) * 4) + 4 + iVar3)) & 1) != 0) {
+    if ((heap.u8((heap.u32((0x005f3e60) + (((param_1) | 0) >>> 5) * 4) + 4 + iVar3)) & 1) != 0) {
       hFile = (((regs.eax = FUN_00418ea0(heap, param_1))) >>> 0);
       if (hFile == 0xffffffff) {
         heap.setU32(0x005efec0, (9) >>> 0);
@@ -31,7 +31,7 @@ export function FUN_004179a0(heap, param_1, param_2, param_3) {
         (regs.eax = FUN_00418d90(heap, DVar2));
         return 0xffffffff;
       }
-      heap.setU8((heap.u32((0x005f3e60) + (((param_1) >>> 0) >>> 5) * 4) + 4 + iVar3), (heap.u8((heap.u32((0x005f3e60) + (((param_1) >>> 0) >>> 5) * 4) + 4 + iVar3)) & 0xfd) & 0xff);
+      heap.setU8((heap.u32((0x005f3e60) + (((param_1) | 0) >>> 5) * 4) + 4 + iVar3), (heap.u8((heap.u32((0x005f3e60) + (((param_1) | 0) >>> 5) * 4) + 4 + iVar3)) & 0xfd) & 0xff);
       return DVar1;
     }
   }

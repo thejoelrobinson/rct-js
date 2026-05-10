@@ -73,7 +73,7 @@ export function FUN_00433bae(heap) {
         heap.setU32(0x006288f8, (iVar9) >>> 0);
         while (iVar11 = ((iVar10) >>> 0), iVar9 = ((heap.i32((iVar11 + 0x20))) >>> 0), iVar10 = ((heap.u32(0x006288f8)) >>> 0), iVar9 != 0 && (bVar7 = ((heap.u8((iVar9 + 0x17)) & 0x82) & 0xff), iVar10 = ((heap.u32(0x006288f8)) >>> 0), -1 < (((bVar7) << 24 >> 24) | 0))) {
           iVar10 = ((iVar9) >>> 0);
-          if ((bVar7 != 0) && (heap.u32((0x0062892c) + (CONCAT22((((((heap.u8(0x00991f88)) >>> 0) >>> 0x10)) << 16 >> 16), (((((heap.i16(0x00991f88) << 1 | ((uVar8 < heap.u16((iVar9 + 0xc))) & 0xffff)) << 1 | ((uVar1 < heap.u16((iVar9 + 0xe))) & 0xffff)) << 1 | ((((uVar4) & 0xffff) < heap.u16((iVar9 + 10))) & 0xffff)) << 1 | ((uVar2 < heap.u16((iVar9 + 4))) & 0xffff)) << 1 | ((uVar3 < heap.u16((iVar9 + 6))) & 0xffff)) << 1 | ((((((uVar4) >>> 0) >>> 0x10) & 0xffff) < heap.u16((iVar9 + 8))) & 0xffff))) * 4) != 0)) {
+          if ((bVar7 != 0) && (heap.u32((0x0062892c) + (CONCAT22((((heap.u32(0x00991f88) >>> 0x10)) << 16 >> 16), (((((heap.i16(0x00991f88) << 1 | ((uVar8 < heap.u16((iVar9 + 0xc))) & 0xffff)) << 1 | ((uVar1 < heap.u16((iVar9 + 0xe))) & 0xffff)) << 1 | ((((uVar4) & 0xffff) < heap.u16((iVar9 + 10))) & 0xffff)) << 1 | ((uVar2 < heap.u16((iVar9 + 4))) & 0xffff)) << 1 | ((uVar3 < heap.u16((iVar9 + 6))) & 0xffff)) << 1 | ((((((uVar4) >>> 0) >>> 0x10) & 0xffff) < heap.u16((iVar9 + 8))) & 0xffff))) * 4) != 0)) {
             heap.setU32((iVar11 + 0x20), (heap.u32((iVar9 + 0x20))) & 0xffffffff);
             LOCK();
             iVar10 = ((heap.i32((heap.u32(0x006288f8) + 0x20))) >>> 0);
@@ -125,7 +125,7 @@ export function FUN_00433bae(heap) {
           heap.setU32(0x006288f8, (iVar10) >>> 0);
           while (iVar11 = ((iVar9) >>> 0), iVar10 = ((heap.i32((iVar11 + 0x20))) >>> 0), iVar9 = ((heap.u32(0x006288f8)) >>> 0), iVar10 != 0 && (bVar7 = ((heap.u8((iVar10 + 0x17)) & 0x82) & 0xff), iVar9 = ((heap.u32(0x006288f8)) >>> 0), -1 < (((bVar7) << 24 >> 24) | 0))) {
             iVar9 = ((iVar10) >>> 0);
-            if ((bVar7 != 0) && (heap.u32((0x0062892c) + (CONCAT22((((((heap.u8(0x00991f88)) >>> 0) >>> 0x10)) << 16 >> 16), (((((heap.i16(0x00991f88) << 1 | ((uVar8 < heap.u16((iVar10 + 0xc))) & 0xffff)) << 1 | ((uVar1 < heap.u16((iVar10 + 0xe))) & 0xffff)) << 1 | ((((uVar4) & 0xffff) < heap.u16((iVar10 + 10))) & 0xffff)) << 1 | ((uVar2 < heap.u16((iVar10 + 4))) & 0xffff)) << 1 | ((uVar3 < heap.u16((iVar10 + 6))) & 0xffff)) << 1 | ((((((uVar4) >>> 0) >>> 0x10) & 0xffff) < heap.u16((iVar10 + 8))) & 0xffff))) * 4) != 0)) {
+            if ((bVar7 != 0) && (heap.u32((0x0062892c) + (CONCAT22((((heap.u32(0x00991f88) >>> 0x10)) << 16 >> 16), (((((heap.i16(0x00991f88) << 1 | ((uVar8 < heap.u16((iVar10 + 0xc))) & 0xffff)) << 1 | ((uVar1 < heap.u16((iVar10 + 0xe))) & 0xffff)) << 1 | ((((uVar4) & 0xffff) < heap.u16((iVar10 + 10))) & 0xffff)) << 1 | ((uVar2 < heap.u16((iVar10 + 4))) & 0xffff)) << 1 | ((uVar3 < heap.u16((iVar10 + 6))) & 0xffff)) << 1 | ((((((uVar4) >>> 0) >>> 0x10) & 0xffff) < heap.u16((iVar10 + 8))) & 0xffff))) * 4) != 0)) {
               heap.setU32((iVar11 + 0x20), (heap.u32((iVar10 + 0x20))) & 0xffffffff);
               LOCK();
               iVar9 = ((heap.i32((heap.u32(0x006288f8) + 0x20))) >>> 0);

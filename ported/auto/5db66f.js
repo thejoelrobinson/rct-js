@@ -27,7 +27,6 @@ export function FUN_005db66f(heap) {
   let uVar9 = 0;
   let bVar10 = 0;
   let uVar11 = 0;
-  LAB_005db808: {
   iVar6 = ((heap.u32((unaff_ESI + 0x30)) * 0x260) >>> 0);
   sVar1 = ((CONCAT11((((((heap.i16((unaff_ESI + 0x10)) + heap.u32((0x0065247a) + ((heap.u32(((0x008874a1) & 0xff) + (iVar6) * 4) & 3) * 2) * 4)) & 0xffff) >>> 5)) << 24 >> 24), (((((heap.i16((unaff_ESI + 0xe)) + heap.u32((0x00652478) + ((heap.u32(((0x008874a1) & 0xff) + (iVar6) * 4) & 3) * 2) * 4)) & 0xffff) >>> 5)) << 24 >> 24))) & 0xffff);
   if (sVar1 == heap.i16((0x008874a2 + iVar6))) {
@@ -71,7 +70,8 @@ export function FUN_005db66f(heap) {
     uVar8 = ((((uVar11) >>> 0)) >>> 0);
     uVar3 = ((extraout_ECX_00) >>> 0);
     if (!bVar10) {
-      break LAB_005db808;
+      heap.setU16((unaff_ESI + 0x36), (CONCAT11((((uVar2 >>> 5)) << 24 >> 24), (((uVar5 >>> 5)) << 24 >> 24))) & 0xffff);
+      return;
     }
   }
   uVar7 = ((uVar8 + 1 & 3) >>> 0);
@@ -83,7 +83,8 @@ export function FUN_005db66f(heap) {
     uVar8 = ((((uVar11) >>> 0)) >>> 0);
     uVar3 = ((extraout_ECX_01) >>> 0);
     if (!bVar10) {
-      break LAB_005db808;
+      heap.setU16((unaff_ESI + 0x36), (CONCAT11((((uVar2 >>> 5)) << 24 >> 24), (((uVar5 >>> 5)) << 24 >> 24))) & 0xffff);
+      return;
     }
   }
   uVar7 = ((uVar8 - 1 & 3) >>> 0);
@@ -95,7 +96,8 @@ export function FUN_005db66f(heap) {
     uVar8 = ((((uVar11) >>> 0)) >>> 0);
     uVar3 = ((extraout_ECX_02) >>> 0);
     if (!bVar10) {
-      break LAB_005db808;
+      heap.setU16((unaff_ESI + 0x36), (CONCAT11((((uVar2 >>> 5)) << 24 >> 24), (((uVar5 >>> 5)) << 24 >> 24))) & 0xffff);
+      return;
     }
   }
   uVar8 = ((uVar8 + 2 & 3) >>> 0);
@@ -106,12 +108,12 @@ export function FUN_005db66f(heap) {
     uVar3 = ((extraout_ECX_03) >>> 0);
     uVar2 = ((extraout_DX) & 0xffff);
     if (!bVar10) {
-      break LAB_005db808;
+      heap.setU16((unaff_ESI + 0x36), (CONCAT11((((uVar2 >>> 5)) << 24 >> 24), (((uVar5 >>> 5)) << 24 >> 24))) & 0xffff);
+      return;
     }
   }
   uVar5 = ((heap.i16((unaff_ESI + 0x38)) + heap.u32((0x00652478) + (uVar3 * 2) * 4)) & 0xffff);
   uVar2 = ((heap.i16((unaff_ESI + 0x3a)) + heap.u32((0x0065247a) + (uVar3 * 2) * 4)) & 0xffff);
-  }
-  heap.setU16((unaff_ESI + 0x36), (CONCAT11((((uVar2 >>> 5)) << 24 >> 24), (((uVar5 >>> 5)) << 24 >> 24))) & 0xffff);
+  LAB_005db808: heap.setU16((unaff_ESI + 0x36), (CONCAT11((((uVar2 >>> 5)) << 24 >> 24), (((uVar5 >>> 5)) << 24 >> 24))) & 0xffff);
   return;
 }

@@ -10,7 +10,7 @@ export function FUN_00443f5c(heap) {
   let uVar1 = 0;
   uVar1 = ((0) >>> 0);
   do {
-    heap.setU32((((0x0087c820) >>> 0) + uVar1), (0) & 0xffffffff);
+    heap.setU32((((0x0087c820) | 0) + uVar1), (0) & 0xffffffff);
     uVar1 = ((uVar1 + 4) >>> 0);
   } while (uVar1 < 0x38);
   heap.setU32(0x0087d304, (0) >>> 0);

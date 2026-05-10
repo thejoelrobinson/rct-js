@@ -36,7 +36,7 @@ export function FUN_00418ff0(heap, param_1, param_2, param_3) {
       heap.setU32(__addr_local_4, (0) >>> 0);
       (regs.eax = FUN_00418f20(heap, puVar2, __addr_local_c));
       param_1 = ((param_1 + 1) >>> 0);
-      param_3 = (((((param_3) >>> 0) + -1)) >>> 0);
+      param_3 = (((((param_3) | 0) + -1)) >>> 0);
     } while (param_3 != 0x0);
   }
   uVar1 = ((heap.u32(puVar2 + (2) * 4)) >>> 0);
@@ -53,7 +53,7 @@ export function FUN_00418ff0(heap, param_1, param_2, param_3) {
     sVar3 = ((sVar3 + -1) & 0xffff);
     uVar1 = ((heap.u32(puVar2 + (2) * 4)) >>> 0);
   }
-  heap.setI16((((puVar2) >>> 0) + 10), (sVar3) & 0xffff);
+  heap.setI16((((puVar2) | 0) + 10), (sVar3) & 0xffff);
   return;
 } finally {
     heap.freeFrame(12);

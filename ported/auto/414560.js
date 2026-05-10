@@ -5,7 +5,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 export function FUN_00414560(heap, param_1, param_2, param_3) {
-  if ((heap.u8((((0x005f0020) >>> 0) + (param_1 & 0xff) + 1)) & param_3) == 0) {
+  if ((heap.u8((((0x005f0020) | 0) + (param_1 & 0xff) + 1)) & param_3) == 0) {
     if (param_2 == 0) {
       param_2 = ((0) >>> 0);
     } else {

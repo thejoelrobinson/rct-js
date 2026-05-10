@@ -69,7 +69,7 @@ export function FUN_0042d398(heap) {
     (regs.eax = FUN_0044eff2(heap));
     return (regs.eax = FUN_0044f03b(heap, in_ECX));
   }
-  if (unaff_BL == NaN) {
+  if (unaff_BL == 7) {
     return (regs.eax = FUN_004406bd(heap));
   }
   if (unaff_BL != 8) {

@@ -137,7 +137,7 @@ export function FUN_004415e6(heap) {
     heap.setU8((unaff_ESI + 0xd2 + uVar6 * 4), (in_DL) & 0xff);
     heap.setU8((unaff_ESI + 0xd3 + uVar6 * 4), (0xf) & 0xff);
     }
-    pbVar8 = (((unaff_ESI + 0xd3 + uVar6 * 4 + (((((((local_8) & 0xffff)) << 16 >> 16)) >>> 0) >>> 3))) >>> 0);
+    pbVar8 = (((unaff_ESI + 0xd3 + uVar6 * 4 + (((((((local_8) & 0xffff)) << 16 >> 16)) | 0) >>> 3))) >>> 0);
     heap.setU32(pbVar8, (heap.u8(pbVar8) & ~(1 << (((local_8) & 0xffff) & 7))) & 0xffffffff);
   }
   return;

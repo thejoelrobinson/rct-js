@@ -44,7 +44,7 @@ export function FUN_009bafe6(heap) {
     /* goto LAB_009bb08b — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009bafe6/LAB_009bb08b"); return 0;
   }
   heap.setU8(0x00971ef2, (heap.u8(0x00971ef2) | 1) & 0xff);
-  heap.setU8(0x0099ac89, (((CONCAT11(heap.u8((((0x0099ac8f) >>> 0) + (uVar5 & 0x1f) * 8 + 2)), heap.u8((0x0099ac8f + (uVar5 & 0x1f) * 2)))) >>> 0)) & 0xff);
+  heap.setU8(0x0099ac89, (((CONCAT11(heap.u8((((0x0099ac8f) | 0) + (uVar5 & 0x1f) * 8 + 2)), heap.u8((0x0099ac8f + (uVar5 & 0x1f) * 2)))) >>> 0)) & 0xff);
   do {
     heap.setU32(0x009a200c, (0x0099ac88) >>> 0);
     LAB_009bb0c3: do {

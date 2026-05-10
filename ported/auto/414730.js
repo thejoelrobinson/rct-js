@@ -23,7 +23,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
   if (heap.u8(param_1) == 0x22) {
     bVar2 = ((heap.u8(param_1 + (1))) & 0xff);
     while (pbVar7 = ((param_1 + 1) >>> 0), bVar2 != 0x22 && (bVar2 != 0)) {
-      if (((heap.u8((((0x005f0020) >>> 0) + bVar2 + 1)) & 4) != 0) && (heap.setU32(param_5, (heap.i32(param_5) + 1) & 0xffffffff), param_3 != 0x0)) {
+      if (((heap.u8((((0x005f0020) | 0) + bVar2 + 1)) & 4) != 0) && (heap.setU32(param_5, (heap.i32(param_5) + 1) & 0xffffffff), param_3 != 0x0)) {
         heap.setU32(param_3, (heap.u8(pbVar7)) & 0xffffffff);
         param_3 = ((param_3 + 1) >>> 0);
         pbVar7 = ((param_1 + 2) >>> 0);
@@ -54,7 +54,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       bVar2 = ((heap.u8(param_1)) & 0xff);
       pbVar7 = ((param_1 + 1) >>> 0);
       param_5 = ((((bVar2) >>> 0)) >>> 0);
-      if ((heap.u8((((0x005f0020) >>> 0) + ((param_5) >>> 0) + 1)) & 4) != 0) {
+      if ((heap.u8((((0x005f0020) | 0) + ((param_5) | 0) + 1)) & 4) != 0) {
         heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
         if (param_3 != 0x0) {
           heap.setU32(param_3, (heap.u8(pbVar7)) & 0xffffffff);
@@ -127,14 +127,24 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       }
       if (bVar3) {
         if (param_3 == 0x0) {
-          if ((heap.u8((((0x005f0020) >>> 0) + bVar2 + 1)) & 4) != 0) {
+          if ((heap.u8((((0x005f0020) | 0) + bVar2 + 1)) & 4) != 0) {
             pbVar7 = ((pbVar7 + 1) >>> 0);
             heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
           }
           heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
-          /* goto LAB_00414905 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00414730/LAB_00414905"); return 0;
+          pbVar7 = ((pbVar7 + 1) >>> 0);
+          if (param_3 != 0x0) {
+            heap.setU32(param_3, (0) & 0xffffffff);
+            param_3 = ((param_3 + 1) >>> 0);
+          }
+          heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
+          if (param_2 != 0x0) {
+            heap.setU32(param_2, (0) & 0xffffffff);
+          }
+          heap.setU32(param_4, (heap.i32(param_4) + 1) & 0xffffffff);
+          return;
         }
-        if ((heap.u8((((0x005f0020) >>> 0) + bVar2 + 1)) & 4) != 0) {
+        if ((heap.u8((((0x005f0020) | 0) + bVar2 + 1)) & 4) != 0) {
           heap.setU32(param_3, (bVar2) & 0xffffffff);
           param_3 = ((param_3 + 1) >>> 0);
           pbVar7 = ((pbVar7 + 1) >>> 0);

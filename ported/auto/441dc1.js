@@ -25,8 +25,7 @@ export function FUN_00441dc1(heap) {
   let puVar13 = 0;
   let iVar14 = 0;
   let uVar15 = 0;
-  code_r0x00441fbb: {
-  uVar9 = ((((heap.u8(0x0062d2ff)) >>> 0)) >>> 0);
+  uVar9 = ((heap.u32(0x0062d2ff)) >>> 0);
   if ((uVar9 != heap.u32(0x0062d2f6)) || ((heap.u32(0x00629408) == 0 && ((heap.u32(0x006e3b84) & 0xffffff00) != heap.u32(0x00629404))))) {
     heap.setU32(0x00629408, (0x140) >>> 0);
     heap.setU32(0x0062940a, (0) >>> 0);
@@ -39,7 +38,6 @@ export function FUN_00441dc1(heap) {
       }
     }
     for (; uVar5 = ((heap.u32(0x0062940a)) >>> 0), uVar11 != 0xffff; uVar11 = (((heap.u32((0x00743b98) + (((uVar11) >>> 0) * 0x80) * 4)) & 0xffff)) >>> 0) {
-      LAB_00441ff3: {
       iVar12 = ((((uVar11) >>> 0) * 0x100) >>> 0);
       puVar13 = ((0x00743b94 + iVar12) >>> 0);
       if (((heap.u32((0x00743bc2) + (iVar12) * 4) == 0) && (heap.u32((0x00743bbe) + (iVar12) * 4) == 0)) && ((heap.u16((0x00743ba0 + iVar12)) & 0x100) != 0)) {
@@ -79,7 +77,7 @@ export function FUN_00441dc1(heap) {
           uVar15 = ((0) >>> 0);
           LAB_00441fad: if (uVar15 < uVar5) {
             if (heap.u32(((0x00629c7e) & 0xffff) + (uVar5) * 4) <= heap.u32(((0x00629c7e) & 0xffff) + (uVar15) * 4)) {
-              break code_r0x00441fbb;
+              /* goto code_r0x00441fbb — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00441dc1/code_r0x00441fbb"); return 0;
             }
             uVar9 = ((heap.u32(((0x0062940e) >>> 0) + (uVar5) * 4)) >>> 0);
             uVar7 = ((heap.u32((0x006294fe + uVar5 * 8))) >>> 0);
@@ -109,15 +107,11 @@ export function FUN_00441dc1(heap) {
               uVar10 = ((uVar2) & 0xffff);
             } while (uVar15 <= uVar5);
           }
-          break LAB_00441ff3;
         }
-        heap.setU32(0x0062940a, (heap.u32(0x0062940a) - 1) >>> 0);
+        return;
       }
-      }
+      heap.setU32(0x0062940a, (heap.u32(0x0062940a) - 1) >>> 0);
     }
+    LAB_00441ff3: ;
   }
-  return;
-  }
-  uVar15 = ((uVar15 + 1) >>> 0);
-  /* goto LAB_00441fad — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00441dc1/LAB_00441fad"); return 0;
 }

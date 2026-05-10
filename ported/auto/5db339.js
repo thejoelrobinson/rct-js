@@ -26,11 +26,11 @@ export function FUN_005db339(heap) {
     sVar1 = ((heap.i16((0x0065eada + ((((heap.u8(puVar7 + (0x1e))) & 0xff) >>> 1) >>> 0) * 4))) & 0xffff);
     iVar4 = ((heap.i32((0x0065e7dc + ((((heap.u8(puVar7 + (0x1f))) & 0xff)) >>> 0) * 4))) >>> 0);
     iVar5 = ((heap.i32((0x0065e8bc + ((((heap.u8(puVar7 + (0x1f))) & 0xff)) >>> 0) * 4))) >>> 0);
-    heap.setI16((puVar7 + 0xb6), (((((((((heap.i16((0x0065ead8 + ((((heap.u8(puVar7 + (0x1e))) & 0xff) >>> 1) >>> 0) * 4))) >>> 0) * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 0) >>> 8)) << 16 >> 16)) & 0xffff);
-    heap.setI16((puVar7 + 0xc0), (((((((((sVar1) >>> 0) * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 0) >>> 8)) << 16 >> 16)) & 0xffff);
+    heap.setI16((puVar7 + 0xb6), (((((((((heap.i16((0x0065ead8 + ((((heap.u8(puVar7 + (0x1e))) & 0xff) >>> 1) >>> 0) * 4))) | 0) * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 0) >>> 8)) << 16 >> 16)) & 0xffff);
+    heap.setI16((puVar7 + 0xc0), (((((((((sVar1) | 0) * (iVar4 >>> 0xf) >>> 0x10) * iVar6) >>> 0) >>> 8)) << 16 >> 16)) & 0xffff);
     heap.setI16((puVar7 + 0x4e), (((((((iVar5 >>> 0x17) * iVar6) >>> 0) >>> 8)) << 16 >> 16)) & 0xffff);
     uVar8 = (((regs.eax = FUN_005df40c(heap))) >>> 0);
-    iVar6 = (((((((uVar8) >>> 0) >>> 0x20)) >>> 0)) >>> 0);
+    iVar6 = (((((((uVar8) >>> 0) >>> 0x20)) | 0)) >>> 0);
     heap.setU16((puVar7 + 0xb6), (heap.i16((puVar7 + 0xb6)) + ((((uVar8) & 0xffff) & 0xf) - 8)) & 0xffff);
     heap.setU16((puVar7 + 0xc0), (heap.i16((puVar7 + 0xc0)) + ((((((uVar8) >>> 0) >>> 4) & 0xffff) & 0xf) - 8)) & 0xffff);
     heap.setU16((puVar7 + 0x4e), (heap.i16((puVar7 + 0x4e)) + ((((((uVar8) >>> 0) >>> 8) & 0xffff) & 0xf) - 8)) & 0xffff);

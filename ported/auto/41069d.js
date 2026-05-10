@@ -12,9 +12,9 @@ import { FUN_00413c90 } from "./413c90.js";
 export function FUN_0041069d(heap) {
   let puVar1 = 0;
   let local_8 = 0;
-  if (heap.u32(0x005ec0d8) != ((0x0) >>> 0)) {
+  if (heap.u32(0x005ec0d8) != ((0x0) | 0)) {
     DeleteObject(heap, heap.u32(0x005ec0d8));
-    heap.setU32(0x005ec0d8, (((0x0) >>> 0)) >>> 0);
+    heap.setU32(0x005ec0d8, (((0x0) | 0)) >>> 0);
   }
   if (heap.u32(0x005ec0d0) != 0x0) {
     local_8 = ((heap.u32(0x005ec0d0)) >>> 0);
@@ -29,9 +29,9 @@ export function FUN_0041069d(heap) {
   if (heap.u32(0x005ec0d4) != 0) {
     (regs.eax = FUN_00413c90(heap, 0x005ec118, 0x005ec104, 0x309));
   }
-  if (heap.u32(0x005e916c) != ((0x0) >>> 0)) {
+  if (heap.u32(0x005e916c) != ((0x0) | 0)) {
     DestroyWindow(heap, heap.u32(0x005e916c));
-    heap.setU32(0x005e916c, (((0x0) >>> 0)) >>> 0);
+    heap.setU32(0x005e916c, (((0x0) | 0)) >>> 0);
   }
   return;
 }

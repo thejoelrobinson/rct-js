@@ -12,7 +12,7 @@ export function FUN_00418750(heap, param_1, param_2) {
   let uVar5 = 0;
   let iVar6 = 0;
   uVar4 = ((0x80000000) >>> 0);
-  uVar1 = ((heap.u16((((param_2) >>> 0) + 6))) & 0xffff);
+  uVar1 = ((heap.u16((((param_2) | 0) + 6))) & 0xffff);
   uVar2 = ((heap.u32(param_2)) >>> 0);
   uVar3 = (((uVar1 & 0x7ff0) >>> 4) >>> 0);
   if (uVar3 == 0) {

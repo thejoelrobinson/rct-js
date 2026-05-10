@@ -66,7 +66,7 @@ export function FUN_005e65cf(heap) {
           uVar7 = ((uVar7 - 1) >>> 0);
         }
         uVar6 = ((uVar6 - 1) >>> 0);
-      } while (-1 < (((uVar6) >>> 0) | 0));
+      } while (-1 < (((uVar6) | 0) | 0));
       heap.setU32(0x005f54fc, (((uVar7) << 16 >> 16) + 1) >>> 0);
       return uVar3;
     }
@@ -109,7 +109,7 @@ export function FUN_005e65cf(heap) {
       heap.setU32(0x005f54f2, ((heap.u8((uVar4 + 4)) >>> 4) + 0x4d1) >>> 0);
       return uVar3;
     }
-    if (unaff_BL == NaN) {
+    if (unaff_BL == 7) {
       heap.setU32(0x005f54f0, (0x4c2) >>> 0);
       heap.setU32(0x005f54f2, ((heap.u8((uVar4 + 5)) & 0xf) + 0x632) >>> 0);
       return uVar3;

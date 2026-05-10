@@ -51,9 +51,9 @@ export function FUN_0040ab58(heap) {
   }
   (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x4c)), heap.u32(0x005ebf30)));
   (regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf30)) + 0x50)), heap.u32(0x005ebf30), heap.u32(0x005e916c), 8));
-  if (heap.u32(0x005e916c) != ((0x0) >>> 0)) {
+  if (heap.u32(0x005e916c) != ((0x0) | 0)) {
     DestroyWindow(heap, heap.u32(0x005e916c));
-    heap.setU32(0x005e916c, (((0x0) >>> 0)) >>> 0);
+    heap.setU32(0x005e916c, (((0x0) | 0)) >>> 0);
   }
   return;
 } finally {

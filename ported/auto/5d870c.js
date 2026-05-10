@@ -9,5 +9,5 @@ import { regs } from "../../runtime/regs.js";
 export function FUN_005d870c(heap) {
   let unaff_ESI = regs.esi >>> 0;
   heap.setI16((unaff_ESI + 0x4e), (heap.i16((unaff_ESI + 0x4e)) + (-heap.i16((unaff_ESI + 0x4c)) >>> 6)) & 0xffff);
-  return (regs.eax = callIndirect(heap, heap.u32((((0x0065de64) >>> 0) + (heap.u16((unaff_ESI + 0x36)) & 0xfffc)))));
+  return (regs.eax = callIndirect(heap, heap.u32((((0x0065de64) | 0) + (heap.u16((unaff_ESI + 0x36)) & 0xfffc)))));
 }

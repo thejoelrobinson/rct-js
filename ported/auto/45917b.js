@@ -11,7 +11,7 @@ export function FUN_0045917b(heap) {
   let bVar2 = 0;
   let bVar3 = 0;
   let unaff_EDI = regs.edi >>> 0;
-  if (((in_EAX) >>> 0) < 0) {
+  if (((in_EAX) | 0) < 0) {
     heap.setU32(unaff_EDI, (0x2d) & 0xffffffff);
     unaff_EDI = ((unaff_EDI + 1) >>> 0);
     in_EAX = ((-in_EAX) >>> 0);

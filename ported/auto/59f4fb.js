@@ -30,16 +30,16 @@ export function FUN_0059f4fb(heap, param_1) {
   heap.setU32(0x00651d50, (unaff_EBX) >>> 0);
   heap.setU32(0x00651d58, (unaff_EDI) >>> 0);
   (regs.eax = callIndirect(heap, heap.u32((0x00432204) + (heap.u8(0x00991f88)) * 4), heap.u16((0x00651d62 + unaff_EBX * 8)), heap.u16((0x00651d60 + unaff_EBX * 8)), heap.u32(0x0099a4ec)));
-  if ((heap.u32(0x00651d58) == 0) && (-1 < ((((heap.u32(0x00651d54) - 1)) >>> 0) | 0))) {
+  if ((heap.u32(0x00651d58) == 0) && (-1 < ((((heap.u32(0x00651d54) - 1)) | 0) | 0))) {
     uVar2 = (((regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4)))) >>> 0);
   }
-  if ((heap.u32(0x00651d58) == 1) && (-1 < ((((heap.u32(0x00651d54) - 1)) >>> 0) | 0))) {
+  if ((heap.u32(0x00651d58) == 1) && (-1 < ((((heap.u32(0x00651d54) - 1)) | 0) | 0))) {
     uVar2 = (((regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4)))) >>> 0);
   }
-  if ((heap.u32(0x00651d58) == 2) && (-1 < ((((heap.u32(0x00651d54) - 1)) >>> 0) | 0))) {
+  if ((heap.u32(0x00651d58) == 2) && (-1 < ((((heap.u32(0x00651d54) - 1)) | 0) | 0))) {
     uVar2 = (((regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4)))) >>> 0);
   }
-  if ((heap.u32(0x00651d58) == 3) && (-1 < ((((heap.u32(0x00651d54) - 1)) >>> 0) | 0))) {
+  if ((heap.u32(0x00651d58) == 3) && (-1 < ((((heap.u32(0x00651d54) - 1)) | 0) | 0))) {
     uVar2 = (((regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4)))) >>> 0);
   }
   heap.setU32(0x00991f80, (puVar1) >>> 0);

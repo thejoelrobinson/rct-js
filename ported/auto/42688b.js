@@ -34,18 +34,18 @@ export function FUN_0042688b(heap) {
   }
   uVar2 = ((((((uVar4) << 24 >> 24) * 4 + 9) & 0xffff)) & 0xffff);
   uVar4 = ((uVar2 & 0xf) & 0xffff);
-  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
+  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
   uVar2 = ((((((uVar4) << 24 >> 24) + 3) & 0xffff)) & 0xffff);
   uVar4 = ((uVar2 & 0xf) & 0xffff);
-  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
+  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
   uVar2 = ((((((uVar4) << 24 >> 24) - 2) & 0xffff)) & 0xffff);
   uVar4 = ((uVar2 & 0xf) & 0xffff);
-  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
+  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
   uVar2 = ((((((uVar4) << 24 >> 24) + 1) & 0xffff)) & 0xffff);
   uVar4 = ((uVar2 & 0xf) & 0xffff);
-  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) >>> 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
+  heap.setU8((puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)), (heap.u8(puVar5 + ((((((uVar4) << 16 >> 16)) | 0) >>> 3) + 5)) & ~(1 << (uVar2 & 7))) & 0xff);
   uVar4 = ((((((uVar4) << 24 >> 24) + 4) & 0xffff)) & 0xffff);
-  heap.setU8((puVar5 + (((((((uVar4 & 0xf)) << 16 >> 16)) >>> 0) >>> 3) + 5)), (heap.u8(puVar5 + (((((((uVar4 & 0xf)) << 16 >> 16)) >>> 0) >>> 3) + 5)) & ~(1 << (uVar4 & 7))) & 0xff);
+  heap.setU8((puVar5 + (((((((uVar4 & 0xf)) << 16 >> 16)) | 0) >>> 3) + 5)), (heap.u8(puVar5 + (((((((uVar4 & 0xf)) << 16 >> 16)) | 0) >>> 3) + 5)) & ~(1 << (uVar4 & 7))) & 0xff);
   (regs.eax = FUN_005e56d3(heap, puVar5));
   /* goto LAB_0042693d — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0042688b/LAB_0042693d"); return 0;
 }

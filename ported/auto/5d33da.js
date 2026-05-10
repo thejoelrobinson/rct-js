@@ -23,7 +23,6 @@ export function FUN_005d33da(heap) {
   let in_CF = regs.cf | 0;
   let bVar4 = 0;
   let in_ZF = regs.zf | 0;
-  LAB_005d3452: {
   heap.setU32(__addr_uStack_4, (in_EDX) >>> 0);
   uVar1 = (((regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0xd, regs.eax)) >>> 0);
   heap.setU32(__addr_puStack_18, (__addr_uStack_4) >>> 0);
@@ -44,7 +43,7 @@ export function FUN_005d33da(heap) {
     if ((heap.u32((0x006559d8) + (((((heap.u8(heap.u32(__addr_puStack_18) + (4))) & 0xff)) >>> 0) * 0x10) * 4) & 0x10) == 0) {
       if (bVar3 != 0) {
         if (bVar3 < 2) {
-          break LAB_005d3452;
+          return CONCAT44(heap.u32(__addr_uStack_4), uVar1);
         }
         bVar3 = ((0) & 0xff);
       }
@@ -57,8 +56,7 @@ export function FUN_005d33da(heap) {
   if ((bVar3 == 0) || (1 < bVar3)) {
     return CONCAT44(heap.u32(__addr_uStack_4), uVar1);
   }
-  }
-  return CONCAT44(heap.u32(__addr_uStack_4), uVar1);
+  LAB_005d3452: return CONCAT44(heap.u32(__addr_uStack_4), uVar1);
 } finally {
     heap.freeFrame(8);
   }

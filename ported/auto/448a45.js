@@ -58,20 +58,44 @@ export function FUN_00448a45(heap) {
     pbVar1 = ((unaff_ESI + 1) >>> 0);
     unaff_ESI = ((unaff_ESI + 8) >>> 0);
     if ((heap.u8(pbVar1) & 0x80) != 0) {
-      /* goto LAB_00448b71 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448a45/LAB_00448b71"); return 0;
+      uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
+      pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
+      if (((in_DL != 0xff) && (heap.u32(0x00630bc8) != 0xffffffff)) && ((heap.u32(heap.u32(0x00630bc8) + (4) * 4) & 0xf0) == 0)) {
+        heap.setU32((heap.u32(0x00630bc8) + (4) * 4), (heap.u32(heap.u32(0x00630bc8) + (4) * 4) | 8) & 0xffffffff);
+        heap.setU32(pbVar1, (heap.u8(pbVar1) & 0x3f) & 0xffffffff);
+        heap.setU32(pbVar1, (heap.u8(pbVar1) | ((uVar2) << 24 >> 24) << 6) & 0xffffffff);
+        (regs.eax = FUN_004364c2(heap));
+      }
+      return;
     }
   } while (true);
   if (((heap.u8(unaff_ESI + (4)) & 4) == 0) || ((heap.u8(unaff_ESI + (4)) & 3 ^ 2) != bVar5)) {
-    /* goto LAB_00448b71 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448a45/LAB_00448b71"); return 0;
+    uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
+    pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
+    if (((in_DL != 0xff) && (heap.u32(0x00630bc8) != 0xffffffff)) && ((heap.u32(heap.u32(0x00630bc8) + (4) * 4) & 0xf0) == 0)) {
+      heap.setU32((heap.u32(0x00630bc8) + (4) * 4), (heap.u32(heap.u32(0x00630bc8) + (4) * 4) | 8) & 0xffffffff);
+      heap.setU32(pbVar1, (heap.u8(pbVar1) & 0x3f) & 0xffffffff);
+      heap.setU32(pbVar1, (heap.u8(pbVar1) | ((uVar2) << 24 >> 24) << 6) & 0xffffffff);
+      (regs.eax = FUN_004364c2(heap));
+    }
+    return;
   }
   bVar4 = ((bVar4 - 4) & 0xff);
   }
   if (heap.u8(unaff_ESI + (4)) >>> 4 != 0) {
-    /* goto LAB_00448b71 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448a45/LAB_00448b71"); return 0;
+    uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
+    pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
+    if (((in_DL != 0xff) && (heap.u32(0x00630bc8) != 0xffffffff)) && ((heap.u32(heap.u32(0x00630bc8) + (4) * 4) & 0xf0) == 0)) {
+      heap.setU32((heap.u32(0x00630bc8) + (4) * 4), (heap.u32(heap.u32(0x00630bc8) + (4) * 4) | 8) & 0xffffffff);
+      heap.setU32(pbVar1, (heap.u8(pbVar1) & 0x3f) & 0xffffffff);
+      heap.setU32(pbVar1, (heap.u8(pbVar1) | ((uVar2) << 24 >> 24) << 6) & 0xffffffff);
+      (regs.eax = FUN_004364c2(heap));
+    }
+    return;
   }
   heap.setU8((unaff_ESI + (4)), (heap.u8(unaff_ESI + (4)) & 0xf7) & 0xff);
   uVar6 = ((((unaff_EBX) & 0xffff)) & 0xffff);
-  if ((heap.u8(unaff_ESI + (((((((uVar6 ^ 2)) << 16 >> 16)) >>> 0) >>> 3) + 6)) >>> ((uVar6 ^ 2) & 7) & 1) == 0) {
+  if ((heap.u8(unaff_ESI + (((((((uVar6 ^ 2)) << 16 >> 16)) | 0) >>> 3) + 6)) >>> ((uVar6 ^ 2) & 7) & 1) == 0) {
     uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
   }
   pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
@@ -89,7 +113,7 @@ export function FUN_00448a45(heap) {
   if (heap.u32(0x00630bd0) == 0xffffffff) {
     heap.setU32(0x00630bd0, (unaff_ESI) >>> 0);
   }
-  if ((((heap.u8(unaff_ESI + ((((((uVar6) << 16 >> 16)) >>> 0) >>> 3) + 6)) >>> (uVar6 & 7) & 1) == 0) && (unaff_EBX = ((CONCAT31((regs.eax = callIndirect(heap, int3, unaff_EBX >>> 8)), bVar5 + 1) & 0xffffff03) >>> 0), (heap.u8(unaff_ESI + ((((((((unaff_EBX) & 0xffff)) << 16 >> 16)) >>> 0) >>> 3) + 6)) >>> (((unaff_EBX) & 0xffff) & 7) & 1) == 0)) && (unaff_EBX = ((unaff_EBX ^ 2) >>> 0), (heap.u8(unaff_ESI + ((((((((unaff_EBX) & 0xffff)) << 16 >> 16)) >>> 0) >>> 3) + 6)) >>> (((unaff_EBX) & 0xffff) & 7) & 1) == 0)) {
+  if ((((heap.u8(unaff_ESI + ((((((uVar6) << 16 >> 16)) | 0) >>> 3) + 6)) >>> (uVar6 & 7) & 1) == 0) && (unaff_EBX = ((CONCAT31((regs.eax = callIndirect(heap, int3, unaff_EBX >>> 8)), bVar5 + 1) & 0xffffff03) >>> 0), (heap.u8(unaff_ESI + ((((((((unaff_EBX) & 0xffff)) << 16 >> 16)) | 0) >>> 3) + 6)) >>> (((unaff_EBX) & 0xffff) & 7) & 1) == 0)) && (unaff_EBX = ((unaff_EBX ^ 2) >>> 0), (heap.u8(unaff_ESI + ((((((((unaff_EBX) & 0xffff)) << 16 >> 16)) | 0) >>> 3) + 6)) >>> (((unaff_EBX) & 0xffff) & 7) & 1) == 0)) {
     LAB_00448b71: uVar2 = ((heap.u32(0x00630bd4)) >>> 0);
     pbVar1 = ((heap.u32(0x00630bc8)) >>> 0);
     if (((in_DL != 0xff) && (heap.u32(0x00630bc8) != 0xffffffff)) && ((heap.u32(heap.u32(0x00630bc8) + (4) * 4) & 0xf0) == 0)) {

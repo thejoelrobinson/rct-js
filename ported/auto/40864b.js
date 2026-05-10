@@ -16,7 +16,7 @@ export function FUN_0040864b(heap, param_1, param_2, param_3, param_4) {
     if (param_2 == 0x110) {
     pHVar1 = ((GetParent(heap, param_1)) >>> 0);
     pHVar1 = ((GetDlgItem(heap, pHVar1, 0x40e)) >>> 0);
-    if (pHVar1 != ((0x0) >>> 0)) {
+    if (pHVar1 != ((0x0) | 0)) {
       ShowWindow(heap, pHVar1, 5);
     }
   }

@@ -60,7 +60,7 @@ export function FUN_005d5ff8(heap) {
             }
           }
           if (uVar4 == 0) {
-            if ((heap.u32(((0x0087c3fc) & 0xff) + (((((heap.u8(0x00656b35) & 0x1f)) >>> 0) >>> 3) + ((heap.u8(0x00656b35) >>> 5) >>> 0) * 4) * 4) >>> (heap.u8(0x00656b35) & 7) & 1) != 0) {
+            if ((heap.u32(((0x0087c3fc) & 0xff) + (((((heap.u8(0x00656b35) & 0x1f)) | 0) >>> 3) + ((heap.u8(0x00656b35) >>> 5) >>> 0) * 4) * 4) >>> (heap.u8(0x00656b35) & 7) & 1) != 0) {
               pcVar7 = ((0x0065d92c) >>> 0);
               uVar4 = ((0) >>> 0);
               pcVar8 = ((pcVar6) >>> 0);
@@ -69,7 +69,7 @@ export function FUN_005d5ff8(heap) {
             break;
           }
           uVar4 = ((uVar4 & ~(1 << (uVar2 & 0x1f))) >>> 0);
-        } while ((heap.u8((((0x0087c41c) >>> 0) + (((uVar2) >>> 0) >>> 3) + (in_EDX & 0xff) * 4)) >>> (uVar2 & 7) & 1) != 0);
+        } while ((heap.u8((((0x0087c41c) | 0) + (((uVar2) | 0) >>> 3) + (in_EDX & 0xff) * 4)) >>> (uVar2 & 7) & 1) != 0);
       }
     }
     break LAB_005d60c6;

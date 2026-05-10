@@ -20,7 +20,7 @@ export function FUN_005d5003(heap) {
     if (heap.u8(0x00652288) == 6) {
       uVar1 = ((uVar1 | 0x40) >>> 0);
     }
-    if (heap.u8(0x00652288) == NaN) {
+    if (heap.u8(0x00652288) == 7) {
       uVar1 = ((uVar1 | 0x80) >>> 0);
     }
     if (heap.u8(0x00652288) == 8) {

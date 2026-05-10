@@ -47,7 +47,6 @@ export function FUN_009bbb9b(heap) {
   }
   iVar4 = (((regs.eax = FUN_004083e1(heap, 0x0099a888))) >>> 0);
   if ((iVar4 | 0) != -1) {
-    LAB_009bbdb0: {
     puVar11 = ((0x00981efc) >>> 0);
     sVar7 = ((0x80) & 0xffff);
     heap.setU32(0x009a2004, (iVar4) >>> 0);
@@ -63,13 +62,13 @@ export function FUN_009bbb9b(heap) {
     iVar4 = (((regs.eax = FUN_00408342(heap, heap.u32(0x009a2004), 0x00981efc, 0x80))) >>> 0);
     if ((iVar4 | 0) != -1) {
       pcVar12 = ((0x00981efc) >>> 0);
-      uVar9 = ((((heap.u32(0x00971ed6)) >>> 0)) >>> 0);
+      uVar9 = ((heap.u32(0x00971ed6)) >>> 0);
       iVar4 = ((heap.u32(0x00971ed8) * uVar9) >>> 0);
       pcVar10 = ((heap.u32(0x0099fb7c)) >>> 0);
       while (true) {
         if (uVar9 == 0) {
           pcVar10 = ((pcVar10 + (((heap.u32(0x0099fb88) - heap.u32(0x00971ed6)) + heap.u32(0x0099fb84)) & 0xffff)) >>> 0);
-          uVar9 = ((((heap.u32(0x00971ed6)) >>> 0)) >>> 0);
+          uVar9 = ((heap.u32(0x00971ed6)) >>> 0);
         }
         if (iVar4 == 0) {
           break;
@@ -77,7 +76,9 @@ export function FUN_009bbb9b(heap) {
         if (0x991e97 < pcVar12) {
           iVar5 = (((regs.eax = FUN_00408342(heap, heap.u32(0x009a2004), 0x00981efc, pcVar12 + -0x981efc))) >>> 0);
           if ((iVar5 | 0) == -1) {
-            break LAB_009bbdb0;
+            iVar4 = (((regs.eax = FUN_00408387(heap, heap.u32(0x009a2004)))) >>> 0);
+            uVar6 = ((((((iVar4) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
+            return CONCAT22(uVar6, sVar2);
           }
           pcVar12 = ((0x00981efc) >>> 0);
         }
@@ -105,7 +106,9 @@ export function FUN_009bbb9b(heap) {
       if (pcVar12 + -0x981efc != 0x0) {
         iVar4 = (((regs.eax = FUN_00408342(heap, heap.u32(0x009a2004), 0x00981efc, pcVar12 + -0x981efc))) >>> 0);
         if ((iVar4 | 0) == -1) {
-          break LAB_009bbdb0;
+          iVar4 = (((regs.eax = FUN_00408387(heap, heap.u32(0x009a2004)))) >>> 0);
+          uVar6 = ((((((iVar4) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
+          return CONCAT22(uVar6, sVar2);
         }
       }
       heap.setU32(0x00981efc, (CONCAT31(heap.u32(0x00981efd), 0xc)) >>> 0);
@@ -130,8 +133,7 @@ export function FUN_009bbb9b(heap) {
         break LAB_009bbdbe;
       }
     }
-    }
-    iVar4 = (((regs.eax = FUN_00408387(heap, heap.u32(0x009a2004)))) >>> 0);
+    LAB_009bbdb0: iVar4 = (((regs.eax = FUN_00408387(heap, heap.u32(0x009a2004)))) >>> 0);
   }
   }
   uVar6 = ((((((iVar4) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);

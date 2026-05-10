@@ -66,10 +66,10 @@ export function FUN_0040bc20(heap) {
             if (heap.u32(__addr_local_14) < heap.u32(__addr_local_10)) {
               if (heap.i32((0x005f0504 + in_stack_00000018 * 0x16c)) == 0) {
                 if (heap.i16((heap.i32((0x005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) {
-                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_3c)) >>> 0)), 0x80, heap.u32(__addr_local_10) - heap.u32(__addr_local_14));
+                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_3c)) | 0)), 0x80, heap.u32(__addr_local_10) - heap.u32(__addr_local_14));
                 } else {
                   if (heap.i16((heap.i32((0x005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 0x10) {
-                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_3c)) >>> 0)), 0, heap.u32(__addr_local_10) - heap.u32(__addr_local_14));
+                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_3c)) | 0)), 0, heap.u32(__addr_local_10) - heap.u32(__addr_local_14));
                 }
                 }
                 heap.setU32((0x005f0508 + in_stack_00000018 * 0x16c), (1) & 0xffffffff);
@@ -82,7 +82,7 @@ export function FUN_0040bc20(heap) {
                 heap.setU32(__addr_local_c, (heap.u32(__addr_local_3c)) >>> 0);
                 local_40 = ((heap.u32(__addr_local_10)) >>> 0);
                 do {
-                  heap.setU32(__addr_local_c, ((((heap.u32(__addr_local_c)) >>> 0) + heap.u32(__addr_local_14))) >>> 0);
+                  heap.setU32(__addr_local_c, ((((heap.u32(__addr_local_c)) | 0) + heap.u32(__addr_local_14))) >>> 0);
                   local_40 = ((local_40 - heap.u32(__addr_local_14)) >>> 0);
                   (regs.eax = FUN_0040c93f(heap, in_stack_00000018));
                   heap.setU32(__addr_local_24, ((regs.eax = FUN_004122a3(heap, heap.u32((0x005f04c0 + in_stack_00000018 * 0x16c)), local_40, heap.u32(__addr_local_c), in_stack_00000018 * 0x16c + 0x5f04c4, __addr_local_14))) >>> 0);
@@ -99,10 +99,10 @@ export function FUN_0040bc20(heap) {
             if (heap.u32(__addr_local_14) < heap.u32(__addr_local_38)) {
               if (heap.i32((0x005f0504 + in_stack_00000018 * 0x16c)) == 0) {
                 if (heap.i16((heap.i32((0x005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 8) {
-                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_2c)) >>> 0)), 0x80, heap.u32(__addr_local_38) - heap.u32(__addr_local_14));
+                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_2c)) | 0)), 0x80, heap.u32(__addr_local_38) - heap.u32(__addr_local_14));
                 } else {
                   if (heap.i16((heap.i32((0x005f04bc + in_stack_00000018 * 0x16c)) + 0xe)) == 0x10) {
-                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_2c)) >>> 0)), 0, heap.u32(__addr_local_38) - heap.u32(__addr_local_14));
+                  _memset(heap, (heap.u32(__addr_local_14) + ((heap.u32(__addr_local_2c)) | 0)), 0, heap.u32(__addr_local_38) - heap.u32(__addr_local_14));
                 }
                 }
                 heap.setU32((0x005f0508 + in_stack_00000018 * 0x16c), (1) & 0xffffffff);
@@ -115,7 +115,7 @@ export function FUN_0040bc20(heap) {
                 heap.setU32(__addr_local_c, (heap.u32(__addr_local_2c)) >>> 0);
                 local_40 = ((heap.u32(__addr_local_38)) >>> 0);
                 do {
-                  heap.setU32(__addr_local_c, ((((heap.u32(__addr_local_c)) >>> 0) + heap.u32(__addr_local_14))) >>> 0);
+                  heap.setU32(__addr_local_c, ((((heap.u32(__addr_local_c)) | 0) + heap.u32(__addr_local_14))) >>> 0);
                   local_40 = ((local_40 - heap.u32(__addr_local_14)) >>> 0);
                   (regs.eax = FUN_0040c93f(heap, in_stack_00000018));
                   heap.setU32(__addr_local_24, ((regs.eax = FUN_004122a3(heap, heap.u32((0x005f04c0 + in_stack_00000018 * 0x16c)), local_40, heap.u32(__addr_local_c), in_stack_00000018 * 0x16c + 0x5f04c4, __addr_local_14))) >>> 0);

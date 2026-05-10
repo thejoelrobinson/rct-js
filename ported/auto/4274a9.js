@@ -43,6 +43,6 @@ export function FUN_004274a9(heap) {
   (regs.eax = 0x4285bf, regs.eax = FUN_005e412c(heap));
   uVar2 = ((heap.u32(0x00971edc) >>> 1) & 0xffff);
   heap.setU16((unaff_ESI + ((8) * 4)), ((heap.u32(0x00971eda) >>> 1) - 0x73) & 0xffff);
-  heap.setU16((((unaff_ESI) >>> 0) + 0x22), (uVar2 - 0x5b) & 0xffff);
+  heap.setU16((((unaff_ESI) | 0) + 0x22), (uVar2 - 0x5b) & 0xffff);
   return (regs.eax = FUN_005e43de(heap));
 }

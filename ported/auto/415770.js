@@ -24,14 +24,14 @@ export function FUN_00415770(heap, param_1) {
   do {
     if ((heap.i32(piVar10 + (4) * 4) | 0) != -1) {
       piVar5 = ((heap.i32(piVar10 + (2) * 4)) >>> 0);
-      iVar9 = (((((piVar5) >>> 0) + (-0x18 - ((piVar10) >>> 0)) >>> 3) * 0x1000 + heap.i32(piVar10 + (4) * 4)) >>> 0);
+      iVar9 = (((((piVar5) | 0) + (-0x18 - ((piVar10) | 0)) >>> 3) * 0x1000 + heap.i32(piVar10 + (4) * 4)) >>> 0);
       for (; piVar5 < piVar10 + ((0x806) * 4); piVar5 = (((piVar5 + ((2) * 4)) >>> 0)) >>> 0) {
-        if ((((param_1) >>> 0) <= heap.i32(piVar5)) && (param_1 < ((heap.i32(piVar5 + (1) * 4)) >>> 0))) {
+        if ((((param_1) | 0) <= heap.i32(piVar5)) && (param_1 < ((heap.i32(piVar5 + (1) * 4)) >>> 0))) {
           piVar3 = (((regs.eax = FUN_004159b0(heap, iVar9, heap.i32(piVar5), param_1))) >>> 0);
           if (piVar3 != 0x0) {
             heap.setU32(0x005ee520, (piVar10) >>> 0);
             heap.setU32(piVar5, (heap.i32(piVar5) - param_1) & 0xffffffff);
-            heap.setI32((piVar10 + (2) * 4), (((piVar5) >>> 0)) & 0xffffffff);
+            heap.setI32((piVar10 + (2) * 4), (((piVar5) | 0)) & 0xffffffff);
             return piVar3;
           }
           heap.setI32((piVar5 + (1) * 4), (param_1) & 0xffffffff);
@@ -41,12 +41,12 @@ export function FUN_00415770(heap, param_1) {
       piVar3 = ((heap.i32(piVar10 + (2) * 4)) >>> 0);
       iVar9 = ((heap.i32(piVar10 + (4) * 4)) >>> 0);
       for (piVar5 = ((piVar10 + ((6) * 4)) >>> 0); piVar5 < piVar3; piVar5 = (((piVar5 + ((2) * 4)) >>> 0)) >>> 0) {
-        if ((((param_1) >>> 0) <= heap.i32(piVar5)) && (param_1 < ((heap.i32(piVar5 + (1) * 4)) >>> 0))) {
+        if ((((param_1) | 0) <= heap.i32(piVar5)) && (param_1 < ((heap.i32(piVar5 + (1) * 4)) >>> 0))) {
           piVar4 = (((regs.eax = FUN_004159b0(heap, iVar9, heap.i32(piVar5), param_1))) >>> 0);
           if (piVar4 != 0x0) {
             heap.setU32(0x005ee520, (piVar10) >>> 0);
             heap.setU32(piVar5, (heap.i32(piVar5) - param_1) & 0xffffffff);
-            heap.setI32((piVar10 + (2) * 4), (((piVar5) >>> 0)) & 0xffffffff);
+            heap.setI32((piVar10 + (2) * 4), (((piVar5) | 0)) & 0xffffffff);
             return piVar4;
           }
           heap.setI32((piVar5 + (1) * 4), (param_1) & 0xffffffff);
@@ -67,7 +67,7 @@ export function FUN_00415770(heap, param_1) {
       piVar10 = ((heap.u32((puVar6 + 0x10))) >>> 0);
       heap.setI8((piVar10 + ((2) * 4)), (((param_1) << 24 >> 24)) & 0xff);
       heap.setU32(0x005ee520, (puVar6) >>> 0);
-      heap.setU32(piVar10, (((piVar10) >>> 0) + param_1 + 8) & 0xffffffff);
+      heap.setU32(piVar10, (((piVar10) | 0) + param_1 + 8) & 0xffffffff);
       heap.setI32((piVar10 + (1) * 4), (0xf0 - param_1) & 0xffffffff);
       heap.setU32((puVar6 + 0x18), (heap.i32((puVar6 + 0x18)) - (param_1 & 0xff)) & 0xffffffff);
       return piVar10 + ((0x40) * 4);
@@ -75,7 +75,7 @@ export function FUN_00415770(heap, param_1) {
   }
   ppuVar2 = ((heap.u32(ppuVar8 + (3) * 4)) >>> 0);
   puVar6 = ((heap.u32(ppuVar2)) >>> 0);
-  piVar10 = (((heap.u32(ppuVar8 + (4) * 4) + (((ppuVar2) >>> 0) + (-0x18 - ((ppuVar8) >>> 0)) >>> 3) * 0x1000)) >>> 0);
+  piVar10 = (((heap.u32(ppuVar8 + (4) * 4) + (((ppuVar2) | 0) + (-0x18 - ((ppuVar8) | 0)) >>> 3) * 0x1000)) >>> 0);
   ppuVar7 = ((ppuVar2) >>> 0);
   for (iVar9 = ((0) >>> 0); (puVar6 == 0xffffffff && (iVar9 < 0x10)); iVar9 = (((iVar9 + 1) >>> 0)) >>> 0) {
     puVar6 = ((heap.u32(ppuVar7 + (2) * 4)) >>> 0);
@@ -90,7 +90,7 @@ export function FUN_00415770(heap, param_1) {
     piVar5 = ((piVar10 + ((1) * 4)) >>> 0);
     do {
       heap.setU32(piVar5, (0xf0) & 0xffffffff);
-      heap.setI32((piVar5 + (-1) * 4), ((((piVar5 + ((1) * 4))) >>> 0)) & 0xffffffff);
+      heap.setI32((piVar5 + (-1) * 4), ((((piVar5 + ((1) * 4))) | 0)) & 0xffffffff);
       heap.setU8((piVar5 + ((0x3d) * 4)), (0xff) & 0xff);
       heap.setU32(ppuVar7, (0xf0) & 0xffffffff);
       heap.setU32((ppuVar7 + (1) * 4), (0xf1) & 0xffffffff);
@@ -116,6 +116,6 @@ export function FUN_00415770(heap, param_1) {
   heap.setU32((ppuVar8 + (2) * 4), (ppuVar2) & 0xffffffff);
   heap.setU32(ppuVar2, (heap.u32(ppuVar2) + -param_1) & 0xffffffff);
   heap.setI32((piVar10 + (1) * 4), (heap.i32(piVar10 + (1) * 4) - param_1) & 0xffffffff);
-  heap.setU32(piVar10, (((piVar10) >>> 0) + param_1 + 8) & 0xffffffff);
+  heap.setU32(piVar10, (((piVar10) | 0) + param_1 + 8) & 0xffffffff);
   return piVar10 + ((0x40) * 4);
 }

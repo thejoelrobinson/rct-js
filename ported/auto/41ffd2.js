@@ -6,7 +6,7 @@
 
 export function FUN_0041ffd2(heap) {
   let uVar1 = 0;
-  uVar1 = ((((heap.u32(0x008ae980)) >>> 0)) >>> 0);
+  uVar1 = ((heap.u32(0x008ae980)) >>> 0);
   if (uVar1 != 0) {
     uVar1 = ((uVar1 + 10) >>> 0);
   }

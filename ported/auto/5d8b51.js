@@ -9,8 +9,8 @@ import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_005d8b51(heap) {
   let unaff_ESI = regs.esi >>> 0;
   let unaff_EDI = regs.edi >>> 0;
-  heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) | 4) & 0xffff);
-  heap.setU16((((0x00887422) >>> 0) + unaff_EDI), (heap.u16((((0x00887422) >>> 0) + unaff_EDI)) & 0xfff7) & 0xffff);
+  heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) | 4) & 0xffff);
+  heap.setU16((((0x00887422) | 0) + unaff_EDI), (heap.u16((((0x00887422) | 0) + unaff_EDI)) & 0xfff7) & 0xffff);
   heap.setU16((unaff_ESI + 0x48), (heap.u16((unaff_ESI + 0x48)) | 0x20) & 0xffff);
   heap.setU32((0x008874a8 + unaff_EDI), (0) & 0xffffffff);
   heap.setU32((0x008874ac + unaff_EDI), (0) & 0xffffffff);

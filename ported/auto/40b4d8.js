@@ -60,10 +60,10 @@ export function FUN_0040b4d8(heap) {
             iVar1 = (((regs.eax = callIndirect(heap, heap.u32((heap.u32(heap.u32(0x005ebf34)) + 0x70)), heap.u32(0x005ebf34), heap.u32(0x005ebf44)))) >>> 0);
             if (iVar1 == 0) {
               if (heap.u32(0x005f1380) == 8) {
-                hdc = ((GetDC(heap, ((0x0) >>> 0))) >>> 0);
+                hdc = ((GetDC(heap, ((0x0) | 0))) >>> 0);
                 GetSystemPaletteEntries(heap, hdc, 0, 10, __addr_local_404);
-                GetSystemPaletteEntries(heap, hdc, 0xf6, 10, (((__addr_aBStack_3dc + 0x3b0)) >>> 0));
-                ReleaseDC(heap, ((0x0) >>> 0), hdc);
+                GetSystemPaletteEntries(heap, hdc, 0xf6, 10, (((__addr_aBStack_3dc + 0x3b0)) | 0));
+                ReleaseDC(heap, ((0x0) | 0), hdc);
                 for (local_478 = ((0) >>> 0); local_478 < 10; local_478 = (((local_478 + 1) >>> 0)) >>> 0) {
                   heap.setU8((heap.u32(__addr_local_404 + (local_478) * 4) + 3), (2) & 0xff);
                   heap.setU8((heap.u32(__addr_local_2c + (local_478) * 4) + 3), (2) & 0xff);

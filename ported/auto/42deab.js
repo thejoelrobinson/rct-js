@@ -31,8 +31,8 @@ export function FUN_0042deab(heap) {
     heap.setU16((unaff_ESI + 0x26), ((uVar1 & 0xff) * 0xc) & 0xffff);
     heap.setU16((unaff_ESI + 0x24), ((uVar1 & 0x7f) + 0x8c) & 0xffff);
     heap.setU16((unaff_ESI + 0x2e), ((((((uVar2 >>> 0x17) & 0xffff) & 0xff) * 5) & 0xffff) >>> 8) & 0xffff);
-    heap.setI32((unaff_ESI + 0x38), (((((uVar1) << 16 >> 16)) >>> 0) << 2) & 0xffffffff);
-    heap.setI32((unaff_ESI + 0x3c), ((((uVar2) >>> 0) >>> 0x10) << 2) & 0xffffffff);
+    heap.setI32((unaff_ESI + 0x38), (((((uVar1) << 16 >> 16)) | 0) << 2) & 0xffffffff);
+    heap.setI32((unaff_ESI + 0x3c), ((((uVar2) | 0) >>> 0x10) << 2) & 0xffffffff);
     heap.setU32((unaff_ESI + 0x40), ((uVar2 >>> 8 & 0xffff) * 4 + 0x10000) & 0xffffffff);
     heap.setU16((unaff_ESI + 0x30), (0) & 0xffff);
     heap.setU16((unaff_ESI + 0x32), (0) & 0xffff);

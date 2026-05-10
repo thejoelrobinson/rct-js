@@ -100,7 +100,7 @@ export function FUN_0043c49e(heap) {
     }
   }
   heap.setI8((unaff_ESI + 0x1e), (((uVar12) << 24 >> 24)) & 0xff);
-  sVar4 = ((heap.i16((((0x00629264) >>> 0) + (uVar12 >>> 1)))) & 0xffff);
+  sVar4 = ((heap.i16((((0x00629264) | 0) + (uVar12 >>> 1)))) & 0xffff);
   iVar13 = ((heap.u8((unaff_ESI + 0xe0)) + 1) >>> 0);
   pbVar5 = ((heap.u32((heap.u32((0x0062d640) + (heap.u32((unaff_ESI + 0x2d)) * 2) * 4) + heap.u32((unaff_ESI + 0x6e)) * 8 + 4))) >>> 0);
   if (heap.u8(pbVar5) <= ((iVar13) & 0xff)) {

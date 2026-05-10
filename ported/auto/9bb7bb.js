@@ -17,8 +17,8 @@ export function FUN_009bb7bb(heap) {
   let pcVar8 = 0;
   let puVar9 = 0;
   if (heap.u8(0x009b2300) == 1) {
-    pcVar8 = ((0x005f2000 + ((heap.u32(0x008dff1c)) >>> 0) * 4) >>> 0);
-    uVar3 = ((((heap.u32(0x008dff18)) >>> 0)) >>> 0);
+    pcVar8 = ((0x005f2000 + heap.u32(0x008dff1c) * 4) >>> 0);
+    uVar3 = ((heap.u32(0x008dff18)) >>> 0);
     pcVar5 = ((heap.u32(0x008dff14)) >>> 0);
     do {
       heap.setU32(pcVar8, (-1 - (((-heap.i8(pcVar5) - 1) & 0xff) >>> 1)) & 0xffffffff);
@@ -32,8 +32,8 @@ export function FUN_009bb7bb(heap) {
     heap.setU8(0x009b2300, (heap.u8(0x009b2300) + 1) & 0xff);
   } else {
     if (heap.u8(0x009b2300) == 2) {
-      puVar9 = (((0x005f2000 + ((heap.u32(0x008dff1c)) >>> 0) * 4)) >>> 0);
-      uVar3 = ((((heap.u32(0x008dff18)) >>> 0)) >>> 0);
+      puVar9 = (((0x005f2000 + heap.u32(0x008dff1c) * 4)) >>> 0);
+      uVar3 = ((heap.u32(0x008dff18)) >>> 0);
       pcVar5 = ((heap.u32(0x008dff14)) >>> 0);
       do {
         heap.setU32(puVar9, (heap.u16(pcVar5)) & 0xffffffff);
@@ -45,7 +45,7 @@ export function FUN_009bb7bb(heap) {
     }
     puVar9 = ((0x005f2398) >>> 0);
     iVar4 = ((0) >>> 0);
-    if (((heap.i32((0x00628a3c + ((heap.u8(0x008d7eb4)) >>> 0) * 4)) | 0) != -1) && (iVar4 = ((1) >>> 0), heap.i32((0x00628a3c + ((heap.u8(0x008d7eb4)) >>> 0) * 4)) != 0x200002a)) {
+    if (((heap.i32((0x00628a3c + heap.u32(0x008d7eb4) * 4)) | 0) != -1) && (iVar4 = ((1) >>> 0), heap.i32((0x00628a3c + heap.u32(0x008d7eb4) * 4)) != 0x200002a)) {
       iVar4 = ((2) >>> 0);
     }
     iVar1 = ((heap.u32((0x008dc0b4) + ((iVar4 + 999) * 4) * 4)) >>> 0);
@@ -54,7 +54,7 @@ export function FUN_009bb7bb(heap) {
     do {
       heap.setU32(puVar9, (heap.u16(puVar7)) & 0xffffffff);
       heap.setU8((puVar9 + ((1) * 2)), (heap.u8((puVar7 + ((1) * 2)))) & 0xff);
-      puVar6 = (((((puVar7) >>> 0) + 9)) >>> 0);
+      puVar6 = (((((puVar7) | 0) + 9)) >>> 0);
       if ((iVar1 + 0x2d) <= puVar6) {
         puVar6 = ((puVar7 + ((-0x12) * 2)) >>> 0);
       }
@@ -68,7 +68,7 @@ export function FUN_009bb7bb(heap) {
     do {
       heap.setU32(puVar9, (heap.u16(puVar7)) & 0xffffffff);
       heap.setU8((puVar9 + ((1) * 2)), (heap.u8((puVar7 + ((1) * 2)))) & 0xff);
-      puVar6 = (((((puVar7) >>> 0) + 9)) >>> 0);
+      puVar6 = (((((puVar7) | 0) + 9)) >>> 0);
       if ((iVar1 + 0x2d) <= puVar6) {
         puVar6 = ((puVar7 + ((-0x12) * 2)) >>> 0);
       }
@@ -82,7 +82,7 @@ export function FUN_009bb7bb(heap) {
     do {
       heap.setU32(puVar9, (heap.u16(puVar7)) & 0xffffffff);
       heap.setU8((puVar9 + ((1) * 2)), (heap.u8((puVar7 + ((1) * 2)))) & 0xff);
-      puVar6 = (((((puVar7) >>> 0) + 3)) >>> 0);
+      puVar6 = (((((puVar7) | 0) + 3)) >>> 0);
       if ((iVar4 + 9) <= puVar6) {
         puVar6 = ((puVar7 + ((-3) * 2)) >>> 0);
       }

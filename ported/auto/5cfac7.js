@@ -50,8 +50,8 @@ export function FUN_005cfac7(heap) {
   bVar8 = ((((uVar9 >>> 8) & 0xff)) & 0xff);
   heap.setU32(0x00652471, (((uVar9) & 0xff) | bVar8) >>> 0);
   if (bVar8 == 0) {
-    uVar3 = ((CONCAT22((((((uVar3) >>> 0) >>> 0x10)) << 16 >> 16), ((uVar3) << 16 >> 16) + heap.u32((0x00652478) + (((heap.u32(0x00652471)) >>> 0) * 2) * 4))) >>> 0);
-    uVar5 = ((uVar5 + heap.u32((0x0065247a) + (((heap.u32(0x00652471)) >>> 0) * 2) * 4)) & 0xffff);
+    uVar3 = ((CONCAT22((((((uVar3) >>> 0) >>> 0x10)) << 16 >> 16), ((uVar3) << 16 >> 16) + heap.u32((0x00652478) + (heap.u32(0x00652471) * 2) * 4))) >>> 0);
+    uVar5 = ((uVar5 + heap.u32((0x0065247a) + (heap.u32(0x00652471) * 2) * 4)) & 0xffff);
   }
   uVar5 = ((uVar5 << 7 | uVar5 >>> 9 | ((uVar3) & 0xffff)) & 0xffff);
   pbVar10 = ((heap.u32((0x00971ef4) + (((uVar5 >>> 5 | uVar5 << 0xb) & 0xffff)) * 4)) >>> 0);

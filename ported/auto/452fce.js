@@ -42,11 +42,11 @@ export function FUN_00452fce(heap) {
         if (unaff_EBX == 0x8000) {
           iVar4 = ((0) >>> 0);
         } else {
-          uVar2 = ((((heap.u32(0x00971ed6)) >>> 0)) >>> 0);
+          uVar2 = ((heap.u32(0x00971ed6)) >>> 0);
           if (uVar2 < 0x40) {
             uVar2 = ((0x40) >>> 0);
           }
-          iVar4 = (((unaff_EBX << 0x10) / ((uVar2) >>> 0) + -0x8000 >>> 4) >>> 0);
+          iVar4 = (((unaff_EBX << 0x10) / ((uVar2) | 0) + -0x8000 >>> 4) >>> 0);
         }
         if (heap.u8(0x005f8d59) == 0) {
           iVar4 = ((0) >>> 0);

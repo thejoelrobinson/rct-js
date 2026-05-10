@@ -37,12 +37,12 @@ export function FUN_00416a50(heap, param_1, param_2, param_3) {
   } else {
     puVar4 = ((puVar4 + heap.i32(piVar2 + (1) * 4)) >>> 0);
   }
-  if (0 < ((param_3) >>> 0)) {
+  if (0 < ((param_3) | 0)) {
     (regs.eax = FUN_00416cd0(heap, puVar4, 1));
     heap.setU32(puVar4, (heap.u32(0x005ee758)) & 0xffffffff);
     iVar1 = ((heap.i32(piVar2 + (1) * 4)) >>> 0);
     if (iVar1 < 0) {
-      if ((heap.u8(0x005f0254) != 0) || (-iVar1 <= ((param_3) >>> 0))) {
+      if ((heap.u8(0x005f0254) != 0) || (-iVar1 <= ((param_3) | 0))) {
         param_3 = ((-iVar1) >>> 0);
       }
       (regs.eax = FUN_00416cd0(heap, puVar4 + 1, param_3));
@@ -53,7 +53,7 @@ export function FUN_00416a50(heap, param_1, param_2, param_3) {
       }
       for (param_3 = ((param_3 & 3) >>> 0); param_3 != 0; param_3 = (((param_3 - 1) >>> 0)) >>> 0) {
         heap.setU8(puVar5, (0x30) & 0xff);
-        puVar5 = (((((puVar5) >>> 0) + 1)) >>> 0);
+        puVar5 = (((((puVar5) | 0) + 1)) >>> 0);
       }
     }
   }

@@ -20,13 +20,13 @@ export function FUN_0043645c(heap) {
   iVar1 = ((0x4000) >>> 0);
   do {
     heap.setU8(puVar2, (0) & 0xff);
-    heap.setU8((((puVar2) >>> 0) + 1), (0x80) & 0xff);
-    heap.setU8((((puVar2) >>> 0) + 2), (4) & 0xff);
-    heap.setU8((((puVar2) >>> 0) + 3), (0) & 0xff);
+    heap.setU8((((puVar2) | 0) + 1), (0x80) & 0xff);
+    heap.setU8((((puVar2) | 0) + 2), (4) & 0xff);
+    heap.setU8((((puVar2) | 0) + 3), (0) & 0xff);
     heap.setU8((puVar2 + ((1) * 4)), (0) & 0xff);
-    heap.setU8((((puVar2) >>> 0) + 5), (0) & 0xff);
-    heap.setU8((((puVar2) >>> 0) + 6), (1) & 0xff);
-    heap.setU8((((puVar2) >>> 0) + 7), (0) & 0xff);
+    heap.setU8((((puVar2) | 0) + 5), (0) & 0xff);
+    heap.setU8((((puVar2) | 0) + 6), (1) & 0xff);
+    heap.setU8((((puVar2) | 0) + 7), (0) & 0xff);
     puVar2 = ((puVar2 + ((2) * 4)) >>> 0);
     iVar1 = ((iVar1 + -1) >>> 0);
   } while (iVar1 != 0);

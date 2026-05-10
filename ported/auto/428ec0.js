@@ -39,7 +39,7 @@ export function FUN_00428ec0(heap) {
   }
   sVar1 = ((0x28a - (0x96 - (uVar2 / 0xd & 0xff))) & 0xffff);
   if (heap.u32(0x0087c81c) != 0) {
-    uVar2 = (((((((uVar5) >>> 0) * 300) / ((heap.u32(0x0087c81c)) >>> 0)) & 0xffff)) & 0xffff);
+    uVar2 = (((((((uVar5) >>> 0) * 300) / heap.u32(0x0087c81c)) & 0xffff)) & 0xffff);
     if (0xf9 < uVar2) {
       uVar2 = ((0xfa) & 0xffff);
     }

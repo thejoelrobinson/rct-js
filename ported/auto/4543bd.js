@@ -27,7 +27,7 @@ export function FUN_004543bd(heap) {
       uVar3 = ((uVar2) >>> 0);
     }
     uVar3 = (((uVar3 >>> 1) - 6) >>> 0);
-    if (((uVar3) >>> 0) < 0) {
+    if (((uVar3) | 0) < 0) {
       if (heap.u32(0x00632978) != 1) {
         (regs.eax = FUN_0040d575(heap, 2));
         heap.setU32(0x00632978, (1) >>> 0);

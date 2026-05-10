@@ -14,7 +14,6 @@ export function FUN_0043670c(heap) {
   let unaff_BH = (regs.ebx >>> 8) & 0xff;
   let puVar2 = 0;
   let puVar3 = 0;
-  LAB_00436759: {
   uVar1 = (((regs.eax = FUN_0043657e(heap))) & 0xffff);
   uVar1 = ((extraout_CX << 7 | extraout_CX >>> 9 | uVar1) & 0xffff);
   LOCK();
@@ -24,28 +23,40 @@ export function FUN_0043670c(heap) {
   do {
     puVar3 = ((heap.u32(0x00981ef4)) >>> 0);
     heap.setU32(0x00981ef4, (puVar3) >>> 0);
-    if (unaff_BL < heap.u8((((puVar2) >>> 0) + 2))) {
-      break LAB_00436759;
+    if (unaff_BL < heap.u8((((puVar2) | 0) + 2))) {
+      heap.setU8((heap.i32(0x00981ef4) + 2), (unaff_BL) & 0xff);
+      heap.setU8((heap.i32(0x00981ef4) + 1), (unaff_BH) & 0xff);
+      heap.setU8((heap.i32(0x00981ef4) + 3), (unaff_BL) & 0xff);
+      heap.setU32((heap.u32(0x00981ef4) + (1) * 4), (0) & 0xffffffff);
+      while (puVar3 = ((heap.u32(0x00981ef4) + 2) >>> 0), (unaff_BH & 0x80) == 0) {
+        heap.setU32(puVar3, (heap.u32(puVar2)) & 0xffffffff);
+        heap.setU32((heap.u32(0x00981ef4) + (3) * 4), (heap.u32(puVar2 + (1) * 4)) & 0xffffffff);
+        heap.setU8(puVar2, (0xff) & 0xff);
+        puVar2 = ((puVar2 + ((2) * 4)) >>> 0);
+        unaff_BH = ((heap.u8((heap.i32(0x00981ef4) + 9))) & 0xff);
+        heap.setU32(0x00981ef4, (puVar3) >>> 0);
+      }
+      heap.setU32(0x00981ef4, (puVar3) >>> 0);
+      return;
     }
     heap.setU32(puVar3, (heap.u32(puVar2)) & 0xffffffff);
     heap.setU32((puVar3 + (1) * 4), (heap.u32(puVar2 + (1) * 4)) & 0xffffffff);
     heap.setU8(puVar2, (0xff) & 0xff);
     heap.setU32(0x00981ef4, (puVar3 + ((2) * 4)) >>> 0);
     puVar2 = ((puVar2 + ((2) * 4)) >>> 0);
-  } while ((heap.u8((((puVar3) >>> 0) + 1)) & 0x80) == 0);
+  } while ((heap.u8((((puVar3) | 0) + 1)) & 0x80) == 0);
   unaff_BH = ((unaff_BH | 0x80) & 0xff);
-  heap.setU8((((puVar3) >>> 0) + 1), (heap.u8((((puVar3) >>> 0) + 1)) & 0x7f) & 0xff);
-  }
-  heap.setU8((((heap.u32(0x00981ef4)) >>> 0) + 2), (unaff_BL) & 0xff);
-  heap.setU8((((heap.u32(0x00981ef4)) >>> 0) + 1), (unaff_BH) & 0xff);
-  heap.setU8((((heap.u32(0x00981ef4)) >>> 0) + 3), (unaff_BL) & 0xff);
+  heap.setU8((((puVar3) | 0) + 1), (heap.u8((((puVar3) | 0) + 1)) & 0x7f) & 0xff);
+  LAB_00436759: heap.setU8((heap.i32(0x00981ef4) + 2), (unaff_BL) & 0xff);
+  heap.setU8((heap.i32(0x00981ef4) + 1), (unaff_BH) & 0xff);
+  heap.setU8((heap.i32(0x00981ef4) + 3), (unaff_BL) & 0xff);
   heap.setU32((heap.u32(0x00981ef4) + (1) * 4), (0) & 0xffffffff);
   while (puVar3 = ((heap.u32(0x00981ef4) + 2) >>> 0), (unaff_BH & 0x80) == 0) {
     heap.setU32(puVar3, (heap.u32(puVar2)) & 0xffffffff);
     heap.setU32((heap.u32(0x00981ef4) + (3) * 4), (heap.u32(puVar2 + (1) * 4)) & 0xffffffff);
     heap.setU8(puVar2, (0xff) & 0xff);
     puVar2 = ((puVar2 + ((2) * 4)) >>> 0);
-    unaff_BH = ((heap.u8((((heap.u32(0x00981ef4)) >>> 0) + 9))) & 0xff);
+    unaff_BH = ((heap.u8((heap.i32(0x00981ef4) + 9))) & 0xff);
     heap.setU32(0x00981ef4, (puVar3) >>> 0);
   }
   heap.setU32(0x00981ef4, (puVar3) >>> 0);

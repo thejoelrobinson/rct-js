@@ -18,7 +18,7 @@ export function FUN_00436558(heap) {
     puVar3 = ((heap.u32(0x00981ef4)) >>> 0);
     do {
       heap.setU32(0x00981ef4, (puVar3 + ((2) * 4)) >>> 0);
-      pbVar1 = (((((puVar3) >>> 0) + 1)) >>> 0);
+      pbVar1 = (((((puVar3) | 0) + 1)) >>> 0);
       puVar3 = ((heap.u32(0x00981ef4)) >>> 0);
     } while ((heap.u8(pbVar1) & 0x80) == 0);
     iVar2 = ((iVar2 + -1) >>> 0);

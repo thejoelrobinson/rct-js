@@ -11,21 +11,21 @@ export function FUN_00455a66(heap) {
   let uVar1 = 0;
   let unaff_ESI = regs.esi >>> 0;
   let bVar2 = 0;
-  LAB_00455aa6: {
   bVar2 = ((heap.u32(((0x00743bc3) & 0xff) + (heap.u32((unaff_ESI + 0x30)) * 0x100) * 4) < 2) & 0xff);
   uVar1 = (((regs.eax = 0x80, regs.esi = 0x743b94, regs.eax = FUN_0043feb6(heap))) >>> 0);
   if (bVar2) {
     uVar1 = ((uVar1 | 0x2000) >>> 0);
     if ((heap.u32((unaff_ESI + 0x10)) >>> 0xd & 1) != 0) {
-      break LAB_00455aa6;
+      heap.setU32((unaff_ESI + 0x10), (uVar1) & 0xffffffff);
+      return;
     }
   } else {
     if ((heap.u32((unaff_ESI + 0x10)) >>> 0xd & 1) == 0) {
-    break LAB_00455aa6;
+    heap.setU32((unaff_ESI + 0x10), (uVar1) & 0xffffffff);
+    return;
   }
   }
   uVar1 = (((regs.eax = FUN_005e43de(heap))) >>> 0);
-  }
-  heap.setU32((unaff_ESI + 0x10), (uVar1) & 0xffffffff);
+  LAB_00455aa6: heap.setU32((unaff_ESI + 0x10), (uVar1) & 0xffffffff);
   return;
 }

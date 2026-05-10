@@ -22,7 +22,7 @@ export function FUN_00411a34(heap, param_1, param_2, param_3, param_4, param_5, 
     heap.setU32(__addr_local_78, (-0x7fffbffb) >>> 0);
   } else {
     (regs.eax = callIndirect(heap, heap.u32((heap.i32(param_1) + 0x6c)), param_1));
-    heap.setU32(__addr_local_74, (CreateCompatibleDC(heap, ((0x0) >>> 0))) >>> 0);
+    heap.setU32(__addr_local_74, (CreateCompatibleDC(heap, ((0x0) | 0))) >>> 0);
     SelectObject(heap, heap.u32(__addr_local_74), param_2);
     GetObjectA(heap, param_2, 0x18, __addr_local_90);
     if (param_5 == 0) {

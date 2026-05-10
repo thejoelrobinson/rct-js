@@ -23,5 +23,5 @@ export function FUN_004156b0(heap, param_1, param_2, param_3) {
   heap.setU32(param_2, (ppuVar1) & 0xffffffff);
   uVar2 = ((((param_1) >>> 0) & 0xfffff000) >>> 0);
   heap.setU32(param_3, (uVar2) & 0xffffffff);
-  return ((((param_1 + (-0x100 - uVar2))) >>> 0) >>> 4) + 8 + uVar2;
+  return ((((param_1 + (-0x100 - uVar2))) | 0) >>> 4) + 8 + uVar2;
 }

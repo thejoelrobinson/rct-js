@@ -14,9 +14,9 @@ export function FUN_004100f9(heap, param_1, param_2, param_3) {
   bVar1 = ((false) & 0xff);
   if ((heap.i32((param_1 + 0x90)) == 0) && (heap.i32((param_3 + 0x90)) != 0)) {
     hdc = ((GetDC(heap, heap.u32(0x005e916c))) >>> 0);
-    if (hdc != ((0x0) >>> 0)) {
+    if (hdc != ((0x0) | 0)) {
       hdc_00 = ((CreateCompatibleDC(heap, hdc)) >>> 0);
-      bVar1 = ((hdc_00 != ((0x0) >>> 0)) & 0xff);
+      bVar1 = ((hdc_00 != ((0x0) | 0)) & 0xff);
       if (bVar1) {
         h = ((SelectObject(heap, hdc_00, heap.i32((param_1 + 0x8c)))) >>> 0);
         hPal = ((SelectPalette(heap, hdc, heap.u32(0x005ec0d8), 0)) >>> 0);

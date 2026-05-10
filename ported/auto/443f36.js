@@ -15,8 +15,8 @@ export function FUN_00443f36(heap) {
   do {
     iVar2 = ((iVar3 + -4) >>> 0);
     LOCK();
-    uVar1 = ((heap.u32((((0x0087c81c) >>> 0) + iVar3))) >>> 0);
-    heap.setU32((((0x0087c81c) >>> 0) + iVar3), (0) & 0xffffffff);
+    uVar1 = ((heap.u32((((0x0087c81c) | 0) + iVar3))) >>> 0);
+    heap.setU32((((0x0087c81c) | 0) + iVar3), (0) & 0xffffffff);
     UNLOCK();
     heap.setU32((iVar3 + 0x87c854), (uVar1) & 0xffffffff);
     iVar3 = ((iVar2) >>> 0);

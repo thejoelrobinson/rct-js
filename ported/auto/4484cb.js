@@ -143,7 +143,7 @@ export function FUN_004484cb(heap) {
           iVar14 = ((uVar20 << 8) >>> 0);
           uVar26 = ((CONCAT44(iVar14, uVar6)) >>> 0);
           if ((((uVar20) << 24 >> 24) == 4) && (uVar26 = ((CONCAT44(iVar14, uVar6)) >>> 0), heap.u8(0x00630b3c) == 1)) {
-            heap.setU8((unaff_ESI + ((((((uVar8) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(unaff_ESI + ((((((uVar8) << 16 >> 16)) >>> 0) >>> 3) + 6)) | 1 << (uVar8 & 7)) & 0xff);
+            heap.setU8((unaff_ESI + ((((((uVar8) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(unaff_ESI + ((((((uVar8) << 16 >> 16)) | 0) >>> 3) + 6)) | 1 << (uVar8 & 7)) & 0xff);
             uVar26 = (((regs.eax = FUN_005e56d3(heap, unaff_ESI, unaff_EDI))) >>> 0);
             uVar11 = ((extraout_ECX_00) >>> 0);
           }
@@ -184,7 +184,7 @@ export function FUN_004484cb(heap) {
             heap.setU32(0x00630b30, (heap.u32(0x00630b30) + 2) >>> 0);
           }
           }
-          if ((heap.u8(0x00630b3c) == 1) && (heap.setU8((pbVar23 + (((((((uVar8 ^ 2)) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar23 + (((((((uVar8 ^ 2)) << 16 >> 16)) >>> 0) >>> 3) + 6)) | 1 << ((uVar8 ^ 2) & 7)) & 0xff), (heap.u8(pbVar23 + (4)) & 0xf0) == 0)) {
+          if ((heap.u8(0x00630b3c) == 1) && (heap.setU8((pbVar23 + (((((((uVar8 ^ 2)) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar23 + (((((((uVar8 ^ 2)) << 16 >> 16)) | 0) >>> 3) + 6)) | 1 << ((uVar8 ^ 2) & 7)) & 0xff), (heap.u8(pbVar23 + (4)) & 0xf0) == 0)) {
             (regs.eax = FUN_00448d15(heap, uVar15, uVar7, uVar5));
           }
           (regs.eax = FUN_0044149a(heap, uVar15));
@@ -234,7 +234,7 @@ export function FUN_004484cb(heap) {
   }
   uVar25 = ((CONCAT44(uVar20, uVar6)) >>> 0);
   if (0x00630b34 < heap.u32(0x00630b30)) {
-    uVar19 = ((((heap.u8(0x00630b35)) >>> 0)) >>> 0);
+    uVar19 = ((heap.u32(0x00630b35)) >>> 0);
     heap.setU8(0x00630b34, (heap.u8(0x00630b36)) & 0xff);
     heap.setU8(0x00630b35, (((heap.u16(0x00630b36) >>> 8) & 0xff)) & 0xff);
     heap.setU8(0x00630b36, (heap.u8(0x00630b38)) & 0xff);
@@ -277,17 +277,17 @@ export function FUN_004484cb(heap) {
     LAB_00448951: if ((((heap.u8(pbVar24) & 0x3c) == 4) && ((heap.u8(pbVar24 + (4)) & 4) == 0)) && ((heap.u8(pbVar24 + (4)) >>> 4 != 0 && (bVar17 == heap.u8(pbVar24 + (2)))))) {
       uVar10 = ((((uVar20) << 16 >> 16) + 1 & 3) & 0xffff);
       uVar18 = ((uVar10 + 4) & 0xffff);
-      heap.setU8((pbVar24 + ((((((uVar18) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar24 + ((((((uVar18) << 16 >> 16)) >>> 0) >>> 3) + 6)) | 1 << (uVar18 & 7)) & 0xff);
+      heap.setU8((pbVar24 + ((((((uVar18) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar24 + ((((((uVar18) << 16 >> 16)) | 0) >>> 3) + 6)) | 1 << (uVar18 & 7)) & 0xff);
       (regs.eax = FUN_005e56d3(heap, pbVar24, unaff_EDI, pbVar23, uVar9, uVar8, pbVar22, uVar7, uVar5));
       uVar5 = ((uVar10 - 1 & 3) & 0xffff);
       uVar7 = ((uVar5 + 4) & 0xffff);
-      heap.setU8((pbVar23 + ((((((uVar7) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar23 + ((((((uVar7) << 16 >> 16)) >>> 0) >>> 3) + 6)) | 1 << (uVar7 & 7)) & 0xff);
+      heap.setU8((pbVar23 + ((((((uVar7) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar23 + ((((((uVar7) << 16 >> 16)) | 0) >>> 3) + 6)) | 1 << (uVar7 & 7)) & 0xff);
       (regs.eax = FUN_005e56d3(heap, pbVar23));
       uVar5 = (((uVar5 - 1 & 3) + 4) & 0xffff);
-      heap.setU8((pbVar22 + ((((((uVar5) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(pbVar22 + ((((((uVar5) << 16 >> 16)) >>> 0) >>> 3) + 6)) | 1 << (uVar5 & 7)) & 0xff);
+      heap.setU8((pbVar22 + ((((((uVar5) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(pbVar22 + ((((((uVar5) << 16 >> 16)) | 0) >>> 3) + 6)) | 1 << (uVar5 & 7)) & 0xff);
       (regs.eax = FUN_005e56d3(heap, pbVar22));
       uVar5 = (((((uVar19) & 0xffff) & 3) + 4) & 0xffff);
-      heap.setU8((unaff_ESI + ((((((uVar5) << 16 >> 16)) >>> 0) >>> 3) + 6)), (heap.u8(unaff_ESI + ((((((uVar5) << 16 >> 16)) >>> 0) >>> 3) + 6)) | 1 << (uVar5 & 7)) & 0xff);
+      heap.setU8((unaff_ESI + ((((((uVar5) << 16 >> 16)) | 0) >>> 3) + 6)), (heap.u8(unaff_ESI + ((((((uVar5) << 16 >> 16)) | 0) >>> 3) + 6)) | 1 << (uVar5 & 7)) & 0xff);
       uVar6 = (((regs.eax = FUN_005e56d3(heap))) >>> 0);
       uVar11 = ((extraout_ECX_01) >>> 0);
       break;

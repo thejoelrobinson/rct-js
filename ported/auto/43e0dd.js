@@ -50,7 +50,7 @@ export function FUN_0043e0dd(heap) {
             do {
               if ((heap.u8(pbVar10) & 0x3c) == 8) {
                 bVar7 = ((heap.u8(pbVar10 + (7))) & 0xff);
-                heap.setU32(((0x00629288) + (((((bVar7 & 0x1f)) >>> 0) >>> 3) + ((bVar7 >>> 5) >>> 0) * 4) * 4), (heap.u32((0x00629288) + (((((bVar7 & 0x1f)) >>> 0) >>> 3) + ((bVar7 >>> 5) >>> 0) * 4) * 4) | 1 << (bVar7 & 7)) & 0xffffffff);
+                heap.setU32(((0x00629288) + (((((bVar7 & 0x1f)) | 0) >>> 3) + ((bVar7 >>> 5) >>> 0) * 4) * 4), (heap.u32((0x00629288) + (((((bVar7 & 0x1f)) | 0) >>> 3) + ((bVar7 >>> 5) >>> 0) * 4) * 4) | 1 << (bVar7 & 7)) & 0xffffffff);
               }
               pbVar1 = ((pbVar10 + 1) >>> 0);
               pbVar10 = ((pbVar10 + 8) >>> 0);
@@ -70,7 +70,7 @@ export function FUN_0043e0dd(heap) {
       pcVar12 = ((0x00887420) >>> 0);
       do {
         if ((heap.i8(pcVar12) | 0) != -1) {
-          heap.setU32(((0x00629288) + (((((uVar8 & 0x1f)) >>> 0) >>> 3) + (uVar8 >>> 5) * 4) * 4), (heap.u32((0x00629288) + (((((uVar8 & 0x1f)) >>> 0) >>> 3) + (uVar8 >>> 5) * 4) * 4) | 1 << (uVar8 & 7)) & 0xffffffff);
+          heap.setU32(((0x00629288) + (((((uVar8 & 0x1f)) | 0) >>> 3) + (uVar8 >>> 5) * 4) * 4), (heap.u32((0x00629288) + (((((uVar8 & 0x1f)) | 0) >>> 3) + (uVar8 >>> 5) * 4) * 4) | 1 << (uVar8 & 7)) & 0xffffffff);
         }
         uVar8 = ((uVar8 + 1) >>> 0);
         pcVar12 = ((pcVar12 + 0x260) >>> 0);
@@ -81,7 +81,7 @@ export function FUN_0043e0dd(heap) {
     uVar8 = ((0) >>> 0);
     iVar6 = ((0) >>> 0);
     do {
-      if (((((heap.u32(((0x00629288) & 0xff) + ((((uVar8) >>> 0) >>> 3) + iVar6 * 4) * 4) >>> (uVar8 & 7) & 1) != 0) && ((heap.u8((unaff_ESI + 0x7c + iVar6 * 4 + (((uVar8) >>> 0) >>> 3))) >>> (uVar8 & 7) & 1) == 0)) && ((heap.u32((0x00887422) + (uVar9 * 0x130) * 4) & 0x200) == 0)) && ((heap.u32((0x005f5b78 + heap.u32(((0x00887420) >>> 0) + (uVar9 * 0x260) * 4) * 8)) & 0x20000) == 0)) {
+      if (((((heap.u32(((0x00629288) & 0xff) + ((((uVar8) | 0) >>> 3) + iVar6 * 4) * 4) >>> (uVar8 & 7) & 1) != 0) && ((heap.u8((unaff_ESI + 0x7c + iVar6 * 4 + (((uVar8) | 0) >>> 3))) >>> (uVar8 & 7) & 1) == 0)) && ((heap.u32((0x00887422) + (uVar9 * 0x130) * 4) & 0x200) == 0)) && ((heap.u32((0x005f5b78 + heap.u32(((0x00887420) >>> 0) + (uVar9 * 0x260) * 4) * 8)) & 0x20000) == 0)) {
         bVar13 = ((false) & 0xff);
         uVar8 = (((regs.eax = FUN_0043e304(heap))) >>> 0);
         iVar6 = ((extraout_ECX) >>> 0);

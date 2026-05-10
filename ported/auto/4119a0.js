@@ -21,12 +21,12 @@ export function FUN_004119a0(heap, param_1, param_2) {
   cx = ((0) >>> 0);
   type = ((0) >>> 0);
   name = ((param_2) >>> 0);
-  hInst = ((GetModuleHandleA(heap, ((0x0) >>> 0))) >>> 0);
+  hInst = ((GetModuleHandleA(heap, ((0x0) | 0))) >>> 0);
   local_c = ((LoadImageA(heap, hInst, name, type, cx, cy, fuLoad)) >>> 0);
   if (local_c == 0x0) {
-    local_c = ((LoadImageA(heap, ((0x0) >>> 0), param_2, 0, 0, 0, 0x2010)) >>> 0);
+    local_c = ((LoadImageA(heap, ((0x0) | 0), param_2, 0, 0, 0, 0x2010)) >>> 0);
   }
-  if (local_c == ((0x0) >>> 0)) {
+  if (local_c == ((0x0) | 0)) {
     uVar1 = ((0x80004005) >>> 0);
   } else {
     uVar1 = (((regs.eax = FUN_00411a34(heap, param_1, local_c, 0, 0, 0, 0))) >>> 0);

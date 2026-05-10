@@ -21,10 +21,10 @@ export function FUN_00415410(heap) {
       return 0x0;
     }
   }
-  lpAddress = ((VirtualAlloc(heap, ((0x0) >>> 0), 0x400000, 0x2000, 4)) >>> 0);
+  lpAddress = ((VirtualAlloc(heap, ((0x0) | 0), 0x400000, 0x2000, 4)) >>> 0);
   if (lpAddress != 0x0) {
     pvVar2 = ((VirtualAlloc(heap, lpAddress, 0x10000, 0x1000, 4)) >>> 0);
-    if (pvVar2 != ((0x0) >>> 0)) {
+    if (pvVar2 != ((0x0) | 0)) {
       if (lpMem == 0x005ec500) {
         if (heap.u32(0x005ec500) == 0x0) {
           heap.setU32(0x005ec500, (0x005ec500) >>> 0);

@@ -16,7 +16,7 @@ export function FUN_00433b76(heap) {
   if (heap.u32(0x005f96e8) < heap.u32(0x005f96e0)) {
     heap.setU32(heap.u32(0x005f96e8), (unaff_EBX) & 0xffffffff);
     heap.setU16((puVar2 + ((1) * 4)), (in_AX) & 0xffff);
-    heap.setU16((((puVar2) >>> 0) + 6), (in_CX) & 0xffff);
+    heap.setU16((((puVar2) | 0) + 6), (in_CX) & 0xffff);
     if (heap.u32(0x00628928) != 0) {
       heap.setU32(0x005f96e8, (heap.u32(0x005f96e8) + 3) >>> 0);
       LOCK();

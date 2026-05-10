@@ -17,9 +17,9 @@ export function FUN_005e6aae(heap) {
   heap.setU32(0x009a013a, (0) >>> 0);
   heap.setU32(0x009a0138, (((heap.i32(unaff_EDI + (3) * 4)) << 16 >> 16)) >>> 0);
   heap.setU32(0x009a0130, (((heap.i32(unaff_EDI + (1) * 4)) << 16 >> 16)) >>> 0);
-  heap.setU32(0x009a0132, (heap.i16((((unaff_EDI) >>> 0) + 6))) >>> 0);
+  heap.setU32(0x009a0132, (heap.i16((((unaff_EDI) | 0) + 6))) >>> 0);
   heap.setU32(0x009a0134, (((heap.i32(unaff_EDI + (2) * 4)) << 16 >> 16)) >>> 0);
-  heap.setU32(0x009a0136, (heap.i16((((unaff_EDI) >>> 0) + 10))) >>> 0);
+  heap.setU32(0x009a0136, (heap.i16((((unaff_EDI) | 0) + 10))) >>> 0);
   if (heap.u32(0x009a0130) < in_AX) {
     uVar1 = ((in_AX - heap.u32(0x009a0130)) & 0xffff);
     heap.setU32(0x009a0134, (heap.u32(0x009a0134) - uVar1) >>> 0);

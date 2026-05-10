@@ -17,7 +17,6 @@ export function FUN_0044f44e(heap) {
   let pcVar4 = 0;
   let unaff_ESI = regs.esi >>> 0;
   let uVar5 = 0;
-  LAB_0044f4a3: {
   heap.setU8((unaff_ESI + 5), (0) & 0xff);
   pbVar1 = ((heap.u32((0x005f5f4c) + (in_EDX & 0xff) * 4)) >>> 0);
   iVar3 = ((200) >>> 0);
@@ -28,13 +27,14 @@ export function FUN_0044f44e(heap) {
     while (((regs.edx & 0xff) != heap.i8(pcVar4) || (heap.i16((pbVar1 + uVar5 + 1)) != heap.i16((pcVar4 + 0x1e)))) || (iVar3 = ((extraout_ECX) >>> 0), heap.u8(pbVar1 + (uVar5 + 3)) != heap.i8(pcVar4 + (0x20)))) {
       pcVar4 = ((pcVar4 + 0x260) >>> 0);
       if (0x8ad1bf < pcVar4) {
-        break LAB_0044f4a3;
+        heap.setU16((unaff_ESI + 0x1e), (heap.u16((pbVar1 + uVar5 + 1))) & 0xffff);
+        heap.setU8((unaff_ESI + 0x20), (heap.u8(pbVar1 + (uVar5 + 3))) & 0xff);
+        return 1;
       }
     }
   }
   uVar5 = ((0) >>> 0);
-  }
-  heap.setU16((unaff_ESI + 0x1e), (heap.u16((pbVar1 + uVar5 + 1))) & 0xffff);
+  LAB_0044f4a3: heap.setU16((unaff_ESI + 0x1e), (heap.u16((pbVar1 + uVar5 + 1))) & 0xffff);
   heap.setU8((unaff_ESI + 0x20), (heap.u8(pbVar1 + (uVar5 + 3))) & 0xff);
   return 1;
 }

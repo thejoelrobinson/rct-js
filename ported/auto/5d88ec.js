@@ -34,7 +34,7 @@ export function FUN_005d88ec(heap) {
     } else {
       if ((heap.u32((0x00887422) + (uVar4 * 0x130) * 4) & 0x80) == 0) {
         heap.setU32(((0x00887422) + (uVar4 * 0x130) * 4), (heap.u32((0x00887422) + (uVar4 * 0x130) * 4) | 0x80) & 0xffffffff);
-        (regs.eax = FUN_004518fc(heap, (((((uVar6) >>> 0) >>> 0x20)) >>> 0), unaff_EDI, unaff_EBX));
+        (regs.eax = FUN_004518fc(heap, (((((uVar6) >>> 0) >>> 0x20)) | 0), unaff_EDI, unaff_EBX));
         heap.setU32(((0x0088751d) + (iVar5) * 4), (heap.u32((0x0088751d) + (iVar5) * 4) | 0x1c) & 0xffffffff);
         heap.setU32(((0x0088755d) + (iVar5) * 4), (1) & 0xffffffff);
         heap.setU32(((0x00887560) + (iVar5) * 4), (heap.u32((0x00743bdf) + (heap.u32((0x0088747e + heap.u32(((0x00887561) >>> 0) + (iVar5) * 4) * 2 + iVar5)) * 0x100) * 4)) & 0xffffffff);
@@ -45,9 +45,9 @@ export function FUN_005d88ec(heap) {
     }
     if ((heap.i16((unaff_ESI + 0x3e)) | 0) == -1) {
       if (iVar3 == 0) {
-        return ((uVar6) >>> 0);
+        return ((uVar6) | 0);
       }
-      return ((uVar6) >>> 0);
+      return ((uVar6) | 0);
     }
     unaff_ESI = ((0x00743b94 + heap.u32((unaff_ESI + 0x3e)) * 0x100) >>> 0);
   } while (true);

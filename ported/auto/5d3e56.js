@@ -132,7 +132,7 @@ export function FUN_005d3e56(heap) {
         heap.setU8(0x0065228e, (uVar4) & 0xff);
         heap.setU8(0x00652290, (uVar9) & 0xff);
         heap.setU8(0x00652291, (uVar6) & 0xff);
-        if (((heap.u32((0x005f5b78 + heap.u32(((0x00887420) >>> 0) + (((heap.u8(0x00652289)) >>> 0) * 0x260) * 4) * 8)) & 0x8000) == 0) && ((regs.eax = FUN_005d1dd4(heap)), heap.u8(0x00652288) != 1)) {
+        if (((heap.u32((0x005f5b78 + heap.u32(((0x00887420) >>> 0) + (heap.u32(0x00652289) * 0x260) * 4) * 8)) & 0x8000) == 0) && ((regs.eax = FUN_005d1dd4(heap)), heap.u8(0x00652288) != 1)) {
           heap.setU8(0x00652288, (3) & 0xff);
           heap.setU8(0x00652292, (0) & 0xff);
           heap.setU8(0x00652293, (0) & 0xff);

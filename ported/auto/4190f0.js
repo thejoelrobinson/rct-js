@@ -339,7 +339,7 @@ export function FUN_004190f0(heap, param_1, param_2, param_3, param_4, param_5, 
     }
     pbVar11 = ((pbVar12) >>> 0);
   } while (iVar8 != 10);
-  heap.setU32(param_2, (((pbVar12) >>> 0)) & 0xffffffff);
+  heap.setU32(param_2, (((pbVar12) | 0)) & 0xffffffff);
   if (bVar2) {
     if (0x18 < uVar13) {
       if (4 < heap.u32(__addr_local_5)) {

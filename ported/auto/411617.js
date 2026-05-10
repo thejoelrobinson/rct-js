@@ -13,10 +13,10 @@ export function FUN_00411617(heap, param_1) {
   try {
   let MVar1 = 0;
   let uVar2 = 0;
-  MVar1 = ((mciSendStringA(heap, 0x005ec1d8, ((0x0) >>> 0), 0, ((0x0) >>> 0))) >>> 0);
+  MVar1 = ((mciSendStringA(heap, 0x005ec1d8, ((0x0) | 0), 0, ((0x0) | 0))) >>> 0);
   if (MVar1 == 0) {
     (regs.eax = FUN_00413620(heap, __addr_local_208, 0x005ec1e4, param_1));
-    MVar1 = ((mciSendStringA(heap, __addr_local_208, ((0x0) >>> 0), 0, ((0x0) >>> 0))) >>> 0);
+    MVar1 = ((mciSendStringA(heap, __addr_local_208, ((0x0) | 0), 0, ((0x0) | 0))) >>> 0);
     if (MVar1 == 0) {
       uVar2 = ((1) >>> 0);
     } else {

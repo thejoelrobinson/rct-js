@@ -23,7 +23,7 @@ export function FUN_00429c3d(heap) {
       iVar4 = (((in_ECX & 0xffff) * 0x100) >>> 0);
       sVar2 = ((heap.u32((0x00743ba2) + ((in_ECX & 0xffff) * 0x80) * 4)) & 0xffff);
       if (sVar2 == -0x8000) {
-        if ((heap.u32((0x00743bbf) + (iVar4) * 4) != 3) && (heap.u32((0x00743bbf) + (iVar4) * 4) != NaN)) {
+        if ((heap.u32((0x00743bbf) + (iVar4) * 4) != 3) && (heap.u32((0x00743bbf) + (iVar4) * 4) != 7)) {
           return -0x8000;
         }
         if ((heap.u32((0x00887422) + (heap.u32(((0x00743bfc) >>> 0) + (iVar4) * 4) * 0x130) * 4) & 1) == 0) {

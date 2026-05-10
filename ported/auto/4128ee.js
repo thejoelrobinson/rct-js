@@ -12,12 +12,12 @@ export function FUN_004128ee(heap, param_1, param_2, param_3, param_4) {
   let LVar2 = 0;
   let MVar3 = 0;
   let local_8 = 0;
-  LVar2 = ((mmioSeek(heap, ((heap.u32(param_1)) >>> 0), heap.u32((param_3 + 12)) + 4, 0)) >>> 0);
+  LVar2 = ((mmioSeek(heap, ((heap.u32(param_1)) | 0), heap.u32((param_3 + 12)) + 4, 0)) >>> 0);
   if ((LVar2 | 0) == -1) {
     local_8 = ((0xe102) >>> 0);
   } else {
     local_8 = ((0) >>> 0);
-    while (MVar3 = ((mmioDescend(heap, ((heap.u32(param_1)) >>> 0), param_2, param_3, 0)) >>> 0), MVar3 == 0 && (heap.u32((param_2 + 4)) + heap.u32((param_2 + 12)) <= heap.u32((param_3 + 4)) + heap.u32((param_3 + 12)))) {
+    while (MVar3 = ((mmioDescend(heap, ((heap.u32(param_1)) | 0), param_2, param_3, 0)) >>> 0), MVar3 == 0 && (heap.u32((param_2 + 4)) + heap.u32((param_2 + 12)) <= heap.u32((param_3 + 4)) + heap.u32((param_3 + 12)))) {
       uVar1 = ((heap.u32(param_2)) >>> 0);
       if ((0x20657563 < uVar1) && (0x4b4e554a < uVar1)) {
         if (uVar1 < 0x61746165) {
@@ -30,9 +30,9 @@ export function FUN_004128ee(heap, param_1, param_2, param_3, param_4) {
         }
         }
       }
-      mmioAscend(heap, ((heap.u32(param_1)) >>> 0), param_2, 0);
+      mmioAscend(heap, ((heap.u32(param_1)) | 0), param_2, 0);
     }
   }
-  mmioSeek(heap, ((heap.u32(param_1)) >>> 0), heap.u32((param_3 + 12)) + 4, 0);
+  mmioSeek(heap, ((heap.u32(param_1)) | 0), heap.u32((param_3 + 12)) + 4, 0);
   return local_8;
 }

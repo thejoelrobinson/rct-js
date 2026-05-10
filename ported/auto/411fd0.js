@@ -18,13 +18,12 @@ export function FUN_00411fd0(heap, param_1, param_2, param_3, param_4) {
   let LVar1 = 0;
   let pvVar2 = 0;
   let uVar3 = 0;
-  LAB_0041220f: {
   LAB_004121d1: {
   heap.setU32(param_3, (0) & 0xffffffff);
   heap.setU32(__addr_local_8, (0) >>> 0);
-  heap.setU32(__addr_local_20, (((0x0) >>> 0)) >>> 0);
+  heap.setU32(__addr_local_20, (((0x0) | 0)) >>> 0);
   heap.setU32(__addr_local_20, (mmioOpenA(heap, param_1, 0x0, 0x10000)) >>> 0);
-  if (heap.u32(__addr_local_20) == ((0x0) >>> 0)) {
+  if (heap.u32(__addr_local_20) == ((0x0) | 0)) {
     heap.setU32(__addr_local_8, (0xe100) >>> 0);
   } else {
     heap.setU32(__addr_local_8, (mmioDescend(heap, heap.u32(__addr_local_20), param_4, 0x0, 0)) >>> 0);
@@ -36,28 +35,29 @@ export function FUN_00411fd0(heap, param_1, param_2, param_3, param_4) {
           if (heap.u32((__addr_local_1c + 4)) < 0x10) {
             heap.setU32(__addr_local_8, (0xe101) >>> 0);
           } else {
-            LVar1 = ((mmioRead(heap, heap.u32(__addr_local_20), ((__addr_local_30) >>> 0), 0x10)) >>> 0);
+            LVar1 = ((mmioRead(heap, heap.u32(__addr_local_20), ((__addr_local_30) | 0), 0x10)) >>> 0);
             if (LVar1 == 0x10) {
               if ((heap.u32(__addr_local_30 + (0) * 4) & 0xffff) == 1) {
                 heap.setU32(__addr_local_34, (heap.u32(__addr_local_34) & 0xffff0000) >>> 0);
               } else {
-                LVar1 = ((mmioRead(heap, heap.u32(__addr_local_20), ((__addr_local_34) >>> 0), 2)) >>> 0);
+                LVar1 = ((mmioRead(heap, heap.u32(__addr_local_20), ((__addr_local_34) | 0), 2)) >>> 0);
                 if (LVar1 != 2) {
                   heap.setU32(__addr_local_8, (0xe102) >>> 0);
                   break LAB_004121d1;
                 }
               }
               pvVar2 = ((GlobalAlloc(heap, 0, (heap.u32(__addr_local_34) & 0xffff) + 0x12)) >>> 0);
-              heap.setU32(param_3, (((pvVar2) >>> 0)) & 0xffffffff);
+              heap.setU32(param_3, (((pvVar2) | 0)) & 0xffffffff);
               if (heap.i32(param_3) == 0) {
                 heap.setU32(__addr_local_8, (0xe000) >>> 0);
               } else {
                 (regs.eax = FUN_004138d0(heap, heap.i32(param_3), __addr_local_30, 0x10));
                 heap.setU16((heap.i32(param_3) + 0x10), (((heap.u32(__addr_local_34)) & 0xffff)) & 0xffff);
-                if (((heap.u32(__addr_local_34) & 0xffff) == 0) || (uVar3 = ((mmioRead(heap, heap.u32(__addr_local_20), (((heap.i32(param_3) + 0x12)) >>> 0), heap.u32(__addr_local_34) & 0xffff)) >>> 0), uVar3 == (heap.u32(__addr_local_34) & 0xffff))) {
+                if (((heap.u32(__addr_local_34) & 0xffff) == 0) || (uVar3 = ((mmioRead(heap, heap.u32(__addr_local_20), (((heap.i32(param_3) + 0x12)) | 0), heap.u32(__addr_local_34) & 0xffff)) >>> 0), uVar3 == (heap.u32(__addr_local_34) & 0xffff))) {
                   heap.setU32(__addr_local_8, (mmioAscend(heap, heap.u32(__addr_local_20), __addr_local_1c, 0)) >>> 0);
                   if (heap.u32(__addr_local_8) == 0) {
-                    break LAB_0041220f;
+                    heap.setU32(param_2, (heap.u32(__addr_local_20)) & 0xffffffff);
+                    return heap.u32(__addr_local_8);
                   }
                 } else {
                   heap.setU32(__addr_local_8, (0xe101) >>> 0);
@@ -75,15 +75,14 @@ export function FUN_00411fd0(heap, param_1, param_2, param_3, param_4) {
   }
   }
   if (heap.i32(param_3) != 0) {
-    GlobalFree(heap, ((heap.i32(param_3)) >>> 0));
+    GlobalFree(heap, ((heap.i32(param_3)) | 0));
     heap.setU32(param_3, (0) & 0xffffffff);
   }
-  if (heap.u32(__addr_local_20) != ((0x0) >>> 0)) {
+  if (heap.u32(__addr_local_20) != ((0x0) | 0)) {
     mmioClose(heap, heap.u32(__addr_local_20), 0);
-    heap.setU32(__addr_local_20, (((0x0) >>> 0)) >>> 0);
+    heap.setU32(__addr_local_20, (((0x0) | 0)) >>> 0);
   }
-  }
-  heap.setU32(param_2, (heap.u32(__addr_local_20)) & 0xffffffff);
+  LAB_0041220f: heap.setU32(param_2, (heap.u32(__addr_local_20)) & 0xffffffff);
   return heap.u32(__addr_local_8);
 } finally {
     heap.freeFrame(176);

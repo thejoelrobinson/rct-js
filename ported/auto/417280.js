@@ -36,8 +36,8 @@ export function FUN_00417280(heap, param_1, param_2, param_3, param_4) {
     param_4 = ((2) >>> 0);
   }
   heap.setI32((param_1 + (6) * 4), (param_4) & 0xffffffff);
-  heap.setI32((param_1 + (2) * 4), (((param_2) >>> 0)) & 0xffffffff);
-  heap.setU32(param_1, (((param_2) >>> 0)) & 0xffffffff);
+  heap.setI32((param_1 + (2) * 4), (((param_2) | 0)) & 0xffffffff);
+  heap.setU32(param_1, (((param_2) | 0)) & 0xffffffff);
   heap.setI32((param_1 + (1) * 4), (0) & 0xffffffff);
   return 0;
 }

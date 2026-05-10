@@ -81,7 +81,7 @@ export function FUN_005d6a1d(heap) {
   if (heap.u8(0x006522ab) == 3) {
     heap.setU8(0x006522ac, (heap.u8(0x006522ac) & 0xffff0000) & 0xff);
   }
-  uVar13 = ((((heap.u8(0x00652290)) >>> 0)) >>> 0);
+  uVar13 = ((heap.u32(0x00652290)) >>> 0);
   pbVar12 = ((0x00656b6c) >>> 0);
   while (true) {
     heap.setU32(0x0099a4e2, (((uVar15 >>> 0x20) & 0xffff)) >>> 0);
@@ -92,7 +92,7 @@ export function FUN_005d6a1d(heap) {
     }
     sStack_20 = ((((in_ECX) << 16 >> 16)) & 0xffff);
     if (heap.u8(0x006522ab) == 0) {
-      for (pcVar10 = ((heap.u32((0x00652498) + (((pcVar10) >>> 0)) * 4)) >>> 0); (heap.i8(pcVar10) | 0) != -1; pcVar10 = (((pcVar10 + 10) >>> 0)) >>> 0) {
+      for (pcVar10 = ((heap.u32((0x00652498) + (((pcVar10) | 0)) * 4)) >>> 0); (heap.i8(pcVar10) | 0) != -1; pcVar10 = (((pcVar10 + 10) >>> 0)) >>> 0) {
         LAB_005d6b52: {
         if ((heap.i8(pcVar10 + (9)) & 1) == 0) {
           switch (uVar13 & 3) {

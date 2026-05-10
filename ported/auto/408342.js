@@ -10,7 +10,7 @@ export function FUN_00408342(heap, param_1, param_2, param_3) {
   const __addr_local_8 = __sp + 0;
   try {
   let BVar1 = 0;
-  BVar1 = ((WriteFile(heap, param_1, param_2, param_3, __addr_local_8, ((0x0) >>> 0))) >>> 0);
+  BVar1 = ((WriteFile(heap, param_1, param_2, param_3, __addr_local_8, ((0x0) | 0))) >>> 0);
   if (BVar1 == 0) {
     heap.setU32(__addr_local_8, (0xffffffff) >>> 0);
   }

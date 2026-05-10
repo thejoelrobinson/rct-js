@@ -12,9 +12,9 @@ export function FUN_00405b05(heap) {
   let hMenu = 0;
   let hInstance = 0;
   let lpParam = 0;
-  lpParam = ((((0x0) >>> 0)) >>> 0);
-  hMenu = ((((0x0) >>> 0)) >>> 0);
-  pHVar1 = ((((0x0) >>> 0)) >>> 0);
+  lpParam = ((((0x0) | 0)) >>> 0);
+  hMenu = ((((0x0) | 0)) >>> 0);
+  pHVar1 = ((((0x0) | 0)) >>> 0);
   hInstance = ((heap.u32(0x005f1398)) >>> 0);
   nHeight = ((GetSystemMetrics(heap, 1)) >>> 0);
   nWidth = ((GetSystemMetrics(heap, 0)) >>> 0);

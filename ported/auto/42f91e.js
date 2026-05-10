@@ -15,6 +15,6 @@ export function FUN_0042f91e(heap) {
   }
   uVar1 = ((heap.u8(heap.u32(0x005f88a8))) & 0xff);
   heap.setU8(0x005f88ac, (heap.u8(0x005f88ac) + -1) & 0xff);
-  heap.setU32(0x005f88a8, ((((heap.u32(0x005f88a8)) >>> 0) + 1)) >>> 0);
+  heap.setU32(0x005f88a8, ((heap.i32(0x005f88a8) + 1)) >>> 0);
   return uVar1;
 }

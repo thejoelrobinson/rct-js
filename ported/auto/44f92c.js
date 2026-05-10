@@ -49,7 +49,7 @@ export function FUN_0044f92c(heap) {
       pcVar8 = ((pcVar10) >>> 0);
       pcVar12 = ((pcVar10) >>> 0);
       in_ECX = ((extraout_ECX) >>> 0);
-    } while (((pcVar10) >>> 0) - ((unaff_ESI) >>> 0) != 0);
+    } while (((pcVar10) | 0) - ((unaff_ESI) | 0) != 0);
     pcVar10 = ((pcVar13) >>> 0);
     unaff_ESI = ((pcVar12) >>> 0);
     in_ECX = ((((uVar4 >>> 5) >>> 0)) >>> 0);
@@ -62,12 +62,12 @@ export function FUN_0044f92c(heap) {
     uVar5 = ((0) >>> 0);
     psVar6 = ((0x006522f6) >>> 0);
     do {
-      if ((heap.i16((pcVar10 + (((0x00887462 + uVar5)) >>> 0))) | 0) != -1) {
-        heap.setU32(psVar6, (heap.i16((pcVar10 + (((0x00887462 + uVar5)) >>> 0)))) & 0xffffffff);
+      if ((heap.i16((pcVar10 + (((0x00887462 + uVar5)) | 0))) | 0) != -1) {
+        heap.setU32(psVar6, (heap.i16((pcVar10 + (((0x00887462 + uVar5)) | 0)))) & 0xffffffff);
         psVar6 = ((psVar6 + ((1) * 2)) >>> 0);
       }
-      if ((heap.i16((pcVar10 + (((0x0088746a + uVar5)) >>> 0))) | 0) != -1) {
-        heap.setU32(psVar6, (heap.i16((pcVar10 + (((0x0088746a + uVar5)) >>> 0)))) & 0xffffffff);
+      if ((heap.i16((pcVar10 + (((0x0088746a + uVar5)) | 0))) | 0) != -1) {
+        heap.setU32(psVar6, (heap.i16((pcVar10 + (((0x0088746a + uVar5)) | 0)))) & 0xffffffff);
         psVar6 = ((psVar6 + ((1) * 2)) >>> 0);
       }
       uVar5 = ((uVar5 + 1) >>> 0);

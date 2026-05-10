@@ -39,22 +39,22 @@ export function FUN_0040537a(heap, param_1) {
     puVar4 = ((puVar4 + ((1) * 4)) >>> 0);
   }
   heap.setU16(puVar4, (0) & 0xffff);
-  heap.setU8((((puVar4) >>> 0) + 2), (0) & 0xff);
+  heap.setU8((((puVar4) | 0) + 2), (0) & 0xff);
   (regs.eax = FUN_00413170(heap, __addr_local_124, __addr_local_20));
   (regs.eax = FUN_00413180(heap, __addr_local_124, param_1));
-  LVar1 = ((RegOpenKeyExA(heap, ((0x80000002) >>> 0), __addr_local_124, 0, 0xf003f, __addr_local_24)) >>> 0);
+  LVar1 = ((RegOpenKeyExA(heap, ((0x80000002) | 0), __addr_local_124, 0, 0xf003f, __addr_local_24)) >>> 0);
   if (LVar1 == 0) {
     heap.setU32((__addr_local_c + (1) * 4), (0x80) & 0xffffffff);
-    LVar1 = ((RegQueryValueExA(heap, heap.u32(__addr_local_24), ((0x0) >>> 0), ((0x0) >>> 0), __addr_local_c, __addr_local_a4, __addr_local_c + 1)) >>> 0);
+    LVar1 = ((RegQueryValueExA(heap, heap.u32(__addr_local_24), ((0x0) | 0), ((0x0) | 0), __addr_local_c, __addr_local_a4, __addr_local_c + 1)) >>> 0);
     if (LVar1 == 0) {
       RegCloseKey(heap, heap.u32(__addr_local_24));
-      LVar1 = ((RegDeleteKeyA(heap, ((0x80000002) >>> 0), __addr_local_124)) >>> 0);
+      LVar1 = ((RegDeleteKeyA(heap, ((0x80000002) | 0), __addr_local_124)) >>> 0);
       if (LVar1 == 0) {
         (regs.eax = FUN_00413170(heap, __addr_local_124, __addr_local_20));
         (regs.eax = FUN_00413180(heap, __addr_local_124, __addr_local_a4));
-        LVar1 = ((RegDeleteKeyA(heap, ((0x80000002) >>> 0), __addr_local_124)) >>> 0);
+        LVar1 = ((RegDeleteKeyA(heap, ((0x80000002) | 0), __addr_local_124)) >>> 0);
         if (LVar1 == 0) {
-          RegFlushKey(heap, ((0x80000002) >>> 0));
+          RegFlushKey(heap, ((0x80000002) | 0));
           uVar2 = ((1) >>> 0);
         } else {
           uVar2 = ((0) >>> 0);

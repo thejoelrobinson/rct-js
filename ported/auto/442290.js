@@ -105,7 +105,7 @@ export function FUN_00442290(heap) {
       }
       uVar10 = ((heap.u32((0x00743b98) + (uVar11 * 0x80) * 4)) & 0xffff);
     }
-    uVar5 = ((((uVar12) >>> 0)) >>> 0);
+    uVar5 = ((((uVar12) | 0)) >>> 0);
     if ((4 < heap.u8(0x006293d2)) && (heap.u8(0x006293d6) < 0x14)) {
       return uVar5;
     }
@@ -119,5 +119,5 @@ export function FUN_00442290(heap) {
       return uVar5;
     }
   }
-  return ((uVar12) >>> 0);
+  return ((uVar12) | 0);
 }

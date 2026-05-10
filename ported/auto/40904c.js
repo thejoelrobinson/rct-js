@@ -12,10 +12,10 @@ export function FUN_0040904c(heap, param_1) {
     heap.setU16((param_1 + ((3) * 4)), (0) & 0xffff);
     heap.setU32(param_1, (0) & 0xffffffff);
     heap.setU16((param_1 + ((2) * 4)), (0) & 0xffff);
-    heap.setU16((((param_1) >>> 0) + 6), (heap.u16((param_1 + ((2) * 4)))) & 0xffff);
+    heap.setU16((((param_1) | 0) + 6), (heap.u16((param_1 + ((2) * 4)))) & 0xffff);
     heap.setU16((param_1 + ((1) * 4)), (0) & 0xffff);
     heap.setU32((param_1 + (4) * 4), (0) & 0xffffffff);
-    heap.setU16((((param_1) >>> 0) + 10), (0) & 0xffff);
+    heap.setU16((((param_1) | 0) + 10), (0) & 0xffff);
   }
   return;
 }

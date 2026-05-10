@@ -17,7 +17,7 @@ export function FUN_00413470(heap, param_1) {
   let lpMem = 0;
   let iVar1 = 0;
   lpMem = ((heap.u32(__addr_param_1)) >>> 0);
-  if (heap.u32(__addr_param_1) != ((0x0) >>> 0)) {
+  if (heap.u32(__addr_param_1) != ((0x0) | 0)) {
     iVar1 = (((regs.eax = FUN_004156b0(heap, heap.u32(__addr_param_1), __addr_local_4, __addr_param_1))) >>> 0);
     if (iVar1 != 0) {
       return (regs.eax = FUN_00415710(heap, heap.u32(__addr_local_4), heap.u32(__addr_param_1), iVar1));

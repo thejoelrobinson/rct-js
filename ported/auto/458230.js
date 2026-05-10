@@ -92,7 +92,7 @@ export function FUN_00458230(heap) {
     (regs.ebx = 0x5bde, regs.edi = 0x9d3fec, regs.eax = FUN_009b438b(heap));
     uVar7 = ((0) >>> 0);
     do {
-      pcVar9 = (((((heap.u32(__addr_local_10)) >>> 0) + uVar7)) >>> 0);
+      pcVar9 = (((((heap.u32(__addr_local_10)) | 0) + uVar7)) >>> 0);
       iVar4 = ((8) >>> 0);
       uVar3 = ((0) >>> 0);
       do {
@@ -112,7 +112,7 @@ export function FUN_00458230(heap) {
   do {
     heap.setU32(puVar8, (puVar10) & 0xffffffff);
     heap.setU16((puVar8 + ((1) * 4)), (0x40) & 0xffff);
-    heap.setU16((((puVar8) >>> 0) + 6), (0x20) & 0xffff);
+    heap.setU16((((puVar8) | 0) + 6), (0x20) & 0xffff);
     heap.setU32(puVar10, (0xffff) & 0xffffffff);
     heap.setU32((puVar10 + ((7) * 2)), (0) & 0xffffffff);
     puVar8 = ((puVar8 + ((4) * 4)) >>> 0);

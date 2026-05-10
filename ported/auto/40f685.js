@@ -35,15 +35,15 @@ export function FUN_0040f685(heap, param_1, param_2, param_3) {
     heap.setU32((puVar2 + (1) * 4), (param_2) & 0xffffffff);
     heap.setU32((puVar2 + (2) * 4), (-param_3) & 0xffffffff);
     heap.setU16((puVar2 + ((3) * 4)), (1) & 0xffff);
-    heap.setU16((((puVar2) >>> 0) + 0xe), (8) & 0xffff);
+    heap.setU16((((puVar2) | 0) + 0xe), (8) & 0xffff);
     heap.setU32((puVar2 + (4) * 4), (0) & 0xffffffff);
     heap.setU32((puVar2 + (5) * 4), (uVar4 * param_3) & 0xffffffff);
     heap.setU32((puVar2 + (6) * 4), (0) & 0xffffffff);
     heap.setU32((puVar2 + (7) * 4), (0) & 0xffffffff);
     heap.setU32((puVar2 + (8) * 4), (0x100) & 0xffffffff);
     heap.setU32((puVar2 + (9) * 4), (0x100) & 0xffffffff);
-    hdc = ((CreateCompatibleDC(heap, ((0x0) >>> 0))) >>> 0);
-    if (hdc == ((0x0) >>> 0)) {
+    hdc = ((CreateCompatibleDC(heap, ((0x0) | 0))) >>> 0);
+    if (hdc == ((0x0) | 0)) {
       uVar3 = ((0) >>> 0);
     } else {
       if (heap.u32(0x005ec0d8) == 0x0) {
@@ -60,7 +60,7 @@ export function FUN_0040f685(heap, param_1, param_2, param_3) {
       if (heap.u32(param_1 + (0x23) * 4) == 0) {
         uVar3 = ((0) >>> 0);
       } else {
-        heap.setI16((((param_1) >>> 0) + 6), (((param_2) << 16 >> 16)) & 0xffff);
+        heap.setI16((((param_1) | 0) + 6), (((param_2) << 16 >> 16)) & 0xffff);
         heap.setI16((param_1 + ((2) * 4)), (((param_3) << 16 >> 16)) & 0xffff);
         heap.setU32((param_1 + (4) * 4), (uVar4) & 0xffffffff);
         heap.setU32(param_1, (heap.u32(param_1 + (0x21) * 4)) & 0xffffffff);

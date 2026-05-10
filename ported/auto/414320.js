@@ -10,7 +10,6 @@ export function FUN_00414320(heap, _Str1, _Str2) {
   let bVar3 = 0;
   let bVar4 = 0;
   let bVar5 = 0;
-  LAB_00414364: {
   LAB_00414330: {
   if ((((_Str1) >>> 0) & 3) != 0) {
     if ((((_Str1) >>> 0) & 1) != 0) {
@@ -18,7 +17,7 @@ export function FUN_00414320(heap, _Str1, _Str2) {
       _Str1 = ((_Str1 + 1) >>> 0);
       bVar5 = ((bVar4 < heap.u8(_Str2)) & 0xff);
       if (bVar4 != heap.i8(_Str2)) {
-        break LAB_00414364;
+        return ((bVar5) >>> 0) * -2 + 1;
       }
       _Str2 = ((_Str2 + 1) >>> 0);
       if (bVar4 == 0) {
@@ -33,7 +32,7 @@ export function FUN_00414320(heap, _Str1, _Str2) {
     bVar4 = ((((uVar1) & 0xff)) & 0xff);
     bVar5 = ((bVar4 < heap.u8(_Str2)) & 0xff);
     if (bVar4 != heap.i8(_Str2)) {
-      break LAB_00414364;
+      return ((bVar5) >>> 0) * -2 + 1;
     }
     if (bVar4 == 0) {
       return 0;
@@ -41,7 +40,7 @@ export function FUN_00414320(heap, _Str1, _Str2) {
     bVar4 = ((((((uVar1) & 0xffff) >>> 8) & 0xff)) & 0xff);
     bVar5 = ((bVar4 < ((heap.i8(_Str2 + (1))) & 0xff)) & 0xff);
     if (bVar4 != heap.i8(_Str2 + (1))) {
-      break LAB_00414364;
+      return ((bVar5) >>> 0) * -2 + 1;
     }
     if (bVar4 == 0) {
       return 0;
@@ -86,6 +85,5 @@ export function FUN_00414320(heap, _Str1, _Str2) {
       return 0;
     }
   }
-  }
-  return ((bVar5) >>> 0) * -2 + 1;
+  LAB_00414364: return ((bVar5) >>> 0) * -2 + 1;
 }

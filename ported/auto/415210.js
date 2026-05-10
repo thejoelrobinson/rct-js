@@ -51,10 +51,10 @@ export function FUN_00415210(heap, param_1) {
         cVar1 = ((heap.i8(pcVar9)) & 0xff);
         pcVar9 = ((pcVar9 + 1) >>> 0);
       } while (cVar1 != 0);
-      WriteFile(heap, hFile, pcVar7, ~uVar5 - 1, __addr_local_1a8, ((0x0) >>> 0));
+      WriteFile(heap, hFile, pcVar7, ~uVar5 - 1, __addr_local_1a8, ((0x0) | 0));
     } else {
       if (param_1 != 0xfc) {
-      DVar3 = ((GetModuleFileNameA(heap, ((0x0) >>> 0), __addr_local_104, 0x104)) >>> 0);
+      DVar3 = ((GetModuleFileNameA(heap, ((0x0) | 0), __addr_local_104, 0x104)) >>> 0);
       if (DVar3 == 0) {
         pcVar7 = (("<program name unknown>") >>> 0);
         pCVar10 = ((__addr_local_104) >>> 0);

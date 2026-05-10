@@ -12,7 +12,7 @@ export function FUN_00418180(heap, param_1, param_2) {
   let iVar3 = 0;
   let puVar4 = 0;
   bVar1 = ((((param_2 >>> 0x1f) & 0xff)) & 0xff);
-  iVar3 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) >>> 0) >>> 5) >>> 0);
+  iVar3 = (((((param_2 + (param_2 >>> 0x1f & 0x1f))) | 0) >>> 5) >>> 0);
   iVar2 = (((regs.eax = FUN_00418ef0(heap, heap.u32((param_1 + iVar3 * 4)), 1 << (0x1f - (((((param_2) & 0xff) ^ bVar1) - bVar1 & 0x1f ^ bVar1) - bVar1) & 0x1f), param_1 + iVar3 * 4))) >>> 0);
   iVar3 = ((iVar3 + -1) >>> 0);
   if (-1 < (iVar3 | 0)) {

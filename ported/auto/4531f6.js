@@ -50,22 +50,22 @@ export function FUN_004531f6(heap) {
         }
         if ((sVar10 <= sVar9) && (heap.setU8(0x006326c2, ((((((uVar3) >>> 0) >>> 0x10)) << 16 >> 16)) & 0xff), bVar5 = ((heap.u8(0x006326c2) <= sVar11) & 0xff), bVar5)) {
           sVar10 = ((sVar10 + heap.u8(0x006326c4)) & 0xffff);
-          uVar12 = ((((heap.u32(0x00971ed6)) >>> 0)) >>> 0);
+          uVar12 = ((heap.u32(0x00971ed6)) >>> 0);
           if (uVar12 < 0x40) {
             uVar12 = ((0x40) >>> 0);
           }
           heap.setU8(0x006326c4, (uVar4) & 0xff);
-          heap.setU32((heap.u32(0x00632408) + (1) * 4), ((((((((((((((sVar10 >>> 1) - heap.i16((heap.u32(0x006323fc) + 8)))) << 16 >> 16) >>> (heap.u8((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + heap.i16((heap.u32(0x006323fc) + 4))) >>> 0) << 0x10)) >>> 0) / ((uVar12) >>> 0) + -0x8000 >>> 4)) << 16 >> 16)) & 0xffffffff);
-          uVar12 = ((((heap.u32(0x00971ed8)) >>> 0)) >>> 0);
+          heap.setU32((heap.u32(0x00632408) + (1) * 4), ((((((((((((((sVar10 >>> 1) - heap.i16((heap.u32(0x006323fc) + 8)))) << 16 >> 16) >>> (heap.u8((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + heap.i16((heap.u32(0x006323fc) + 4))) >>> 0) << 0x10)) | 0) / ((uVar12) | 0) + -0x8000 >>> 4)) << 16 >> 16)) & 0xffffffff);
+          uVar12 = ((heap.u32(0x00971ed8)) >>> 0);
           if (uVar12 < 0x40) {
             uVar12 = ((0x40) >>> 0);
           }
-          heap.setU16((puVar7 + (2) * 2), (((((((((((((((((heap.u8(0x006326c2) + heap.u8(0x006326c6))) << 16 >> 16) >>> 1) - heap.i16((iVar6 + 10)))) << 16 >> 16) >>> (heap.u8((iVar6 + 0x10)) & 0x1f)) + heap.i16((iVar6 + 6))) >>> 0) << 0x10)) >>> 0) / ((uVar12) >>> 0) + -0x8000 >>> 4)) << 16 >> 16)) & 0xffff);
+          heap.setU16((puVar7 + (2) * 2), (((((((((((((((((heap.u8(0x006326c2) + heap.u8(0x006326c6))) << 16 >> 16) >>> 1) - heap.i16((iVar6 + 10)))) << 16 >> 16) >>> (heap.u8((iVar6 + 0x10)) & 0x1f)) + heap.i16((iVar6 + 6))) >>> 0) << 0x10)) | 0) / ((uVar12) | 0) + -0x8000 >>> 4)) << 16 >> 16)) & 0xffff);
           uVar12 = ((heap.u32((unaff_ESI + 0x28))) >>> 0);
           if ((heap.u32((0x005f72ef) + (heap.u32((unaff_ESI + 0x31)) * 4) * 4) & 1) != 0) {
             uVar12 = ((uVar12 << 1) >>> 0);
           }
-          if (((uVar12) >>> 0) < 0) {
+          if (((uVar12) | 0) < 0) {
             uVar12 = ((-uVar12) >>> 0);
           }
           uVar2 = ((heap.u16((unaff_ESI + 10))) & 0xffff);

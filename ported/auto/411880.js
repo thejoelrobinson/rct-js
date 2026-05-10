@@ -32,10 +32,10 @@ export function FUN_00411880(heap, param_1, param_2, param_3, param_4) {
   name = ((param_2) >>> 0);
   iVar1 = ((param_3) >>> 0);
   cy = ((param_4) >>> 0);
-  hInst = ((GetModuleHandleA(heap, ((0x0) >>> 0))) >>> 0);
+  hInst = ((GetModuleHandleA(heap, ((0x0) | 0))) >>> 0);
   heap.setU32(__addr_local_8c, (LoadImageA(heap, hInst, name, type, iVar1, cy, fuLoad)) >>> 0);
   if (heap.u32(__addr_local_8c) == 0x0) {
-    heap.setU32(__addr_local_8c, (LoadImageA(heap, ((0x0) >>> 0), param_2, 0, param_3, param_4, 0x2010)) >>> 0);
+    heap.setU32(__addr_local_8c, (LoadImageA(heap, ((0x0) | 0), param_2, 0, param_3, param_4, 0x2010)) >>> 0);
   }
   if (heap.u32(__addr_local_8c) == 0x0) {
     heap.setU32(__addr_local_90, (0) >>> 0);

@@ -31,19 +31,19 @@ export function FUN_00414f90(heap) {
     do {
       heap.setU8((puVar2 + ((1) * 4)), (0) & 0xff);
       heap.setU32(puVar2, (0xffffffff) & 0xffffffff);
-      heap.setU8((((puVar2) >>> 0) + 5), (10) & 0xff);
+      heap.setU8((((puVar2) | 0) + 5), (10) & 0xff);
       puVar2 = ((puVar2 + ((2) * 4)) >>> 0);
     } while (puVar2 < heap.u32(0x005f3e60) + 0x40);
   }
   GetStartupInfoA(heap, __addr_local_44);
   if ((heap.u32((__addr_local_44 + 60)) != 0) && (heap.u32((__addr_local_44 + 64)) != 0x0)) {
     local_48 = ((heap.i32(heap.u32((__addr_local_44 + 64)))) >>> 0);
-    pUVar8 = (((((heap.u32((__addr_local_44 + 64))) >>> 0) + 4)) >>> 0);
-    pbVar5 = (((((pUVar8) >>> 0) + local_48)) >>> 0);
-    if (0x7ff < ((local_48) >>> 0)) {
+    pUVar8 = (((((heap.u32((__addr_local_44 + 64))) | 0) + 4)) >>> 0);
+    pbVar5 = (((((pUVar8) | 0) + local_48)) >>> 0);
+    if (0x7ff < ((local_48) | 0)) {
       local_48 = ((0x800) >>> 0);
     }
-    if (((heap.u32(0x005f3f60)) >>> 0) < ((local_48) >>> 0)) {
+    if (heap.i32(0x005f3f60) < ((local_48) | 0)) {
       piVar6 = ((0x005f3e64) >>> 0);
       do {
         puVar2 = (((regs.eax = FUN_004133c0(heap, 0x100))) >>> 0);
@@ -51,31 +51,31 @@ export function FUN_00414f90(heap) {
           local_48 = ((heap.u32(0x005f3f60)) >>> 0);
           break;
         }
-        heap.setU32(piVar6, (((puVar2) >>> 0)) & 0xffffffff);
+        heap.setU32(piVar6, (((puVar2) | 0)) & 0xffffffff);
         heap.setU32(0x005f3f60, (heap.u32(0x005f3f60) + 0x20) >>> 0);
         if (puVar2 < puVar2 + ((0x40) * 4)) {
           do {
             heap.setU8((puVar2 + ((1) * 4)), (0) & 0xff);
             heap.setU32(puVar2, (0xffffffff) & 0xffffffff);
-            heap.setU8((((puVar2) >>> 0) + 5), (10) & 0xff);
+            heap.setU8((((puVar2) | 0) + 5), (10) & 0xff);
             puVar2 = ((puVar2 + ((2) * 4)) >>> 0);
           } while (puVar2 < (heap.i32(piVar6) + 0x100));
         }
         piVar6 = ((piVar6 + ((1) * 4)) >>> 0);
-      } while (((heap.u32(0x005f3f60)) >>> 0) < ((local_48) >>> 0));
+      } while (heap.i32(0x005f3f60) < ((local_48) | 0));
     }
     uVar7 = ((0) >>> 0);
-    if (0 < ((local_48) >>> 0)) {
+    if (0 < ((local_48) | 0)) {
       do {
         if (((heap.u32(pbVar5) != 0xffffffff) && ((heap.i32(pUVar8) & 1) != 0)) && (((heap.i32(pUVar8) & 8) != 0 || (DVar3 = ((GetFileType(heap, heap.u32(pbVar5))) >>> 0), DVar3 != 0)))) {
-          iVar4 = ((((heap.u32((0x005f3e60) + (((uVar7) >>> 0) >>> 5) * 4)) >>> 0)) >>> 0);
+          iVar4 = ((((heap.u32((0x005f3e60) + (((uVar7) | 0) >>> 5) * 4)) | 0)) >>> 0);
           heap.setU32((iVar4 + (uVar7 & 0x1f) * 8), (heap.u32(pbVar5)) & 0xffffffff);
           heap.setU8((iVar4 + (uVar7 & 0x1f) * 8 + 4), (heap.u8(pUVar8)) & 0xff);
         }
         uVar7 = ((uVar7 + 1) >>> 0);
-        pUVar8 = (((((pUVar8) >>> 0) + 1)) >>> 0);
+        pUVar8 = (((((pUVar8) | 0) + 1)) >>> 0);
         pbVar5 = ((pbVar5 + 4) >>> 0);
-      } while (((uVar7) >>> 0) < ((local_48) >>> 0));
+      } while (((uVar7) | 0) < ((local_48) | 0));
     }
   }
   iVar4 = ((0) >>> 0);

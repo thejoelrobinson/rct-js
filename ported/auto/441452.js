@@ -12,7 +12,7 @@ export function FUN_00441452(heap) {
   let unaff_ESI = regs.esi >>> 0;
   if (heap.i8((unaff_ESI + 0x2e)) == 0) {
     (regs.eax = 0xc97, regs.eax = FUN_005e5301(heap));
-    if ((heap.i8((unaff_ESI + 0x2b)) == 3) || (heap.i8((unaff_ESI + 0x2b)) == NaN)) {
+    if ((heap.i8((unaff_ESI + 0x2b)) == 3) || (heap.i8((unaff_ESI + 0x2b)) == 7)) {
       iVar1 = ((heap.u32((unaff_ESI + 0x68)) * 0x260) >>> 0);
       heap.setU32(((0x0088752b) + (iVar1) * 4), (heap.u32((0x0088752b) + (iVar1) * 4) + 1) & 0xffffffff);
       heap.setU32(((0x0088751d) + (iVar1) * 4), (heap.u32((0x0088751d) + (iVar1) * 4) | 0xc) & 0xffffffff);

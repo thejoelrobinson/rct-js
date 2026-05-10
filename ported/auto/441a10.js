@@ -42,7 +42,7 @@ export function FUN_00441a10(heap) {
   }
   uVar10 = ((in_EAX & 0xff) >>> 0);
   uVar9 = ((((uVar10) & 0xffff)) & 0xffff);
-  if ((heap.u8((unaff_ESI + 0xca + (((((uVar9) << 16 >> 16)) >>> 0) >>> 3))) >>> (uVar9 & 7) & 1) != 0) {
+  if ((heap.u8((unaff_ESI + 0xca + (((((uVar9) << 16 >> 16)) | 0) >>> 3))) >>> (uVar9 & 7) & 1) != 0) {
     uVar10 = (((regs.eax = FUN_00440fe3(heap))) >>> 0);
     return uVar10;
   }
@@ -123,7 +123,7 @@ export function FUN_00441a10(heap) {
         (regs.eax = FUN_004413c5(heap));
       }
       uVar6 = ((((in_EAX) & 0xffff)) & 0xffff);
-      pbVar1 = (((unaff_ESI + 0xca + (((((uVar9) << 16 >> 16)) >>> 0) >>> 3))) >>> 0);
+      pbVar1 = (((unaff_ESI + 0xca + (((((uVar9) << 16 >> 16)) | 0) >>> 3))) >>> 0);
       heap.setU32(pbVar1, (heap.u8(pbVar1) | 1 << (uVar9 & 7)) & 0xffffffff);
       if (uVar9 == 2) {
         uVar6 = (((regs.eax = FUN_00441891(heap))) & 0xffff);

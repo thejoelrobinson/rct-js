@@ -251,7 +251,7 @@ export function FUN_005dd34b(heap) {
           heap.setU8((pbVar17 + (0xb3)), (0) & 0xff);
           heap.setU8((pbVar17 + (0xb4)), (0) & 0xff);
           if (heap.u32(0x0065dc4e) != 0xffff) {
-            heap.setU16((0x00743bd6 + ((heap.u32(0x0065dc4e)) >>> 0) * 0x100), (heap.u16((pbVar17 + 10))) & 0xffff);
+            heap.setU16((0x00743bd6 + heap.u32(0x0065dc4e) * 0x100), (heap.u16((pbVar17 + 10))) & 0xffff);
           }
           LOCK();
           UNLOCK();

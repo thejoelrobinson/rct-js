@@ -58,7 +58,7 @@ export function FUN_00414aa0(heap, param_1) {
           if (uVar8 <= bVar3) {
             bVar4 = ((heap.u32((0x005ec368) + (uVar7) * 4)) & 0xff);
             do {
-              pbVar2 = (((((0x005f0020) >>> 0) + uVar8 + 1)) >>> 0);
+              pbVar2 = (((((0x005f0020) | 0) + uVar8 + 1)) >>> 0);
               heap.setU32(pbVar2, (heap.u8(pbVar2) | bVar4) & 0xffffffff);
               uVar8 = ((uVar8 + 1) >>> 0);
             } while (uVar8 <= bVar3);
@@ -109,7 +109,7 @@ export function FUN_00414aa0(heap, param_1) {
           break;
         }
         for (uVar7 = ((((heap.i32(pBVar11 + (-1) * 4)) >>> 0)) >>> 0); uVar7 <= bVar3; uVar7 = (((uVar7 + 1) >>> 0)) >>> 0) {
-          heap.setU8((((0x005f0020) >>> 0) + uVar7 + 1), (heap.u8((((0x005f0020) >>> 0) + uVar7 + 1)) | 4) & 0xff);
+          heap.setU8((((0x005f0020) | 0) + uVar7 + 1), (heap.u8((((0x005f0020) | 0) + uVar7 + 1)) | 4) & 0xff);
         }
         pBVar1 = ((pBVar11 + ((1) * 4)) >>> 0);
         pBVar11 = ((pBVar11 + ((2) * 4)) >>> 0);
@@ -117,7 +117,7 @@ export function FUN_00414aa0(heap, param_1) {
     }
     uVar7 = ((1) >>> 0);
     do {
-      heap.setU8((((0x005f0020) >>> 0) + uVar7 + 1), (heap.u8((((0x005f0020) >>> 0) + uVar7 + 1)) | 8) & 0xff);
+      heap.setU8((((0x005f0020) | 0) + uVar7 + 1), (heap.u8((((0x005f0020) | 0) + uVar7 + 1)) | 8) & 0xff);
       uVar7 = ((uVar7 + 1) >>> 0);
     } while (uVar7 < 0xff);
     heap.setU32(0x005f022c, ((regs.eax = FUN_00414d00(heap, CodePage))) >>> 0);

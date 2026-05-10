@@ -20,7 +20,7 @@ export function FUN_004420e0(heap) {
     uVar2 = (((regs.eax = FUN_005df40c(heap))) >>> 0);
     if (((uVar2) & 0xffff) < 0x148) {
       if (((((uVar2) >>> 0) >>> 0x10) & 0xffff) < 0x3334) {
-        (regs.eax = FUN_00452fce(heap, (((((uVar2) >>> 0) >>> 0x20)) >>> 0), extraout_ECX, 1, ((uVar2) >>> 0) >>> 0x10));
+        (regs.eax = FUN_00452fce(heap, (((((uVar2) >>> 0) >>> 0x20)) | 0), extraout_ECX, 1, ((uVar2) >>> 0) >>> 0x10));
       }
       if (heap.i16((unaff_ESI + 0xe)) != -0x8000) {
         (regs.eax = FUN_0042dfd1(heap));

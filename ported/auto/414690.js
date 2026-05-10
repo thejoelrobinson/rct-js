@@ -15,7 +15,7 @@ export function FUN_00414690(heap) {
   try {
   let iVar1 = 0;
   let pcVar2 = 0;
-  GetModuleFileNameA(heap, ((0x0) >>> 0), 0x005eff10, 0x104);
+  GetModuleFileNameA(heap, ((0x0) | 0), 0x005eff10, 0x104);
   heap.setU32(0x005efef8, (0x005eff10) >>> 0);
   pcVar2 = ((heap.u8(0x005f3f70)) >>> 0);
   if (heap.u32(heap.u8(0x005f3f70)) == 0) {

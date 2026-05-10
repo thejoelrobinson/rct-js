@@ -20,11 +20,11 @@ export function FUN_0059e41a(heap, param_1) {
   let uVar6 = 0;
   puVar1 = ((heap.u32(0x00991f80)) >>> 0);
   heap.setU32(0x0099a4ec, (in_DX + 7) >>> 0);
-  uVar2 = ((((heap.u32(0x0099a4ec)) >>> 0)) >>> 0);
+  uVar2 = ((heap.u32(0x0099a4ec)) >>> 0);
   iVar4 = ((heap.u32((param_1 + 7)) * 0x260) >>> 0);
   puVar3 = ((0xffffffff) >>> 0);
   if ((heap.u32((0x00887422) + (heap.u32((param_1 + 7)) * 0x130) * 4) & 1) != 0) {
-    puVar3 = ((((((heap.u16((0x0088747e + iVar4))) << 16 >> 16)) >>> 0)) >>> 0);
+    puVar3 = ((((((heap.u16((0x0088747e + iVar4))) << 16 >> 16)) | 0)) >>> 0);
     if (puVar3 != 0xffffffff) {
       puVar3 = ((0x00743b94 + heap.u32((0x0088747e + iVar4)) * 0x100) >>> 0);
       heap.setU8((0x00991f78 + 0), (2) & 0xff);
@@ -46,7 +46,7 @@ export function FUN_0059e41a(heap, param_1) {
   uVar5 = ((0x18) >>> 0);
   heap.setU32(0x00651d20, (unaff_EDI) >>> 0);
   (regs.eax = callIndirect(heap, heap.u32((0x00432204) + (heap.u8(0x00991f88)) * 4), iVar4, 0x18, uVar6, uVar2));
-  if (((heap.i16((heap.u32(0x00981ef8) + 0xe)) == 0) && ((heap.u16((((0x00887422) >>> 0) + iVar4)) & 1) != 0)) && (heap.u16((0x0088747e + iVar4)) != 0xffff)) {
+  if (((heap.i16((heap.u32(0x00981ef8) + 0xe)) == 0) && ((heap.u16((((0x00887422) | 0) + iVar4)) & 1) != 0)) && (heap.u16((0x0088747e + iVar4)) != 0xffff)) {
     puVar3 = ((0x00743b94 + heap.u32((0x0088747e + iVar4)) * 0x100) >>> 0);
     for (iVar4 = ((0) >>> 0); ((iVar4) & 0xff) < ((heap.u8(puVar3 + (0xb3))) & 0xff); iVar4 = (((iVar4 + 2) >>> 0)) >>> 0) {
       (regs.eax = callIndirect(heap, heap.u32((0x00432e90) + (heap.u8(0x00991f88)) * 4), puVar3, uVar5, uVar6, uVar2, in_ECX, iVar4, in_EAX));

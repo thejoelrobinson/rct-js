@@ -14,7 +14,7 @@ export function FUN_00403cd4(heap) {
   try {
   let BVar1 = 0;
   heap.setU32(__addr_local_8, (0) >>> 0);
-  BVar1 = ((PeekMessageA(heap, __addr_local_24, ((0x0) >>> 0), 0, 0, 1)) >>> 0);
+  BVar1 = ((PeekMessageA(heap, __addr_local_24, ((0x0) | 0), 0, 0, 1)) >>> 0);
   if (BVar1 != 0) {
     if (heap.u32((__addr_local_24 + 4)) == 0x12) {
       heap.setU32(__addr_local_8, (1) >>> 0);

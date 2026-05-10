@@ -237,7 +237,7 @@ export function FUN_00458c14(heap) {
     unaff_EDI = ((pbVar9) >>> 0);
     bVar3 = ((heap.u8(ppuVar5)) & 0xff);
     heap.setU32(unaff_EDI, (bVar3) & 0xffffffff);
-    ppuVar5 = (((((ppuVar5) >>> 0) + 1)) >>> 0);
+    ppuVar5 = (((((ppuVar5) | 0) + 1)) >>> 0);
     unaff_ESI = ((pbVar8) >>> 0);
     pbVar9 = ((unaff_EDI + 1) >>> 0);
   } while (bVar3 != 0);

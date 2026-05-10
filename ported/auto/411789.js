@@ -19,7 +19,7 @@ export function FUN_00411789(heap) {
     puVar2 = ((puVar2 + ((1) * 4)) >>> 0);
   }
   heap.setU16(puVar2, (0) & 0xffff);
-  heap.setU8((((puVar2) >>> 0) + 2), (0) & 0xff);
+  heap.setU8((((puVar2) | 0) + 2), (0) & 0xff);
   mciSendStringA(heap, 0x005ec244, __addr_local_104, 0x100, heap.u32(0x005e916c));
   iVar1 = ((_strcmp(heap, __addr_local_104, 0x005ec258)) >>> 0);
   heap.setU32(0x005ec1c8, (((iVar1 == 0) >>> 0)) >>> 0);

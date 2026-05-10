@@ -18,5 +18,5 @@ export function FUN_004292b0(heap) {
     }
     pbVar1 = ((pbVar1 + 0x260) >>> 0);
   } while (pbVar1 < 0x008ad1c0);
-  return CONCAT44(in_EDX, local_1c + ((heap.u32(0x0087c81c)) >>> 0) * 0x1e);
+  return CONCAT44(in_EDX, local_1c + heap.u32(0x0087c81c) * 0x1e);
 }

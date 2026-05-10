@@ -40,14 +40,14 @@ export function FUN_00416910(heap, param_1, param_2, param_3, param_4) {
     iVar3 = ((heap.i32(piVar1 + (1) * 4) + -1) >>> 0);
     if (iVar3 < 0) {
       iVar3 = ((-iVar3) >>> 0);
-      heap.setU8((((puVar4) >>> 0) + 1), (0x2d) & 0xff);
+      heap.setU8((((puVar4) | 0) + 1), (0x2d) & 0xff);
     }
     if (99 < iVar3) {
-      heap.setI8((((puVar4) >>> 0) + 2), (heap.i8((((puVar4) >>> 0) + 2)) + (((((iVar3 / 100)) << 24 >> 24) + (((iVar3 >>> 0x1f)) << 24 >> 24)) - (((((iVar3) >>> 0) * 0x51eb851f >>> 0x3f)) << 24 >> 24))) & 0xff);
+      heap.setI8((((puVar4) | 0) + 2), (heap.i8((((puVar4) | 0) + 2)) + (((((iVar3 / 100)) << 24 >> 24) + (((iVar3 >>> 0x1f)) << 24 >> 24)) - (((((iVar3) >>> 0) * 0x51eb851f >>> 0x3f)) << 24 >> 24))) & 0xff);
       iVar3 = ((iVar3 % 100) >>> 0);
     }
     if (9 < iVar3) {
-      heap.setI8((((puVar4) >>> 0) + 3), (heap.i8((((puVar4) >>> 0) + 3)) + (((((iVar3 / 10)) << 24 >> 24) + (((iVar3 >>> 0x1f)) << 24 >> 24)) - (((((iVar3) >>> 0) * 0x66666667 >>> 0x3f)) << 24 >> 24))) & 0xff);
+      heap.setI8((((puVar4) | 0) + 3), (heap.i8((((puVar4) | 0) + 3)) + (((((iVar3 / 10)) << 24 >> 24) + (((iVar3 >>> 0x1f)) << 24 >> 24)) - (((((iVar3) >>> 0) * 0x66666667 >>> 0x3f)) << 24 >> 24))) & 0xff);
       iVar3 = ((iVar3 % 10) >>> 0);
     }
     heap.setI8((puVar4 + ((1) * 4)), (heap.i8((puVar4 + ((1) * 4))) + ((iVar3) << 24 >> 24)) & 0xff);

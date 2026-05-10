@@ -48,7 +48,7 @@ export function FUN_0042635e(heap) {
   local_24 = ((((in_EDX) << 24 >> 24)) & 0xff);
   for (uVar6 = ((heap.u32(0x0087c398)) & 0xffff); uVar6 != 0xffff; uVar6 = (((heap.u32((0x00743b98) + (((uVar6) >>> 0) * 0x80) * 4)) & 0xffff)) >>> 0) {
     iVar7 = ((((uVar6) >>> 0) * 0x100) >>> 0);
-    if (((((heap.u32((0x00743bbf) + (iVar7) * 4) == 2) || (heap.u32((0x00743bbf) + (iVar7) * 4) == NaN)) || (heap.u32((0x00743bbf) + (iVar7) * 4) == 4)) || (heap.u32((0x00743bbf) + (iVar7) * 4) == 3)) && (local_24 == heap.u32((0x00743bfc) + (iVar7) * 4))) {
+    if (((((heap.u32((0x00743bbf) + (iVar7) * 4) == 2) || (heap.u32((0x00743bbf) + (iVar7) * 4) == 7)) || (heap.u32((0x00743bbf) + (iVar7) * 4) == 4)) || (heap.u32((0x00743bbf) + (iVar7) * 4) == 3)) && (local_24 == heap.u32((0x00743bfc) + (iVar7) * 4))) {
       (regs.eax = FUN_0044142c(heap));
       if ((heap.u32((0x00743bbf) + (iVar7) * 4) == 2) && (heap.u32((0x00743bc0) + (iVar7) * 4) == 0)) {
         (regs.eax = FUN_0043e792(heap));

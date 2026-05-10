@@ -12,11 +12,11 @@ export function FUN_0040fd82(heap, param_1) {
   let pvVar4 = 0;
   let local_8 = 0;
   if (heap.i32((param_1 + 0x90)) == 0) {
-    local_8 = ((CreateCompatibleDC(heap, ((0x0) >>> 0))) >>> 0);
+    local_8 = ((CreateCompatibleDC(heap, ((0x0) | 0))) >>> 0);
   } else {
     local_8 = ((GetDC(heap, heap.u32(0x005e916c))) >>> 0);
   }
-  if (local_8 != ((0x0) >>> 0)) {
+  if (local_8 != ((0x0) | 0)) {
     CVar1 = ((GetTextColor(heap, local_8)) >>> 0);
     heap.setU32((param_1 + 0x98), (CVar1) & 0xffffffff);
     CVar1 = ((GetBkColor(heap, local_8)) >>> 0);

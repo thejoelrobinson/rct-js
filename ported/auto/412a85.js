@@ -16,14 +16,14 @@ export function FUN_00412a85(heap, param_1, param_2, param_3) {
   let FVar4 = 0;
   pvVar1 = ((GlobalAlloc(heap, 0x42, heap.u32(param_3 + (1) * 4))) >>> 0);
   heap.setU32(__addr_local_8, (GlobalLock(heap, pvVar1)) >>> 0);
-  if (heap.u32(__addr_local_8) == ((0x0) >>> 0)) {
+  if (heap.u32(__addr_local_8) == ((0x0) | 0)) {
     uVar2 = ((0) >>> 0);
   } else {
     heap.setU32(__addr_local_1c, (heap.u32(param_3)) >>> 0);
     heap.setU32((__addr_local_1c + 4), (heap.u32(param_3 + (1) * 4)) >>> 0);
     MVar3 = ((mmioCreateChunk(heap, param_2, __addr_local_1c, 0)) >>> 0);
     if ((((MVar3 == 0) && (FVar4 = ((mmioRead(heap, param_1, heap.u32(__addr_local_8), heap.u32(param_3 + (1) * 4))) >>> 0), FVar4 == heap.u32(param_3 + (1) * 4))) && (FVar4 = ((mmioWrite(heap, param_2, heap.u32(__addr_local_8), heap.u32(param_3 + (1) * 4))) >>> 0), FVar4 == heap.u32(param_3 + (1) * 4))) && (MVar3 = ((mmioAscend(heap, param_2, __addr_local_1c, 0)) >>> 0), MVar3 == 0)) {
-      if (heap.u32(__addr_local_8) != ((0x0) >>> 0)) {
+      if (heap.u32(__addr_local_8) != ((0x0) | 0)) {
         pvVar1 = ((GlobalHandle(heap, heap.u32(__addr_local_8))) >>> 0);
         GlobalUnlock(heap, pvVar1);
         pvVar1 = ((GlobalHandle(heap, heap.u32(__addr_local_8))) >>> 0);
@@ -31,7 +31,7 @@ export function FUN_00412a85(heap, param_1, param_2, param_3) {
       }
       uVar2 = ((1) >>> 0);
     } else {
-      if (heap.u32(__addr_local_8) != ((0x0) >>> 0)) {
+      if (heap.u32(__addr_local_8) != ((0x0) | 0)) {
         pvVar1 = ((GlobalHandle(heap, heap.u32(__addr_local_8))) >>> 0);
         GlobalUnlock(heap, pvVar1);
         pvVar1 = ((GlobalHandle(heap, heap.u32(__addr_local_8))) >>> 0);

@@ -8,10 +8,10 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
   let uVar1 = 0;
   let puVar2 = 0;
   switchD_00418845_caseD_0: {
-  if ((param_2 < param_1) && (param_1 < (param_3 + ((param_2) >>> 0)))) {
+  if ((param_2 < param_1) && (param_1 < (param_3 + ((param_2) | 0)))) {
     switchD_004189c7_caseD_0: {
-    param_2 = ((((param_3 - 4) + ((param_2) >>> 0))) >>> 0);
-    puVar2 = ((((param_3 - 4) + ((param_1) >>> 0))) >>> 0);
+    param_2 = ((((param_3 - 4) + ((param_2) | 0))) >>> 0);
+    puVar2 = ((((param_3 - 4) + ((param_1) | 0))) >>> 0);
     if ((((puVar2) >>> 0) & 3) == 0) {
       uVar1 = ((param_3 >>> 2) >>> 0);
       param_3 = ((param_3 & 3) >>> 0);
@@ -46,10 +46,10 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
           switch (((puVar2) >>> 0) & 3) {
             case 1:
               param_3 = ((uVar1 & 3) >>> 0);
-              heap.setU8((((puVar2) >>> 0) + 3), (heap.u8((((param_2) >>> 0) + 3))) & 0xff);
-              param_2 = (((((param_2) >>> 0) + -1)) >>> 0);
+              heap.setU8((((puVar2) | 0) + 3), (heap.u8((((param_2) | 0) + 3))) & 0xff);
+              param_2 = (((((param_2) | 0) + -1)) >>> 0);
               uVar1 = ((uVar1 >>> 2) >>> 0);
-              puVar2 = (((((puVar2) >>> 0) - 1)) >>> 0);
+              puVar2 = (((((puVar2) | 0) - 1)) >>> 0);
               if (7 < uVar1) {
                 for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
                   heap.setU32(puVar2, (heap.u32(param_2)) & 0xffffffff);
@@ -69,11 +69,11 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
               break;
             case 2:
               param_3 = ((uVar1 & 3) >>> 0);
-              heap.setU8((((puVar2) >>> 0) + 3), (heap.u8((((param_2) >>> 0) + 3))) & 0xff);
+              heap.setU8((((puVar2) | 0) + 3), (heap.u8((((param_2) | 0) + 3))) & 0xff);
               uVar1 = ((uVar1 >>> 2) >>> 0);
-              heap.setU8((((puVar2) >>> 0) + 2), (heap.u8((((param_2) >>> 0) + 2))) & 0xff);
-              param_2 = (((((param_2) >>> 0) + -2)) >>> 0);
-              puVar2 = (((((puVar2) >>> 0) - 2)) >>> 0);
+              heap.setU8((((puVar2) | 0) + 2), (heap.u8((((param_2) | 0) + 2))) & 0xff);
+              param_2 = (((((param_2) | 0) + -2)) >>> 0);
+              puVar2 = (((((puVar2) | 0) - 2)) >>> 0);
               if (7 < uVar1) {
                 for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
                   heap.setU32(puVar2, (heap.u32(param_2)) & 0xffffffff);
@@ -93,12 +93,12 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
               break;
             case 3:
               param_3 = ((uVar1 & 3) >>> 0);
-              heap.setU8((((puVar2) >>> 0) + 3), (heap.u8((((param_2) >>> 0) + 3))) & 0xff);
-              heap.setU8((((puVar2) >>> 0) + 2), (heap.u8((((param_2) >>> 0) + 2))) & 0xff);
+              heap.setU8((((puVar2) | 0) + 3), (heap.u8((((param_2) | 0) + 3))) & 0xff);
+              heap.setU8((((puVar2) | 0) + 2), (heap.u8((((param_2) | 0) + 2))) & 0xff);
               uVar1 = ((uVar1 >>> 2) >>> 0);
-              heap.setU8((((puVar2) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
-              param_2 = (((((param_2) >>> 0) + -3)) >>> 0);
-              puVar2 = (((((puVar2) >>> 0) - 3)) >>> 0);
+              heap.setU8((((puVar2) | 0) + 1), (heap.u8((((param_2) | 0) + 1))) & 0xff);
+              param_2 = (((((param_2) | 0) + -3)) >>> 0);
+              puVar2 = (((((puVar2) | 0) - 3)) >>> 0);
               if (7 < uVar1) {
                 for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
                   heap.setU32(puVar2, (heap.u32(param_2)) & 0xffffffff);
@@ -138,16 +138,16 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
     }
     switch (param_3) {
       case 1:
-        switchD_004189c7_caseD_1: heap.setU8((((puVar2) >>> 0) + 3), (heap.u8((((param_2) >>> 0) + 3))) & 0xff);
+        switchD_004189c7_caseD_1: heap.setU8((((puVar2) | 0) + 3), (heap.u8((((param_2) | 0) + 3))) & 0xff);
         return param_1;
       case 2:
-        switchD_004189c7_caseD_2: heap.setU8((((puVar2) >>> 0) + 3), (heap.u8((((param_2) >>> 0) + 3))) & 0xff);
-        heap.setU8((((puVar2) >>> 0) + 2), (heap.u8((((param_2) >>> 0) + 2))) & 0xff);
+        switchD_004189c7_caseD_2: heap.setU8((((puVar2) | 0) + 3), (heap.u8((((param_2) | 0) + 3))) & 0xff);
+        heap.setU8((((puVar2) | 0) + 2), (heap.u8((((param_2) | 0) + 2))) & 0xff);
         return param_1;
       case 3:
-        switchD_004189c7_caseD_3: heap.setU8((((puVar2) >>> 0) + 3), (heap.u8((((param_2) >>> 0) + 3))) & 0xff);
-        heap.setU8((((puVar2) >>> 0) + 2), (heap.u8((((param_2) >>> 0) + 2))) & 0xff);
-        heap.setU8((((puVar2) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
+        switchD_004189c7_caseD_3: heap.setU8((((puVar2) | 0) + 3), (heap.u8((((param_2) | 0) + 3))) & 0xff);
+        heap.setU8((((puVar2) | 0) + 2), (heap.u8((((param_2) | 0) + 2))) & 0xff);
+        heap.setU8((((puVar2) | 0) + 1), (heap.u8((((param_2) | 0) + 1))) & 0xff);
         return param_1;
     }
     }
@@ -189,11 +189,11 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
           case 1:
             param_3 = ((uVar1 & 3) >>> 0);
             heap.setU8(param_1, (heap.u8(param_2)) & 0xff);
-            heap.setU8((((param_1) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
+            heap.setU8((((param_1) | 0) + 1), (heap.u8((((param_2) | 0) + 1))) & 0xff);
             uVar1 = ((uVar1 >>> 2) >>> 0);
-            heap.setU8((((param_1) >>> 0) + 2), (heap.u8((((param_2) >>> 0) + 2))) & 0xff);
-            param_2 = (((((param_2) >>> 0) + 3)) >>> 0);
-            puVar2 = (((((param_1) >>> 0) + 3)) >>> 0);
+            heap.setU8((((param_1) | 0) + 2), (heap.u8((((param_2) | 0) + 2))) & 0xff);
+            param_2 = (((((param_2) | 0) + 3)) >>> 0);
+            puVar2 = (((((param_1) | 0) + 3)) >>> 0);
             if (7 < uVar1) {
               for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
                 heap.setU32(puVar2, (heap.u32(param_2)) & 0xffffffff);
@@ -215,9 +215,9 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
             param_3 = ((uVar1 & 3) >>> 0);
             heap.setU8(param_1, (heap.u8(param_2)) & 0xff);
             uVar1 = ((uVar1 >>> 2) >>> 0);
-            heap.setU8((((param_1) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
-            param_2 = (((((param_2) >>> 0) + 2)) >>> 0);
-            puVar2 = (((((param_1) >>> 0) + 2)) >>> 0);
+            heap.setU8((((param_1) | 0) + 1), (heap.u8((((param_2) | 0) + 1))) & 0xff);
+            param_2 = (((((param_2) | 0) + 2)) >>> 0);
+            puVar2 = (((((param_1) | 0) + 2)) >>> 0);
             if (7 < uVar1) {
               for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
                 heap.setU32(puVar2, (heap.u32(param_2)) & 0xffffffff);
@@ -238,9 +238,9 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
           case 3:
             param_3 = ((uVar1 & 3) >>> 0);
             heap.setU8(param_1, (heap.u8(param_2)) & 0xff);
-            param_2 = (((((param_2) >>> 0) + 1)) >>> 0);
+            param_2 = (((((param_2) | 0) + 1)) >>> 0);
             uVar1 = ((uVar1 >>> 2) >>> 0);
-            puVar2 = (((((param_1) >>> 0) + 1)) >>> 0);
+            puVar2 = (((((param_1) | 0) + 1)) >>> 0);
             if (7 < uVar1) {
               for (; uVar1 != 0; uVar1 = (((uVar1 - 1) >>> 0)) >>> 0) {
                 heap.setU32(puVar2, (heap.u32(param_2)) & 0xffffffff);
@@ -284,12 +284,12 @@ export function FUN_00418810(heap, param_1, param_2, param_3) {
       return param_1;
     case 2:
       switchD_00418845_caseD_2: heap.setU8(puVar2, (heap.u8(param_2)) & 0xff);
-      heap.setU8((((puVar2) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
+      heap.setU8((((puVar2) | 0) + 1), (heap.u8((((param_2) | 0) + 1))) & 0xff);
       return param_1;
     case 3:
       switchD_00418845_caseD_3: heap.setU8(puVar2, (heap.u8(param_2)) & 0xff);
-      heap.setU8((((puVar2) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
-      heap.setU8((((puVar2) >>> 0) + 2), (heap.u8((((param_2) >>> 0) + 2))) & 0xff);
+      heap.setU8((((puVar2) | 0) + 1), (heap.u8((((param_2) | 0) + 1))) & 0xff);
+      heap.setU8((((puVar2) | 0) + 2), (heap.u8((((param_2) | 0) + 2))) & 0xff);
       return param_1;
   }
   }

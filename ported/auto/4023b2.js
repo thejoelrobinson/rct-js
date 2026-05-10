@@ -69,8 +69,8 @@ export function FUN_004023b2(heap) {
                   puVar3 = ((puVar3 + ((1) * 4)) >>> 0);
                   puVar4 = ((puVar4 + ((1) * 4)) >>> 0);
                 }
-                puVar4 = (((((puVar4) >>> 0) + heap.u32(__addr_local_ac) + -0x40)) >>> 0);
-                puVar3 = (((((puVar3) >>> 0) + heap.u32(__addr_local_10))) >>> 0);
+                puVar4 = (((((puVar4) | 0) + heap.u32(__addr_local_ac) + -0x40)) >>> 0);
+                puVar3 = (((((puVar3) | 0) + heap.u32(__addr_local_10))) >>> 0);
                 iVar5 = ((iVar5 + -1) >>> 0);
                 iVar1 = ((0x10) >>> 0);
               } while (iVar5 != 0);

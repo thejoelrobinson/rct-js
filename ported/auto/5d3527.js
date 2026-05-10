@@ -14,7 +14,7 @@ import { FUN_005e6bcd } from "./5e6bcd.js";
 export function FUN_005d3527(heap) {
   let iVar1 = 0;
   (regs.eax = FUN_0044e607(heap), regs.ecx = 0xb, regs.eax);
-  iVar1 = ((((heap.u8(0x00652289)) >>> 0) * 0x260) >>> 0);
+  iVar1 = ((heap.u32(0x00652289) * 0x260) >>> 0);
   if (heap.u32((0x00887420) + (iVar1) * 4) != 20) {
     (regs.eax = 0x200000, regs.ecx = 0x1000d, regs.edx = 0x5d001d, regs.ebx = 0x18a00a6, regs.eax = FUN_005e3f31(heap));
     heap.setU32((iVar1 + 0x1c), (0x00651d90) & 0xffffffff);
@@ -28,7 +28,7 @@ export function FUN_005d3527(heap) {
     (regs.eax = FUN_00424db7(heap));
     heap.setU8(0x006522a4, (8) & 0xff);
     heap.setU8(0x006522a5, (0x12) & 0xff);
-    if (heap.u32((0x00887420) + (((heap.u8(0x00652289)) >>> 0) * 0x260) * 4) == 42) {
+    if (heap.u32((0x00887420) + (heap.u32(0x00652289) * 0x260) * 4) == 42) {
       heap.setU8(0x006522a5, (0x1e) & 0xff);
     }
     return;

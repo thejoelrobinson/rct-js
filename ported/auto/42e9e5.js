@@ -28,10 +28,10 @@ export function FUN_0042e9e5(heap) {
     sVar1 = (((regs.eax = 0x400, regs.ecx = 0x400, regs.eax = FUN_00423677(heap))) & 0xffff);
     if (extraout_var != 0) {
       uVar4 = ((0) & 0xffff);
-      cVar2 = ((NaN) & 0xff);
+      cVar2 = ((7) & 0xff);
       uVar7 = ((extraout_ECX) >>> 0);
       do {
-        cVar3 = ((NaN) & 0xff);
+        cVar3 = ((7) & 0xff);
         do {
           (regs.eax = 0x400, regs.ecx = 0x400, regs.eax = FUN_00423677(heap, uVar7));
           if (extraout_var_00 == extraout_var) {

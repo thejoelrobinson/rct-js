@@ -27,7 +27,7 @@ export function FUN_0040a006(heap, param_1, param_2, param_3, param_4, param_5) 
       heap.setU32(__addr_local_10, (heap.i32(param_4 + (2) * 4)) >>> 0);
       heap.setU32(__addr_local_c, (heap.i32(param_4 + (3) * 4)) >>> 0);
       GetClientRect(heap, heap.u32(0x005e916c), __addr_local_30);
-      ClientToScreen(heap, heap.u32(0x005e916c), ((__addr_local_30) >>> 0));
+      ClientToScreen(heap, heap.u32(0x005e916c), ((__addr_local_30) | 0));
       heap.setU32(param_4, (heap.i32(param_4) + heap.u32(__addr_local_30)) & 0xffffffff);
       heap.setI32((param_4 + (1) * 4), (heap.i32(param_4 + (1) * 4) + heap.u32((__addr_local_30 + 4))) & 0xffffffff);
       heap.setI32((param_4 + (2) * 4), (heap.i32(param_4 + (2) * 4) + heap.u32(__addr_local_30)) & 0xffffffff);

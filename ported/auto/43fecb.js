@@ -31,7 +31,7 @@ export function FUN_0043fecb(heap) {
   uVar6 = ((heap.u32((unaff_ESI + 0x30))) >>> 0);
   iVar7 = ((uVar6 * 0x100) >>> 0);
   if (heap.u32((0x00743bbf) + (iVar7) * 4) != 9) {
-    if ((heap.u32((0x00743bbf) + (iVar7) * 4) != 3) && (heap.u32((0x00743bbf) + (iVar7) * 4) != NaN)) {
+    if ((heap.u32((0x00743bbf) + (iVar7) * 4) != 3) && (heap.u32((0x00743bbf) + (iVar7) * 4) != 7)) {
       break LAB_0043ff95;
     }
     LAB_0043ff0b: if ((heap.u32((0x00887422) + (heap.u32(((0x00743bfc) >>> 0) + (iVar7) * 4) * 0x130) * 4) & 1) == 0) {

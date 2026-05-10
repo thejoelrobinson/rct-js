@@ -8,7 +8,7 @@ import { regs } from "../../runtime/regs.js";
 export function FUN_0044142c(heap) {
   let unaff_ESI = regs.esi >>> 0;
   let iVar1 = 0;
-  if ((heap.i8((unaff_ESI + 0x2b)) == NaN) || (heap.i8((unaff_ESI + 0x2b)) == 3)) {
+  if ((heap.i8((unaff_ESI + 0x2b)) == 7) || (heap.i8((unaff_ESI + 0x2b)) == 3)) {
     iVar1 = ((heap.u32((unaff_ESI + 0x68)) * 0x260) >>> 0);
     heap.setU32(((0x0088752b) + (iVar1) * 4), (heap.u32((0x0088752b) + (iVar1) * 4) + -1) & 0xffffffff);
     heap.setU32(((0x0088751d) + (iVar1) * 4), (heap.u32((0x0088751d) + (iVar1) * 4) | 0xc) & 0xffffffff);

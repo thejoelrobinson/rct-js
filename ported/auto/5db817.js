@@ -125,14 +125,14 @@ export function FUN_005db817(heap) {
   if (heap.i32((unaff_ESI + 0x28)) < 0) {
     iVar4 = ((-iVar4) >>> 0);
   }
-  iVar4 = ((-(((heap.i32((unaff_ESI + 0x28)) >>> 1) + (iVar4 >>> 5)) / (((0)) >>> 0) * (unaff_ESI + 0x46))) >>> 0);
+  iVar4 = ((-(((heap.i32((unaff_ESI + 0x28)) >>> 1) + (iVar4 >>> 5)) / (((0)) | 0) * (unaff_ESI + 0x46))) >>> 0);
   if ((heap.u16((0x005f7104 + heap.u32((unaff_ESI + 0x31)) * 8)) & 8) != 0) {
     uVar6 = ((heap.u32((unaff_ESI + 0xc2))) >>> 0);
     iVar5 = ((uVar6 * 0x4000) >>> 0);
     if ((heap.u16((unaff_ESI + 0x48)) & 8) != 0) {
       iVar5 = ((uVar6 * -0x4000) >>> 0);
     }
-    iVar4 = ((iVar4 + ((((iVar5 - heap.i32((unaff_ESI + 0x28))) * (0) * (unaff_ESI + 0xc3) * 2)) >>> 0) / (((uVar6 * heap.u16((unaff_ESI + 0x46)) >>> 2)) >>> 0)) >>> 0);
+    iVar4 = ((iVar4 + ((((iVar5 - heap.i32((unaff_ESI + 0x28))) * (0) * (unaff_ESI + 0xc3) * 2)) | 0) / (((uVar6 * heap.u16((unaff_ESI + 0x46)) >>> 2)) | 0)) >>> 0);
   }
   heap.setI32((unaff_ESI + 0x2c), (iVar4) & 0xffffffff);
   return heap.u32(0x0065dc40);

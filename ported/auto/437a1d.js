@@ -39,7 +39,7 @@ export function FUN_00437a1d(heap) {
         bVar3 = ((-bVar3) & 0xff);
       }
       if (heap.u32(0x00628ae7) < bVar3) {
-        uVar5 = ((((heap.u32(0x00628ae6)) >>> 0)) >>> 0);
+        uVar5 = ((heap.u32(0x00628ae6)) >>> 0);
         (regs.eax = FUN_00426f56(heap));
         if (uVar5 != 0x80000000) {
           heap.setU32(0x00628ae2, (heap.u32(0x00628ae2) + uVar5) >>> 0);

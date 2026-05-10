@@ -25,7 +25,7 @@ export function FUN_005e13d2(heap) {
   let puVar11 = 0;
   puVar10 = ((unaff_ESI) >>> 0);
   while (puVar11 = ((puVar10) >>> 0), sVar7 = ((heap.u32(0x0099fb98)) & 0xffff), sVar6 = ((heap.u32(0x0099fb96)) & 0xffff), sVar5 = ((heap.u32(0x0099fb94)) & 0xffff), sVar4 = ((heap.u32(0x0099fb92)) & 0xffff), sVar3 = ((heap.u32(0x0099fb90)) & 0xffff), iVar2 = ((heap.u32(0x0099fb8c)) >>> 0), puVar10 = ((puVar11 + ((0x5e) * 4)) >>> 0), puVar10 < heap.u32(0x009a1164)) {
-    if ((((heap.i16((puVar11 + ((0x66) * 4))) < in_DX) && (heap.i16((((puVar11) >>> 0) + 0x19a)) < unaff_BP)) && (in_AX < (((heap.i16((puVar11 + ((0x66) * 4))) + heap.i16((puVar11 + ((0x67) * 4))))) << 16 >> 16))) && ((unaff_BX < (((heap.i16((((puVar11) >>> 0) + 0x19a)) + heap.i16((((puVar11) >>> 0) + 0x19e)))) << 16 >> 16) && ((heap.u16((((puVar11) >>> 0) + 0x1aa)) & 0x10) == 0)))) {
+    if ((((heap.i16((puVar11 + ((0x66) * 4))) < in_DX) && (heap.i16((((puVar11) | 0) + 0x19a)) < unaff_BP)) && (in_AX < (((heap.i16((puVar11 + ((0x66) * 4))) + heap.i16((puVar11 + ((0x67) * 4))))) << 16 >> 16))) && ((unaff_BX < (((heap.i16((((puVar11) | 0) + 0x19a)) + heap.i16((((puVar11) | 0) + 0x19e)))) << 16 >> 16) && ((heap.u16((((puVar11) | 0) + 0x1aa)) & 0x10) == 0)))) {
       if (in_AX < heap.i16((puVar11 + ((0x66) * 4)))) {
         (regs.eax = FUN_005e13d2(heap));
         in_AX = ((heap.i16((puVar11 + ((0x66) * 4)))) & 0xffff);
@@ -36,16 +36,16 @@ export function FUN_005e13d2(heap) {
         in_AX = ((heap.i16((puVar11 + ((0x66) * 4))) + heap.i16((puVar11 + ((0x67) * 4)))) & 0xffff);
         puVar10 = ((unaff_ESI) >>> 0);
       } else {
-        if (unaff_BX < heap.i16((((puVar11) >>> 0) + 0x19a))) {
+        if (unaff_BX < heap.i16((((puVar11) | 0) + 0x19a))) {
         (regs.eax = FUN_005e13d2(heap));
-        unaff_BX = ((heap.i16((((puVar11) >>> 0) + 0x19a))) & 0xffff);
+        unaff_BX = ((heap.i16((((puVar11) | 0) + 0x19a))) & 0xffff);
         puVar10 = ((unaff_ESI) >>> 0);
       } else {
-        if (unaff_BP <= (((heap.i16((((puVar11) >>> 0) + 0x19a)) + heap.i16((((puVar11) >>> 0) + 0x19e)))) << 16 >> 16)) {
+        if (unaff_BP <= (((heap.i16((((puVar11) | 0) + 0x19a)) + heap.i16((((puVar11) | 0) + 0x19e)))) << 16 >> 16)) {
           return;
         }
         (regs.eax = FUN_005e13d2(heap));
-        unaff_BX = ((heap.i16((((puVar11) >>> 0) + 0x19a)) + heap.i16((((puVar11) >>> 0) + 0x19e))) & 0xffff);
+        unaff_BX = ((heap.i16((((puVar11) | 0) + 0x19a)) + heap.i16((((puVar11) | 0) + 0x19e))) & 0xffff);
         puVar10 = ((unaff_ESI) >>> 0);
       }
       }
@@ -59,11 +59,11 @@ export function FUN_005e13d2(heap) {
   if ((((sVar9 + heap.i16((unaff_ESI + ((9) * 4))))) << 16 >> 16) < in_DX) {
     in_DX = ((sVar9 + heap.i16((unaff_ESI + ((9) * 4)))) & 0xffff);
   }
-  sVar9 = ((heap.i16((((unaff_ESI) >>> 0) + 0x22))) & 0xffff);
+  sVar9 = ((heap.i16((((unaff_ESI) | 0) + 0x22))) & 0xffff);
   if (unaff_BX < sVar9) {
     unaff_BX = ((sVar9) & 0xffff);
   }
-  sVar9 = ((sVar9 + heap.i16((((unaff_ESI) >>> 0) + 0x26))) & 0xffff);
+  sVar9 = ((sVar9 + heap.i16((((unaff_ESI) | 0) + 0x26))) & 0xffff);
   if (sVar9 < unaff_BP) {
     unaff_BP = ((sVar9) & 0xffff);
   }
@@ -96,7 +96,7 @@ export function FUN_005e13d2(heap) {
         if (heap.u32(0x0099fb96) == 0 || sVar6 < sVar9) {
           break LAB_005e1637;
         }
-        heap.setU32(0x0099fb8c, (heap.u32(0x0099fb8c) + ((heap.u32(0x0099fb94) + heap.u32(0x0099fb98)) >>> 0) * ((sVar9) >>> 0)) >>> 0);
+        heap.setU32(0x0099fb8c, (heap.u32(0x0099fb8c) + ((heap.u32(0x0099fb94) + heap.u32(0x0099fb98)) >>> 0) * ((sVar9) | 0)) >>> 0);
       }
       sVar9 = ((heap.u32(0x0099fb96)) & 0xffff);
       sVar8 = (((heap.u32(0x0099fb92) + heap.u32(0x0099fb96)) - unaff_BP) & 0xffff);
@@ -126,7 +126,7 @@ export function FUN_005e13d2(heap) {
         heap.setU32(0x0099fb98, (sVar7) >>> 0);
         return;
       }
-      puVar1 = (((((unaff_ESI) >>> 0) + 0x1aa)) >>> 0);
+      puVar1 = (((((unaff_ESI) | 0) + 0x1aa)) >>> 0);
       unaff_ESI = ((puVar10) >>> 0);
     } while ((heap.u16(puVar1) & 0x10) == 0);
   } while (true);

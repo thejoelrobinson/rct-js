@@ -223,7 +223,7 @@ export function FUN_004499cc(heap) {
         if (heap.u32((0x005f5e88) + (heap.u32(pbVar14) * 4) * 4) != 0xff) {
           uVar12 = ((uVar12 - heap.u16((0x0062d580 + heap.u32(((0x005f5e88) >>> 0) + (heap.u32(pbVar14) * 4) * 4) * 8))) >>> 0);
           if (heap.u32((0x005f5e89) + (heap.u32(pbVar14) * 4) * 4) != 0xff) {
-            uVar12 = ((((((uVar12 + heap.u16((pbVar14 + 0x144))) - heap.u32((0x0062d580 + heap.u32(((0x005f5e89) >>> 0) + (heap.u32(pbVar14) * 4) * 4) * 8)))) >>> 0) >>> 1) >>> 0);
+            uVar12 = ((((((uVar12 + heap.u16((pbVar14 + 0x144))) - heap.u32((0x0062d580 + heap.u32(((0x005f5e89) >>> 0) + (heap.u32(pbVar14) * 4) * 4) * 8)))) | 0) >>> 1) >>> 0);
           }
         }
         heap.setU32((pbVar14 + 0x160), (((heap.i16((pbVar14 + 0xd4)) + heap.i16((pbVar14 + 0xd6)) + heap.i16((pbVar14 + 0xd8)) + heap.i16((pbVar14 + 0xda)) + heap.i16((pbVar14 + 0xdc)) + heap.i16((pbVar14 + 0xde)) + heap.i16((pbVar14 + 0xe0)) + heap.i16((pbVar14 + 0xe2)) + heap.i16((pbVar14 + 0xe4)) + heap.i16((pbVar14 + 0xe6))) >>> 0) * 0xc * uVar12) & 0xffffffff);

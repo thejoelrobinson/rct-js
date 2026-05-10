@@ -7,5 +7,5 @@
 import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
 export function FUN_00441ffd(heap) {
-  return (regs.eax = callIndirect(heap, heap.u32((0x0044200c + ((heap.u8(0x0062d2ff)) >>> 0) * 4))));
+  return (regs.eax = callIndirect(heap, heap.u32((0x0044200c + heap.u32(0x0062d2ff) * 4))));
 }

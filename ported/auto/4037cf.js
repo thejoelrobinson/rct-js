@@ -37,7 +37,8 @@ export function FUN_004037cf(heap, param_1, param_2, param_3) {
       GetDlgItemTextA(heap, param_1, 1000, heap.u32(0x005f1390), 0x104);
     } else {
       if (param_3 != 2) {
-      /* goto LAB_004039ae — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004037cf/LAB_004039ae"); return 0;
+      uVar2 = ((0) >>> 0);
+      return uVar2;
     }
     }
     heap.setU32(heap.u32(0x005f1ca8), (param_3) & 0xffffffff);

@@ -11,9 +11,9 @@ import { FUN_00408b0b } from "./408b0b.js";
 export function FUN_00408a4d(heap) {
   let uVar1 = 0;
   let iVar2 = 0;
-  if (heap.u32(0x005ebf2c) == ((0x0) >>> 0)) {
+  if (heap.u32(0x005ebf2c) == ((0x0) | 0)) {
     heap.setU32(0x005ebf2c, (LoadLibraryA(heap, 0x005ebf68)) >>> 0);
-    if (heap.u32(0x005ebf2c) == ((0x0) >>> 0)) {
+    if (heap.u32(0x005ebf2c) == ((0x0) | 0)) {
       uVar1 = ((0) >>> 0);
     } else {
       heap.setU32(0x005f0d60, (GetProcAddress(heap, heap.u32(0x005ebf2c), 0x005ebf74)) >>> 0);

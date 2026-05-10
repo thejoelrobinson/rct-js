@@ -45,7 +45,6 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   let uStack_a = 0;
   let uStack_8 = 0;
   let cStack_5 = 0;
-  LAB_00419be6: {
   psVar1 = ((param_6) >>> 0);
   heap.setU32(__addr_local_1c, (0xcc) >>> 0);
   heap.setU32(__addr_local_1b, (0xcc) >>> 0);
@@ -68,9 +67,9 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   if (((((uVar4) << 16 >> 16) == 0) && (param_2 == 0)) && (heap.u32(__addr_param_1) == 0)) {
     heap.setU32(param_6, (0) & 0xffffffff);
     LAB_00419a8f: heap.setU8((psVar1 + ((1) * 2)), (0x20) & 0xff);
-    heap.setU8((((psVar1) >>> 0) + 3), (1) & 0xff);
+    heap.setU8((((psVar1) | 0) + 3), (1) & 0xff);
     heap.setU8((psVar1 + ((2) * 2)), (0x30) & 0xff);
-    heap.setU8((((psVar1) >>> 0) + 5), (0) & 0xff);
+    heap.setU8((((psVar1) | 0) + 5), (0) & 0xff);
     return 1;
   }
   if (((uVar4) << 16 >> 16) == 0x7fff) {
@@ -79,28 +78,28 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
       heap.setI16((param_6 + (2) * 2), (0x2331) & 0xffff);
       heap.setI16((param_6 + (3) * 2), (0x4e53) & 0xffff);
       heap.setI16((param_6 + (4) * 2), (0x4e41) & 0xffff);
-      heap.setU8((((param_6) >>> 0) + 3), (6) & 0xff);
+      heap.setU8((((param_6) | 0) + 3), (6) & 0xff);
       heap.setU8((param_6 + ((5) * 2)), (0) & 0xff);
       return 0;
     }
     if ((((param_3 & 0x8000) != 0) && (param_2 == 0xc0000000)) && (heap.u32(__addr_param_1) == 0)) {
       heap.setI16((param_6 + (2) * 2), (0x2331) & 0xffff);
       heap.setI16((param_6 + (3) * 2), (0x4e49) & 0xffff);
-      heap.setU8((((param_6) >>> 0) + 3), (5) & 0xff);
+      heap.setU8((((param_6) | 0) + 3), (5) & 0xff);
       heap.setI16((param_6 + (4) * 2), (0x44) & 0xffff);
       return 0;
     }
     if ((param_2 == 0x80000000) && (heap.u32(__addr_param_1) == 0)) {
       heap.setI16((param_6 + (2) * 2), (0x2331) & 0xffff);
       heap.setI16((param_6 + (3) * 2), (0x4e49) & 0xffff);
-      heap.setU8((((param_6) >>> 0) + 3), (5) & 0xff);
+      heap.setU8((((param_6) | 0) + 3), (5) & 0xff);
       heap.setI16((param_6 + (4) * 2), (0x46) & 0xffff);
       return 0;
     }
     heap.setI16((param_6 + (2) * 2), (0x2331) & 0xffff);
     heap.setI16((param_6 + (3) * 2), (0x4e51) & 0xffff);
     heap.setI16((param_6 + (4) * 2), (0x4e41) & 0xffff);
-    heap.setU8((((param_6) >>> 0) + 3), (6) & 0xff);
+    heap.setU8((((param_6) | 0) + 3), (6) & 0xff);
     heap.setU8((param_6 + ((5) * 2)), (0) & 0xff);
     return 0;
   }
@@ -112,7 +111,7 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
   uStack_c = ((((((heap.u32(__addr_param_1)) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
   heap.setU32(__addr_local_10, (0) >>> 0);
   sVar9 = (((((((uVar4 >>> 8) + (param_2 >>> 0x18) * 2) * 0x4d + -0x134312f4 + uVar4 * 0x4d10 >>> 0x10)) << 16 >> 16)) & 0xffff);
-  (regs.eax = FUN_00419f50(heap, __addr_local_10, -((sVar9) >>> 0), 1));
+  (regs.eax = FUN_00419f50(heap, __addr_local_10, -((sVar9) | 0), 1));
   if (0x3ffe < CONCAT11(cStack_5, heap.u32(__addr_local_6))) {
     sVar9 = ((sVar9 + 1) & 0xffff);
     (regs.eax = FUN_00419c90(heap, __addr_local_10, __addr_local_1c));
@@ -155,28 +154,31 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
       cVar3 = ((cStack_5 + 48) & 0xff);
       cStack_5 = ((0) & 0xff);
       heap.setI8(psVar6, (cVar3) & 0xff);
-      psVar6 = (((((psVar6) >>> 0) + 1)) >>> 0);
+      psVar6 = (((((psVar6) | 0) + 1)) >>> 0);
       iVar8 = ((iVar8 + -1) >>> 0);
     } while (iVar8 != 0);
   }
   psVar7 = ((psVar6 + ((-1) * 2)) >>> 0);
-  if (heap.i8((((psVar6) >>> 0) + -1)) < 53) {
+  if (heap.i8((((psVar6) | 0) + -1)) < 53) {
     if (psVar1 <= psVar7) {
       do {
         if (((heap.i16(psVar7)) << 24 >> 24) != 48) {
           break;
         }
-        psVar7 = (((((psVar7) >>> 0) + -1)) >>> 0);
+        psVar7 = (((((psVar7) | 0) + -1)) >>> 0);
       } while (psVar1 <= psVar7);
       if (psVar1 <= psVar7) {
-        break LAB_00419be6;
+        cVar3 = (((((psVar7) << 24 >> 24) - ((param_6) << 24 >> 24)) + -3) & 0xff);
+        heap.setI8((((param_6) | 0) + 3), (cVar3) & 0xff);
+        heap.setU8((((param_6) | 0) + cVar3 + 4), (0) & 0xff);
+        return 1;
       }
     }
     heap.setU8(psVar1, (0x30) & 0xff);
     heap.setU32(param_6, (0) & 0xffffffff);
     heap.setU8((param_6 + ((1) * 2)), (0x20) & 0xff);
-    heap.setU8((((param_6) >>> 0) + 3), (1) & 0xff);
-    heap.setU8((((param_6) >>> 0) + 5), (0) & 0xff);
+    heap.setU8((((param_6) | 0) + 3), (1) & 0xff);
+    heap.setU8((((param_6) | 0) + 5), (0) & 0xff);
     return 1;
   }
   if (psVar1 <= psVar7) {
@@ -185,23 +187,22 @@ export function FUN_00419880(heap, param_1, param_2, param_3, param_4, param_5, 
         break;
       }
       heap.setU8(psVar7, (0x30) & 0xff);
-      psVar7 = (((((psVar7) >>> 0) + -1)) >>> 0);
+      psVar7 = (((((psVar7) | 0) + -1)) >>> 0);
     } while (psVar1 <= psVar7);
     if (psVar1 <= psVar7) {
       heap.setI8(psVar7, (((heap.i16(psVar7)) << 24 >> 24) + 1) & 0xff);
       cVar3 = (((((psVar7) << 24 >> 24) - ((param_6) << 24 >> 24)) + -3) & 0xff);
-      heap.setI8((((param_6) >>> 0) + 3), (cVar3) & 0xff);
-      heap.setU8((((param_6) >>> 0) + cVar3 + 4), (0) & 0xff);
+      heap.setI8((((param_6) | 0) + 3), (cVar3) & 0xff);
+      heap.setU8((((param_6) | 0) + cVar3 + 4), (0) & 0xff);
       return 1;
     }
   }
-  psVar7 = (((((psVar7) >>> 0) + 1)) >>> 0);
+  psVar7 = (((((psVar7) | 0) + 1)) >>> 0);
   heap.setU32(param_6, (heap.i16(param_6) + 1) & 0xffffffff);
   heap.setI8(psVar7, (heap.i8(psVar7) + 1) & 0xff);
-  }
-  cVar3 = (((((psVar7) << 24 >> 24) - ((param_6) << 24 >> 24)) + -3) & 0xff);
-  heap.setI8((((param_6) >>> 0) + 3), (cVar3) & 0xff);
-  heap.setU8((((param_6) >>> 0) + cVar3 + 4), (0) & 0xff);
+  LAB_00419be6: cVar3 = (((((psVar7) << 24 >> 24) - ((param_6) << 24 >> 24)) + -3) & 0xff);
+  heap.setI8((((param_6) | 0) + 3), (cVar3) & 0xff);
+  heap.setU8((((param_6) | 0) + cVar3 + 4), (0) & 0xff);
   return 1;
 } finally {
     heap.freeFrame(30);

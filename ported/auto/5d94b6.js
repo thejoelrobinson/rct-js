@@ -29,7 +29,6 @@ export function FUN_005d94b6(heap) {
   let puVar13 = 0;
   LAB_005d96a2: {
   LAB_005d963a: {
-  LAB_005d977a: {
   LAB_005d96ef: {
   bVar9 = ((heap.u8(unaff_ESI + (0x30))) & 0xff);
   if ((heap.u16((unaff_ESI + 0x48)) & 0x20) != 0) {
@@ -47,7 +46,7 @@ export function FUN_005d94b6(heap) {
   uVar12 = ((((((heap.u8(unaff_ESI + (0x31))) & 0xff)) >>> 0)) >>> 0);
   cVar3 = ((-1) & 0xff);
   uVar10 = ((heap.u32((unaff_ESI + 0x28))) >>> 0);
-  if (((uVar10) >>> 0) < 0) {
+  if (((uVar10) | 0) < 0) {
     uVar10 = ((-uVar10) >>> 0);
   }
   if (0xffff < uVar10) {
@@ -156,7 +155,7 @@ export function FUN_005d94b6(heap) {
         uVar5 = ((CONCAT11(bVar9, cVar3)) & 0xffff);
       }
       heap.setU16((unaff_ESI + 0xbd), (uVar5) & 0xffff);
-      iVar7 = (((heap.i32((unaff_ESI + 0x28)) >>> 0xe) * ((heap.i16((0x0065e674 + ((((heap.u8(unaff_ESI + (0x1e))) & 0xff)) >>> 0) * 2))) >>> 0) >>> 0xe) >>> 0);
+      iVar7 = (((heap.i32((unaff_ESI + 0x28)) >>> 0xe) * ((heap.i16((0x0065e674 + ((((heap.u8(unaff_ESI + (0x1e))) & 0xff)) >>> 0) * 2))) | 0) >>> 0xe) >>> 0);
       if (((iVar7) << 16 >> 16) < -0x7f) {
         iVar7 = ((0xff81) >>> 0);
       }
@@ -168,16 +167,24 @@ export function FUN_005d94b6(heap) {
     }
     uVar5 = ((CONCAT11(bVar8 - 9, cVar3)) & 0xffff);
     if ((8 < bVar8) && (0x4f < ((bVar8 - 9) & 0xff))) {
-      break LAB_005d977a;
+      heap.setU16((unaff_ESI + 0xbd), (uVar5) & 0xffff);
+      iVar7 = (((heap.i32((unaff_ESI + 0x28)) >>> 0xe) * ((heap.i16((0x0065e674 + ((((heap.u8(unaff_ESI + (0x1e))) & 0xff)) >>> 0) * 2))) | 0) >>> 0xe) >>> 0);
+      if (((iVar7) << 16 >> 16) < -0x7f) {
+        iVar7 = ((0xff81) >>> 0);
+      }
+      if (0x7f < ((iVar7) << 16 >> 16)) {
+        iVar7 = ((0x7f) >>> 0);
+      }
+      heap.setU8((unaff_ESI + (0xbf)), (((iVar7) << 24 >> 24)) & 0xff);
+      return;
     }
   }
   uVar5 = ((CONCAT11(bVar9 >>> 2, cVar11)) & 0xffff);
   if (bVar9 == 0xff) {
     uVar5 = ((CONCAT11(0xff, cVar11)) & 0xffff);
   }
-  }
-  heap.setU16((unaff_ESI + 0xbd), (uVar5) & 0xffff);
-  iVar7 = (((heap.i32((unaff_ESI + 0x28)) >>> 0xe) * ((heap.i16((0x0065e674 + ((((heap.u8(unaff_ESI + (0x1e))) & 0xff)) >>> 0) * 2))) >>> 0) >>> 0xe) >>> 0);
+  LAB_005d977a: heap.setU16((unaff_ESI + 0xbd), (uVar5) & 0xffff);
+  iVar7 = (((heap.i32((unaff_ESI + 0x28)) >>> 0xe) * ((heap.i16((0x0065e674 + ((((heap.u8(unaff_ESI + (0x1e))) & 0xff)) >>> 0) * 2))) | 0) >>> 0xe) >>> 0);
   if (((iVar7) << 16 >> 16) < -0x7f) {
     iVar7 = ((0xff81) >>> 0);
   }

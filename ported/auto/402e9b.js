@@ -37,7 +37,7 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
   heap.setU32(0x005e9190, (param_3) >>> 0);
   heap.setU32(0x005f1398, (param_1) >>> 0);
   void (__addr_local_14) /* assign to ExceptionList elided (SEH not modelled) */;
-  heap.setU32(0x005e91c8, (LoadCursorA(heap, ((0x0) >>> 0), ((0x7f00) >>> 0))) >>> 0);
+  heap.setU32(0x005e91c8, (LoadCursorA(heap, ((0x0) | 0), ((0x7f00) | 0))) >>> 0);
   for (local_24 = ((0) >>> 0); local_24 < 0x20; local_24 = (((local_24 + 1) >>> 0)) >>> 0) {
     heap.setU32(((0x005f1b60) + (local_24) * 4), (0) & 0xffffffff);
   }
@@ -65,9 +65,9 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
     (regs.eax = FUN_0040df1a(heap));
     (regs.eax = FUN_0040d9b0(heap));
     (regs.eax = FUN_00406ee7(heap));
-    if (heap.u32(0x005e91ec) != ((0x0) >>> 0)) {
+    if (heap.u32(0x005e91ec) != ((0x0) | 0)) {
       DeleteObject(heap, heap.u32(0x005e91ec));
-      heap.setU32(0x005e91ec, (((0x0) >>> 0)) >>> 0);
+      heap.setU32(0x005e91ec, (((0x0) | 0)) >>> 0);
     }
     (regs.eax = FUN_004061f5(heap));
     if (MVar1 == 0) {

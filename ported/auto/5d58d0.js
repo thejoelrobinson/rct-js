@@ -7,7 +7,7 @@
 import { regs } from "../../runtime/regs.js";
 import { FUN_005e5562 } from "./5e5562.js";
 export function FUN_005d58d0(heap) {
-  if (((heap.u8(0x00652288) != 6) && (heap.u8(0x00652288) != NaN)) && (heap.u8(0x00652288) != 8)) {
+  if (((heap.u8(0x00652288) != 6) && (heap.u8(0x00652288) != 7)) && (heap.u8(0x00652288) != 8)) {
     return;
   }
   if ((heap.u8(0x00652292) & 1) != 0) {

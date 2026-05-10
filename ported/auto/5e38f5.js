@@ -45,13 +45,13 @@ export function FUN_005e38f5(heap) {
       return in_EAX;
     }
     if (in_EAX != 0x80000000) {
-      if (((in_EAX) >>> 0) < 0) {
+      if (((in_EAX) | 0) < 0) {
         in_EAX = ((0) >>> 0);
       }
       if (heap.u32(0x00971ed6) <= ((in_EAX) & 0xffff)) {
         in_EAX = ((((heap.u32(0x00971ed6) - 1) >>> 0)) >>> 0);
       }
-      if (((unaff_EBX) >>> 0) < 0) {
+      if (((unaff_EBX) | 0) < 0) {
         unaff_EBX = ((0) >>> 0);
       }
       if (heap.u32(0x00971ed8) <= ((unaff_EBX) & 0xffff)) {

@@ -37,12 +37,12 @@ export function FUN_004269da(heap) {
   (regs.eax = FUN_00443f5c(heap));
   uVar1 = ((0) >>> 0);
   do {
-    heap.setU32((((0x0087c3dc) >>> 0) + uVar1), (0) & 0xffffffff);
+    heap.setU32((((0x0087c3dc) | 0) + uVar1), (0) & 0xffffffff);
     uVar1 = ((uVar1 + 4) >>> 0);
   } while (uVar1 < 8);
   uVar1 = ((0) >>> 0);
   do {
-    heap.setU32((((0x0087cba5) >>> 0) + uVar1 * 4 + 3), (0xffffffff) & 0xffffffff);
+    heap.setU32((((0x0087cba5) | 0) + uVar1 * 4 + 3), (0xffffffff) & 0xffffffff);
     uVar1 = ((uVar1 + 1) >>> 0);
   } while (uVar1 < 0x38);
   heap.setU32(0x0087c3c0, (100) >>> 0);
