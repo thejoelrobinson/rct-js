@@ -126,6 +126,11 @@ export function callIndirect(heap, fnAddr, ...args) {
       console.warn(`[callIndirect] no JS function at 0x${a.toString(16)} — returning 0`);
     }
   }
+  // Opt-in audit hook (tools/indirect-call-audit.js). Called on every miss so
+  // counts and caller info accumulate. No-op when the hook is unset.
+  if (typeof globalThis._missingIndirectHook === "function") {
+    globalThis._missingIndirectHook(a);
+  }
   return 0;
 }
 

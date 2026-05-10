@@ -36,6 +36,7 @@
 import { regs } from "../../runtime/regs.js";
 
 export function FUN_009b30bc(heap) {
+  if (typeof globalThis._renderTrace === "function") globalThis._renderTrace("FUN_009b30bc");
   const edi = regs.edi >>> 0;
   if (edi === 0) return;
   // Smear EBP's low byte to all four bytes — see header for rationale.

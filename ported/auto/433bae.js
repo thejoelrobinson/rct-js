@@ -6,6 +6,8 @@
 
 import { CONCAT22, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 export function FUN_00433bae(heap) {
+  // diagnostic — wiped on regen
+  if (typeof globalThis._renderTrace === "function") globalThis._renderTrace("FUN_00433bae");
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;

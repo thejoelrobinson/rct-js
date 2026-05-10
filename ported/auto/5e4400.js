@@ -9,6 +9,8 @@ import { regs } from "../../runtime/regs.js";
 import { FUN_005e0e07 } from "./5e0e07.js";
 import { FUN_009b30f1 } from "./9b30f1.js";
 export function FUN_005e4400(heap) {
+  // diagnostic — wiped on regen
+  if (typeof globalThis._renderTrace === "function") globalThis._renderTrace("FUN_005e4400");
   let sVar1 = 0;
   let pbVar2 = 0;
   let unaff_ESI = regs.esi >>> 0;

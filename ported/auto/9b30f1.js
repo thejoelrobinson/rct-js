@@ -7,6 +7,8 @@
 import { CONCAT11, CONCAT21, CONCAT22, CONCAT31, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { regs } from "../../runtime/regs.js";
 export function FUN_009b30f1(heap) {
+  // diagnostic — wiped on regen
+  if (typeof globalThis._renderTrace === "function") globalThis._renderTrace("FUN_009b30f1");
   let uVar1 = 0;
   let uVar2 = 0;
   let uVar3 = 0;

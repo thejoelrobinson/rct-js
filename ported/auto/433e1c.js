@@ -7,6 +7,8 @@
 import { regs } from "../../runtime/regs.js";
 import { FUN_009b438b } from "./9b438b.js";
 export function FUN_00433e1c(heap) {
+  // diagnostic — wiped on regen
+  if (typeof globalThis._renderTrace === "function") globalThis._renderTrace("FUN_00433e1c");
   let iVar1 = 0;
   let iVar2 = 0;
   iVar1 = ((heap.u32(0x005f96e4)) >>> 0);
