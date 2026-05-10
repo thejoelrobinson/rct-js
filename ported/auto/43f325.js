@@ -14,9 +14,9 @@ export function FUN_0043f325(heap) {
   let extraout_var = 0;
   let uVar1 = 0;
   uVar1 = ((((((((in_AL) & 0xffff) * (CONCAT11(0x76, in_AL) >>> 8)) & 0xffff) >>> 8) >>> 0)) >>> 0);
-  (regs.ebp = 0x16, regs.esi = 0x30, regs.eax = FUN_005e0e07(heap));
+  (regs.esi = 0x30, regs.eax = FUN_005e0e07(heap));
   if ((((-1 < (unaff_EBP | 0)) || (heap.u8(0x0099c169) != 0)) || ((heap.u32(0x0088741c) & 8) == 0)) && (2 < ((uVar1) & 0xffff))) {
-    (regs.ebp = 0x16, regs.esi = 0x30, regs.eax = FUN_005e0e07(heap, in_EDX, extraout_var, uVar1));
+    (regs.esi = 0x30, regs.eax = FUN_005e0e07(heap, in_EDX, extraout_var, uVar1));
   }
   return;
 }

@@ -1847,9 +1847,16 @@ function emitCall(node, ctx) {
       const capturedPost = captured && captured.post;
       // Pre-call writes: when callee reads a register on entry, set it from
       // the traced caller-state.
+      // Skip EBP — it is the x86 stack frame base pointer in every standard
+      // calling convention, never a function parameter. Captured EBP values
+      // are nearly always either a stack address or a return-address from
+      // an earlier CALL — both meaningless cross-call. Surfaced after
+      // FUN_005e3f31 stored a captured 0x42b079 (an instruction PC inside
+      // FUN_004298a0) as a function pointer and tried to callIndirect it.
       const preWrites = [];
       if (consumed && capturedPre) {
         for (const reg of consumed) {
+          if (reg === 'ebp') continue;
           const val = capturedPre[reg];
           if (val !== undefined && val !== 0) {
             preWrites.push(`regs.${reg} = 0x${val.toString(16)}`);

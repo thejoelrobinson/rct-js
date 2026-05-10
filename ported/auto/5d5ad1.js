@@ -105,7 +105,7 @@ export function FUN_005d5ad1(heap) {
         (regs.eax = FUN_005cfc50(heap));
       }
       bVar12 = ((false) & 0xff);
-      (regs.ebp = 0x650000, regs.eax = FUN_005cfe66(heap));
+      (regs.eax = FUN_005cfe66(heap));
       if (!bVar12) {
         heap.setU8(0x00656b6c, (heap.u8(puVar10 + (4))) & 0xff);
         if (heap.u8(0x00656b6c) == 40) {
@@ -152,7 +152,7 @@ export function FUN_005d5ad1(heap) {
         bVar12 = ((false) & 0xff);
         (regs.eax = FUN_005cfac7(heap));
         if (!bVar12) {
-          (regs.ebp = 0x650000, regs.eax = FUN_005cfe66(heap));
+          (regs.eax = FUN_005cfe66(heap));
         }
         heap.setU8(0x00656b6e, (0xff) & 0xff);
         return 1;

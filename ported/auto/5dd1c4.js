@@ -107,7 +107,7 @@ export function FUN_005dd1c4(heap) {
   if (sVar4 != CONCAT11(heap.u32((0x00887498) + (iVar10) * 4), heap.u32((0x00887499) + (iVar10) * 4))) {
     heap.setU32(((0x00887499) + (iVar10) * 4), (((sVar4) << 24 >> 24)) & 0xffffffff);
     heap.setU32(((0x00887498) + (iVar10) * 4), ((((((sVar4) & 0xffff) >>> 8)) << 24 >> 24)) & 0xffffffff);
-    (regs.eax = 0xb, regs.ecx = 0xdd0000, regs.edx = 0xff, regs.ebx = 0xff, regs.ebp = 0xb0d9bd, regs.esi = 0x65ea8b, regs.edi = 0x887420, regs.eax = FUN_005e5301(heap), regs.ecx = 0x90000, regs.eax);
+    (regs.eax = 0xb, regs.ecx = 0xdd0000, regs.edx = 0xff, regs.ebx = 0xff, regs.esi = 0x65ea8b, regs.edi = 0x887420, regs.eax = FUN_005e5301(heap), regs.ecx = 0x90000, regs.eax);
   }
   return 1;
 }

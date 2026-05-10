@@ -95,7 +95,7 @@ export function FUN_0043054e(heap) {
     (regs.eax = FUN_0042f199(heap));
     heap.setU32(0x006e3b88, (heap.u8(0x005f8534)) >>> 0);
     heap.setU32(0x006e3b8c, (heap.u32(0x005f8538)) >>> 0);
-    (regs.ebp = 0x99c16d, regs.eax = FUN_004311e7(heap));
+    (regs.eax = FUN_004311e7(heap));
     (regs.eax = FUN_0042c6f3(heap));
     if (heap.u8(0x0087d0d0) != 0) {
       (regs.eax = FUN_004274a9(heap));
