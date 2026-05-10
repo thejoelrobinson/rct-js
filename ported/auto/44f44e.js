@@ -13,7 +13,6 @@ export function FUN_0044f44e(heap) {
   let in_EAX = regs.eax >>> 0;
   let iVar3 = 0;
   let extraout_ECX = 0;
-  let extraout_DL = 0;
   let in_EDX = regs.edx >>> 0;
   let pcVar4 = 0;
   let unaff_ESI = regs.esi >>> 0;
@@ -26,7 +25,7 @@ export function FUN_0044f44e(heap) {
     bVar2 = (((regs.eax = FUN_005df40c(heap))) & 0xff);
     uVar5 = (((((((((bVar2) & 0xffff) * (0) * pbVar1) & 0xffff) >>> 8) * 3) >>> 0)) >>> 0);
     pcVar4 = ((0x00887420) >>> 0);
-    while ((extraout_DL != heap.i8(pcVar4) || (heap.i16((pbVar1 + uVar5 + 1)) != heap.i16((pcVar4 + 0x1e)))) || (iVar3 = ((extraout_ECX) >>> 0), heap.u8(pbVar1 + (uVar5 + 3)) != heap.i8(pcVar4 + (0x20)))) {
+    while (((regs.edx & 0xff) != heap.i8(pcVar4) || (heap.i16((pbVar1 + uVar5 + 1)) != heap.i16((pcVar4 + 0x1e)))) || (iVar3 = ((extraout_ECX) >>> 0), heap.u8(pbVar1 + (uVar5 + 3)) != heap.i8(pcVar4 + (0x20)))) {
       pcVar4 = ((pcVar4 + 0x260) >>> 0);
       if (0x8ad1bf < pcVar4) {
         break LAB_0044f4a3;

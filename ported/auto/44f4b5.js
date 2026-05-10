@@ -17,7 +17,7 @@ export function FUN_0044f4b5(heap) {
   let extraout_var = 0;
   let unaff_EBX = regs.ebx >>> 0;
   heap.setU32(0x00991efe, (0x3ca) >>> 0);
-  uVar1 = (((regs.ebx = 0x1, regs.esi = 0x6, regs.eax = FUN_00426f56(heap))) >>> 0);
+  uVar1 = (((regs.ebx = 0x1, regs.esi = 0x6, regs.eax = FUN_00426f56(heap), regs.edx = 0x4271bb, regs.eax)) >>> 0);
   if (CONCAT31((regs.eax = callIndirect(heap, int3, ((unaff_EBX) >>> 0) >>> 8)), 1) != -0x80000000) {
     (regs.esi = 0x6, regs.eax = FUN_0044a4e8(heap));
     (regs.eax = callIndirect(heap, heap.u32(0x0000000a), CONCAT22(extraout_var, heap.u32(0x00000036)), heap.u32(0x0000017a)));

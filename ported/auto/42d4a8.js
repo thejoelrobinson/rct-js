@@ -21,13 +21,13 @@ import { FUN_009bb9f5 } from "./9bb9f5.js";
 export function FUN_0042d4a8(heap) {
   let pcVar1 = 0;
   let iVar2 = 0;
-  (regs.eax = FUN_0042f239(heap));
+  (regs.ebx = 0x13, regs.eax = FUN_0042f239(heap));
   iVar2 = (((regs.eax = FUN_004083b5(heap, 0x13))) >>> 0);
   if ((iVar2 | 0) != -1) {
     heap.setU32(0x005f5550, (iVar2) >>> 0);
     heap.setU32(0x005f5554, ((regs.eax = FUN_00408254(heap, iVar2, 0))) >>> 0);
     (regs.eax = FUN_00408387(heap, heap.u32(0x005f5550)));
-    (regs.eax = FUN_0042f239(heap));
+    (regs.ebx = 0x13, regs.eax = FUN_0042f239(heap));
     iVar2 = (((regs.eax = FUN_004080e0(heap, 0x13, 0, 0))) >>> 0);
     if (iVar2 != 0) {
       heap.setU32(0x005f5554, (heap.u32(0x005f5554) + iVar2) >>> 0);

@@ -10,8 +10,8 @@ import { FUN_005e5b80 } from "./5e5b80.js";
 export function FUN_005d3b30(heap) {
   let in_EAX = regs.eax >>> 0;
   let in_EDX = regs.edx >>> 0;
-  (regs.ecx = 0x8d, regs.eax = FUN_005e5b80(heap));
-  (regs.ecx = 0x8d, regs.eax = FUN_005e5b80(heap));
-  (regs.ecx = 0x8d, regs.eax = FUN_005e5b80(heap));
+  (regs.ecx = 0x8d, regs.eax = FUN_005e5b80(heap), regs.ecx = 0xd, regs.eax);
+  (regs.ecx = 0x8d, regs.eax = FUN_005e5b80(heap), regs.ecx = 0xd, regs.eax);
+  (regs.ecx = 0x8d, regs.eax = FUN_005e5b80(heap), regs.ecx = 0xd, regs.eax);
   return 1;
 }

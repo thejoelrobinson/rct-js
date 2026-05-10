@@ -22,7 +22,6 @@ export function FUN_0043da82(heap) {
   let uVar5 = 0;
   let uVar7 = 0;
   let extraout_var = 0;
-  let extraout_DL = 0;
   let in_EDX = regs.edx >>> 0;
   let extraout_var_00 = 0;
   let sVar8 = 0;
@@ -163,7 +162,7 @@ export function FUN_0043da82(heap) {
     heap.setU8((unaff_ESI + 0x45), (heap.u8((unaff_ESI + 0x45)) | 2) & 0xff);
     uVar5 = (((regs.eax = FUN_005df40c(heap))) >>> 0);
     if (((((((heap.u32((0x005f5b78 + heap.u32(((0x00887420) >>> 0) + (iVar12) * 4) * 8)) & 0x100000) != 0) && ((heap.u32((0x00887510) + (uVar11 * 0x130) * 4) | 0) != -1)) && (heap.u32(((0x00887512) & 0xffff) + (uVar11 * 0x130) * 4) < 0x3e9)) && (((0xb3 < heap.u8((unaff_ESI + 0x3a)) && (99 < heap.u8((unaff_ESI + 0x38)))) && ((heap.u8((unaff_ESI + 0x3c)) < 0xa1 && ((0x1d < heap.u8((unaff_ESI + 0x3e)) && (0x13 < heap.u8((unaff_ESI + 0x3f)))))))))) && (heap.u8((unaff_ESI + 0x40)) < 0xab)) && ((bVar6 = ((((((uVar5) >>> 0) >>> 8) & 0xff)) & 0xff), 0x80 < bVar6 || ((heap.u8((unaff_ESI + 0x2f)) < 8 && (bVar6 < 0x41)))))) {
-      heap.setU8((unaff_ESI + 0xc5), (extraout_DL) & 0xff);
+      heap.setU8((unaff_ESI + 0xc5), ((regs.edx & 0xff)) & 0xff);
       heap.setU8((unaff_ESI + 0xc6), (200) & 0xff);
       uVar5 = (((regs.eax = FUN_00441891(heap))) >>> 0);
       (regs.eax = FUN_005e5301(heap));

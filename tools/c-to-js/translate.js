@@ -1183,6 +1183,11 @@ function emitDeclaration(node, ctx) {
       const id = child.type === "identifier" ? child : findIdentifier(child);
       if (id) {
         const name = text(id, ctx);
+        // `extraout_<REG>` declarations: skip only when the use-site lowering
+        // has a matching entry in EXTRAOUT_READ (i.e., byte-width regs).
+        // Wider regs keep the legacy `let extraout_X = 0;` binding.
+        const _extra = /^extraout_([A-Z]{2,3})$/.exec(name);
+        if (_extra && EXTRAOUT_READ[_extra[1]]) continue;
         ctx.locals.add(name);
         if (child.type === "pointer_declarator") {
           const acc = pointeeAccForDecl(child, typeText);
@@ -1272,6 +1277,26 @@ function emitExpr(node, ctx) {
 
 function emitIdentifier(node, ctx) {
   const name = text(node, ctx);
+  // `extraout_<REG>` — Ghidra's name for "register state AFTER a sub-call
+  // returned at this source position". Lower to an inline regs.* read so
+  // each use reflects the most-recent register state (regs.eax is
+  // automatically captured per call; other regs come from caller-side
+  // post-call propagation, see Stage 2). Without this lowering the
+  // declaration `let extraout_X = 0;` makes every read return 0,
+  // dropping critical data flow (e.g. FUN_0045abea reads extraout_CH
+  // to populate the sprite-table active index DAT_008d7eb6).
+  const extra = /^extraout_([A-Z]{2,3})$/.exec(name);
+  if (extra) {
+    const reg = extra[1];
+    const expr = EXTRAOUT_READ[reg];
+    if (expr) {
+      ctx.usesRegs = true;
+      return expr;
+    }
+    // Wider register: keep the legacy "always 0" semantics. The original
+    // declaration `let extraout_X = 0;` will still be emitted (skipped
+    // only when EXTRAOUT_READ has a matching entry).
+  }
   // Heap-backed local (address-taken or array) — read from heap.
   if (ctx.heapLocals.has(name)) {
     const info = ctx.heapLocals.get(name);
@@ -1817,19 +1842,48 @@ function emitCall(node, ctx) {
       const consumed = ctx.regConsumers.get(calleeAddr);
       const callerSiteRegs = ctx.callsiteRegs.get(ctx.forceAddr);
       const captured = callerSiteRegs && callerSiteRegs.get(calleeAddr);
-      if (consumed && captured) {
-        const regWrites = [];
+      // Schema: { pre: {eax,ebx,...}, post: {eax,ebx,...} }
+      const capturedPre = captured && captured.pre;
+      const capturedPost = captured && captured.post;
+      // Pre-call writes: when callee reads a register on entry, set it from
+      // the traced caller-state.
+      const preWrites = [];
+      if (consumed && capturedPre) {
         for (const reg of consumed) {
-          const val = captured[reg];
+          const val = capturedPre[reg];
           if (val !== undefined && val !== 0) {
-            regWrites.push(`regs.${reg} = 0x${val.toString(16)}`);
+            preWrites.push(`regs.${reg} = 0x${val.toString(16)}`);
           }
         }
-        if (regWrites.length > 0) {
-          return `(${regWrites.join(", ")}, regs.eax = ${name}(heap${args.length ? ", " + args.join(", ") : ""}))`;
+      }
+      // Post-call writes: when the callee returns with caller-saved registers
+      // changed, propagate so the *next* call site reads the correct value.
+      // Limit to ecx/edx — Microsoft x86 ABI marks eax/ecx/edx as
+      // caller-saved (callee may freely modify), while ebx/esi/edi/ebp are
+      // callee-saved (callee must restore on exit). Skip eax (already set
+      // by `regs.eax = FUN_X(...)`). Trace-noise on callee-saved regs from
+      // entry-point traces was masking real bugs by overwriting state.
+      const postWrites = [];
+      if (capturedPost) {
+        for (const reg of ['ecx', 'edx']) {
+          const postVal = capturedPost[reg];
+          const preVal = capturedPre ? capturedPre[reg] : undefined;
+          if (postVal !== undefined && postVal !== 0 && postVal !== preVal) {
+            postWrites.push(`regs.${reg} = 0x${postVal.toString(16)}`);
+          }
         }
       }
-      return `(regs.eax = ${name}(heap${args.length ? ", " + args.join(", ") : ""}))`;
+      const fnCall = `${name}(heap${args.length ? ", " + args.join(", ") : ""})`;
+      // Build the call expression. Use comma-expression so the value is
+      // always the function's return (kept in regs.eax).
+      const parts = [];
+      if (preWrites.length > 0) parts.push(...preWrites);
+      parts.push(`regs.eax = ${fnCall}`);
+      if (postWrites.length > 0) {
+        parts.push(...postWrites);
+        parts.push(`regs.eax`);
+      }
+      return parts.length === 1 ? `(${parts[0]})` : `(${parts.join(", ")})`;
     }
     if (GHIDRA_BUILTINS.has(name)) {
       ctx.builtins.add(name);
@@ -1948,6 +2002,23 @@ function emitPointer(node, ctx) {
 
 // Map a `(TYPE *)` cast's TYPE to an accessor name (u8/i8/u16/i16/u32).
 // Returns null if the type isn't a recognised pointer-to-scalar.
+// Per-register read expression for `extraout_<REG>` use-site lowering.
+// LIMITED to byte-width registers (8-bit halves of the four GP regs). The
+// 32- and 16-bit forms are too often used as loop counters / iterators in
+// Ghidra's decompiled C; propagating live state into them surfaces
+// pre-existing translator bugs in unrelated functions (tight loops that
+// previously exited because the read returned a dead 0). Byte registers
+// are typically real output channels (sprite-table indices, palette
+// entries, etc.) — propagating those is safer and unblocks the
+// title-screen render path. Wider registers can be added back per-case
+// once their downstream loops are audited.
+const EXTRAOUT_READ = {
+  AL: "(regs.eax & 0xff)",    AH: "((regs.eax >>> 8) & 0xff)",
+  BL: "(regs.ebx & 0xff)",    BH: "((regs.ebx >>> 8) & 0xff)",
+  CL: "(regs.ecx & 0xff)",    CH: "((regs.ecx >>> 8) & 0xff)",
+  DL: "(regs.edx & 0xff)",    DH: "((regs.edx >>> 8) & 0xff)",
+};
+
 function pointerDepthOf(declNode) {
   let d = 0;
   let cur = declNode;

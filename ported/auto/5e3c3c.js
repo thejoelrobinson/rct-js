@@ -72,67 +72,67 @@ export function FUN_005e3c3c(heap) {
     }
   }
   bVar11 = ((false) & 0xff);
-  sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+  sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
   sVar4 = ((extraout_DX) & 0xffff);
   if (bVar11) {
     bVar11 = ((((heap.u32(0x00971ed8) - 0x24) & 0xffff) < extraout_CX) & 0xff);
-    sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+    sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
     sVar4 = ((extraout_DX_00) & 0xffff);
     if (bVar11) {
       bVar11 = ((heap.u32(0x00971ed6) < uVar6) & 0xff);
-      sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+      sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
       sVar4 = ((extraout_DX_01) & 0xffff);
       if (bVar11) {
         bVar11 = ((((heap.u32(0x00971ed8) - 0x24) & 0xffff) < extraout_CX_00) & 0xff);
-        sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+        sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
         sVar4 = ((extraout_DX_02) & 0xffff);
         if (bVar11) {
           for (unaff_EDI = ((0x009a013c) >>> 0); unaff_EDI < heap.u32(0x009a1164); unaff_EDI = (((unaff_EDI + ((0x5e) * 4)) >>> 0)) >>> 0) {
             if ((heap.u16((((unaff_EDI) >>> 0) + 0x32)) & 1) == 0) {
               bVar11 = ((0xfffd < ((heap.i16((unaff_EDI + ((8) * 4))) + heap.i16((unaff_EDI + ((9) * 4)))) & 0xffff)) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_03) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((((heap.i16((unaff_EDI + ((8) * 4))) - uVar6) & 0xffff) < 2) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_04) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((0xfffd < ((heap.i16((((unaff_EDI) >>> 0) + 0x22)) + heap.i16((((unaff_EDI) >>> 0) + 0x26))) & 0xffff)) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_05) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((((heap.i16((((unaff_EDI) >>> 0) + 0x22)) - extraout_CX_01) & 0xffff) < 2) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_06) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((((heap.i16((((unaff_EDI) >>> 0) + 0x22)) + heap.i16((((unaff_EDI) >>> 0) + 0x26))) & 0xffff) < extraout_CX_02) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_07) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((((heap.i16((((unaff_EDI) >>> 0) + 0x22)) + heap.i16((((unaff_EDI) >>> 0) + 0x26))) & 0xffff) < extraout_CX_03) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_08) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((((heap.i16((unaff_EDI + ((8) * 4))) + heap.i16((unaff_EDI + ((9) * 4)))) & 0xffff) < uVar6) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_09) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;
               }
               bVar11 = ((((heap.i16((unaff_EDI + ((8) * 4))) + heap.i16((unaff_EDI + ((9) * 4)))) & 0xffff) < uVar6) & 0xff);
-              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap))) & 0xffff);
+              sVar3 = (((regs.eax = 0x20, regs.eax = FUN_005e3bbf(heap), regs.ecx = 0x184, regs.edx = 0x420000, regs.eax)) & 0xffff);
               sVar4 = ((extraout_DX_10) & 0xffff);
               if (!bVar11) {
                 break LAB_005e3efb;

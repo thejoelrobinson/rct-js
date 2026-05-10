@@ -19,7 +19,6 @@ export function FUN_005db817(heap) {
   let extraout_CX = 0;
   let extraout_ECX = 0;
   let extraout_ECX_00 = 0;
-  let extraout_DL = 0;
   let extraout_DL_00 = 0;
   let uVar6 = 0;
   let uVar7 = 0;
@@ -112,8 +111,8 @@ export function FUN_005db817(heap) {
         heap.setU8((unaff_ESI + 0x34), (0xff) & 0xff);
       }
       if (0x1ffff < extraout_ECX) {
-        heap.setU32(((0x00743c58) + ((uVar7 & 0xffff) * 0x100) * 4), (extraout_DL) & 0xffffffff);
-        heap.setU8((unaff_ESI + 0xc4), (extraout_DL ^ 0x10) & 0xff);
+        heap.setU32(((0x00743c58) + ((uVar7 & 0xffff) * 0x100) * 4), ((regs.edx & 0xff)) & 0xffffffff);
+        heap.setU8((unaff_ESI + 0xc4), ((regs.edx & 0xff) ^ 0x10) & 0xff);
       }
     }
     LAB_005dba3d: (regs.eax = FUN_00444927(heap));

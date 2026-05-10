@@ -8,7 +8,6 @@ import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
 import { FUN_005e43de } from "./5e43de.js";
 export function FUN_0044ecfb(heap) {
-  let extraout_CL = 0;
   let cVar1 = 0;
   let cVar2 = 0;
   let unaff_ESI = regs.esi >>> 0;
@@ -25,7 +24,7 @@ export function FUN_0044ecfb(heap) {
   } while (pcVar3 < 0x008ad1c0);
   if (cVar2 != 0) {
     (regs.eax = FUN_005e43de(heap));
-    cVar1 = ((extraout_CL) & 0xff);
+    cVar1 = (((regs.ecx & 0xff)) & 0xff);
   }
   if (cVar1 != heap.i8((unaff_ESI + 0x158))) {
     heap.setI8((unaff_ESI + 0x158), (cVar1) & 0xff);

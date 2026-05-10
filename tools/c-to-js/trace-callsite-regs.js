@@ -149,8 +149,13 @@ for (const file of callerFiles) {
           // First write wins (we want the FIRST call's regs, not a later loop iteration).
           if (!callerOut[key]) {
             callerOut[key] = {
-              eax: preRegs.eax, ebx: preRegs.ebx, ecx: preRegs.ecx, edx: preRegs.edx,
-              esi: preRegs.esi, edi: preRegs.edi, ebp: preRegs.ebp,
+              pre: {
+                eax: preRegs.eax, ebx: preRegs.ebx, ecx: preRegs.ecx, edx: preRegs.edx,
+                esi: preRegs.esi, edi: preRegs.edi, ebp: preRegs.ebp,
+              },
+              // No post snapshot — instant-return tracer doesn't actually
+              // execute the callee, so post regs would be the same as pre
+              // (uninformative). Deep tracer fills these in.
             };
           }
         }

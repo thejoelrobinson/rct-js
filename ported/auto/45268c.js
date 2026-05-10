@@ -32,7 +32,7 @@ export function FUN_0045268c(heap) {
   do {
     puVar2 = ((heap.u32((0x006323b8) + (uVar3) * 4)) >>> 0);
     uVar1 = ((heap.u8((puVar2 + ((2) * 4)))) & 0xff);
-    (regs.eax = FUN_0042f239(heap));
+    (regs.ebx = 0x4, regs.eax = FUN_0042f239(heap));
     iVar4 = (((regs.eax = FUN_004083b5(heap, uVar1))) >>> 0);
     if ((iVar4 | 0) != -1) {
       (regs.eax = FUN_00408276(heap, iVar4, 0x00632602, 4, iVar4));

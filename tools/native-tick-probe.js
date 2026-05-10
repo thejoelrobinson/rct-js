@@ -60,13 +60,47 @@ if (isMainThread) {
 
     const runtime = createRuntime({ dataBin, vfs });
 
-    // Wrap heap accessors with op counter.
+    // Optional: wrap fnDispatch to count calls per function and throw with
+    // a top-callees report if any single function exceeds the per-tick
+    // threshold. Helps localise runaway loops. Enable by setting
+    // RUNAWAY_THRESHOLD env var.
+    const RUNAWAY_THRESHOLD = parseInt(process.env.RUNAWAY_THRESHOLD || "0", 10);
+    const callCounts = new Map();
+    if (RUNAWAY_THRESHOLD > 0) {
+      const fnDispatch = runtime.state?.fnDispatch;
+      if (fnDispatch instanceof Map) {
+        for (const [addr, fn] of fnDispatch) {
+          if (typeof fn !== 'function') continue;
+          const orig = fn;
+          fnDispatch.set(addr, function(...args) {
+            const n = (callCounts.get(addr) || 0) + 1;
+            callCounts.set(addr, n);
+            if (n === RUNAWAY_THRESHOLD) {
+              const top = [...callCounts.entries()].sort((a,b) => b[1]-a[1]).slice(0, 10)
+                .map(([k,c]) => `0x${k.toString(16)}=${c}`).join(' ');
+              throw new Error(`runaway: 0x${addr.toString(16)} called ${RUNAWAY_THRESHOLD} times. Top: ${top}`);
+            }
+            return orig.apply(this, args);
+          });
+        }
+      }
+    }
+    globalThis.__resetCallCounts = () => callCounts.clear();
+
+    // Wrap heap accessors with op counter. Per-tick budget defaults to 50M;
+    // tighten via __setBudget() (e.g., to 5M after the heavy first tick when
+    // hunting an infinite loop). Throws with caller stack on overrun.
     let _ops = 0;
     let _start = Date.now();
+    let _budget = 50_000_000;
     for (const name of ["u8","i8","u16","i16","u32","i32","setU8","setI8","setU16","setI16","setU32","setI32"]) {
       const orig = runtime.heap[name].bind(runtime.heap);
       runtime.heap[name] = (...args) => {
-        _ops++;
+        if (++_ops > _budget) {
+          const stack = new Error('overrun').stack || '';
+          const lines = stack.split('\n').slice(1, 12).join('\n');
+          throw new Error(`[heap.${name}] over ${_budget.toLocaleString()} ops/tick. Stack:\n${lines}`);
+        }
         try { return orig(...args); }
         catch (e) {
           if (e instanceof RangeError) {
@@ -78,6 +112,7 @@ if (isMainThread) {
         }
       };
     }
+    globalThis.__setBudget = (b) => { _budget = b; };
 
     globalThis.__verbose4385d8 = true;
     globalThis.__trace = (msg) => parentPort.postMessage({ kind: "trace", text: msg });
@@ -94,6 +129,9 @@ if (isMainThread) {
     for (let i = 1; i <= TICKS; i++) {
       _ops = 0;
       _start = Date.now();
+      // Tighten budget after the heavy first tick.
+      if (i === 2) globalThis.__setBudget(5_000_000);
+      if (typeof globalThis.__resetCallCounts === 'function') globalThis.__resetCallCounts();
       let lastPhase = "(none)";
       try {
         runtime.runTick((phase) => {

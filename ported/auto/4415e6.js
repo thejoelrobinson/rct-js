@@ -17,7 +17,6 @@ export function FUN_004415e6(heap) {
   let in_ECX = regs.ecx >>> 0;
   let extraout_ECX = 0;
   let in_DL = regs.edx & 0xff;
-  let extraout_DL = 0;
   let uVar5 = 0;
   let uVar6 = 0;
   let uVar7 = 0;
@@ -38,7 +37,7 @@ export function FUN_004415e6(heap) {
     } else {
       uVar7 = (((regs.eax = FUN_005df40c(heap))) & 0xffff);
       in_ECX = ((extraout_ECX) >>> 0);
-      in_DL = ((extraout_DL) & 0xff);
+      in_DL = (((regs.edx & 0xff)) & 0xff);
       if (uVar7 < 0x1c72) {
         heap.setU16((unaff_ESI + 200), (heap.u16((unaff_ESI + 200)) & 0xfffb) & 0xffff);
       }

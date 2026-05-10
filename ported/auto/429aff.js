@@ -34,7 +34,7 @@ export function FUN_00429aff(heap) {
     heap.setI16((psVar1 + (7) * 2), (sVar5 << (heap.u8((psVar1 + ((8) * 2))) & 0x1f)) & 0xffff);
   }
   bVar6 = ((true) & 0xff);
-  uVar3 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap))) & 0xffff);
+  uVar3 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0x1, regs.eax)) & 0xffff);
   if (!bVar6) {
     if (uVar3 < 0x280) {
       uVar3 = ((0x280) & 0xffff);
@@ -42,7 +42,7 @@ export function FUN_00429aff(heap) {
     heap.setU16((unaff_ESI + 0x24), (uVar3) & 0xffff);
   }
   bVar6 = ((true) & 0xff);
-  uVar3 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap))) & 0xffff);
+  uVar3 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0x1, regs.eax)) & 0xffff);
   if (!bVar6) {
     heap.setI16((unaff_ESI + 0x22), (sVar4 + -0x22) & 0xffff);
     if (uVar3 < 0x280) {
@@ -59,13 +59,13 @@ export function FUN_00429aff(heap) {
     heap.setU32(0x005f52ea, (uVar3 - 0x95) >>> 0);
   }
   bVar6 = ((true) & 0xff);
-  uVar3 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap))) & 0xffff);
+  uVar3 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0x1, regs.eax)) & 0xffff);
   if (!bVar6) {
     heap.setU16((unaff_ESI + 0x20), ((uVar3 >>> 1) - 0xa4) & 0xffff);
     heap.setI16((unaff_ESI + 0x22), (sVar4 + -0x66) & 0xffff);
   }
   bVar6 = ((true) & 0xff);
-  sVar4 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap))) & 0xffff);
+  sVar4 = (((regs.ecx = 0xff01, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0x1, regs.eax)) & 0xffff);
   if (!bVar6) {
     heap.setI16((unaff_ESI + 0x20), (sVar4 + -200) & 0xffff);
   }

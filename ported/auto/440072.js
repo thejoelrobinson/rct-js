@@ -35,9 +35,8 @@ export function FUN_00440072(heap) {
     heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00629168)) & 0xffffffff);
     heap.setU32((unaff_ESI + (5) * 4), (0) & 0xffffffff);
     (regs.eax = FUN_0043fe80(heap));
-    (regs.eax = 0x43e831, regs.ecx = 0x17, regs.eax = FUN_005e412c(heap));
-    (regs.ecx = 0x17, regs.eax = FUN_0043fecb(heap));
-    return;
+    (regs.eax = 0x43e831, regs.eax = FUN_005e412c(heap));
+    return (regs.eax = FUN_0043fecb(heap));
   }
   (regs.eax = FUN_005e5fcb(heap));
   if (bVar1) {
@@ -53,7 +52,7 @@ export function FUN_00440072(heap) {
   heap.setU32((unaff_ESI + (1) * 4), (heap.u32(0x00632da4)) & 0xffffffff);
   heap.setU32((unaff_ESI + (5) * 4), (0) & 0xffffffff);
   (regs.eax = FUN_00455a66(heap));
-  (regs.eax = 0x43e831, regs.ecx = 0x17, regs.eax = FUN_005e412c(heap));
+  (regs.eax = 0x43e831, regs.eax = FUN_005e412c(heap));
   (regs.eax = FUN_00455ade(heap));
   if (heap.u32((0x00743bbf) + (heap.u32((unaff_ESI + ((0xc) * 4))) * 0x100) * 4) == 9) {
     (regs.eax = callIndirect(heap, heap.u32(unaff_ESI + (1) * 4)));

@@ -20,7 +20,6 @@ export function FUN_005cfe66(heap) {
   let in_CX = regs.ecx & 0xffff;
   let extraout_CX = 0;
   let uVar6 = 0;
-  let extraout_DL = 0;
   let sVar7 = 0;
   let in_EDX = regs.edx >>> 0;
   let uVar8 = 0;
@@ -94,7 +93,7 @@ export function FUN_005cfe66(heap) {
     }
     uVar2 = (((regs.eax = FUN_005e5562(heap, uVar15, uVar10, uVar6, uVar4, uVar9, uVar8))) & 0xffff);
     uVar2 = ((extraout_CX << 7 | extraout_CX >>> 9 | uVar2) & 0xffff);
-    for (pbVar16 = ((heap.u32((0x00971ef4) + (((uVar2 >>> 5 | uVar2 << 0xb) & 0xffff)) * 4)) >>> 0); ((extraout_DL != heap.u8(pbVar16 + (2)) || ((heap.u8(pbVar16) & 0x3c) != 8)) || (((heap.u8(pbVar16) & 3) != unaff_BH || (((heap.u8(pbVar16 + (5)) & 0xf) != heap.u8(puVar1 + (iVar13)) || (unaff_BL != heap.u8(pbVar16 + (4)))))))); pbVar16 = (((pbVar16 + 8) >>> 0)) >>> 0) {
+    for (pbVar16 = ((heap.u32((0x00971ef4) + (((uVar2 >>> 5 | uVar2 << 0xb) & 0xffff)) * 4)) >>> 0); (((regs.edx & 0xff) != heap.u8(pbVar16 + (2)) || ((heap.u8(pbVar16) & 0x3c) != 8)) || (((heap.u8(pbVar16) & 3) != unaff_BH || (((heap.u8(pbVar16 + (5)) & 0xf) != heap.u8(puVar1 + (iVar13)) || (unaff_BL != heap.u8(pbVar16 + (4)))))))); pbVar16 = (((pbVar16 + 8) >>> 0)) >>> 0) {
     
     }
     if (iVar13 == 0) {

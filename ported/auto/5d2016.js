@@ -18,7 +18,6 @@ export function FUN_005d2016(heap) {
   let in_EAX = regs.eax >>> 0;
   let uVar1 = 0;
   let extraout_CX = 0;
-  let extraout_DH = 0;
   let bVar2 = 0;
   let unaff_EBX = regs.ebx >>> 0;
   let uVar3 = 0;
@@ -68,7 +67,7 @@ export function FUN_005d2016(heap) {
         uVar1 = (((regs.eax = FUN_005d298a(heap))) >>> 0);
         if (!bVar6) {
           heap.setU8(0x0065229c, (((uVar1) & 0xffff)) & 0xff);
-          heap.setU8(0x006522a0, (heap.i16((0x00653ef9 + ((extraout_DH) >>> 0) * 10)) + unaff_DI) & 0xff);
+          heap.setU8(0x006522a0, (heap.i16((0x00653ef9 + ((((regs.edx >>> 8) & 0xff)) >>> 0) * 10)) + unaff_DI) & 0xff);
           heap.setU8(0x006522a2, (((uVar3 >>> 8) & 0xff)) & 0xff);
           iVar4 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar3 >>> 8)), 0x69)) >>> 0);
           heap.setU8(0x0065229e, (extraout_CX) & 0xff);

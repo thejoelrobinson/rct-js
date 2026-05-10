@@ -21,11 +21,8 @@ export function FUN_005d94b6(heap) {
   let iVar7 = 0;
   let bVar9 = 0;
   let cVar11 = 0;
-  let extraout_CH = 0;
   let uVar10 = 0;
-  let extraout_DL = 0;
   let extraout_DL_00 = 0;
-  let extraout_DH = 0;
   let unaff_BL = regs.ebx & 0xff;
   let uVar12 = 0;
   let unaff_ESI = regs.esi >>> 0;
@@ -68,8 +65,8 @@ export function FUN_005d94b6(heap) {
         break LAB_005d96ef;
       }
       uVar4 = (((regs.eax = FUN_005df40c(heap, uVar6))) & 0xffff);
-      cVar3 = ((extraout_DL) & 0xff);
-      cVar11 = ((extraout_DH) & 0xff);
+      cVar3 = (((regs.edx & 0xff)) & 0xff);
+      cVar11 = ((((regs.edx >>> 8) & 0xff)) & 0xff);
       if (uVar4 < 0x5556) {
         cVar11 = ((18) & 0xff);
         /* goto LAB_005d969b — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_005d94b6/LAB_005d969b"); return 0;
@@ -194,7 +191,7 @@ export function FUN_005d94b6(heap) {
   if ((cVar11 | 0) == -1) {
     uVar4 = (((regs.eax = FUN_005df40c(heap, uVar6))) & 0xffff);
     cVar3 = ((extraout_DL_00) & 0xff);
-    if (extraout_CH < (((uVar4 >>> 8) & 0xff) & 0xf)) {
+    if (((regs.ecx >>> 8) & 0xff) < (((uVar4 >>> 8) & 0xff) & 0xf)) {
       LAB_005d9668: cVar11 = ((-2) & 0xff);
     } else {
       cVar11 = ((heap.u32((0x005f72ee) + (uVar12 * 4) * 4)) & 0xff);

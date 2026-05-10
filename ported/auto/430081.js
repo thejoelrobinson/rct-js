@@ -11,7 +11,7 @@ import { FUN_0042f239 } from "./42f239.js";
 export function FUN_00430081(heap) {
   let iVar1 = 0;
   let uVar2 = 0;
-  (regs.eax = FUN_0042f239(heap));
+  (regs.ebx = 0x2, regs.eax = FUN_0042f239(heap));
   iVar1 = (((regs.eax = FUN_0040844b(heap, 2, 0x005f92e7))) >>> 0);
   if ((iVar1 | 0) != -1) {
     uVar2 = ((heap.u32(0x005f92eb) >>> 0x10) >>> 0);

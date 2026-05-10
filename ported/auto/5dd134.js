@@ -22,7 +22,7 @@ export function FUN_005dd134(heap) {
   let iVar5 = 0;
   let bVar6 = 0;
   let uVar7 = 0;
-  uVar7 = (((regs.eax = FUN_00450b21(heap))) >>> 0);
+  uVar7 = (((regs.eax = FUN_00450b21(heap), regs.ecx = 0x23, regs.eax)) >>> 0);
   uVar3 = ((((uVar7) >>> 0)) >>> 0);
   uVar4 = ((((((uVar7) >>> 0) >>> 0x20) >>> 0) & 0xff) >>> 0);
   iVar5 = ((uVar4 * 0x260) >>> 0);

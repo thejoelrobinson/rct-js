@@ -19,7 +19,6 @@ export function FUN_0043e304(heap) {
   let uVar4 = 0;
   let uVar5 = 0;
   let in_DL = regs.edx & 0xff;
-  let extraout_DL = 0;
   let extraout_DL_00 = 0;
   let extraout_DL_01 = 0;
   let extraout_DL_02 = 0;
@@ -130,7 +129,7 @@ export function FUN_0043e304(heap) {
               unaff_EBX = ((CONCAT22(uVar6, uVar1 >>> 1)) >>> 0);
               if ((heap.u32(((0x00887508) & 0xffff) + (uVar7 * 0x130) * 4) <= uVar1 >>> 1) && ((unaff_BP & 4) == 0)) {
                 (regs.eax = FUN_00440fe3(heap, uVar2));
-                in_DL = ((extraout_DL) & 0xff);
+                in_DL = (((regs.edx & 0xff)) & 0xff);
               }
               /* goto LAB_0043e598 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0043e304/LAB_0043e598"); return 0;
             }

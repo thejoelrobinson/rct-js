@@ -22,7 +22,7 @@ export function FUN_005d3329(heap) {
   let bVar4 = 0;
   bVar4 = ((heap.u32((0x00887420) + (heap.u32((unaff_ESI + 7)) * 0x260) * 4) == 20) & 0xff);
   if (!bVar4) {
-    uVar1 = (((regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap))) >>> 0);
+    uVar1 = (((regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0xd, regs.eax)) >>> 0);
     if (((!bVar4) && (heap.u8(0x00652288) != 0)) && (heap.u8(0x00652289) == heap.i8((unaff_ESI + 7)))) {
       (regs.eax = FUN_005d21fa(heap));
     }

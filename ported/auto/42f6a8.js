@@ -9,7 +9,7 @@ import { FUN_0042f77c } from "./42f77c.js";
 export function FUN_0042f6a8(heap) {
   let extraout_ECX = 0;
   do {
-    (regs.eax = FUN_0042f77c(heap));
+    (regs.eax = FUN_0042f77c(heap), regs.ecx = 0x3a10, regs.eax);
   } while (extraout_ECX != 1);
   return;
 }

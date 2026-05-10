@@ -49,7 +49,7 @@ export function FUN_0045acae(heap) {
       return;
     }
     heap.setU8(0x008d7eae, (heap.u8(0x008d7eaf)) & 0xff);
-    (regs.eax = FUN_0045ac19(heap));
+    (regs.eax = FUN_0045ac19(heap), regs.ecx = 0x640000, regs.eax);
     heap.setU32(0x005f54ec, (heap.u32(0x005f54ec) | 8) >>> 0);
   }
   return;

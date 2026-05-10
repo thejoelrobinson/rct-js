@@ -14,7 +14,7 @@ export function FUN_0042f3a2(heap) {
   let in_EAX = regs.eax >>> 0;
   let iVar1 = 0;
   let in_EDX = regs.edx >>> 0;
-  (regs.eax = FUN_0042f239(heap));
+  (regs.ebx = 0x12, regs.eax = FUN_0042f239(heap));
   iVar1 = (((regs.eax = FUN_004083e1(heap, 0x12))) >>> 0);
   if ((iVar1 | 0) != -1) {
     heap.setU32(0x005f88a4, (iVar1) >>> 0);

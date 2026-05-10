@@ -14,7 +14,7 @@ export function FUN_005d5003(heap) {
   let uVar1 = 0;
   let unaff_ESI = regs.esi >>> 0;
   let in_ZF = regs.zf | 0;
-  (regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap));
+  (regs.ecx = 0x8d, regs.eax = FUN_005e3b2b(heap), regs.ecx = 0xd, regs.eax);
   if (!in_ZF) {
     uVar1 = ((heap.u32((unaff_ESI + 0x14)) & 0xfffffe3f) >>> 0);
     if (heap.u8(0x00652288) == 6) {

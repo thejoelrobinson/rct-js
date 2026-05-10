@@ -16,7 +16,6 @@ export function FUN_00448d2b(heap) {
   let uVar1 = 0;
   let extraout_CX = 0;
   let extraout_CX_00 = 0;
-  let extraout_DL = 0;
   let extraout_DX = 0;
   let unaff_EBX = regs.ebx >>> 0;
   let iVar2 = 0;
@@ -40,7 +39,7 @@ export function FUN_00448d2b(heap) {
         iVar2 = ((CONCAT31((regs.eax = callIndirect(heap, int3, ((unaff_EBX) >>> 0) >>> 8)), 0x79)) >>> 0);
         heap.setU8(0x00630b1c, (uVar1) & 0xff);
         heap.setU8(0x00630b1e, (extraout_CX_00) & 0xff);
-        heap.setU8(0x00630b20, (extraout_DL) & 0xff);
+        heap.setU8(0x00630b20, ((regs.edx & 0xff)) & 0xff);
         (regs.eax = FUN_00426f56(heap));
         heap.setU8(0x00630b22, (iVar2) & 0xff);
         (regs.eax = FUN_005e5301(heap));

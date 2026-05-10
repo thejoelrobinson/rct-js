@@ -28,7 +28,6 @@ export function FUN_00441a10(heap) {
   let extraout_ECX = 0;
   let extraout_ECX_00 = 0;
   let extraout_ECX_01 = 0;
-  let extraout_DL = 0;
   let extraout_DL_00 = 0;
   let extraout_DX = 0;
   let uVar9 = 0;
@@ -98,8 +97,8 @@ export function FUN_00441a10(heap) {
           }
         } else {
           bVar5 = (((regs.eax = FUN_005df40c(heap))) & 0xff);
-          bVar4 = ((extraout_DL) & 0xff);
-          if ((bVar5 & 7) <= extraout_DL) {
+          bVar4 = (((regs.edx & 0xff)) & 0xff);
+          if ((bVar5 & 7) <= (regs.edx & 0xff)) {
             (regs.eax = FUN_00440fe3(heap));
             bVar4 = ((extraout_DL_00) & 0xff);
           }

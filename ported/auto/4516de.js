@@ -10,7 +10,6 @@ export function FUN_004516de(heap) {
   let uVar1 = 0;
   let bVar2 = 0;
   let cVar3 = 0;
-  let extraout_CL = 0;
   let uVar4 = 0;
   let uVar5 = 0;
   let unaff_ESI = regs.esi >>> 0;
@@ -40,7 +39,7 @@ export function FUN_004516de(heap) {
   }
   if (cVar3 != 0) {
     bVar2 = (((regs.eax = FUN_005df40c(heap))) & 0xff);
-    bVar2 = ((((((((bVar2) & 0xffff) * ((extraout_CL) & 0xffff)) & 0xffff) >>> 8) & 0xff)) & 0xff);
+    bVar2 = ((((((((bVar2) & 0xffff) * (((regs.ecx & 0xff)) & 0xffff)) & 0xffff) >>> 8) & 0xff)) & 0xff);
     uVar4 = ((heap.u32((0x005f5658 + uVar5 * 4))) >>> 0);
     do {
       uVar5 = ((0) >>> 0);

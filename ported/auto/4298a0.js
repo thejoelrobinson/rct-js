@@ -32,21 +32,21 @@ export function FUN_004298a0(heap) {
     (regs.eax = 0x1e0000, regs.ecx = 0x100, regs.edx = 0x42b076, regs.ebx = 0xffc00000, regs.ebp = 0x42b079, regs.eax = FUN_005e3f31(heap));
     heap.setU32((unaff_ESI + 0x1c), (0x005f5124) & 0xffffffff);
     heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0xfffff) & 0xffffffff);
-    (regs.edx = 0x42a830, regs.ecx = 0x201, regs.eax = FUN_005e412c(heap));
+    (regs.edx = 0x42a830, regs.eax = FUN_005e412c(heap));
     (regs.eax = 0x1e0000, regs.ecx = 0x100, regs.edx = 0x42b076, regs.ebx = 0xffc00000, regs.ebp = 0x42b079, regs.eax = FUN_005e3f31(heap));
     heap.setU32((unaff_ESI + 0x1c), (0x005f5268) & 0xffffffff);
     heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0x1fc) & 0xffffffff);
     heap.setU16((unaff_ESI + 0x168), (0) & 0xffff);
-    (regs.edx = 0x42a830, regs.ecx = 0x201, regs.eax = FUN_005e412c(heap));
+    (regs.edx = 0x42a830, regs.eax = FUN_005e412c(heap));
     return (regs.eax = FUN_00429aff(heap));
   }
   (regs.eax = 0x1e0000, regs.ecx = 0x100, regs.edx = 0x42b076, regs.ebx = 0xffc00000, regs.ebp = 0x42b079, regs.eax = FUN_005e3f31(heap));
   heap.setU32((unaff_ESI + 0x1c), (0x005f531c) & 0xffffffff);
   heap.setU32((unaff_ESI + 0xc), (heap.u32((unaff_ESI + 0xc)) | 0xf) & 0xffffffff);
-  (regs.edx = 0x42a830, regs.ecx = 0x201, regs.eax = FUN_005e412c(heap));
+  (regs.edx = 0x42a830, regs.eax = FUN_005e412c(heap));
   (regs.eax = 0x1e0000, regs.ecx = 0x100, regs.edx = 0x42b076, regs.ebx = 0xffc00000, regs.ebp = 0x42b079, regs.eax = FUN_005e3f31(heap));
   heap.setU32((unaff_ESI + 0x1c), (0x005f5360) & 0xffffffff);
-  (regs.edx = 0x42a830, regs.ecx = 0x201, regs.eax = FUN_005e412c(heap));
+  (regs.edx = 0x42a830, regs.eax = FUN_005e412c(heap));
   heap.setU16((unaff_ESI + 0x32), (heap.u16((unaff_ESI + 0x32)) | 0x10) & 0xffff);
   return (regs.eax = FUN_00429aff(heap));
 }

@@ -109,7 +109,7 @@ export function FUN_005d3b48(heap) {
     heap.setU32(0x00656ae7, (((in_EDX) & 0xff)) >>> 0);
     heap.setU32(0x00656ae4, (((in_EDX >>> 8) & 0xff)) >>> 0);
     heap.setU32(0x00656ae6, (0) >>> 0);
-    uVar7 = (((regs.eax = FUN_004367cb(heap))) & 0xffff);
+    uVar7 = (((regs.eax = FUN_004367cb(heap), regs.edx = 0x10, regs.eax)) & 0xffff);
     uVar5 = ((extraout_CX << 7 | extraout_CX >>> 9 | uVar7) & 0xffff);
     heap.setU32(((0x00971ef4) + (((uVar5 >>> 5 | uVar5 << 0xb) & 0xffff)) * 4), (heap.u32(0x00656af0)) & 0xffffffff);
     uVar7 = ((uVar7 + 0x20 & 0xfe0) & 0xffff);

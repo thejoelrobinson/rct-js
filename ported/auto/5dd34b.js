@@ -31,7 +31,6 @@ export function FUN_005dd34b(heap) {
   let extraout_ECX = 0;
   let uVar9 = 0;
   let iVar10 = 0;
-  let extraout_DL = 0;
   let extraout_EDX = 0;
   let uVar11 = 0;
   let uVar12 = 0;
@@ -77,7 +76,7 @@ export function FUN_005dd34b(heap) {
           unaff_ESI = ((pbVar17) >>> 0);
           iVar7 = (((regs.eax = FUN_00444bd4(heap, iVar14, pbVar17, uVar11))) >>> 0);
           heap.setU32(pbVar17, (0) & 0xffffffff);
-          heap.setU8((pbVar17 + (0x30)), (extraout_DL) & 0xff);
+          heap.setU8((pbVar17 + (0x30)), ((regs.edx & 0xff)) & 0xff);
           if (pbVar16 == 0xffffffff) {
             iVar7 = (((regs.eax = FUN_00444c74(heap))) >>> 0);
             iVar10 = ((-1) >>> 0);

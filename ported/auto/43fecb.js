@@ -67,12 +67,12 @@ export function FUN_0043fecb(heap) {
   heap.setU32((unaff_ESI + 0x15c), (uVar6) & 0xffffffff);
   heap.setI32((unaff_ESI + 0x160), (iVar7) & 0xffffffff);
   if (uVar6 != 0xffff) {
-    (regs.eax = FUN_0044002c(heap));
+    (regs.eax = FUN_0044002c(heap), regs.edx = 0x740000, regs.eax);
   }
   if (heap.i32((unaff_ESI + 8)) != 0) {
     heap.setU16((heap.i32((unaff_ESI + 8)) + 0x12), (uVar3) & 0xffff);
   }
-  return (regs.eax = FUN_005e43de(heap));
+  return (regs.eax = FUN_005e43de(heap), regs.edx = 0x740000, regs.eax);
   }
   if ((heap.u32((0x00743bbf) + (iVar7) * 4) != 4) || (heap.u32((0x00743ba2) + (uVar6 * 0x80) * 4) != -0x8000)) {
     break LAB_0043ffa7;

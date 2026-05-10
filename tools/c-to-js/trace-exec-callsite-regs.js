@@ -192,6 +192,12 @@ for (const entry of ENTRY_POINTS) {
   // Stack of caller-function-addresses.
   const callStack = [entry.addr];
 
+  // Parallel stack to callStack: one entry per pushed call frame.
+  // Each entry is { retAddr, entryRef } where entryRef is the out[caller][callee]
+  // record we want to populate with post-call regs (or null if not a consumer).
+  // pendingStack.length === callStack.length - 1 always.
+  const pendingStack = [];
+
   let steps = 0;
   // Cycle detection over a rolling window of recent eips. If the same eip
   // repeats too often within the window, we're in a tight loop — bail.
@@ -224,7 +230,11 @@ for (const entry of ENTRY_POINTS) {
           const retAddr = (cpu.memory[sp] | (cpu.memory[sp+1]<<8) | (cpu.memory[sp+2]<<16) | (cpu.memory[sp+3]<<24)) >>> 0;
           cpu.regs.eip = retAddr;
           cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
-          if (callStack.length > 1) callStack.pop();
+          if (callStack.length > 1) {
+            callStack.pop();
+            // Pop pendingStack too — but DON'T snap post (mid-loop garbage state).
+            pendingStack.pop();
+          }
           for (let k = 0; k < RECENT_SIZE; k++) recentRing[k] = undefined;
           recentCounts.clear();
           if (++stuckCycles > 200) break;
@@ -241,9 +251,13 @@ for (const entry of ENTRY_POINTS) {
         // After step, eip = call target, esp -= 4 (return addr pushed).
         const calleeAddr = cpu.regs.eip >>> 0;
         if (calleeAddr < 0xF0000000) {
-          // Real ported function (not Win32 shim).
+          // Real ported function (not Win32 shim). Read the saved retAddr
+          // from top of stack — that's where the callee will return to.
+          const sp = cpu.regs.esp >>> 0;
+          const retAddr = (memory[sp] | (memory[sp+1]<<8) | (memory[sp+2]<<16) | (memory[sp+3]<<24)) >>> 0;
           const callerAddr = callStack[callStack.length - 1];
           totalCalls++;
+          let entryRef = null;
           if (consumers.has(calleeAddr)) {
             consumerCalls++;
             const calleeKey = calleeAddr.toString(16);
@@ -253,10 +267,12 @@ for (const entry of ENTRY_POINTS) {
             // we record the "fresh" register state (not stale from a
             // later loop iteration).
             if (!out[callerKey][calleeKey]) {
-              out[callerKey][calleeKey] = preRegs;
+              out[callerKey][calleeKey] = { pre: preRegs };
             }
+            entryRef = out[callerKey][calleeKey];
           }
           callStack.push(calleeAddr);
+          pendingStack.push({ retAddr, entryRef });
         }
         if (++steps > entry.limit) break;
         continue;
@@ -266,7 +282,18 @@ for (const entry of ENTRY_POINTS) {
       const isRet = op === 0xc3 || op === 0xc2 || op === 0xcb || op === 0xca;
       const ok = step(cpu);
       if (!ok) break;
-      if (isRet && callStack.length > 1) callStack.pop();
+      if (isRet && callStack.length > 1) {
+        callStack.pop();
+        const pending = pendingStack.pop();
+        // After RET: cpu.regs reflect the callee's exit state. Capture POST
+        // snapshot for this call site (only if this RET landed where the
+        // CALL expected — guards against weird control flow).
+        if (pending && pending.entryRef && (cpu.regs.eip >>> 0) === pending.retAddr) {
+          if (!pending.entryRef.post) {
+            pending.entryRef.post = snap(cpu);
+          }
+        }
+      }
       if (++steps > entry.limit) break;
     }
   } catch (e) {

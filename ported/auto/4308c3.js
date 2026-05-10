@@ -14,7 +14,7 @@ export function FUN_004308c3(heap) {
   let pcVar3 = 0;
   let pcVar4 = 0;
   pcVar2 = ((0x00000016) >>> 0);
-  (regs.eax = FUN_0042f239(heap));
+  (regs.ebx = 0x16, regs.eax = FUN_0042f239(heap));
   pcVar3 = ((0x0099aa88) >>> 0);
   do {
     cVar1 = ((heap.i8(pcVar2)) & 0xff);

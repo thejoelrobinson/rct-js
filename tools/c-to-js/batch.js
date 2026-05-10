@@ -46,9 +46,18 @@ function mergeCallsiteFile(path) {
       if (!inner) { inner = new Map(); callsiteRegs.set(callerAddr, inner); }
       for (const [calleeHex, regs] of Object.entries(byCallee)) {
         const calleeAddr = parseInt(calleeHex, 16);
-        // Don't overwrite existing entries (instant-return trace is generally
-        // more reliable than deep-execution which uses noop shims).
-        if (!inner.has(calleeAddr)) inner.set(calleeAddr, regs);
+        // Normalise to {pre, post} schema. Old flat format was {eax, ebx, ...};
+        // new format is {pre: {...}, post: {...}}.
+        const normalised = (regs && regs.pre)
+          ? regs
+          : { pre: regs };
+        // Merge: prefer existing, but if existing lacks `post` and new has it, fill in.
+        const existing = inner.get(calleeAddr);
+        if (!existing) {
+          inner.set(calleeAddr, normalised);
+        } else if (!existing.post && normalised.post) {
+          existing.post = normalised.post;
+        }
       }
     }
   } catch (e) {

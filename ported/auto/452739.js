@@ -40,7 +40,7 @@ export function FUN_00452739(heap) {
   } while (sVar3 != 0);
   iVar1 = (((regs.eax = FUN_004072f0(heap, 0, in_EAX, 2, 0x5622, 0x10))) >>> 0);
   if (iVar1 != 0) {
-    (regs.eax = FUN_0042f239(heap));
+    (regs.ebx = 0x4, regs.eax = FUN_0042f239(heap));
     iVar1 = (((regs.eax = FUN_0040771b(heap, 2))) >>> 0);
     if (iVar1 != 0) {
       piVar5 = ((0x006326c8) >>> 0);
