@@ -39,6 +39,7 @@ export function FUN_00441dc1(heap) {
       }
     }
     for (; uVar5 = ((heap.u32(0x0062940a)) >>> 0), uVar11 != 0xffff; uVar11 = (((heap.u32((0x00743b98) + (((uVar11) >>> 0) * 0x80) * 4)) & 0xffff)) >>> 0) {
+      LAB_00441ff3: {
       iVar12 = ((((uVar11) >>> 0) * 0x100) >>> 0);
       puVar13 = ((0x00743b94 + iVar12) >>> 0);
       if (((heap.u32((0x00743bc2) + (iVar12) * 4) == 0) && (heap.u32((0x00743bbe) + (iVar12) * 4) == 0)) && ((heap.u16((0x00743ba0 + iVar12)) & 0x100) != 0)) {
@@ -108,11 +109,11 @@ export function FUN_00441dc1(heap) {
               uVar10 = ((uVar2) & 0xffff);
             } while (uVar15 <= uVar5);
           }
-          /* goto LAB_00441ff3 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00441dc1/LAB_00441ff3"); return 0;
+          break LAB_00441ff3;
         }
         heap.setU32(0x0062940a, (heap.u32(0x0062940a) - 1) >>> 0);
       }
-      LAB_00441ff3: ;
+      }
     }
   }
   return;

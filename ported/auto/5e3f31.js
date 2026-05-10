@@ -92,6 +92,11 @@ export function FUN_005e3f31(heap) {
   (regs.eax = callIndirect(heap, heap.u32(puVar3), unaff_EDI, puVar3, unaff_EBP, __addr_stack0x00000000, unaff_EBX, uVar2, in_ECX, ((uVar5) >>> 0)));
   // Hand-fixed: 0x5e undefined4-elements = 0x178 bytes (see header comment).
   heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x178) >>> 0);
+  // Hand-fix: x86 5e3f31 epilogue leaves ESI = new-window pointer. Caller
+  // FUN_004298a0 then does `*(esi+0x1c) = widgetTable; FUN_005e429d();` —
+  // ViewportCreate writes `*(esi+8) = viewport_pool_slot`, so without this
+  // propagation window+8 stays 0 and 9bc041's painter early-outs.
+  regs.esi = puVar3 >>> 0;
   return (regs.eax = FUN_005e43de(heap));
 } finally {
     heap.freeFrame(4);

@@ -380,11 +380,12 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
             /* goto LAB_004161e2 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00415c60/LAB_004161e2"); return 0;
         }
         if (heap.u32(__addr_local_228) == 0) {
+          LAB_004163bf: {
           if ((local_24c & 0x40) != 0) {
             if ((local_24c & 0x100) == 0) {
               if ((local_24c & 1) == 0) {
                 if ((local_24c & 2) == 0) {
-                  /* goto LAB_004163bf — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00415c60/LAB_004163bf"); return 0;
+                  break LAB_004163bf;
                 }
                 heap.setU32(__addr_local_23a, (0x20) >>> 0);
               } else {
@@ -395,7 +396,8 @@ export function FUN_00415c60(heap, param_1, param_2, param_3) {
             }
             heap.setU32(__addr_local_238, (1) >>> 0);
           }
-          LAB_004163bf: iVar12 = (((heap.u32(__addr_local_234) - heap.u32(__addr_local_238)) - ((puVar10) >>> 0)) >>> 0);
+          }
+          iVar12 = (((heap.u32(__addr_local_234) - heap.u32(__addr_local_238)) - ((puVar10) >>> 0)) >>> 0);
           if ((local_24c & 0xc) == 0) {
             (regs.eax = FUN_00416640(heap, 0x20, iVar12, param_1, __addr_local_240));
           }

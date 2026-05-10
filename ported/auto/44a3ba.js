@@ -49,6 +49,7 @@ export function FUN_0044a3ba(heap) {
   uVar2 = (((regs.eax = FUN_005e3b2b(heap))) >>> 0);
   puVar1 = ((heap.u8(0x00631ca0)) >>> 0);
   if (!bVar10) {
+    joined_r0x0044a466: {
     uVar11 = ((false) & 0xff);
     if (sVar8 == heap.i16((((unaff_ESI) >>> 0) + 0x15a))) {
       uVar7 = ((0) >>> 0);
@@ -69,7 +70,7 @@ export function FUN_0044a3ba(heap) {
             uVar11 = (((extraout_EDX & 0xffff) * 0x100 == -0x743b94) & 0xff);
             (regs.eax = FUN_00440072(heap));
             (regs.eax = FUN_005e3b2b(heap));
-            /* goto joined_r0x0044a466 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0044a3ba/joined_r0x0044a466"); return 0;
+            break joined_r0x0044a466;
           }
         }
         sVar8 = ((((uVar9) << 16 >> 16)) & 0xffff);
@@ -78,7 +79,8 @@ export function FUN_0044a3ba(heap) {
       } while (uVar7 < 0x20);
     }
     (regs.eax = FUN_005e5fcb(heap));
-    joined_r0x0044a466: if (!uVar11) {
+    }
+    if (!uVar11) {
       break LAB_0044a489;
     }
   }

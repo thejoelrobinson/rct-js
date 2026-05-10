@@ -49,6 +49,7 @@ export function FUN_009ba943(heap) {
   do {
     heap.setU32(0x009a200c, (0x0099ac88) >>> 0);
     LAB_009baa14: do {
+      LAB_009babe5: {
       if ((((in_DX + 0x13)) << 16 >> 16) <= heap.i16((unaff_EDI + 6))) {
         /* goto LAB_009bacae — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009ba943/LAB_009bacae"); return 0;
       }
@@ -166,11 +167,12 @@ export function FUN_009ba943(heap) {
             break;
           }
           if ((bVar2 < 0x9c) && (0x8d < bVar2)) {
-            /* goto LAB_009babe5 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009ba943/LAB_009babe5"); return 0;
+            break LAB_009babe5;
           }
         }
       }
-      LAB_009babe5: uVar5 = ((((bVar2 + 0x72) >>> 0)) >>> 0);
+      }
+      uVar5 = ((((bVar2 + 0x72) >>> 0)) >>> 0);
       LAB_009ba9dc: ;
     } while ((heap.u8(0x00971ef2) & 1) != 0);
     heap.setU8(0x0099ac89, (heap.u32((heap.u32(0x0093a464) + (uVar5 & 0xff) * 4))) & 0xff);

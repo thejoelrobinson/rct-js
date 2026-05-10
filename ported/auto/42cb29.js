@@ -13,10 +13,11 @@ export function FUN_0042cb29(heap) {
   let puVar1 = 0;
   let pcVar2 = 0;
   if (heap.u8(0x008d7eb8) != 0) {
+    LAB_0042cb65: {
     pcVar2 = ((0x008d8a3c) >>> 0);
     do {
       if (heap.i8(pcVar2) == 0) {
-        /* goto LAB_0042cb65 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0042cb29/LAB_0042cb65"); return 0;
+        break LAB_0042cb65;
       }
       pcVar2 = ((pcVar2 + 0x10c) >>> 0);
     } while (pcVar2 < 0x008dbe94);
@@ -25,7 +26,8 @@ export function FUN_0042cb29(heap) {
       heap.setU16(pcVar2, (heap.u16((pcVar2 + 0x10c))) & 0xffff);
       pcVar2 = ((pcVar2 + 2) >>> 0);
     } while (pcVar2 < 0x008dbd88);
-    LAB_0042cb65: puVar1 = ((0x008d7eb8) >>> 0);
+    }
+    puVar1 = ((0x008d7eb8) >>> 0);
     do {
       heap.setU16(pcVar2, (heap.u16(puVar1)) & 0xffff);
       puVar1 = ((puVar1 + ((1) * 2)) >>> 0);

@@ -267,6 +267,9 @@ export function FUN_005e3c3c(heap) {
   (regs.eax = callIndirect(heap, heap.u32(puVar9), unaff_EDI, puVar9, unaff_EBP, __addr_stack0x00000000, uVar8, uVar5, in_ECX, ((uVar12) >>> 0)));
   // Hand-fixed: 0x5e undefined4-elements = 0x178 bytes (see header comment).
   heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x178) >>> 0);
+  // Hand-fix (same as 5e3f31.js): epilogue leaves ESI = new-window pointer
+  // so the caller's subsequent ViewportCreate writes window+8 correctly.
+  regs.esi = puVar9 >>> 0;
   return (regs.eax = FUN_005e43de(heap));
 } finally {
     heap.freeFrame(4);

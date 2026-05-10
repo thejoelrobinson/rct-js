@@ -61,6 +61,7 @@ export function FUN_00448331(heap) {
     uVar5 = ((uVar4 * 0x80 | uVar4 >>> 9 | uVar3) & 0xffff);
     pbVar13 = ((heap.u32((0x00971ef4) + (((uVar5 >>> 5 | uVar5 << 0xb) & 0xffff)) * 4)) >>> 0);
     do {
+      LAB_004483ae: {
       if ((heap.u8(pbVar13) & 0x3c) == 4) {
         if (bVar6 == heap.u8(pbVar13 + (2))) {
           if ((heap.u8(pbVar13 + (4)) & 4) != 0) {
@@ -69,7 +70,7 @@ export function FUN_00448331(heap) {
           }
         } else {
           if (((bVar6 - 4) & 0xff) != heap.u8(pbVar13 + (2))) {
-            /* goto LAB_004483ae — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448331/LAB_004483ae"); return 0;
+            break LAB_004483ae;
           }
           if ((heap.u8(pbVar13 + (4)) & 4) == 0) {
             break;
@@ -97,7 +98,8 @@ export function FUN_00448331(heap) {
         pbVar13 = ((heap.u32((0x00971ef4) + (((uVar3 >>> 5 | uVar3 << 0xb) & 0xffff)) * 4)) >>> 0);
         /* goto LAB_00448460 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_00448331/LAB_00448460"); return 0;
       }
-      LAB_004483ae: pbVar1 = ((pbVar13 + 1) >>> 0);
+      }
+      pbVar1 = ((pbVar13 + 1) >>> 0);
       pbVar13 = ((pbVar13 + 8) >>> 0);
     } while ((heap.u8(pbVar1) & 0x80) == 0);
   }

@@ -9,6 +9,7 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
   let puVar2 = 0;
   switchD_00413905_caseD_0: {
   if ((param_2 < param_1) && (param_1 < (param_3 + ((param_2) >>> 0)))) {
+    switchD_00413a87_caseD_0: {
     param_2 = ((((param_3 - 4) + ((param_2) >>> 0))) >>> 0);
     puVar2 = ((((param_3 - 4) + ((param_1) >>> 0))) >>> 0);
     if ((((puVar2) >>> 0) & 3) == 0) {
@@ -33,7 +34,7 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
     } else {
       switch (param_3) {
         case 0:
-          /* goto switchD_00413a87_caseD_0 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004138d0/switchD_00413a87_caseD_0"); return 0;
+          break switchD_00413a87_caseD_0;
         case 1:
           /* goto switchD_00413a87_caseD_1 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004138d0/switchD_00413a87_caseD_1"); return 0;
         case 2:
@@ -149,7 +150,8 @@ export function FUN_004138d0(heap, param_1, param_2, param_3) {
         heap.setU8((((puVar2) >>> 0) + 1), (heap.u8((((param_2) >>> 0) + 1))) & 0xff);
         return param_1;
     }
-    switchD_00413a87_caseD_0: return param_1;
+    }
+    return param_1;
   }
   puVar2 = ((param_1) >>> 0);
   if ((((param_1) >>> 0) & 3) == 0) {

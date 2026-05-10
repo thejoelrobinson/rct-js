@@ -590,37 +590,76 @@ function findArrayLocals(bodyNode, source) {
   return arrays;
 }
 
-// Identify forward gotos at the function-body's top level. A "forward
-// goto" is a `goto LABEL` that appears before its matching `LABEL:` site in
-// the body's child statement list. We can lower these to labeled-break
-// patterns by wrapping the preceding statements in `LABEL: { ... }`.
+// Identify forward gotos at any nesting depth inside the function body. A
+// "forward goto" is a `goto LABEL` whose target `LABEL:` appears later in
+// source (within the same enclosing compound). We lower forward labels to
+// labeled-break patterns by wrapping the preceding siblings of the labeled
+// statement in `LABEL: { ... }`; the goto becomes `break LABEL`.
 //
-// Only top-level labels are considered — gotos that need to escape from
-// inside a switch/loop to a label outside still throw at runtime. (The vast
-// majority of Ghidra forward gotos are top-level merge points.)
+// Returns:
+//   forwardLabels: Set<string> — all label names lowered (any nesting depth).
+//   compoundLabels: Map<nodeId, [{idx, name}, ...]> — per-compound label list
+//     in ascending child-index order. Used by emitBlock to apply wrapping.
 function collectForwardLabels(bodyNode, source) {
-  const children = bodyNode.namedChildren.filter(c => c.type !== "comment");
-  const labelIndex = new Map(); // labelName → child index
-  for (let i = 0; i < children.length; i++) {
-    if (children[i].type === "labeled_statement") {
-      const id = children[i].namedChildren[0];
-      if (id) {
-        const name = source.slice(id.startIndex, id.endIndex);
-        labelIndex.set(name, i);
+  const forwardLabels = new Set();
+  const compoundLabels = new Map();
+  function visitCompound(compound) {
+    const children = compound.namedChildren.filter(c => c.type !== "comment");
+    const labelIndex = new Map(); // labelName → child index
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].type === "labeled_statement") {
+        const id = children[i].namedChildren[0];
+        if (id) {
+          const name = source.slice(id.startIndex, id.endIndex);
+          labelIndex.set(name, i);
+        }
       }
     }
+    if (labelIndex.size > 0) {
+      const labelsHere = [];
+      for (const [name, idx] of labelIndex) {
+        // Only lower if at least one forward goto exists AND no backward
+        // goto in this compound's tail. Mixed-direction labels (backward
+        // edges = loops) need restructuring we don't model — leave them as
+        // early-return fallbacks.
+        const hasForward  = anyGotoTo(children.slice(0, idx), name, source);
+        const hasBackward = anyGotoTo(children.slice(idx + 1), name, source);
+        // Also reject if any descendant elsewhere in the function targets
+        // this label — those gotos would emit `break LABEL` from a scope
+        // where the labeled block isn't open (= JS parse error). Keep the
+        // check local to this compound; cross-compound conflicts are
+        // detected at union-time below.
+        if (hasForward && !hasBackward) {
+          labelsHere.push({ idx, name });
+        }
+      }
+      if (labelsHere.length > 0) {
+        // If the same name was already chosen at a different compound,
+        // skip — break LABEL would resolve ambiguously. Keep the first
+        // occurrence (outermost wins by walk order).
+        const filtered = labelsHere.filter(l => !forwardLabels.has(l.name));
+        if (filtered.length > 0) {
+          compoundLabels.set(compound.id, filtered);
+          for (const l of filtered) forwardLabels.add(l.name);
+        }
+      }
+    }
+    // Recurse into all descendant compound_statements.
+    for (const c of children) {
+      visitDescendantCompounds(c, visitCompound);
+    }
   }
-  if (labelIndex.size === 0) return new Set();
-  const forward = new Set();
-  for (const [name, idx] of labelIndex) {
-    // Only lower a label if it has at least one forward goto AND no backward
-    // gotos. Mixed-direction labels (backward edges = loops) need restructuring
-    // we don't model — leave them as throws at runtime.
-    const hasForward  = anyGotoTo(children.slice(0, idx), name, source);
-    const hasBackward = anyGotoTo(children.slice(idx + 1), name, source);
-    if (hasForward && !hasBackward) forward.add(name);
-  }
-  return forward;
+  visitCompound(bodyNode);
+  return { forwardLabels, compoundLabels };
+}
+
+// Walk children looking for compound_statement nodes; invoke cb for each one
+// found. Stops descending when it hits a compound (the caller drives the
+// recursion).
+function visitDescendantCompounds(node, cb) {
+  if (!node || node.type === "comment") return;
+  if (node.type === "compound_statement") { cb(node); return; }
+  for (const c of node.namedChildren) visitDescendantCompounds(c, cb);
 }
 
 // Recursive walk of statements looking for `goto LABEL`.
@@ -642,26 +681,25 @@ function anyGotoTo(nodes, labelName, source) {
 // Function-body emit with forward-goto lowering. Wraps each forward-target
 // label's preceding statements in a labeled JS block; emits the labeled
 // statement itself as `;`. The companion change in `emitStatement` for
-// `goto_statement` checks `ctx.forwardLabels` and emits `break LABEL` for
-// known forward targets instead of throwing.
+// `goto_statement` checks `ctx.openLabels` and emits `break LABEL` for
+// labels currently in scope (i.e. ones whose labeled-block wrapper is open).
 function emitFunctionBody(bodyNode, ctx) {
-  const children = bodyNode.namedChildren.filter(c => c.type !== "comment");
-  // Sort forward-label child indices ascending. Each wraps the children
-  // before it (which themselves may contain earlier labeled-blocks).
-  const labelIdxs = [];
-  for (let i = 0; i < children.length; i++) {
-    if (children[i].type === "labeled_statement") {
-      const id = children[i].namedChildren[0];
-      const name = id ? text(id, ctx) : "";
-      if (ctx.forwardLabels.has(name)) labelIdxs.push({ idx: i, name });
-    }
-  }
-  // Find first non-declaration child — declarations all live before this
-  // index in Ghidra output. We emit them OUTSIDE the labeled blocks so
-  // their `let` bindings are visible from code following the blocks.
+  const labelIdxs = ctx.compoundLabels.get(bodyNode.id) || [];
+  // Function body: hoist declarations OUT of any labeled-block wrappers so
+  // their `let` bindings remain visible after the blocks close.
+  return emitWrappedCompound(bodyNode, ctx, labelIdxs, /* hoistDecls */ true);
+}
+
+// Emit a compound_statement with labeled-block wrappers applied.
+// `labelIdxs` is the list of `{idx, name}` from ctx.compoundLabels for this
+// compound (may be empty).
+function emitWrappedCompound(compound, ctx, labelIdxs, hoistDecls) {
+  const children = compound.namedChildren.filter(c => c.type !== "comment");
   let firstNonDecl = 0;
-  while (firstNonDecl < children.length && children[firstNonDecl].type === "declaration") {
-    firstNonDecl++;
+  if (hoistDecls) {
+    while (firstNonDecl < children.length && children[firstNonDecl].type === "declaration") {
+      firstNonDecl++;
+    }
   }
   const lines = [];
   for (let i = 0; i < firstNonDecl; i++) {
@@ -669,18 +707,25 @@ function emitFunctionBody(bodyNode, ctx) {
     if (s) lines.push(s);
   }
   // Open labeled blocks in reverse-position order so the latest-position
-  // label becomes the outermost.
+  // label becomes the outermost. Push labels onto the open-label stack so
+  // descendant gotos resolve to `break LABEL`.
   const reversed = [...labelIdxs].reverse();
-  for (const { name } of reversed) lines.push(`${name}: {`);
-  let openLabels = labelIdxs.map(l => l.name);
+  for (const { name } of reversed) {
+    lines.push(`${name}: {`);
+    ctx.openLabels.push(name);
+  }
+  let openHere = labelIdxs.map(l => l.name);
   for (let i = firstNonDecl; i < children.length; i++) {
     const labelHere = labelIdxs.find(l => l.idx === i);
     if (labelHere) {
       // Close the corresponding labeled block (innermost match on the stack).
-      const popIdx = openLabels.lastIndexOf(labelHere.name);
+      const popIdx = openHere.lastIndexOf(labelHere.name);
       if (popIdx >= 0) {
         lines.push("}");
-        openLabels.splice(popIdx, 1);
+        openHere.splice(popIdx, 1);
+        // Pop the matching name from ctx.openLabels (LIFO of just-pushed).
+        const stackIdx = ctx.openLabels.lastIndexOf(labelHere.name);
+        if (stackIdx >= 0) ctx.openLabels.splice(stackIdx, 1);
       }
       // Emit the labeled_statement's wrapped statement without re-emitting
       // the label (label was already opened above).
@@ -692,7 +737,12 @@ function emitFunctionBody(bodyNode, ctx) {
     const s = emitStatement(children[i], ctx);
     if (s) lines.push(s);
   }
-  while (openLabels.length) { lines.push("}"); openLabels.pop(); }
+  while (openHere.length) {
+    lines.push("}");
+    const name = openHere.pop();
+    const stackIdx = ctx.openLabels.lastIndexOf(name);
+    if (stackIdx >= 0) ctx.openLabels.splice(stackIdx, 1);
+  }
   return "{\n" + lines.map(l => l.split("\n").map(x => "  " + x).join("\n")).join("\n") + "\n}";
 }
 
@@ -833,9 +883,14 @@ function emitFunction(node, ctx) {
   }
   ctx.frameSize = offset;
 
-  // Pre-pass: identify forward gotos at the function-body level and wire
-  // ctx.forwardLabels so emit treats them as labeled-break targets.
-  ctx.forwardLabels = collectForwardLabels(body, ctx.source);
+  // Pre-pass: identify forward gotos at any nesting depth, recording per-
+  // compound the labels to wrap and the union of all forward-label names.
+  // ctx.openLabels is the live stack of currently-open labeled-block
+  // wrappers, consulted by the `goto_statement` emit to choose `break`.
+  const fwd = collectForwardLabels(body, ctx.source);
+  ctx.forwardLabels = fwd.forwardLabels;
+  ctx.compoundLabels = fwd.compoundLabels;
+  ctx.openLabels = [];
 
   // Function signature uses our (possibly forced) FUN_<addr> name. Keep
   // the original parameter names — those came from Ghidra and don't collide.
@@ -965,6 +1020,11 @@ function findIdentifier(node) {
 }
 
 function emitBlock(node, ctx) {
+  // If this compound has forward labels assigned to it, route through the
+  // labeled-block wrapper so nested gotos lower to `break LABEL`.
+  if (ctx.compoundLabels && ctx.compoundLabels.has(node.id)) {
+    return emitWrappedCompound(node, ctx, ctx.compoundLabels.get(node.id), /* hoistDecls */ false);
+  }
   const lines = [];
   for (const child of node.namedChildren) {
     if (child.type === "comment") continue;
@@ -1096,9 +1156,13 @@ function emitStatement(node, ctx) {
     case "goto_statement": {
       const labelNode = node.childForFieldName("label") || node.namedChildren[0];
       const labelName = text(labelNode, ctx);
-      // Forward gotos at the function-body level are lowered to labeled
-      // breaks (see emitFunctionBody / collectForwardLabels).
-      if (ctx.forwardLabels && ctx.forwardLabels.has(labelName)) {
+      // Forward gotos at any nesting depth lower to `break LABEL` when a
+      // labeled-block wrapper for LABEL is currently open (see
+      // emitWrappedCompound / collectForwardLabels). The open-label stack
+      // tracks which wrappers are live at this emit point; if LABEL isn't
+      // open, the goto is either backward or to a label in a non-ancestor
+      // scope — fall through to the early-return fallback.
+      if (ctx.openLabels && ctx.openLabels.includes(labelName)) {
         return `break ${labelName};`;
       }
       // Backward / cross-scope gotos: we don't model them yet. Emit an
