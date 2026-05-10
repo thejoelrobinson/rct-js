@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5e3c3c.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Translator bug (same root cause as 5e3f31.js): `DAT_009a1164 += 0x5e` in
+// the C means "advance the undefined4* pointer by 0x5e elements" → +0x178
+// bytes. The auto-translator emits raw `+ 0x5e` (94 bytes) which corrupts
+// the viewport-list stride. Verified vs binary @ 0x5e4096:
+// `add dword ptr [0x9a1164], 0x178`. Hand-fix the single write at the bottom.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -260,7 +265,8 @@ export function FUN_005e3c3c(heap) {
   heap.setU16((((puVar9) >>> 0) + 0x16a), (0) & 0xffff);
   heap.setU16((puVar9 + ((0x5b) * 4)), (0) & 0xffff);
   (regs.eax = callIndirect(heap, heap.u32(puVar9), unaff_EDI, puVar9, unaff_EBP, __addr_stack0x00000000, uVar8, uVar5, in_ECX, ((uVar12) >>> 0)));
-  heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x5e) >>> 0);
+  // Hand-fixed: 0x5e undefined4-elements = 0x178 bytes (see header comment).
+  heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x178) >>> 0);
   return (regs.eax = FUN_005e43de(heap));
 } finally {
     heap.freeFrame(4);

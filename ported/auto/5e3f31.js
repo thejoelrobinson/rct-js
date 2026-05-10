@@ -1,6 +1,15 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5e3f31.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Translator bug: `DAT_009a1164 = DAT_009a1164 + 0x5e;` in Ghidra C means
+// "advance the undefined4* pointer by 0x5e elements" → +0x178 bytes. The
+// auto-translator emits `heap.u32(0x009a1164) + 0x5e` (raw +0x5e bytes),
+// because once we read the pointer as a u32 value the type info is gone.
+// Verified against rct.exe: `add dword ptr [0x9a1164], 0x178` at 0x5e4096.
+//
+// All the iteration sites (line 31, line 42 etc.) properly scale `+0x5e*4`;
+// only the write at the bottom is unscaled. The fix is the single literal
+// substitution `+ 0x5e` → `+ 0x178` on the final write to DAT_009a1164.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -81,7 +90,8 @@ export function FUN_005e3f31(heap) {
   heap.setU16((((puVar3) >>> 0) + 0x16a), (0) & 0xffff);
   heap.setU16((puVar3 + ((0x5b) * 4)), (0) & 0xffff);
   (regs.eax = callIndirect(heap, heap.u32(puVar3), unaff_EDI, puVar3, unaff_EBP, __addr_stack0x00000000, unaff_EBX, uVar2, in_ECX, ((uVar5) >>> 0)));
-  heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x5e) >>> 0);
+  // Hand-fixed: 0x5e undefined4-elements = 0x178 bytes (see header comment).
+  heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x178) >>> 0);
   return (regs.eax = FUN_005e43de(heap));
 } finally {
     heap.freeFrame(4);
