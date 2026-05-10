@@ -66,6 +66,22 @@ export function createRuntime(opts) {
   // the binary still wins (they overwrite their own slots).
   state.capturedPalette = new Uint8ClampedArray(defaultPalette());
 
+  // Pre-populate screen-dimension globals before the binary's window-init
+  // chain runs. Without this, FUN_004298a0 (MainOpen) sees dims = 0 at boot
+  // and creates the title window with view_w/view_h = 0; the dims become
+  // correct around tick 50 (after FUN_009bb9f5 fires from a synthesized
+  // WM_SIZE), but the broken initial window persists. Pre-populating gives
+  // 4298a0 sane dims to read at boot. Per decompiled/c/9bb9f5.c:
+  //   DAT_005f2400 → width  (640)
+  //   DAT_005f1ff0 → height (480)
+  // (Note: 971ed6/971ed8 are derived from these by 9bb9f5 with extra
+  // clamping, not the same fields — so we set the source DATs, not those.)
+  // Also requires ported/auto/402a00.js's hand-port (pointer-arith fix) so
+  // the values aren't swapped at tick 1 — which was Team B Round 2's
+  // blocker before the 402a00 fix landed.
+  heap.setU32(0x005f2400, 640);
+  heap.setU32(0x005f1ff0, 480);
+
   return {
     heap,
     state,
