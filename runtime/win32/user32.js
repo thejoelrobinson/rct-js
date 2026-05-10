@@ -110,17 +110,32 @@ export function CreateWindowExA(heap, dwExStyle, lpClassName, lpWindowName, dwSt
   const ch = (h | 0) > 0 ? h : 480;
   state.windows.set(hwnd, { atom, x, y, w: cw, h: ch });
   if (!state.firstHwnd) state.firstHwnd = hwnd;
-  // Post the WM_SIZE that real Win32 fires during window creation. The
-  // binary's WindowProc (FUN_00403d79 case 4) reads this to populate
-  // DAT_005f15c4 (screen width) / DAT_005f1b34 (screen height) — both of
-  // which gate the title-screen render in FUN_009bb9f5.
-  // wParam = SIZE_RESTORED (0); lParam = (height << 16) | width
-  postWindowMessage(hwnd, 0x0005, 0, ((ch & 0xffff) << 16) | (cw & 0xffff));
-  // Post WM_ACTIVATEAPP (0x1C) wParam=1 — tells the binary the window is
-  // active. WindowProc sets DAT_005e9174 = wParam, which gates the per-frame
-  // render setup in FUN_009bb9f5 (without it, that function takes its
-  // early-return path and never sets up the framebuffer description).
-  postWindowMessage(hwnd, 0x001C, 1, 0);
+  // Real Win32 SENDS (synchronous) WM_SIZE and WM_ACTIVATEAPP during
+  // CreateWindowEx, before returning. The binary's WindowProc (FUN_00403d79
+  // case 4) reads WM_SIZE to populate DAT_005f15c4 (screen width). Without
+  // synchronous delivery, FUN_009bb6af's gate at 9bb6af.js:25 — which
+  // requires DAT_005f15c4 > 0x3f — runs on tick 1 before WM_SIZE is
+  // dispatched, falls into its fallback path, and the title-screen paint
+  // pipeline (FUN_009bb9f5 + FUN_009bb717) never runs.
+  //
+  // WM_ACTIVATEAPP (0x1C) similarly populates DAT_005e9174 — the other
+  // half of the same gate.
+  //
+  // wParam=SIZE_RESTORED(0); lParam=(height<<16)|width.
+  //
+  // Synchronous dispatch only when the WindowProc is wired into
+  // fnDispatch (real boot). In test scenarios where RegisterClassA was
+  // called with a wndProc address but no JS function is registered, fall
+  // back to posting so the test's own dispatch wiring can pick them up.
+  const cls = state.windowClasses.get(atom);
+  const wndProcAddr = cls ? (cls.wndProc | 0) : 0;
+  if (wndProcAddr && state.fnDispatch.has(wndProcAddr)) {
+    callWndProc(heap, wndProcAddr, hwnd, 0x0005, 0, ((ch & 0xffff) << 16) | (cw & 0xffff));
+    callWndProc(heap, wndProcAddr, hwnd, 0x001C, 1, 0);
+  } else {
+    postWindowMessage(hwnd, 0x0005, 0, ((ch & 0xffff) << 16) | (cw & 0xffff));
+    postWindowMessage(hwnd, 0x001C, 1, 0);
+  }
   return hwnd;
 }
 export function CreateWindowExW(heap, ...args) {
