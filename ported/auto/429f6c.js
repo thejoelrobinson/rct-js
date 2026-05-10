@@ -13,56 +13,88 @@
 //
 // Disassembly (the EDI == -1 path, which is what fires at boot):
 //   00429f6c  cmp edi, -1
-//   00429f6f  jnz 0x42a005           ; paint body — see stub note below
-//   00429f75  mov byte [0x5f52d8], 0
-//   00429f7c  mov byte [0x5f52e8], 0
-//   00429f83  mov byte [0x5f52c8], 0
-//   00429f8a  mov byte [0x5f5278], 0
-//   00429f91  mov byte [0x5f5308], 0
-//   00429f98  cmp byte [0x8d7eb8], 0
-//   00429f9f  jz 0x42a004            ; ret if no scenario loaded
-//   00429fa1  mov byte [0x5f52d8], 2
-//   00429fa8  mov byte [0x5f52e8], 2
-//   00429faf  mov byte [0x5f52c8], 0x14
-//   00429fb6  btr dword [esi+0x10], 7   ; clear bit 7 of window+0x10
-//   00429fbb  btr dword [esi+0x10], 8
-//   00429fc0  mov dl, [0x8d7eb8]        ; current scenario id
-//   00429fc6  mov ecx, [0x8d7eba]       ; current park-management state
-//   00429fcc  call 0x429c3d             ; query "available?" — returns ax
-//   00429fd1  cmp ax, 0x8000
-//   00429fd5  jnz 0x429fdc
-//   00429fd7  bts dword [esi+0x10], 8   ; ax==0x8000 → set bit 8
-//   00429fdc  movzx ebx, byte [0x8d7eb8]
-//   00429fe3  test byte [ebx+0x5f5540], 2
-//   00429fea  jnz 0x429ff1
-//   00429fec  bts dword [esi+0x10], 7
-//   00429ff1  test byte [0x8d7eb9], 1
-//   00429ff8  jz 0x42a004
-//   00429ffa  bts dword [esi+0x10], 8
-//   00429fff  bts dword [esi+0x10], 7
+//   00429f6f  jnz 0x42a005           ; paint body — see implementation below
+//   00429f75..ffd  ... state-init code (see below)
 //   0042a004  ret
 //
-// EDI != -1 path (0x42a005..) is the per-frame paint body: call 5e4400,
-// read 4 view-rect overrides from 0x5f526a..0x5f5270, adjust by window
-// origin, and call into the standard widget-paint helpers. That path is
-// LARGE (200+ bytes of paint code) and Ghidra didn't lift it as a
-// function — porting it would require lifting 0x42a005 as a separate
-// fn first. Per the task spec: SAFE STUB the EDI != -1 case.
+// EDI != -1 path (0x42a005..0x42a6a8 for the "scenario loaded" gate,
+// total ~1.7KB through 0x42afad). It's the per-frame status-bar paint:
+//   - 3 widget-background fills via FUN_005e0e07 (rects from
+//     0x5f526a..70, 0x5f52ba..c0, 0x5f52fa..0x5f5300)
+//   - park-rating numeric blit (0x5f526a midpoint, FUN_00458622)
+//   - sub-string "today is" + month-name string blit (FUN_00458622)
+//   - park value gauge bar via FUN_0042a790 (sub-function, not yet ported)
+//   - "guests in park" / "cash" sprite blits via FUN_009b438b
+//   - long park-rating chart code (>1KB) using DAT_0063af90..0063afbc
+//
+// The full body is too large to hand-port in this pass. Minimum-viable
+// implementation: invoke FUN_005e4400 (the standard widget-paint helper
+// — it walks the window's widget array and fires per-widget background
+// fills), plus the 3 explicit background fills via FUN_005e0e07. That
+// gets pixels onto the status bar without porting the date/cash logic.
 
 import { regs } from "../../runtime/regs.js";
 import { FUN_00429c3d } from "./429c3d.js";
+import { FUN_005e0e07 } from "./5e0e07.js";
+import { FUN_005e4400 } from "./5e4400.js";
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
+
+// Helper: do one of the 3 background-fill blocks at 0x42a00a..4c.
+// rectBase is the address of the (left,right,top,bottom) i16 rect (4×i16).
+function paintWidgetBackground(heap, esi, rectBase) {
+  // Read 4 widget-rect i16s.
+  let ax = heap.u16(rectBase + 0) & 0xffff;
+  let bx = heap.u16(rectBase + 2) & 0xffff;
+  let cx = heap.u16(rectBase + 4) & 0xffff;
+  let dx = heap.u16(rectBase + 6) & 0xffff;
+  // inc ax, dec bx, inc cx, dec dx
+  ax = (ax + 1) & 0xffff;
+  bx = (bx - 1) & 0xffff;
+  cx = (cx + 1) & 0xffff;
+  dx = (dx - 1) & 0xffff;
+  // Add window origin.
+  const ox = heap.u16(esi + 0x20);
+  const oy = heap.u16(esi + 0x22);
+  ax = (ax + ox) & 0xffff;
+  bx = (bx + ox) & 0xffff;
+  cx = (cx + oy) & 0xffff;
+  dx = (dx + oy) & 0xffff;
+  // si = 0x30 (palette / fill index), ebp = 1 (op = solid fill)
+  regs.eax = ax;
+  regs.ebx = bx;
+  regs.ecx = cx;
+  regs.edx = dx;
+  regs.esi = 0x30;
+  regs.ebp = 1;
+  FUN_005e0e07(heap);
+}
 
 export function FUN_00429f6c(heap) {
   // 0x429f6c..6f: branch on phase sentinel.
   if ((regs.edi >>> 0) !== 0xffffffff) {
-    // STUB: EDI != -1 enters the per-frame paint body at 0x42a005, which
-    // calls FUN_005e4400 then iterates 4 widget rects out of 0x5f526a..70
-    // and blits them via FUN_005e5ce2/FUN_009b30f1. Not yet ported. Safe
-    // no-op until the paint pipeline is wired up — the binary handles a
-    // null/no-op paint by leaving the window blank, which is what we
-    // already do anyway.
+    // 0x42a005..0x42a6a8 — minimum-viable port of the per-frame status-
+    // bar paint body.
+    const esi = regs.esi >>> 0;
+
+    // 0x42a005: standard widget paint helper.
+    regs.esi = esi;
+    FUN_005e4400(heap);
+
+    // 0x42a00a..4c: paint widget #0 background (rect at 0x5f526a).
+    paintWidgetBackground(heap, esi, 0x005f526a);
+
+    // 0x42a04d..8f: paint widget #1 background (rect at 0x5f52ba).
+    paintWidgetBackground(heap, esi, 0x005f52ba);
+
+    // 0x42a090..d2: paint widget #2 background (rect at 0x5f52fa).
+    paintWidgetBackground(heap, esi, 0x005f52fa);
+
+    // The remainder (date numeric, park-value gauge, money sprites,
+    // park-rating chart, ~1.5KB) is not yet ported. The 3 background
+    // fills above leave proper-coloured panels on the status bar even
+    // without the dynamic content.
+    regs.esi = esi;
     return;
   }
 
