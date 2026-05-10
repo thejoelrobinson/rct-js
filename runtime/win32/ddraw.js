@@ -143,8 +143,32 @@ function IDDS_SetClipper(heap, self, lpClipper) { return DD_OK; }
 // SetPalette(self, lpDDPalette) — also called with a fake palette pointer.
 function IDDS_SetPalette(heap, self, lpPalette) {
   const palette = state.ddrawPalettes && state.ddrawPalettes.get(lpPalette);
-  if (palette) state.capturedPalette = palette;
+  if (palette) mergePaletteIntoCaptured(palette);
   return DD_OK;
+}
+
+// Merge `src` into state.capturedPalette: only overwrite entries where src is
+// non-black. The binary's resource-loader (FUN_00411b58) is broken — its
+// FindResourceA/LoadResource/LockResource path returns 0 (stubbed), so the
+// palette it builds is mostly zeros. Pre-populated default entries should
+// survive so the rendered frame uses sensible colors. Real palette updates
+// (e.g. cycling sky colors via AnimatePalette) still take effect because
+// those entries are non-zero.
+function mergePaletteIntoCaptured(src) {
+  if (!state.capturedPalette || state.capturedPalette.length < 1024) {
+    state.capturedPalette = new Uint8ClampedArray(1024);
+    for (let i = 0; i < 256; i++) state.capturedPalette[i*4 + 3] = i === 0 ? 0 : 255;
+  }
+  const dst = state.capturedPalette;
+  for (let i = 0; i < 256; i++) {
+    const r = src[i*4], g = src[i*4 + 1], b = src[i*4 + 2];
+    if (r || g || b) {
+      dst[i*4]     = r;
+      dst[i*4 + 1] = g;
+      dst[i*4 + 2] = b;
+      dst[i*4 + 3] = i === 0 ? 0 : 255;
+    }
+  }
 }
 
 // Lock(self, lpDestRect, lpDDSurfaceDesc, dwFlags, hEvent)
@@ -198,7 +222,7 @@ function IDDP_Release(heap, self) { return 0; }
 function IDDP_SetEntries(heap, self, flags, start, count, lpEntries) {
   const palette = readPaletteFromEntries(heap, lpEntries, count, start, self);
   state.ddrawPalettes.set(self, palette);
-  state.capturedPalette = palette;
+  mergePaletteIntoCaptured(palette);
   return DD_OK;
 }
 

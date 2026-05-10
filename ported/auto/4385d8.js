@@ -1,6 +1,15 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/4385d8.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Ghidra emits `goto LAB_0043896a` from inside `while(true)` inside
+// `if (DAT_0099c169 == '\0')` inside `if (DAT_00628cb9 == '\0')`. The label
+// `LAB_0043896a:` lives one block out (still inside the cb9 check, but
+// outside the c169 check). The translator's forward-goto lowering only
+// recognizes labels at the function body's top level, so this goto fell
+// through to the `early-return` fallback — preventing FUN_009bbfb3 (the
+// sprite walker) from ever running and leaving the DDraw surfaces blank.
+// Hand-port wraps the c169 block in `LAB_0043896a: { ... }` and converts
+// the goto to `break LAB_0043896a;`.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -182,6 +191,7 @@ export function FUN_004385d8(heap) {
       if (4 < uVar4) {
         uVar4 = ((4) & 0xffff);
       }
+      LAB_0043896a: {
       if (heap.u8(0x0099c169) == 0) {
         while (true) {
           sVar6 = ((heap.u32(0x0099a4fe)) & 0xffff);
@@ -219,12 +229,13 @@ export function FUN_004385d8(heap) {
             break;
           }
           if ((((heap.u8(0x00991f36) != 0) && (heap.u8(0x00991f36) != 1)) || (uVar1 = ((heap.u32(0x00991f30) >>> 7) >>> 0), heap.setU32(0x00991f30, (heap.u32(0x00991f30) & 0xffffff7f) >>> 0), (uVar1 & 1) != 0)) || (uVar4 = ((uVar4 - 1) & 0xffff), uVar4 == 0)) {
-            /* goto LAB_0043896a — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_004385d8/LAB_0043896a"); return 0;
+            break LAB_0043896a;
           }
         }
         heap.setU32(0x005e9170, (0) >>> 0);
       }
-      LAB_0043896a: heap.setU32(0x00991f30, (heap.u32(0x00991f30) & 0xffffff7f) >>> 0);
+      } /* LAB_0043896a */
+      heap.setU32(0x00991f30, (heap.u32(0x00991f30) & 0xffffff7f) >>> 0);
       heap.setU8(0x006293cb, (heap.u8(0x006293cb) ^ 0x8000) & 0xff);
       uVar4 = ((heap.u8(0x006293cb) & 1) & 0xffff);
       heap.setU8(0x006293cb, (heap.u8(0x006293cb) & 0xfffc) & 0xff);

@@ -51,14 +51,24 @@ export function CreatePalette(heap, lpLogPalette) {
   if (!lpLogPalette) return 0x30000500;
   const num = heap.u16(lpLogPalette + 2);
   if (num > 0) {
-    const pal = new Uint8ClampedArray(256 * 4);
-    for (let i = 0; i < num && i < 256; i++) {
-      pal[i*4 + 0] = heap.u8(lpLogPalette + 4 + i*4 + 0);
-      pal[i*4 + 1] = heap.u8(lpLogPalette + 4 + i*4 + 1);
-      pal[i*4 + 2] = heap.u8(lpLogPalette + 4 + i*4 + 2);
-      pal[i*4 + 3] = i === 0 ? 0 : 255;
+    if (!state.capturedPalette) {
+      state.capturedPalette = new Uint8ClampedArray(256 * 4);
+      for (let i = 0; i < 256; i++) state.capturedPalette[i*4 + 3] = i === 0 ? 0 : 255;
     }
-    state.capturedPalette = pal;
+    // Merge: only entries the binary specified, and only if non-black.
+    // Pre-populated default-palette entries for unset slots survive — see
+    // runtime/harness.js for why (binary's resource-loader is broken).
+    for (let i = 0; i < num && i < 256; i++) {
+      const r = heap.u8(lpLogPalette + 4 + i*4 + 0);
+      const g = heap.u8(lpLogPalette + 4 + i*4 + 1);
+      const b = heap.u8(lpLogPalette + 4 + i*4 + 2);
+      if (r || g || b) {
+        state.capturedPalette[i*4 + 0] = r;
+        state.capturedPalette[i*4 + 1] = g;
+        state.capturedPalette[i*4 + 2] = b;
+        state.capturedPalette[i*4 + 3] = i === 0 ? 0 : 255;
+      }
+    }
     state.paletteSnapshots++;
   }
   return 0x30000500;

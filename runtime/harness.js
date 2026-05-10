@@ -11,6 +11,7 @@ import { Heap } from "./heap.js";
 import { initHeap } from "./win32/kernel32.js";
 import { state, setRuntimeContext } from "./win32/context.js";
 import { dispatch as portedDispatch } from "../ported/auto/_dispatch.js";
+import { defaultPalette } from "../harness/csg.js";
 // Side-effect imports — these modules register procs / DLL-export
 // stubs at module-load time. The binary discovers them via
 // LoadLibraryA + GetProcAddress, so they're not directly imported by
@@ -54,6 +55,16 @@ export function createRuntime(opts) {
     vfs: opts.vfs || new Map(),
     canvas: opts.canvas || null,
   });
+
+  // Pre-populate state.capturedPalette from the OpenRCT2-baked reference
+  // palette. The binary normally fills this via FUN_00411b58 →
+  // FindResourceA/LoadResource/LockResource on its own .rsrc PE section, but
+  // we stub those to 0 (no PE rsrc parser yet), so the load silently fails
+  // and only ~18 of 256 entries get populated by later SetPaletteEntries
+  // calls. Pre-populating gives a sensible default for the unset slots;
+  // any later CreatePalette / SetPaletteEntries / IDDP_SetEntries call from
+  // the binary still wins (they overwrite their own slots).
+  state.capturedPalette = new Uint8ClampedArray(defaultPalette());
 
   return {
     heap,
