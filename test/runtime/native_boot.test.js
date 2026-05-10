@@ -47,7 +47,7 @@ describe("native boot regression", () => {
   });
 
   it("dispatch table is fully populated", () => {
-    expect(dispatch.size).toBe(1217);
+    expect(dispatch.size).toBe(1225);
     // Sanity: FUN_00401000 is at the top
     expect(dispatch.has(0x401000)).toBe(true);
     expect(dispatch.has(0x4385d8)).toBe(true);

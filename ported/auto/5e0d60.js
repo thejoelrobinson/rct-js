@@ -1,6 +1,13 @@
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
 // Source: decompiled/c/5e0d60.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// NOTE (Team D): we considered hand-porting this with a screen-dim default
+// (set 0x971ed6/0x971ed8 to 640x480 if zero so FUN_004298a0's rect packs
+// would be valid), but enabling that branch caused a non-terminating loop
+// in FUN_004298a0's downstream widget setup. The viewport-bbox stub now
+// lives in 5e429d.js instead — it has a much smaller blast radius. This
+// file is left as the auto-translated identity body.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 

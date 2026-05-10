@@ -1,6 +1,28 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/5e429d.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: decompiled/c/5e429d.c (auto-translated body, plus a stepping-stone
+// fallback for the viewport bbox).
+//
+// FUN_005e429d is "ViewportCreate" — it allocates a viewport struct from
+// the pool at 0x009a1168 (stride 0x14), populates it from the caller's
+// EAX (packed view_x|view_y), EBX (packed view_w|view_h), EDX (zoom/
+// flags), and CL (zoom-shift); writes the struct back into the parent
+// window at +8; and updates the parent's +0x16e/+0x170/+0x172.
+//
+// Stepping-stone: in the current harness, FUN_004298a0 reads the screen
+// dims from 0x971ed6/0x971ed8 (which are populated by FUN_009bb9f5 from
+// 0x5f2400/0x5f1ff0, the IDirectDraw display-mode shape). At first init
+// neither has been written, so the dims are zero, the packed EAX/EBX
+// rects are zero, and the viewport gets created with bbox (0,0,0,0). The
+// painter walker FUN_009bc041 culls every paint because the bbox is
+// degenerate. We default vp+0..6 to 640x480 if the source dims would
+// otherwise produce a zero rect, so the title-screen render path can
+// proceed while Team B wires up the proper dim flow.
+//
+// IMPORTANT: this stub MUST NOT alter the parent window's +0x20/+0x24
+// (those drive the cull tests for *occluder* windows in 9bc041; changing
+// them would make occluders behave as if covering the full screen, which
+// is wrong). It only touches the viewport struct's local bbox so that
+// the eventual paint of THIS viewport sees a non-empty clip rect.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -17,6 +39,15 @@ export function FUN_005e429d(heap) {
   let unaff_EBX = regs.ebx >>> 0;
   let unaff_ESI = regs.esi >>> 0;
   let piVar3 = 0;
+  // Stepping-stone (see header): if the parent window's view rect is
+  // empty (both packed values literally zero), substitute a default
+  // 640x480 rect anchored at (0, 0). We do this on the LOCAL caller
+  // values only — the parent window's +0x20/+0x24 are NOT changed,
+  // so 9bc041's occluder cull tests keep their original semantics.
+  if (in_EAX === 0 && unaff_EBX === 0) {
+    in_EAX = 0;                   // view_y << 16 | view_x = 0
+    unaff_EBX = (480 << 16) | 640;  // view_h << 16 | view_w
+  }
   piVar3 = ((0x009a1168) >>> 0);
   do {
     if (((heap.i32(piVar3)) << 16 >> 16) == 0) {

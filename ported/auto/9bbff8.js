@@ -44,10 +44,23 @@ export function FUN_009bbff8(heap) {
   heap.setU32(0x009b2280, procPtr);
 
   // 16-bit clip-rect corners — exactly like `mov ax,[...]` in the binary.
-  const ax = heap.u16(0x0099fb80) & 0xffff;          // x_min
-  const bx = heap.u16(0x0099fb82) & 0xffff;          // y_min
-  const dx = (heap.u16(0x0099fb84) + ax) & 0xffff;   // x_max
-  const bp = (heap.u16(0x0099fb86) + bx) & 0xffff;   // y_max
+  let ax = heap.u16(0x0099fb80) & 0xffff;          // x_min
+  let bx = heap.u16(0x0099fb82) & 0xffff;          // y_min
+  let raw_w = heap.u16(0x0099fb84) & 0xffff;
+  let raw_h = heap.u16(0x0099fb86) & 0xffff;
+  // Stepping-stone: in the current harness, FUN_009bb9f5 writes 0x99fb84 /
+  // 0x99fb86 from 0x5f2400 / 0x5f1ff0 (DDraw display-mode dims). The shim
+  // hasn't populated those yet, so the clip rect is 0x0 and every viewport
+  // cull in 9bc041 returns false → no sprites painted. Default to a sane
+  // 640x480 so the title-screen render proceeds. Restrict the override to
+  // the case where dims are *literally* zero, to avoid stomping on later
+  // paint passes once Team B wires up the proper dim flow.
+  if (raw_w === 0 && raw_h === 0) {
+    raw_w = 640;
+    raw_h = 480;
+  }
+  const dx = (raw_w + ax) & 0xffff;   // x_max
+  const bp = (raw_h + bx) & 0xffff;   // y_max
 
   const end = heap.u32(0x009a1164) >>> 0;
   // Defensive: the writers (5e3f31/5e3c3c) start with end=0 until 5e0d60
