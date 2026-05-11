@@ -126,6 +126,28 @@ export function createRuntime(opts) {
       call(0x406d10);
       call(0x40d9a0);
       call(0x40df00);
+      // Phase E: force-load the title-screen demo scenario. Without this,
+      // the world state stays empty and the viewport paint chain renders
+      // only the sky-color fill. The intended in-binary trigger
+      // (FUN_00429361 title-state machine) is unreachable — gated behind
+      // a tick-counter wrap (~16,380 game-updates) and a stripped CODESEG
+      // jumptable at 0x42937c. Drive FUN_0042f4be (encrypted .SC4 loader)
+      // directly with the path written to DAT_0099aa88. 42f4be opens the
+      // file via VFS basename lookup, decrypts the header, RLE-decompresses
+      // ~2 MB of world state into 0x006e3b80..0x008dc08c, and runs the
+      // post-load fixup chain that populates the binary's window pool +
+      // viewport. Required hand-ports (already landed):
+      //   - 42f98e.js: proper ECX countdown (was infinite-loop)
+      //   - 42f4be.js: pre-call regs.esi/ecx prologue + drop unreachable
+      //     gate
+      const path = "sc21.sc4\0";
+      for (let i = 0; i < path.length; i++) heap.setU8(0x0099aa88 + i, path.charCodeAt(i));
+      try { call(0x42f4be); }
+      catch (e) {
+        if (typeof console !== "undefined") {
+          console.warn(`[harness] scenario auto-load (FUN_0042f4be) threw: ${(e.message || e).slice(0, 160)}`);
+        }
+      }
       // Stop here — FUN_00401000 (the message loop) is what runTick drives.
     },
     // One frame of the binary's main loop body (the body of FUN_00401000's

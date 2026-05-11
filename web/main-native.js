@@ -41,6 +41,12 @@ const VFS_FILES = [
   "css1.dat", "css2.dat", "css3.dat", "css4.dat", "css5.dat", "css6.dat",
   "css7.dat", "css8.dat", "css9.dat", "css11.dat", "css13.dat", "css14.dat",
   "css15.dat", "css17.dat",
+  // Phase E: title-screen demo scenario. The binary's data.bin has the
+  // template filename "SC21.SC4" baked in at 0x005f888e. Real RCT cycles
+  // through Scenarios/SC*.SC4 — we ship one fixed copy (SC20 = Forest
+  // Frontiers) under the SC21 name. runtime/harness.js force-drives the
+  // scenario parser at runInit (see Phase E section there).
+  "sc21.sc4",
 ];
 // Files referenced by the binary's asset table but not shipped in our
 // build. The asset-load loop opens then immediately closes — it just
