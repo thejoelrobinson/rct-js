@@ -10,6 +10,7 @@
 import { Heap } from "./heap.js";
 import { initHeap } from "./win32/kernel32.js";
 import { state, setRuntimeContext } from "./win32/context.js";
+import { regs } from "./regs.js";
 import { dispatch as portedDispatch } from "../ported/auto/_dispatch.js";
 import { defaultPalette } from "../harness/csg.js";
 // Side-effect imports — these modules register procs / DLL-export
@@ -157,6 +158,47 @@ export function createRuntime(opts) {
         onProgress && onProgress("40179d:enter");
         fn_40179d(heap);
         onProgress && onProgress("40179d:exit");
+      }
+      // Synthetic per-tick paint dispatch — walks the binary's internal window
+      // pool at DAT_009a013c and invokes each slot's wndProc with a full-screen
+      // clip rect. This bypasses the binary's own per-tick paint dispatcher
+      // (which lives somewhere we haven't fully identified yet — candidates are
+      // 9bbfb3/9bbff8 gated on DAT_008d7eb6, or 4533d0 gated on DAT_006323f4,
+      // neither of which is open during boot). Without this, the viewport
+      // WindowProc (0x42b079) gets called only at WindowCreate time and never
+      // for actual paint, so the inner viewport-paint chain (FUN_00431b6f /
+      // FUN_00436b2a / FUN_00433bae / FUN_00433e1c) stays dormant and the
+      // framebuffer never receives terrain/sprite content.
+      //
+      // Direct-invocation experiment (/tmp/probe-direct-42b079.mjs) confirmed
+      // that calling 0x42b079 with regs.esi = slot_addr, regs.edi != -1,
+      // and clip = (0,0,640,480) fires all 4 dormant helpers and fills the
+      // 640x480 surface with 307,200 non-zero pixels.
+      //
+      // Skip the first few ticks — viewport pointers at slot+8 aren't attached
+      // until MainOpen (FUN_004298a0) has run, which happens during tick 1.
+      const POOL_START = 0x009a013c >>> 0;
+      const POOL_END_PTR = 0x009a1164 >>> 0;
+      const SLOT_STRIDE = 0x178;
+      const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
+      if (poolEnd > POOL_START && poolEnd < 0x009a013c + 256 * SLOT_STRIDE) {
+        for (let slot = POOL_START; slot < poolEnd; slot += SLOT_STRIDE) {
+          const wndProcAddr = heap.u32(slot) >>> 0;
+          if (wndProcAddr === 0 || wndProcAddr === 0xffffffff) continue;
+          const fn = state.fnDispatch.get(wndProcAddr);
+          if (typeof fn !== "function") continue;
+          // Skip slots where the viewport pointer isn't attached yet. The
+          // viewport WindowProc (0x42b079) requires window+8 to be non-zero;
+          // calling it with viewport=0 hits an early-return that does no harm
+          // but produces no work — saves cycles to skip.
+          const viewportPtr = heap.u32(slot + 8) >>> 0;
+          if (viewportPtr === 0) continue;
+          regs.esi = slot >>> 0;
+          regs.edi = 0x99fb7c >>> 0;        // any non -1 — paint phase
+          regs.eax = 0; regs.ebx = 0;       // clipX, clipY
+          regs.ecx = 640; regs.edx = 480;   // clipW, clipH
+          try { fn(heap); } catch (e) { /* per-window paint errors are non-fatal */ }
+        }
       }
     },
   };
