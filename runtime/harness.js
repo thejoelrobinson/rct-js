@@ -148,6 +148,34 @@ export function createRuntime(opts) {
           console.warn(`[harness] scenario auto-load (FUN_0042f4be) threw: ${(e.message || e).slice(0, 160)}`);
         }
       }
+      // Phase E experiment: stub the terrain-painter jumptable. The real
+      // painters at 0x436b50 / 0x436bc3 / 0x436c3d / 0x436cb3 live in
+      // CODESEG which is stripped from data.bin (none of them are ported),
+      // so FUN_00436b2a reads 0x436b40 → 0x0 → callIndirect(0) → returns
+      // 0 → no terrain painting. To prove the rest of the chain works,
+      // populate the table[0] entry with a synthetic address pointing at
+      // a stub painter that writes a recognizable diagonal-gradient pattern
+      // to the primary DDraw surface. If pixels appear, the per-tick paint
+      // chain is correctly wired and only the terrain painters need a
+      // hand-port. If not, there's a further block downstream.
+      heap.setU32(0x00436b40, 0x00436b50);  // jumptable[0] = stub addr
+      state.fnDispatch.set(0x00436b50, function _terrainStub(h) {
+        // Paint a diagonal gradient on every 640x480 DDraw surface so the
+        // browser's presentFrame (which picks the surface with the most
+        // non-zero pixels) sees it too. Pattern: `(x + y) & 0x7f + 80`,
+        // palette indices 80..207 — visually distinct from the existing
+        // solid-teal viewport fill (idx 0x0a).
+        for (const surf of state.ddrawSurfaces.values()) {
+          if (surf.width !== 640 || surf.height !== 480) continue;
+          for (let y = 0; y < 64; y++) {
+            const row = surf.bytes + y * surf.pitch;
+            for (let x = 0; x < 640; x++) {
+              h.bytes[row + x] = 80 + ((x + y) & 0x7f);
+            }
+          }
+        }
+        return 0;
+      });
       // Stop here — FUN_00401000 (the message loop) is what runTick drives.
     },
     // One frame of the binary's main loop body (the body of FUN_00401000's
