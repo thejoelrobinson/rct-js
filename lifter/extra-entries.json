@@ -1,0 +1,113 @@
+[
+  {"_comment": "Painters reached via DAT_00991f88-indexed jumptables that Ghidra couldn't recover (jumptable-internal branches were 'too many'). Each table has 4 rotation variants. Addresses extracted from rct.exe by reading 4 dwords from each table base. Originally we found 5 tables (20 painters); audit during paint pipeline turned up 17 more tables (68 more painters)."},
+
+  {"_table": "PTR_LAB_00431bb8", "name": "FUN_extra_paint_431bc8", "addr": "0x431bc8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00431bb8", "name": "FUN_extra_paint_431d4b", "addr": "0x431d4b", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00431bb8", "name": "FUN_extra_paint_431edc", "addr": "0x431edc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00431bb8", "name": "FUN_extra_paint_43206f", "addr": "0x43206f", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00432204", "name": "FUN_extra_paint_432214", "addr": "0x432214", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00432204", "name": "FUN_extra_paint_4323b8", "addr": "0x4323b8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00432204", "name": "FUN_extra_paint_43256d", "addr": "0x43256d", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00432204", "name": "FUN_extra_paint_432727", "addr": "0x432727", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_004328e0", "name": "FUN_extra_paint_4328f0", "addr": "0x4328f0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004328e0", "name": "FUN_extra_paint_432a4e", "addr": "0x432a4e", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004328e0", "name": "FUN_extra_paint_432bb8", "addr": "0x432bb8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004328e0", "name": "FUN_extra_paint_432d24", "addr": "0x432d24", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00432e90", "name": "FUN_extra_paint_432ea0", "addr": "0x432ea0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00432e90", "name": "FUN_extra_paint_43300a", "addr": "0x43300a", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00432e90", "name": "FUN_extra_paint_433180", "addr": "0x433180", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00432e90", "name": "FUN_extra_paint_4332f8", "addr": "0x4332f8", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_004342c0", "name": "FUN_extra_paint_4342d0", "addr": "0x4342d0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004342c0", "name": "FUN_extra_paint_4344bf", "addr": "0x4344bf", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004342c0", "name": "FUN_extra_paint_4346ae", "addr": "0x4346ae", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004342c0", "name": "FUN_extra_paint_43489d", "addr": "0x43489d", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00434e98", "name": "FUN_extra_paint_434ea8", "addr": "0x434ea8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00434e98", "name": "FUN_extra_paint_434eb9", "addr": "0x434eb9", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00434e98", "name": "FUN_extra_paint_434eca", "addr": "0x434eca", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00434e98", "name": "FUN_extra_paint_434edb", "addr": "0x434edb", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_004350bc", "name": "FUN_extra_paint_4350cc", "addr": "0x4350cc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004350bc", "name": "FUN_extra_paint_4352ff", "addr": "0x4352ff", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004350bc", "name": "FUN_extra_paint_435532", "addr": "0x435532", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004350bc", "name": "FUN_extra_paint_435765", "addr": "0x435765", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00435ad8", "name": "FUN_extra_paint_435ae8", "addr": "0x435ae8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00435ad8", "name": "FUN_extra_paint_435d1b", "addr": "0x435d1b", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00435ad8", "name": "FUN_extra_paint_435f4e", "addr": "0x435f4e", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00435ad8", "name": "FUN_extra_paint_436181", "addr": "0x436181", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_004368c8", "name": "FUN_extra_paint_4368d8", "addr": "0x4368d8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004368c8", "name": "FUN_extra_paint_4368e0", "addr": "0x4368e0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004368c8", "name": "FUN_extra_paint_4368ec", "addr": "0x4368ec", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004368c8", "name": "FUN_extra_paint_4368ff", "addr": "0x4368ff", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00436a8c", "name": "FUN_extra_paint_436a9c", "addr": "0x436a9c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00436a8c", "name": "FUN_extra_paint_436aa4", "addr": "0x436aa4", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00436a8c", "name": "FUN_extra_paint_436ab0", "addr": "0x436ab0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00436a8c", "name": "FUN_extra_paint_436ac3", "addr": "0x436ac3", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00436b40", "name": "FUN_extra_paint_436b50", "addr": "0x436b50", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00436b40", "name": "FUN_extra_paint_436bc3", "addr": "0x436bc3", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00436b40", "name": "FUN_extra_paint_436c3d", "addr": "0x436c3d", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00436b40", "name": "FUN_extra_paint_436cb3", "addr": "0x436cb3", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_004384b8", "name": "FUN_extra_paint_4384c8", "addr": "0x4384c8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004384b8", "name": "FUN_extra_paint_4384dd", "addr": "0x4384dd", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004384b8", "name": "FUN_extra_paint_4384f4", "addr": "0x4384f4", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004384b8", "name": "FUN_extra_paint_438510", "addr": "0x438510", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_004449c4", "name": "FUN_extra_paint_4449d4", "addr": "0x4449d4", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004449c4", "name": "FUN_extra_paint_4449e8", "addr": "0x4449e8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004449c4", "name": "FUN_extra_paint_4449fc", "addr": "0x4449fc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_004449c4", "name": "FUN_extra_paint_444a10", "addr": "0x444a10", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_0045304c", "name": "FUN_extra_paint_45305c", "addr": "0x45305c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_0045304c", "name": "FUN_extra_paint_453070", "addr": "0x453070", "section": "CODESEG"},
+  {"_table": "PTR_LAB_0045304c", "name": "FUN_extra_paint_453084", "addr": "0x453084", "section": "CODESEG"},
+  {"_table": "PTR_LAB_0045304c", "name": "FUN_extra_paint_453098", "addr": "0x453098", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_00453930", "name": "FUN_extra_paint_453940", "addr": "0x453940", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00453930", "name": "FUN_extra_paint_453954", "addr": "0x453954", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00453930", "name": "FUN_extra_paint_453968", "addr": "0x453968", "section": "CODESEG"},
+  {"_table": "PTR_LAB_00453930", "name": "FUN_extra_paint_45397c", "addr": "0x45397c", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e17b8", "name": "FUN_extra_paint_5e17c8", "addr": "0x5e17c8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e17b8", "name": "FUN_extra_paint_5e17dc", "addr": "0x5e17dc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e17b8", "name": "FUN_extra_paint_5e17f0", "addr": "0x5e17f0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e17b8", "name": "FUN_extra_paint_5e1804", "addr": "0x5e1804", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e18ec", "name": "FUN_extra_paint_5e18fc", "addr": "0x5e18fc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e18ec", "name": "FUN_extra_paint_5e1910", "addr": "0x5e1910", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e18ec", "name": "FUN_extra_paint_5e1924", "addr": "0x5e1924", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e18ec", "name": "FUN_extra_paint_5e1938", "addr": "0x5e1938", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e4368", "name": "FUN_extra_paint_5e4378", "addr": "0x5e4378", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e4368", "name": "FUN_extra_paint_5e438c", "addr": "0x5e438c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e4368", "name": "FUN_extra_paint_5e43a0", "addr": "0x5e43a0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e4368", "name": "FUN_extra_paint_5e43b4", "addr": "0x5e43b4", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e557c", "name": "FUN_extra_paint_5e558c", "addr": "0x5e558c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e557c", "name": "FUN_extra_paint_5e55b4", "addr": "0x5e55b4", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e557c", "name": "FUN_extra_paint_5e55dc", "addr": "0x5e55dc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e557c", "name": "FUN_extra_paint_5e5604", "addr": "0x5e5604", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e56ec", "name": "FUN_extra_paint_5e56fc", "addr": "0x5e56fc", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e56ec", "name": "FUN_extra_paint_5e572c", "addr": "0x5e572c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e56ec", "name": "FUN_extra_paint_5e5759", "addr": "0x5e5759", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e56ec", "name": "FUN_extra_paint_5e5786", "addr": "0x5e5786", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e5874", "name": "FUN_extra_paint_5e5884", "addr": "0x5e5884", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e5874", "name": "FUN_extra_paint_5e58b4", "addr": "0x5e58b4", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e5874", "name": "FUN_extra_paint_5e58e1", "addr": "0x5e58e1", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e5874", "name": "FUN_extra_paint_5e590e", "addr": "0x5e590e", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a18", "addr": "0x5e5a18", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a48", "addr": "0x5e5a48", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a75", "addr": "0x5e5a75", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5aa2", "addr": "0x5e5aa2", "section": "CODESEG"}
+]

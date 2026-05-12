@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { loadPE } from "../harness/loader.js";
+import { loadPE } from "../harness/loader-node.js";
 import { liftFunction } from "./lift.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -16,6 +16,7 @@ const DECOMP = "/tmp/rct_work/decompiled_all.c";
 const OUT_DIR = resolve(ROOT, "generated");
 const OUT_JS = resolve(OUT_DIR, "all.js");
 const OUT_MANIFEST = resolve(OUT_DIR, "manifest.json");
+const EXTRA_ENTRIES = resolve(ROOT, "lifter/extra-entries.json");
 
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -25,10 +26,39 @@ const HEADER = /\/\/ ===== (FUN_[0-9a-f]+) @ ([0-9a-f]+) \(section ([^)]+)\)/g;
 const entries = [];
 let m;
 while ((m = HEADER.exec(decompText)) !== null) {
-  entries.push({ name: m[1], addr: parseInt(m[2], 16), section: m[3] });
+  entries.push({ name: m[1], addr: parseInt(m[2], 16), section: m[3], source: "ghidra" });
 }
+const ghidraCount = entries.length;
+
+// --- supplemental entries: functions Ghidra didn't recover (e.g., painters that
+// were targets of "too many branches" jumptables). Same {name, addr, section}
+// shape, addr accepted as hex string or number, section defaults to CODESEG.
+try {
+  const extraText = readFileSync(EXTRA_ENTRIES, "utf8");
+  const extras = JSON.parse(extraText);
+  const ghidraAddrs = new Set(entries.map((e) => e.addr));
+  for (const x of extras) {
+    if (x.addr === undefined) continue; // skip comment/metadata records
+    const addr = typeof x.addr === "string" ? parseInt(x.addr, 16) : x.addr;
+    if (ghidraAddrs.has(addr)) {
+      console.warn(`[extras] skip 0x${addr.toString(16)} — already in Ghidra entries`);
+      continue;
+    }
+    entries.push({
+      name: x.name || `FUN_extra_${addr.toString(16).padStart(8, "0")}`,
+      addr,
+      section: x.section || "CODESEG",
+      source: "extra",
+    });
+  }
+  console.log(`Loaded ${entries.length - ghidraCount} extra entries from ${EXTRA_ENTRIES}.`);
+} catch (e) {
+  if (e.code !== "ENOENT") throw e;
+  // Missing file is fine — extras are optional.
+}
+
 entries.sort((a, b) => a.addr - b.addr);
-console.log(`Parsed ${entries.length} function entries.`);
+console.log(`Parsed ${entries.length} function entries (${ghidraCount} ghidra, ${entries.length - ghidraCount} extra).`);
 
 // --- load binary
 const image = loadPE(RCT_EXE);
