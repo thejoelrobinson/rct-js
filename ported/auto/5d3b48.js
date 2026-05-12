@@ -36,8 +36,10 @@ export function FUN_005d3b48(heap) {
   let bVar14 = 0;
   let extraout_var = 0;
   let local_6 = 0;
-  heap.setU32(__addr_uStack_2, (heap.u32(0x00991f8c)) >>> 0);
-  heap.setU32(0x00991f8c, (0) >>> 0);
+  // HAND-FIX: DAT_00991f8c is a ushort. Save / restore via u16 so we
+  // don't trash the adjacent u16 at 0x991f8e (tile-grid head slot 0).
+  heap.setU32(__addr_uStack_2, (heap.u16(0x00991f8c)) >>> 0);
+  heap.setU16(0x00991f8c, 0);
   uVar8 = ((unaff_EBX & 0xffff03ff) >>> 0);
   heap.setU32(0x005f96e0, (0x006284ac) >>> 0);
   (regs.eax = FUN_00431b6f(heap));
@@ -124,7 +126,7 @@ export function FUN_005d3b48(heap) {
   }
   (regs.eax = FUN_00433bae(heap, unaff_EDI, pbVar11, pcVar10, __addr_uStack_2, uVar12, in_EDX, uVar13));
   (regs.eax = FUN_00433e1c(heap));
-  heap.setU32(0x00991f8c, (heap.u32(__addr_uStack_2)) >>> 0);
+  heap.setU16(0x00991f8c, (heap.u32(__addr_uStack_2)) & 0xffff);
   return 1;
 } finally {
     heap.freeFrame(8);

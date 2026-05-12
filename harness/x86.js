@@ -1133,14 +1133,19 @@ export function step(cpu) {
     cpu.eflags.ZF = (r === 0) ? 1 : 0; cpu.eflags.SF = (r >>> 15) & 1;
     cpu.eflags.CF = 0; cpu.eflags.OF = 0;
   };
-  const read16op = (operand) => operand.kind === "reg" ? read16reg(cpu, operand.reg) : mem16(m, operand.addr);
+  // Local 1-arg helpers — DO NOT name `read16op` here: it shadows the
+  // module-level `read16op(cpu, op)` used by the 0x8b/0x89/0xc7 etc. handlers
+  // below, silently turning their 2-arg calls into 1-arg ones that pass cpu
+  // as the operand. The result is always 0, which corrupts memory loads at
+  // those handlers' instructions. Found via the 0x444857 painter walker bug.
+  const read16op_local = (operand) => operand.kind === "reg" ? read16reg(cpu, operand.reg) : mem16(m, operand.addr);
   const write16op_ = (operand, v) => { if (operand.kind === "reg") write16reg(cpu, operand.reg, v & 0xffff); else write16(m, operand.addr, v & 0xffff); };
 
   // ADD r32, r/m32  (0x03 /r) — or r16, r/m16 with 0x66
   if (opcode === 0x03) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const a = read16reg(cpu, regField), b = read16op(operand);
+      const a = read16reg(cpu, regField), b = read16op_local(operand);
       const r = (a + b) & 0xffff;
       write16reg(cpu, regField, r); set16AddFlags(a, b, r);
     } else {
@@ -1153,7 +1158,7 @@ export function step(cpu) {
   if (opcode === 0x29) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const a = read16op(operand), b = read16reg(cpu, regField);
+      const a = read16op_local(operand), b = read16reg(cpu, regField);
       const r = (a - b) & 0xffff;
       write16op_(operand, r); set16SubFlags(a, b, r);
     } else {
@@ -1166,7 +1171,7 @@ export function step(cpu) {
   if (opcode === 0x2b) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const a = read16reg(cpu, regField), b = read16op(operand);
+      const a = read16reg(cpu, regField), b = read16op_local(operand);
       const r = (a - b) & 0xffff;
       write16reg(cpu, regField, r); set16SubFlags(a, b, r);
     } else {
@@ -1179,7 +1184,7 @@ export function step(cpu) {
   if (opcode === 0x09) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const r = (read16op(operand) | read16reg(cpu, regField)) & 0xffff;
+      const r = (read16op_local(operand) | read16reg(cpu, regField)) & 0xffff;
       write16op_(operand, r); set16Logic(r);
     } else {
       const v = (read32op(cpu, operand) | cpu.regs[REG32[regField]]) >>> 0;
@@ -1190,7 +1195,7 @@ export function step(cpu) {
   if (opcode === 0x0b) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const r = (read16reg(cpu, regField) | read16op(operand)) & 0xffff;
+      const r = (read16reg(cpu, regField) | read16op_local(operand)) & 0xffff;
       write16reg(cpu, regField, r); set16Logic(r);
     } else {
       const v = (cpu.regs[REG32[regField]] | read32op(cpu, operand)) >>> 0;
@@ -1202,7 +1207,7 @@ export function step(cpu) {
   if (opcode === 0x21) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const r = (read16op(operand) & read16reg(cpu, regField)) & 0xffff;
+      const r = (read16op_local(operand) & read16reg(cpu, regField)) & 0xffff;
       write16op_(operand, r); set16Logic(r);
     } else {
       const v = (read32op(cpu, operand) & cpu.regs[REG32[regField]]) >>> 0;
@@ -1213,7 +1218,7 @@ export function step(cpu) {
   if (opcode === 0x23) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const r = (read16reg(cpu, regField) & read16op(operand)) & 0xffff;
+      const r = (read16reg(cpu, regField) & read16op_local(operand)) & 0xffff;
       write16reg(cpu, regField, r); set16Logic(r);
     } else {
       const v = (cpu.regs[REG32[regField]] & read32op(cpu, operand)) >>> 0;
@@ -1225,7 +1230,7 @@ export function step(cpu) {
   if (opcode === 0x31) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const r = (read16op(operand) ^ read16reg(cpu, regField)) & 0xffff;
+      const r = (read16op_local(operand) ^ read16reg(cpu, regField)) & 0xffff;
       write16op_(operand, r); set16Logic(r);
     } else {
       const v = (read32op(cpu, operand) ^ cpu.regs[REG32[regField]]) >>> 0;
@@ -1236,7 +1241,7 @@ export function step(cpu) {
   if (opcode === 0x33) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     if (prefixOperandSize) {
-      const r = (read16reg(cpu, regField) ^ read16op(operand)) & 0xffff;
+      const r = (read16reg(cpu, regField) ^ read16op_local(operand)) & 0xffff;
       write16reg(cpu, regField, r); set16Logic(r);
     } else {
       const v = (cpu.regs[REG32[regField]] ^ read32op(cpu, operand)) >>> 0;

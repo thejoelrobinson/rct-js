@@ -30,7 +30,12 @@ export function FUN_004316f3(heap) {
   let iVar10 = 0;
   let unaff_EDI = regs.edi >>> 0;
   let piVar11 = 0;
-  heap.setU32(0x00991f8c, (heap.u16((unaff_ESI + 0x12))) >>> 0);
+  // HAND-FIX: DAT_00991f8c is a ushort (per Ghidra). The translator
+  // emitted setU32 which trashes the adjacent 16-bit global at 0x991f8e
+  // (the tile-grid head array start). That corrupts grid slot 0 → 0,
+  // sending the painter walker at 0x444820 into an infinite cycle on
+  // tile-pool slot 0 (whose own next-index is also 0).
+  heap.setU16(0x00991f8c, (heap.u16((unaff_ESI + 0x12))) & 0xffff);
   heap.setU8(0x005f96ce, (heap.u16((unaff_ESI + 0x10))) & 0xff);
   uVar8 = ((-1 << (heap.u8((unaff_ESI + 0x10)) & 0x1f)) & 0xffff);
   heap.setU8(0x005f96c4, (in_AX & uVar8) & 0xff);
