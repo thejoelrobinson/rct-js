@@ -11,10 +11,18 @@ export function FUN_00444b4a(heap) {
   let pcVar3 = 0;
   let puVar4 = 0;
   let uVar5 = 0;
+  // HAND-FIX: the source array DAT_00991f8e is a u16[] (Ghidra typed it as
+  // `undefined2 *puVar4`). The translator emitted setU32/u32 with `*4`
+  // indexing, which (a) writes 4 bytes per slot trashing the next slot, and
+  // (b) reads/writes 32-bit values at 4x stride. Both must be u16 / *2.
+  // Without this fix, the tile-grid array stays mostly zero, and the painter
+  // at 0x436b50 → 0x444820 enters an infinite loop walking a chain that points
+  // back to tile-pool slot 0 (whose own "next" field is also 0). See the
+  // probe log at /tmp/probe-deep.mjs for the cycle trace.
   puVar4 = ((0x00991f8e) >>> 0);
   for (iVar2 = ((0x4001) >>> 0); iVar2 != 0; iVar2 = (((iVar2 + -1) >>> 0)) >>> 0) {
-    heap.setU32(puVar4, (0xffff) & 0xffffffff);
-    puVar4 = ((puVar4 + ((1) * 2)) >>> 0);
+    heap.setU16(puVar4, (0xffff) & 0xffff);
+    puVar4 = ((puVar4 + 2) >>> 0);
   }
   pcVar3 = ((0x00743b94) >>> 0);
   do {
@@ -25,8 +33,8 @@ export function FUN_00444b4a(heap) {
         uVar5 = (((((heap.u16((pcVar3 + 0xe)) & 0xfe0) << 2 | heap.u16((pcVar3 + 0x10)) >>> 5) >>> 0)) >>> 0);
       }
       LOCK();
-      uVar1 = ((heap.u32((0x00991f8e) + (uVar5) * 4)) & 0xffff);
-      heap.setU32(((0x00991f8e) + (uVar5) * 4), (heap.u16((pcVar3 + 10))) & 0xffffffff);
+      uVar1 = (heap.u16((0x00991f8e) + (uVar5) * 2)) & 0xffff;
+      heap.setU16(((0x00991f8e) + (uVar5) * 2), (heap.u16((pcVar3 + 10))) & 0xffff);
       UNLOCK();
       heap.setU16((pcVar3 + 2), (uVar1) & 0xffff);
     }
