@@ -85,6 +85,7 @@ export function FUN_0042f4be(heap) {
   regs.esi = 0x006e3b80 >>> 0;
   regs.ecx = (0x008dc08c - 0x006e3b80) >>> 0;
   (regs.eax = FUN_0042f98e(heap));
+  if (globalThis._bboxProbe) globalThis._bboxProbe(heap, "post-RLE-decompress");
 
   (regs.eax = FUN_00408387(heap, heap.u32(0x005f88a4)));
   sVar2 = (((regs.eax = FUN_004314ed(heap))) & 0xffff);
@@ -94,7 +95,9 @@ export function FUN_0042f4be(heap) {
   void sVar2;
   if (true) {
     (regs.eax = FUN_00436558(heap));
+    if (globalThis._bboxProbe) globalThis._bboxProbe(heap, "post-FUN_00436558");
     (regs.eax = FUN_00444b4a(heap));
+    if (globalThis._bboxProbe) globalThis._bboxProbe(heap, "post-FUN_00444b4a");
     if (heap.u32(0x0087c81c) < 0) {
       heap.setU32(0x0087c81c, 0);
     }
@@ -124,6 +127,7 @@ export function FUN_0042f4be(heap) {
     (regs.eax = FUN_005e43de(heap));
     (regs.eax = FUN_005e16f7(heap));
     (regs.eax = FUN_004448fb(heap));
+    if (globalThis._bboxProbe) globalThis._bboxProbe(heap, "post-FUN_004448fb");
     (regs.eax = FUN_005ddf20(heap));
     heap.setU32(0x0099fe00, 0);
     if (heap.u32(0x0087d79c) == 0) {
@@ -131,6 +135,7 @@ export function FUN_0042f4be(heap) {
     }
     (regs.eax = FUN_005e6028(heap));
     heap.setU32(0x0099a4fe, 0);
+    if (globalThis._bboxProbe) globalThis._bboxProbe(heap, "post-FUN_0042f4be(all)");
     return;
   }
   return (regs.eax = FUN_0042c4d3(heap));

@@ -148,6 +148,27 @@ export function createRuntime(opts) {
       //   - 42f98e.js: proper ECX countdown (was infinite-loop)
       //   - 42f4be.js: pre-call regs.esi/ecx prologue + drop unreachable
       //     gate
+      // Phase H: trigger FUN_004385d8's first-tick lazy-init block on
+      // the EMPTY world before loading the scenario. The lazy-init
+      // (gated by `if (DAT_00628cb8 == 0)`) runs a ~30-function setup
+      // chain that includes FUN_00444a79 (sprite-pool reset). In the
+      // binary's normal flow, this fires on the first game tick, well
+      // before the title-state machine triggers a scenario load. We
+      // drive 42f4be from runInit (the title-state machine is gated
+      // behind a CODESEG-stripped jumptable and unreachable), so the
+      // ordering was inverted: our world load ran first, then tick
+      // fired and the lazy-init wiped sprite_desc back to free-list
+      // state. Pre-running 4385d8 here triggers the lazy-init on the
+      // empty heap (harmless wipe of zeros), sets DAT_00628cb8 = 1, and
+      // primes graphics / pool state. Subsequent calls to 4385d8 (from
+      // runTick) skip the lazy-init.
+      try { call(0x4385d8); }
+      catch (e) {
+        if (typeof console !== "undefined") {
+          console.warn(`[harness] pre-load tick (FUN_004385d8) threw: ${(e.message || e).slice(0, 160)}`);
+        }
+      }
+
       const path = "sc21.sc4\0";
       for (let i = 0; i < path.length; i++) heap.setU8(0x0099aa88 + i, path.charCodeAt(i));
       try { call(0x42f4be); }
@@ -161,6 +182,7 @@ export function createRuntime(opts) {
       // runtime/painter-bridge.js — installPainterBridge() ran in
       // createRuntime, overlaid CODESEG bytes from rct.exe, and registered
       // each painter address with a shim that runs via the interpreter.
+
       // Stop here — FUN_00401000 (the message loop) is what runTick drives.
     },
     // One frame of the binary's main loop body (the body of FUN_00401000's
