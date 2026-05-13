@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/9b438b.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: decompiled/c/9b438b.c — sprite blit dispatcher. Same
+// translator bug as 9b4457.js: `(char)bVar1 >> 3` rendered as `>>> 3`
+// (unsigned) in RLE-decode loops. See 9b4457.js header for details.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -171,10 +172,10 @@ export function FUN_009b438b(heap) {
           uVar3 = ((((bVar1) >>> 0)) >>> 0);
           if (((bVar1) << 24 >> 24) < 0) {
             pbVar10 = ((pbVar9 + 1) >>> 0);
-            sVar5 = ((sVar5 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >>> 3)) & 0xffff);
+            sVar5 = ((sVar5 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >> 3)) & 0xffff);
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
-            for (uVar3 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >>> 3)) >>> 0); uVar3 != 0; uVar3 = (((uVar3 - 1) >>> 0)) >>> 0) {
+            for (uVar3 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >> 3)) >>> 0); uVar3 != 0; uVar3 = (((uVar3 - 1) >>> 0)) >>> 0) {
               heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
@@ -342,10 +343,10 @@ export function FUN_009b438b(heap) {
           uVar3 = ((((bVar1) >>> 0)) >>> 0);
           if (((bVar1) << 24 >> 24) < 0) {
             pbVar10 = ((pbVar9 + 1) >>> 0);
-            sVar5 = ((sVar5 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >>> 3)) & 0xffff);
+            sVar5 = ((sVar5 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >> 3)) & 0xffff);
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
-            for (uVar3 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >>> 3)) >>> 0); uVar3 != 0; uVar3 = (((uVar3 - 1) >>> 0)) >>> 0) {
+            for (uVar3 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >> 3)) >>> 0); uVar3 != 0; uVar3 = (((uVar3 - 1) >>> 0)) >>> 0) {
               heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);

@@ -1,6 +1,20 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/9b4660.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: decompiled/c/9b4660.c — sprite remap-copy inner loop.
+//
+// Translator bug: the outer loop's exit check `if (iVar7 < 0) return;`
+// in Ghidra C uses signed comparison on `int iVar7`. The auto-translator
+// computed `iVar7 = ((iVar7 + -0x10000) >>> 0)` (unsigned), so the
+// subsequent `if (iVar7 < 0)` check never fires — `iVar7 >>> 0` is
+// always >= 0. This caused the Phase H→I hang when csg1.dat finally
+// had real sprite data (sprite 0x606c = toolbar logo): pre-csg1 the
+// outer height counter `bVar3` was 0 → `iVar7 = -0x10000` and inner
+// loops fell through immediately; post-csg1, real height values cause
+// the loop to run forever.
+//
+// Fix: compare as signed via `(iVar7 | 0) < 0` (same idiom used
+// elsewhere in the codebase for signed-compare of >>> 0 values).
+// Both sites (the 0x20000000 branch and the 0x40000000 branch) needed
+// the fix.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -100,7 +114,7 @@ export function FUN_009b4660(heap) {
       unaff_ESI = ((pbVar9 + in_EDX) >>> 0);
       unaff_EDI = ((pbVar10 + unaff_EBP) >>> 0);
       iVar7 = ((iVar7 + -0x10000) >>> 0);
-      if (iVar7 < 0) {
+      if ((iVar7 | 0) < 0) {
         return;
       }
     } while (true);
@@ -212,7 +226,7 @@ export function FUN_009b4660(heap) {
       unaff_ESI = ((pbVar9 + in_EDX) >>> 0);
       unaff_EDI = ((pbVar10 + unaff_EBP) >>> 0);
       iVar7 = ((iVar7 + -0x10000) >>> 0);
-      if (iVar7 < 0) {
+      if ((iVar7 | 0) < 0) {
         return;
       }
     } while (true);

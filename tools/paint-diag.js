@@ -311,6 +311,7 @@ console.log(`Final tick callIndirect MISSES: ${tickMisses.length}  ${tickMisses.
 console.log(`Final tick painter chain: ${JSON.stringify(finalTick.painterChain)}`);
 console.log(`Final tick painter shim hits: ${JSON.stringify(finalTick.painterHits)}`);
 console.log(`Paint ring delta (head-base): 0x${finalTick.paintRing.delta.toString(16)}`);
+const bestSurf = heuristicSurf;
 if (bestSurf) {
   console.log(`Best 640x480 surface: distinct=${bestSurf.distinct} nonZero=${bestSurf.nonZero}`);
   console.log("  top indices:", bestSurf.top.slice(0, 8).map((t)=>`${t.idx}(${t.count})`).join(" "));

@@ -1,6 +1,22 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/9b4457.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: decompiled/c/9b4457.c — remap-palette sprite blit (called from
+// FUN_009b438b's remap branch and from the toolbar-paint chain).
+//
+// Translator bug: the C expression `(byte)-((char)bVar1 >> 3)` (an RLE
+// length 1..16 packed in the top byte of a sprite RLE marker) uses a
+// SIGNED right-shift of the sign-extended byte. Ghidra's C uses `>>`
+// (signed); the auto-translator emitted `>>> 3` (unsigned) — which for
+// a negative input gives ~0x1FFFFFFF instead of -16..-1. With the
+// negation and `(byte)` cast, the negative-shift case was fine in the
+// pre-csg1 baseline (data section was full of zero, so the loops never
+// ran), but with csg1.dat loaded the RLE bytes have real values and
+// the inner `for (uVar7 = -((char)bVar1 >> 3); uVar7; ...)` loop ran
+// ~530M times — the Phase H→I hang we tracked from MainOpen's top
+// toolbar paint chain (42afb5 → 9b438b → 9b4457).
+//
+// Fix: change `>>> 3` to `>> 3` on all 4 sites (sVar4 decrement and
+// for-loop init, in both the zoom-0 and zoom-1 branches). Same class
+// of bug as the Phase F RLE-decompress fix in 42f999.js.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -147,10 +163,10 @@ export function FUN_009b4457(heap) {
           uVar7 = ((((bVar1) >>> 0)) >>> 0);
           if (((bVar1) << 24 >> 24) < 0) {
             pbVar10 = ((pbVar9 + 1) >>> 0);
-            sVar4 = ((sVar4 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >>> 3)) & 0xffff);
+            sVar4 = ((sVar4 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >> 3)) & 0xffff);
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
-            for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >>> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
+            for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
               heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
@@ -318,10 +334,10 @@ export function FUN_009b4457(heap) {
           uVar7 = ((((bVar1) >>> 0)) >>> 0);
           if (((bVar1) << 24 >> 24) < 0) {
             pbVar10 = ((pbVar9 + 1) >>> 0);
-            sVar4 = ((sVar4 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >>> 3)) & 0xffff);
+            sVar4 = ((sVar4 - ((0) & 0xffff) - (((bVar1) << 24 >> 24) >> 3)) & 0xffff);
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
-            for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >>> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
+            for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
               heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
