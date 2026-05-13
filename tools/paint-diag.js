@@ -96,16 +96,30 @@ for (const a of PAINTER_ADDRS) {
 
 // ---- snapshots ----
 function snapshotSurfaces() {
+  // Ground-truth pointers maintained by the binary's DDraw init:
+  //   DAT_005ebf34 = IDirectDrawSurface* of the PRIMARY surface (front buffer).
+  //                  Allocated in FUN_0040b4d8 with DDSCAPS_PRIMARYSURFACE (0x200).
+  //                  This is what the user would see in a real DDraw window.
+  //   DAT_005f1fec = lpSurface (pixel-buffer addr) of the GAME OFF-SCREEN
+  //                  framebuffer (a non-primary surface allocated by
+  //                  DAT_005ebe8c, locked via FUN_00408f53 + FUN_00402a00).
+  //                  Painters (4023b2 etc.) write into this directly; later
+  //                  FUN_00402027 blits it to the locked primary surface.
+  const primaryHandle  = r.heap.u32(0x005ebf34) >>> 0;
+  const backBufferPtr  = r.heap.u32(0x005f1fec) >>> 0;
   const out = [];
+  let maxByte = 0;
   for (const [h, surf] of r.state.ddrawSurfaces) {
     const hist = new Uint32Array(256);
     let nz = 0;
+    let mx = 0;
     for (let y = 0; y < surf.height; y++) {
       const row = surf.bytes + y * surf.pitch;
       for (let x = 0; x < surf.width; x++) {
         const v = r.heap.bytes[row + x];
         hist[v]++;
         if (v !== 0) nz++;
+        if (v > mx) mx = v;
       }
     }
     const top = Array.from(hist).map((c, i) => ({ idx: i, count: c }))
@@ -114,11 +128,18 @@ function snapshotSurfaces() {
       handle: "0x" + h.toString(16),
       width: surf.width, height: surf.height, pitch: surf.pitch,
       bytes: "0x" + surf.bytes.toString(16),
+      bytesRaw: surf.bytes,
+      isPrimary: !!surf.isPrimary,
+      isPrimaryByHandle: h === primaryHandle,
+      isGameBackBuffer: surf.bytes === backBufferPtr,
       nonZero: nz, total: surf.width * surf.height,
       distinct: hist.filter((c) => c > 0).length,
+      maxByte: mx,
       top,
     });
   }
+  out._primaryHandle  = "0x" + primaryHandle.toString(16);
+  out._backBufferPtr  = "0x" + backBufferPtr.toString(16);
   return out;
 }
 function snapshotPaintRing() {
@@ -170,15 +191,20 @@ function snapshotGlobals() {
 const result = { ticks: [], init: null };
 
 try { r.runInit(); } catch (e) { result.initError = String(e).slice(0, 300); }
-result.init = {
-  callsByTarget: rollupByAddr(callCounts, "init"),
-  missesByTarget: rollupByAddr(callMissed, "init"),
-  painterChain: Object.fromEntries(renderTraceCounts),
-  painterHits: Object.fromEntries(painterHits),
-  globals: snapshotGlobals(),
-  pool: snapshotPool(),
-  surfaces: snapshotSurfaces(),
-};
+{
+  const surfaces = snapshotSurfaces();
+  result.init = {
+    callsByTarget: rollupByAddr(callCounts, "init"),
+    missesByTarget: rollupByAddr(callMissed, "init"),
+    painterChain: Object.fromEntries(renderTraceCounts),
+    painterHits: Object.fromEntries(painterHits),
+    globals: snapshotGlobals(),
+    pool: snapshotPool(),
+    surfaces,
+    primaryHandle: surfaces._primaryHandle,
+    gameBackBufferPtr: surfaces._backBufferPtr,
+  };
+}
 
 for (let t = 0; t < TICKS; t++) {
   currentPhase = `tick${t}`;
@@ -186,6 +212,7 @@ for (let t = 0; t < TICKS; t++) {
   for (const a of painterHits.keys()) painterHits.set(a, 0);
   try { r.runTick(); }
   catch (e) { result.ticks.push({ tick: t, error: String(e).slice(0, 300) }); continue; }
+  const surfaces = snapshotSurfaces();
   result.ticks.push({
     tick: t,
     callsByTarget: rollupByAddr(callCounts, `tick${t}`),
@@ -193,7 +220,9 @@ for (let t = 0; t < TICKS; t++) {
     painterChain: Object.fromEntries(renderTraceCounts),
     painterHits: Object.fromEntries(painterHits),
     paintRing: snapshotPaintRing(),
-    surfaces: snapshotSurfaces(),
+    surfaces,
+    primaryHandle: surfaces._primaryHandle,
+    gameBackBufferPtr: surfaces._backBufferPtr,
   });
 }
 
@@ -235,13 +264,43 @@ for (let i = 0; i < result.ticks[result.ticks.length - 1].surfaces.length; i++) 
 
 // ---- summary to stdout ----
 const finalTick = result.ticks[result.ticks.length - 1];
-// Pick the 640x480 surface with the most paint content: secondary-sort
-// on nonZero so we don't tie-break onto the empty front buffer.
-const bestSurf = finalTick.surfaces
-  .filter((s) => s.width === 640 && s.height === 480)
+// Ground-truth pickers, in order of "what the user would actually see":
+//   FRONT BUFFER = surface with handle == DAT_005ebf34 (and isPrimary tag).
+//                  In a real DDraw window this is what's displayed. Painters
+//                  do NOT write here directly — FUN_00402027 blits to it.
+//   GAME BACK BUFFER = surface whose .bytes == DAT_005f1fec. Painters
+//                  (4023b2 etc.) write pixels here every tick. This is the
+//                  surface you want to inspect to see if painters fired.
+const surfs640 = finalTick.surfaces.filter((s) => s.width === 640 && s.height === 480);
+const frontBufSurf = surfs640.find((s) => s.isPrimaryByHandle) || surfs640.find((s) => s.isPrimary);
+const backBufSurf  = surfs640.find((s) => s.isGameBackBuffer);
+const heuristicSurf = surfs640
+  .slice()
   .sort((a, b) => (b.distinct - a.distinct) || (b.nonZero - a.nonZero))[0];
 
-console.log("=== paint-diag summary ===");
+console.log("=== surface table (final tick) ===");
+console.log(`DAT_005ebf34 (primary handle):    ${finalTick.surfaces._primaryHandle}`);
+console.log(`DAT_005f1fec (game backbuf ptr):  ${finalTick.surfaces._backBufferPtr}`);
+console.log("handle             wh        bytes       role            distinct nonZero maxByte top1");
+for (const s of finalTick.surfaces) {
+  let role = "       ";
+  if (s.isPrimaryByHandle && s.isGameBackBuffer) role = "FRONT+BACK";
+  else if (s.isPrimaryByHandle) role = "FRONT     ";
+  else if (s.isGameBackBuffer)  role = "GAME-BACK ";
+  else if (s.isPrimary)         role = "prim(cap) ";
+  const top1 = s.top[0] ? `idx${s.top[0].idx}x${s.top[0].count}` : "-";
+  console.log(`${s.handle.padEnd(18)} ${(s.width+"x"+s.height).padEnd(9)} ${s.bytes.padEnd(11)} ${role}  ${String(s.distinct).padStart(3)}     ${String(s.nonZero).padStart(7)} ${String(s.maxByte).padStart(3)}    ${top1}`);
+}
+if (frontBufSurf) console.log(`FRONT buffer (primary):   handle=${frontBufSurf.handle} bytes=${frontBufSurf.bytes} distinct=${frontBufSurf.distinct} nonZero=${frontBufSurf.nonZero}`);
+else              console.log(`FRONT buffer (primary):   NOT FOUND (DAT_005ebf34=${finalTick.surfaces._primaryHandle})`);
+if (backBufSurf)  console.log(`GAME-BACK (painter dest): handle=${backBufSurf.handle} bytes=${backBufSurf.bytes} distinct=${backBufSurf.distinct} nonZero=${backBufSurf.nonZero}`);
+else              console.log(`GAME-BACK (painter dest): NOT FOUND (DAT_005f1fec=${finalTick.surfaces._backBufferPtr})`);
+console.log(`Heuristic pick (current):         handle=${heuristicSurf?.handle} distinct=${heuristicSurf?.distinct} nonZero=${heuristicSurf?.nonZero}`);
+const heuristicMatchesFront = heuristicSurf && frontBufSurf && heuristicSurf.handle === frontBufSurf.handle;
+const heuristicMatchesBack  = heuristicSurf && backBufSurf  && heuristicSurf.handle === backBufSurf.handle;
+console.log(`Heuristic === FRONT? ${heuristicMatchesFront} ;  === GAME-BACK? ${heuristicMatchesBack}`);
+
+console.log("\n=== paint-diag summary ===");
 console.log(`Ticks run: ${TICKS}`);
 console.log(`Init callIndirect targets: ${Object.keys(result.init.callsByTarget).length}`);
 const initMisses = Object.entries(result.init.missesByTarget).filter(([,v])=>v>0);
