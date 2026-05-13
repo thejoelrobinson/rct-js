@@ -656,6 +656,7 @@ import { FUN_00429ae1 } from "./429ae1.js";
 import { FUN_00429ae4 } from "./429ae4.js";
 import { FUN_00429aff } from "./429aff.js";
 import { FUN_00429c3d } from "./429c3d.js";
+import { FUN_00429d41 } from "./429d41.js";
 import { FUN_00429f6c } from "./429f6c.js";
 import { FUN_0042afb5 } from "./42afb5.js";
 import { FUN_0042b076 } from "./42b076.js";
@@ -1158,6 +1159,7 @@ import { FUN_005e429d } from "./5e429d.js";
 import { FUN_005e4355 } from "./5e4355.js";
 import { FUN_005e43de } from "./5e43de.js";
 import { FUN_005e4400 } from "./5e4400.js";
+import { FUN_005e48a7 } from "./5e48a7.js";
 import { FUN_005e5301 } from "./5e5301.js";
 import { FUN_005e53ca } from "./5e53ca.js";
 import { FUN_005e5496 } from "./5e5496.js";
@@ -1883,6 +1885,7 @@ export const dispatch = new Map([
   [0x429ae4, FUN_00429ae4],
   [0x429aff, FUN_00429aff],
   [0x429c3d, FUN_00429c3d],
+  [0x429d41, FUN_00429d41],
   [0x429f6c, FUN_00429f6c],
   [0x42afb5, FUN_0042afb5],
   [0x42b076, FUN_0042b076],
@@ -2385,6 +2388,7 @@ export const dispatch = new Map([
   [0x5e4355, FUN_005e4355],
   [0x5e43de, FUN_005e43de],
   [0x5e4400, FUN_005e4400],
+  [0x5e48a7, FUN_005e48a7],
   [0x5e5301, FUN_005e5301],
   [0x5e53ca, FUN_005e53ca],
   [0x5e5496, FUN_005e5496],
@@ -2458,4 +2462,4 @@ export const dispatch = new Map([
   [0x9bc184, FUN_009bc184],
 ]);
 
-export const dispatchSize = 1225;
+export const dispatchSize = 1227;
