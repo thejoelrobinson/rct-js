@@ -238,6 +238,25 @@ export function createRuntime(opts) {
       const POOL_END_PTR = 0x009a1164 >>> 0;
       const SLOT_STRIDE = 0x178;
       const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
+      // Phase J: make the back-buffer DPI struct at 0x0099fb7c paint-ready
+      // before invoking each wndProc. FUN_009bb9f5 (called from 4385d8) sets
+      // bytes-ptr (+0), width (+8), height (+0xa) from globals, but never
+      // initialises clipX (+4) and clipY (+6) — those stay as whatever
+      // garbage was previously in the heap. FUN_0042b079 (the viewport
+      // wndProc) reads regs.edi as a DPI pointer and pulls clipX/Y/W/H out
+      // of edi+4..0xa.
+      //
+      // FUN_004316f3 computes the back-buffer destination pointer from
+      // (clipX, clipY) interpreted as WORLD coordinates (binary's normal
+      // event-driven paint pass clips in world space, not screen space).
+      // For a full-screen repaint we want (clipX, clipY) = (view_x, view_y)
+      // from the active viewport struct (slot+8 offsets +0x08 and +0x0a).
+      // Without this, clipX/Y default to 0 and the strip iterator computes
+      // pixel addresses ~(view_y * pitch) bytes BEFORE the back buffer
+      // (negative Y offset), so painter writes land in unrelated heap
+      // pages and never reach the visible back-buffer surface.
+      heap.setU16(0x0099fb80, 0);  // clipX (will be overwritten per slot below)
+      heap.setU16(0x0099fb82, 0);  // clipY (will be overwritten per slot below)
       if (poolEnd > POOL_START && poolEnd < 0x009a013c + 256 * SLOT_STRIDE) {
         for (let slot = POOL_START; slot < poolEnd; slot += SLOT_STRIDE) {
           const wndProcAddr = heap.u32(slot) >>> 0;
@@ -250,10 +269,65 @@ export function createRuntime(opts) {
           // but produces no work — saves cycles to skip.
           const viewportPtr = heap.u32(slot + 8) >>> 0;
           if (viewportPtr === 0) continue;
+
+          // Read the viewport's world-space view_x/view_y and screen-space
+          // width/height. The viewport struct layout (FUN_005e429d output):
+          //   +0  screen_w  (u16)
+          //   +2  screen_h  (u16)
+          //   +4  screen_x  (u16)
+          //   +6  screen_y  (u16)
+          //   +8  view_x    (u16)  — world coord top-left
+          //   +0xa view_y   (u16)
+          //   +0x10 zoom    (u8)
+          const screenW = heap.u16(viewportPtr + 0x00);
+          const screenH = heap.u16(viewportPtr + 0x02);
+          const viewX   = heap.u16(viewportPtr + 0x08);
+          const viewY   = heap.u16(viewportPtr + 0x0a);
+          const zoom    = heap.u8 (viewportPtr + 0x10);
+          // For the viewport wndProc (0x42b079), build a TEMP DPI with the
+          // viewport's WORLD-space clip rect and SCREEN-space bytes ptr.
+          // The binary's normal paint dispatcher does this: each wndProc
+          // gets a DPI clipped to its window region. For 42b079 / 4316f3:
+          //   DPI.bytes = back_buf + screen_y * pitch + screen_x
+          //   DPI.clipX = view_x (world)
+          //   DPI.clipY = view_y (world)
+          //   DPI.clipW = screen_w << zoom
+          //   DPI.clipH = screen_h << zoom
+          //   DPI.pitch = back_buf_pitch - DPI.clipW (extra bytes per row)
+          //
+          // Without this, 42b079 reads (0,0,640,480) from the global back-
+          // buffer DPI at 0x0099fb7c — a SCREEN-space rect — and 4316f3
+          // computes strip pixel pointers off by `-view_y * pitch` bytes
+          // (writes land before the back buffer).
+          let dpiPtr;
+          if (wndProcAddr === 0x42b079) {
+            // Build temp DPI at a scratch location (just past 0x99fb7c
+            // — 0x10 bytes is enough for the 16-byte DPI struct, and
+            // 0x99fb8c is the next unused slot per the DPI layout).
+            dpiPtr = 0x0099fb90;  // 16 bytes of scratch
+            const backBuf = heap.u32(0x005f1fec) >>> 0;
+            const screenPitch = heap.u32(0x005f2400) & 0xffff;   // = 640
+            const clipW = (screenW << zoom) & 0xffff;
+            const clipH = (screenH << zoom) & 0xffff;
+            // bytes-ptr = first pixel of viewport region in back buffer
+            const dpiBytes = (backBuf + (heap.u16(viewportPtr + 6) >>> 0) * screenPitch + (heap.u16(viewportPtr + 4) >>> 0)) >>> 0;
+            heap.setU32(dpiPtr + 0x00, dpiBytes);
+            heap.setU16(dpiPtr + 0x04, viewX);   // clipX (world)
+            heap.setU16(dpiPtr + 0x06, viewY);   // clipY (world)
+            heap.setU16(dpiPtr + 0x08, clipW);   // clipW (world span)
+            heap.setU16(dpiPtr + 0x0a, clipH);   // clipH
+            heap.setU16(dpiPtr + 0x0c, (screenPitch - (screenW & 0xffff)) & 0xffff);  // pitch diff
+            heap.setU8 (dpiPtr + 0x0e, zoom);
+            heap.setU8 (dpiPtr + 0x0f, 0);
+          } else {
+            // Other wndProcs (toolbar/cursor): use the global back-buffer DPI.
+            dpiPtr = 0x0099fb7c;
+          }
+
           regs.esi = slot >>> 0;
-          regs.edi = 0x99fb7c >>> 0;        // any non -1 — paint phase
-          regs.eax = 0; regs.ebx = 0;       // clipX, clipY
-          regs.ecx = 640; regs.edx = 480;   // clipW, clipH
+          regs.edi = dpiPtr >>> 0;
+          regs.eax = 0; regs.ebx = 0;
+          regs.ecx = 640; regs.edx = 480;
           try { fn(heap); } catch (e) { /* per-window paint errors are non-fatal */ }
         }
       }
