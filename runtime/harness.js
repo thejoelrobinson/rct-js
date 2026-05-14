@@ -331,6 +331,34 @@ export function createRuntime(opts) {
           try { fn(heap); } catch (e) { /* per-window paint errors are non-fatal */ }
         }
       }
+
+      // Phase J: drive the back→front DirtyCopy after the synthetic paint
+      // pump. The binary's normal tick flow has FUN_004015f0 increment
+      // [0x5e9158] for each dirty rect and adds entries to the dirty-flag
+      // table at 0x99ad63; FUN_0040179d then walks the table, calling
+      // FUN_00401f79 → FUN_004023b2 to copy dirty regions from the back
+      // surface (lpSurface from the Lock wrapper at 0x99fb7c) to the
+      // front surface. Without this, all painter writes stay on the back
+      // buffer and are never visible. Force the full screen as dirty so
+      // the entire back buffer is copied each tick. The binary's gate at
+      // [0x5e9148]!=0 and [0x5e910c]>2&<8 is satisfied by the DDraw init
+      // chain; if not, 401f79 silently returns 0 — safe.
+      if (heap.u32(0x005e9174) !== 0 && heap.u32(0x005e9178) === 0) {
+        // Mark the entire 4023b2 dirty-flag bitmap as dirty so the
+        // whole back buffer is copied to the front surface this tick.
+        // Layout (per FUN_004015f0): each cell is u32 at
+        // [0x005f2420 + cell_idx*4], cell_idx = row_idx*0x14 + col_idx,
+        // where row_idx walks over (height/8) rows and col_idx walks
+        // over (width/0x40) columns. For 640x480 surface that's 60*10
+        // cells but the bitmap is sized for up to 800x600 in 4023b2's
+        // iteration. Just fill the whole 0x5000-byte buffer.
+        heap.setU32(0x005e9158, 1);
+        for (let i = 0; i < 0x5000; i++) heap.bytes[0x005f2420 + i] = 0xff;
+        const fn_40179d = state.fnDispatch.get(0x40179d);
+        if (typeof fn_40179d === "function") {
+          try { fn_40179d(heap); } catch (e) { /* presenter errors are non-fatal */ }
+        }
+      }
     },
   };
 }
