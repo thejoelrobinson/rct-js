@@ -76,6 +76,10 @@ export function installPainterBridge(heap, opts = {}) {
   }
 
   const cpu = makeCpu(memory);
+  // Painters that wild-jump into low memory (e.g. a NULL slot in a sprite-class
+  // vtable like 0x628a94[15]=0) should bail cleanly instead of executing
+  // 70 000+ zero-byte instructions before some downstream OOB aborts the tick.
+  cpu.bailOnWildJump = true;
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
   // down; reserve the top 64 KB exclusively for the painter cpu's ESP.
@@ -96,6 +100,14 @@ export function installPainterBridge(heap, opts = {}) {
       cpu.regs.esi = regs.esi >>> 0;
       cpu.regs.edi = regs.edi >>> 0;
       cpu.regs.ebp = regs.ebp >>> 0;
+      // Reset eflags and FPU state to avoid cross-call contamination. runFunction
+      // only resets esp/eip/callDepth — without this, a conditional jump in the
+      // first instructions of the next painter inherits CF/ZF/SF/OF from the
+      // previous painter's last ALU op, leading to taken/not-taken paths the
+      // binary would never hit. Empirically, leaving eflags dirty pushed EAX
+      // into a value that addressed 0x4ac4000 (just past heap end) in 0x4368d8.
+      cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
+      cpu.fpuTop = 0; cpu.fpuTags = 0xffff; cpu.fpuSw = 0;
       try {
         runFunction(cpu, addr, { stackTop: STACK_TOP, limit: 50_000_000 });
       } catch (e) {

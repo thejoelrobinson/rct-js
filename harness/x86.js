@@ -272,6 +272,18 @@ export function step(cpu) {
     _shimInvoker(cpu, cpu.regs.eip >>> 0);
     return true;
   }
+  // Wild-jump guard (opt-in via cpu.bailOnWildJump): a PE image's executable
+  // code never lives below 0x1000 (DOS-header / null page is unmapped on
+  // Windows). If EIP wandered into low memory the painter has fallen off the
+  // rails — bail cleanly to the sentinel rather than spend tens of thousands
+  // of steps walking through zero bytes before some downstream OOB throw
+  // aborts the tick. The lifted-vs-interpreter diff test sets up the cpu
+  // without this flag so it preserves the original divergence semantics.
+  if (cpu.bailOnWildJump && (cpu.regs.eip >>> 0) < 0x1000) {
+    cpu.regs.eip = RET_SENTINEL;
+    cpu.callDepth = 0;
+    return false;
+  }
   const m = cpu.memory;
   let ip = cpu.regs.eip;
   let opcode = mem8(m, ip);

@@ -57,9 +57,17 @@ export function FUN_004316f3(heap) {
   heap.setU32(0x005f96c0, (heap.i32(unaff_EDI) + ((((((((((heap.u16(0x005f96c4) - (heap.u16((unaff_ESI + 8)) & uVar8))) << 16 >> 16) >> (bVar1 & 0x1f)) + heap.i16((unaff_ESI + 4))) - ((heap.i32(unaff_EDI + (1) * 4)) << 16 >> 16))) << 16 >> 16)) | 0) + (((((((heap.i32(unaff_EDI + (2) * 4)) << 16 >> 16) + ((heap.i32(unaff_EDI + (3) * 4)) << 16 >> 16))) << 16 >> 16)) | 0) * ((((((((((heap.u16(0x005f96c6) - (heap.u16((unaff_ESI + 10)) & uVar8))) << 16 >> 16) >> (bVar1 & 0x1f)) + heap.i16((unaff_ESI + 6))) - heap.i16((((unaff_EDI) | 0) + 6)))) << 16 >> 16)) | 0)) >>> 0);
   piVar11 = ((0x005f96d0) >>> 0);
   uVar4 = ((heap.u16(0x005f96c4) & 0xffffffe0) >>> 0);
-  heap.setU32(0x005f96d6, (heap.u16(0x005f96c6)) >>> 0);
-  heap.setU32(0x005f96da, (heap.u16(0x005f96ca)) >>> 0);
-  heap.setU32(0x005f96de, (heap.u8(0x005f96ce)) >>> 0);
+  // HAND-FIX: setU32→setU16. Binary disassembly at 0x4317ad..0x4317c0 shows
+  // `66 a1 c6 96 5f 00; 66 89 47 06` = `mov ax, [0x5f96c6]; mov [edi+6], ax`
+  // (16-bit operand-size prefix on both load and store). Equivalent to
+  // `setU16(piVar11+6 == 0x5f96d6, ...)` — i.e. the DPI struct's clipY/clipH/zoom
+  // fields are 16-bit (clipY at +6, clipH at +0xa) and zoom is u8 at +0xe.
+  // The setU32 emit silently zeroed the upper-half bytes of adjacent fields:
+  // setU32(0x5f96d6,...) clobbered bytes 0xd8..0xd9 (= piVar11 + 0x8..0x9 = clipW).
+  // Result was clipW = 0 → sprite visibility check failed → nothing painted.
+  heap.setU16(0x005f96d6, (heap.u16(0x005f96c6)) & 0xffff);
+  heap.setU16(0x005f96da, (heap.u16(0x005f96ca)) & 0xffff);
+  heap.setU16(0x005f96de, (heap.u8(0x005f96ce)) & 0xffff);
   do {
     uVar3 = ((heap.u32(0x005f96c4)) >>> 0);
     uVar6 = ((heap.u32(0x005f96c8)) >>> 0);
