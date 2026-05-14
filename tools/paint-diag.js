@@ -316,6 +316,41 @@ if (bestSurf) {
   console.log(`Best 640x480 surface: distinct=${bestSurf.distinct} nonZero=${bestSurf.nonZero}`);
   console.log("  top indices:", bestSurf.top.slice(0, 8).map((t)=>`${t.idx}(${t.count})`).join(" "));
 }
+
+// Painter writes may target a heap allocation that isn't a registered DDraw
+// surface (e.g. when the per-strip DPI's bytes pointer is offset into a
+// non-surface region). Scan the heap for 640*480-shaped regions with high
+// distinct-palette-index counts and report the top hit.
+{
+  const PIXELS = 640 * 480;
+  const STRIDE = 0x10000;  // sample every 64K
+  const heapBytes = r.heap.bytes;
+  let best = { addr: 0, distinct: 0, nonZero: 0 };
+  for (let addr = 0x1_000_000; addr + PIXELS < heapBytes.length - 0x10000; addr += STRIDE) {
+    const dist = new Set();
+    let nz = 0;
+    // Sample 4096 bytes spread across the region (every 75th byte) for speed
+    for (let off = 0; off < PIXELS; off += 75) {
+      const v = heapBytes[addr + off];
+      dist.add(v);
+      if (v !== 0) nz++;
+    }
+    if (dist.size > best.distinct) {
+      best = { addr, distinct: dist.size, nonZero: nz };
+    }
+  }
+  if (best.distinct > 5) {
+    // Compute full stats for the candidate
+    const fullDist = new Set();
+    let fullNZ = 0;
+    for (let i = 0; i < PIXELS; i++) {
+      const v = heapBytes[best.addr + i];
+      fullDist.add(v);
+      if (v !== 0) fullNZ++;
+    }
+    console.log(`Painted-region scan: 0x${best.addr.toString(16)} distinct=${fullDist.size} nonZero=${fullNZ}`);
+  }
+}
 console.log(`\nWrote /tmp/paint-diag.json + /tmp/paint-diag-surf*.ppm`);
 
 // ---- strict mode: bar for "passing" ----

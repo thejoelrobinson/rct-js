@@ -317,8 +317,25 @@ export function createRuntime(opts) {
             const screenPitch = heap.u32(0x005f2400) & 0xffff;   // = 640
             const clipW = (screenW << zoom) & 0xffff;
             const clipH = (screenH << zoom) & 0xffff;
-            // bytes-ptr = first pixel of viewport region in back buffer
-            const dpiBytes = (backBuf + (heap.u16(viewportPtr + 6) >>> 0) * screenPitch + (heap.u16(viewportPtr + 4) >>> 0)) >>> 0;
+            // HAND-FIX (Phase L): bytes-ptr is computed to compensate for the
+            // painter's formula at 4316f3 line 57:
+            //   write_addr = bytes + (ax - dpi.clipX) + (bx - dpi.clipY) * stride
+            //   where ax = (clipX_in - vp.world_x) >> zoom + vp.screen_x
+            //         bx = (clipY_in - vp.world_y) >> zoom + vp.screen_y
+            //         dpi.clipX/Y = vp.world_x/y (set by 42b079's caller)
+            //         clipX_in/clipY_in = dpi.clipX/clipY (initially)
+            // So ax_initial = vp.screen_x, bx_initial = vp.screen_y. For first
+            // strip the formula computes:
+            //   write_addr = bytes + (vp.screen_x - vp.world_x)
+            //                      + (vp.screen_y - vp.world_y) * stride
+            // We want write_addr = back_buf + vp.screen_y * pitch + vp.screen_x.
+            // Solve for bytes:
+            //   bytes = back_buf + vp.world_y * pitch + vp.world_x
+            // i.e. dpi.bytes points at the WORLD ORIGIN row offset by the
+            // viewport's panned-to world coord.
+            const screenY = heap.u16(viewportPtr + 6) >>> 0;
+            const screenX = heap.u16(viewportPtr + 4) >>> 0;
+            const dpiBytes = (backBuf + viewY * screenPitch + viewX) >>> 0;
             heap.setU32(dpiPtr + 0x00, dpiBytes);
             heap.setU16(dpiPtr + 0x04, viewX);   // clipX (world)
             heap.setU16(dpiPtr + 0x06, viewY);   // clipY (world)

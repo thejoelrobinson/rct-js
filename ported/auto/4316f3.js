@@ -108,6 +108,30 @@ export function FUN_004316f3(heap) {
     (regs.eax = FUN_00433e1c(heap));
     piVar2 = ((heap.u32(0x00981ef8)) >>> 0);
     if ((heap.i32((0x00628a3c + heap.u32(0x008d7eb4) * 4)) | 0) != -1) {
+      // HAND-FIX: binary sets up call args via [edi+...] reads before invoking
+      // 0x9b30f1. Translator dropped these. Disassembly at 0x431897..0x4318ab:
+      //   66 8b 47 04   mov ax, [edi+4]      ; ax = clipX
+      //   66 8b 5f 08   mov bx, [edi+8]      ; bx = clipW
+      //   66 8b 4f 06   mov cx, [edi+6]      ; cx = clipY
+      //   66 8b 57 0a   mov dx, [edi+0xa]    ; dx = clipH
+      //   66 03 d8      add bx, ax           ; bx = clipX + clipW
+      //   66 03 d1      add dx, cx           ; dx = clipY + clipH
+      //   66 4b         dec bx               ; bx -= 1 (right edge inclusive)
+      //   66 4a         dec dx               ; dx -= 1 (bottom edge inclusive)
+      //   e8 ..         call 0x9b30f1
+      // EDI here is piVar2 = current DPI (0x5f96d0). The C decompile loses this
+      // because Ghidra didn't recognise the calling convention.
+      {
+        const _ax = heap.u16(piVar2 + 4) & 0xffff;       // clipX
+        const _bx = heap.u16(piVar2 + 8) & 0xffff;       // clipW
+        const _cx = heap.u16(piVar2 + 6) & 0xffff;       // clipY
+        const _dx = heap.u16(piVar2 + 0xa) & 0xffff;     // clipH
+        regs.eax = _ax;
+        regs.ebx = (_ax + _bx - 1) & 0xffff;
+        regs.ecx = _cx;
+        regs.edx = (_cx + _dx - 1) & 0xffff;
+        regs.edi = piVar2;
+      }
       (regs.eax = FUN_009b30f1(heap));
       piVar11 = ((piVar2) >>> 0);
     }
