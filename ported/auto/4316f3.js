@@ -88,6 +88,12 @@ export function FUN_004316f3(heap) {
     }
     heap.setU32(0x005f96e0, (0x006284ac) >>> 0);
     heap.setU32(0x00981ef8, (piVar11) >>> 0);
+    // HAND-FIX: binary executes `lea ebp,[0x006284ac]` immediately before
+    // `call 00431b6f`; the translator dropped that register setup. 00431b6f
+    // then does `mov [0x5f96e8], ebp` — without this seed the ring head
+    // starts at 0 and paint-slot stores (slot+0x20, slot+0x1c, ...) land in
+    // virtual addresses 0x0..0xfff (DOS header) instead of the ring buffer.
+    regs.ebp = 0x006284ac;
     (regs.eax = FUN_00431b6f(heap));
     (regs.eax = FUN_00436b2a(heap));
     (regs.eax = FUN_00433bae(heap));

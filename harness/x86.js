@@ -421,10 +421,19 @@ export function step(cpu) {
     if (operand.kind === "reg") write8reg(cpu, operand.reg, imm); else write8(m, operand.addr, imm);
     cpu.regs.eip = (ip + 1 + len + 1) >>> 0; return true;
   }
-  // STC / CLC / STD / CLD
+  // STC / CLC / STD / CLD / CMC
+  if (opcode === 0xf5) { cpu.eflags.CF = cpu.eflags.CF ^ 1; cpu.regs.eip = (ip + 1) >>> 0; return true; }
   if (opcode === 0xf8) { cpu.eflags.CF = 0; cpu.regs.eip = (ip + 1) >>> 0; return true; }
   if (opcode === 0xf9) { cpu.eflags.CF = 1; cpu.regs.eip = (ip + 1) >>> 0; return true; }
   if (opcode === 0xfc || opcode === 0xfd) { cpu.regs.eip = (ip + 1) >>> 0; return true; } // CLD/STD — DF unused
+  // 0xf1 — INT 1 / ICEBP. Never legitimate in user code; appearing means we jumped to
+  // bogus memory. Bail back to the RET sentinel so the painter exits cleanly instead of
+  // throwing and aborting the whole tick.
+  if (opcode === 0xf1) {
+    cpu.regs.eip = RET_SENTINEL;
+    cpu.callDepth = 0;
+    return false;
+  }
 
   // ---- 8-bit ALU r/m8, r8 / r8, r/m8 ----
   // 0x00 add, 0x02 add | 0x08 or, 0x0a or | 0x20 and, 0x22 and | 0x28 sub, 0x2a sub
@@ -851,6 +860,15 @@ export function step(cpu) {
     cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
     if (opcode === 0xcb) cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;        // RETF pops segment word too (4 bytes in 32-bit prot mode)
     if (opcode === 0xcf) cpu.regs.esp = (cpu.regs.esp + 4 + 4) >>> 0;   // IRET pops cs + eflags
+    cpu.regs.eip = target >>> 0;
+    if (cpu.callDepth > 0) { cpu.callDepth--; return true; }
+    return target !== RET_SENTINEL;
+  }
+  // RETF imm16 (0xca) — same as RETF but additionally adds imm16 to esp.
+  if (opcode === 0xca) {
+    const target = mem32(m, cpu.regs.esp);
+    const imm16 = mem16(m, ip + 1);
+    cpu.regs.esp = (cpu.regs.esp + 4 + 4 + imm16) >>> 0; // pop eip, pop cs-equiv, then adjust
     cpu.regs.eip = target >>> 0;
     if (cpu.callDepth > 0) { cpu.callDepth--; return true; }
     return target !== RET_SENTINEL;
@@ -1641,6 +1659,12 @@ export function step(cpu) {
   // ---- 0x0f xx — two-byte opcodes ----
   if (opcode === 0x0f) {
     const op2 = mem8(m, ip + 1);
+    // 0x0f 00 /r — SLDT/STR/LLDT/LTR/VERR/VERW. None apply in a userspace painter;
+    // skip past the modr/m and continue.
+    if (op2 === 0x00) {
+      const { len } = decodeModrm(cpu, ip + 2);
+      cpu.regs.eip = (ip + 2 + len) >>> 0; return true;
+    }
     // Jcc rel32
     if (op2 >= 0x80 && op2 <= 0x8f) {
       const rel = mem32(m, ip + 2) | 0;
@@ -2084,6 +2108,15 @@ export function step(cpu) {
       cpu.regs.esp = (cpu.regs.esp - 4) >>> 0;
       write32(m, cpu.regs.esp, v);
       cpu.regs.eip = (ip + 1 + len) >>> 0; return true;
+    }
+    if (subOp === 3 || subOp === 5 || subOp === 7) {
+      // 0xff /3 — CALL FAR m16:32; 0xff /5 — JMP FAR m16:32; 0xff /7 — undefined.
+      // In this codebase these only appear after the painter has wild-jumped into
+      // corrupted memory, so we bail out of the whole painter rather than chase
+      // a bogus indirection. Resetting callDepth ensures runFunction's loop exits.
+      cpu.regs.eip = RET_SENTINEL;
+      cpu.callDepth = 0;
+      return false;
     }
     throw new Error(`unsupported 0xff /${subOp} at eip 0x${ip.toString(16)}`);
   }

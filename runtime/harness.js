@@ -19,6 +19,7 @@ import { defaultPalette } from "../harness/csg.js";
 // any ported function but still need to be evaluated.
 import "./win32/ddraw.js";
 import { installPainterBridge } from "./painter-bridge.js";
+import { FUN_extra_paint_436b50 } from "../ported/auto/extra_436b50.js";
 
 /**
  * @param {object} opts
@@ -58,6 +59,13 @@ export function createRuntime(opts) {
   // these painters (the static lifter mis-decodes it). Painter addresses
   // live in lifter/extra-entries.json.
   installPainterBridge(heap);
+
+  // Override the painter-bridge shim for FUN_extra_paint_436b50 (rotation-0
+  // terrain painter) with a hand-port. The interpreter shim bombs because
+  // FUN_00436b2a (hand-port) drops the original `mov edi, [0x981ef8]` setup,
+  // and the painter reads DPI fields off EDI. The JS port reads DPI from
+  // 0x981ef8 directly and calls into existing JS sub-painters.
+  state.fnDispatch.set(0x436b50, FUN_extra_paint_436b50);
 
   // Wire browser-side resources (or stubs in node).
   setRuntimeContext({
