@@ -249,12 +249,23 @@ export function createRuntime(opts) {
       // memory/project_painter_bridge.md).
       //
       // Pragmatic fallback: hard-set the viewport's view_x / view_y to
-      // the sprite-cluster centroid. Sprite scan (74 active type-0/type-1
-      // sprites in the loaded title map): X centre ≈ 1186, Y centre ≈ 1393.
-      // With view_w = 640 / view_h = 416 we can sweep ~half the cluster
-      // in each axis — enough for the strip iterator to fire 444820's
-      // visibility check on ≥ a handful of sprites and drive a non-trivial
-      // dispatch into the sprite-class jumptable at 0x006309a0.
+      // the densest sprite cluster. The visibility check at FUN_00444820:76
+      // compares sprite bbox vs DPI clip rect in *iso-projected* coords
+      // (output of FUN_00444927). DPI clip starts at view_x/view_y and
+      // extends view_w × view_h, so the goal is to pick (view_x, view_y)
+      // that maximises the count of sprites whose bbox intersects the
+      // rectangle [view_x, view_x+view_w] × [view_y, view_y+view_h].
+      //
+      // Sprite-bbox scan of the active title map (probe-bbox-hist.js)
+      // brute-forces over the (view_x, view_y) grid and reports:
+      //
+      //   Best view (640×416): (976, 1304) → 31 of 68 real sprites visible
+      //
+      // Phase O #1 used (1186, 1393) — the *world-coord* centroid (sprite
+      // wx/wy), not the iso-bbox centroid. With view_w=640 the iso-bbox
+      // sweep was [866, 1506] but most bboxes sit in [-269, 1500] iso-x —
+      // only a handful at the rightmost edge intersected, and probe
+      // (tools/probe-walker-direct.js) showed 0/2 sprites passed visibility.
       //
       // Viewport pool slot 0 is at 0x009a1168, stride 0x14:
       //   +0x08 = view_x (u16, signed)
@@ -264,10 +275,9 @@ export function createRuntime(opts) {
       const VP_VIEW_W = heap.u16(VP_SLOT0 + 0x0c);
       const VP_VIEW_H = heap.u16(VP_SLOT0 + 0x0e);
       if (VP_VIEW_W > 0 && VP_VIEW_H > 0) {
-        const TITLE_CENTRE_X = 1186;
-        const TITLE_CENTRE_Y = 1393;
-        const newViewX = (TITLE_CENTRE_X - (VP_VIEW_W >>> 1)) & 0xffff;
-        const newViewY = (TITLE_CENTRE_Y - (VP_VIEW_H >>> 1)) & 0xffff;
+        // Densest-cluster view computed by tools/probe-bbox-hist.js.
+        const newViewX = 976 & 0xffff;
+        const newViewY = 1304 & 0xffff;
         heap.setU16(VP_SLOT0 + 0x08, newViewX);
         heap.setU16(VP_SLOT0 + 0x0a, newViewY);
         // Mirror into the parent window (esi+0x170/+0x172 in 5e429d). The
