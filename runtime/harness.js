@@ -191,6 +191,43 @@ export function createRuntime(opts) {
       // createRuntime, overlaid CODESEG bytes from rct.exe, and registered
       // each painter address with a shim that runs via the interpreter.
 
+      // Phase N: suppress the WM_DISPLAYCHANGE (0x7e) message posted by
+      // DDraw.IDD_SetDisplayMode during init. When the first runTick pumps
+      // messages via FUN_00403c2a, the binary's WindowProc routes 0x7e to
+      // a DDraw re-init path that calls IDDS_Release on the existing
+      // surfaces and re-creates them from scratch. Our runtime/win32/ddraw.js
+      // honours Release() by deleting from state.ddrawSurfaces (correct
+      // semantics) — but the heap-allocated pixel buffers of the original
+      // surfaces (already painted by the scenario-load chain via
+      // FUN_009b30f1) are then orphaned. New empty surfaces take their
+      // place, and the back→front presenter (FUN_004023b2) reads from the
+      // new EMPTY back buffer to a new EMPTY front buffer.
+      //
+      // The painted pixels at 0x2428b90 (the original GAME-BACK surface's
+      // bytes ptr) survive in heap memory but are no longer connected to
+      // any DDraw surface; the binary then has no path to display them.
+      //
+      // The per-tick painter chain (FUN_00431b6f / 436b2a / 436b50 / 433bae
+      // / 433e1c) DOES fire on subsequent ticks but the viewport's world
+      // coords (vp+8 viewX) are 0xfa01 (= -1535 signed), causing the strip
+      // painter at 4316f3 to compute write addresses far outside the new
+      // back buffer. So even if surfaces were preserved, terrain wouldn't
+      // re-render correctly via the tick chain — the scenario-load paint
+      // is the ground truth and we want to preserve it.
+      //
+      // Filter the WM_DISPLAYCHANGE out of the queue so the first runTick
+      // doesn't trigger the surface-recreate cascade. With this in place,
+      // DAT_005f1fec stays pointing at 0x2428b90 (with 133k painted pixels)
+      // and FUN_004023b2 (the back→front presenter) copies them to the
+      // primary surface for canvas display.
+      if (state.messageQueue && state.messageQueue.length > 0) {
+        const before = state.messageQueue.length;
+        state.messageQueue = state.messageQueue.filter((m) => m.msg !== 0x7e);
+        if (before !== state.messageQueue.length && typeof console !== "undefined") {
+          console.warn(`[harness] dropped ${before - state.messageQueue.length} WM_DISPLAYCHANGE message(s) to preserve init-painted surfaces`);
+        }
+      }
+
       // Stop here — FUN_00401000 (the message loop) is what runTick drives.
     },
     // One frame of the binary's main loop body (the body of FUN_00401000's
