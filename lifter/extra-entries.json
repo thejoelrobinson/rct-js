@@ -109,5 +109,7 @@
   {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a18", "addr": "0x5e5a18", "section": "CODESEG"},
   {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a48", "addr": "0x5e5a48", "section": "CODESEG"},
   {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a75", "addr": "0x5e5a75", "section": "CODESEG"},
-  {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5aa2", "addr": "0x5e5aa2", "section": "CODESEG"}
+  {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5aa2", "addr": "0x5e5aa2", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [0]=terrain renderer. Reached from 0x444820 (per-tile sprite walker) via callIndirect(jumptable[spriteType]).", "name": "FUN_extra_paint_5d7503", "addr": "0x5d7503", "section": "CODESEG"}
 ]
