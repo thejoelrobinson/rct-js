@@ -1,6 +1,19 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/433b76.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Paint-ring slot allocator. Each slot is 12 bytes:
+//   +0  u32  EBX (paint-record pointer or sprite handle)
+//   +4  u16  AX  (tile X / coord)
+//   +6  u16  CX  (tile Y / coord)
+//   +8  u32  prev-list-head linkage
+//
+// HAND-FIX (Phase N stride bug): Ghidra typed `DAT_005f96e8` as
+// `undefined4 *` (a u32-pointer), so its C `+3` advances by
+// `3 * sizeof(undefined4) = 12 bytes`. The auto-translator emitted JS
+// byte arithmetic (`+3`), which only advanced 3 bytes per slot — slots
+// then overlapped each other, the executor read garbage from the second
+// half of slot N when it expected to find slot N+1's start, and no
+// pixels reached GAME-BACK. Fix: advance by 0xc bytes.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -18,7 +31,7 @@ export function FUN_00433b76(heap) {
     heap.setU16((puVar2 + ((1) * 4)), (in_AX) & 0xffff);
     heap.setU16((((puVar2) | 0) + 6), (in_CX) & 0xffff);
     if (heap.u32(0x00628928) != 0) {
-      heap.setU32(0x005f96e8, (heap.u32(0x005f96e8) + 3) >>> 0);
+      heap.setU32(0x005f96e8, (heap.u32(0x005f96e8) + 0xc) >>> 0);
       LOCK();
       uVar1 = ((heap.u32((heap.u32(0x00628928) + 0x18))) >>> 0);
       heap.setU32((heap.u32(0x00628928) + 0x18), (((puVar2) >>> 0)) & 0xffffffff);
