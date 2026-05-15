@@ -14,6 +14,7 @@
 
 import { state } from "./win32/context.js";
 import { postWindowMessage } from "./win32/user32.js";
+import { resumeAudioContext } from "./win32/dsound.js";
 
 const WM_MOUSEMOVE   = 0x0200;
 const WM_LBUTTONDOWN = 0x0201;
@@ -51,6 +52,16 @@ function packLParam(x, y) {
 }
 
 export function attachInput(canvas) {
+  // Browser autoplay policy: AudioContext starts suspended until a user
+  // gesture lands. Unblock on the first pointer/key event so any sound
+  // queued during boot (UI clicks, music) becomes audible immediately.
+  let _audioUnlocked = false;
+  const unlockAudio = () => {
+    if (_audioUnlocked) return;
+    _audioUnlocked = true;
+    try { resumeAudioContext(); } catch (_) {}
+  };
+
   const post = (msg, wParam, lParam) => {
     const hwnd = state.firstHwnd || 0;
     if (!hwnd) return;
@@ -72,6 +83,7 @@ export function attachInput(canvas) {
   });
 
   canvas.addEventListener("mousedown", (e) => {
+    unlockAudio();
     const [x, y] = canvasCoords(e);
     if (e.button === 0)      post(WM_LBUTTONDOWN, 1, packLParam(x, y));
     else if (e.button === 1) post(WM_MBUTTONDOWN, 0x10, packLParam(x, y));
@@ -100,6 +112,7 @@ export function attachInput(canvas) {
 
   // Key events go to the document — canvas isn't focusable by default.
   document.addEventListener("keydown", (e) => {
+    unlockAudio();
     const vk = vkFor(e);
     if (vk) post(WM_KEYDOWN, vk, 1);
     if (e.key.length === 1) post(WM_CHAR, e.key.charCodeAt(0), 1);
