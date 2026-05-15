@@ -1,8 +1,14 @@
-// runtime/input.js — DOM events → Win32 message queue.
+// runtime/input.js — DOM events → Win32 message queue + polled state.
 //
 // Wires the canvas's mouse and keyboard events to postWindowMessage with
 // the standard Win32 message codes so ported code (which is the binary's
 // native message-loop) can consume them just like it would on Win32.
+//
+// ALSO maintains a polled cursor/key state that runtime/win32/user32.js's
+// GetCursorPos / GetAsyncKeyState / GetKeyState read. RCT1's mouse handling
+// goes through polling (GetCursorPos in FUN_004058f8) — the WndProc at
+// 0x403d79 doesn't case on WM_MOUSEMOVE/WM_LBUTTONDOWN (only WM_USER + 1/4),
+// so the message queue alone is insufficient for cursor interactivity.
 //
 // Coordinate space: canvas client coords (after CSS scaling) are mapped to
 // canvas-pixel coords before being packed into lParam. The binary expects
@@ -15,6 +21,17 @@
 import { state } from "./win32/context.js";
 import { postWindowMessage } from "./win32/user32.js";
 import { resumeAudioContext } from "./win32/dsound.js";
+
+// Polled state read by GetCursorPos / GetAsyncKeyState in user32.js.
+// Mutated by DOM event handlers below.
+export const inputState = {
+  cursorX: 0,
+  cursorY: 0,
+  // Key state: map of VK code → 1 if down, 0 if up.
+  keysDown: new Uint8Array(256),
+  // Mouse buttons: bit 0 = left, bit 1 = right, bit 2 = middle.
+  mouseButtons: 0,
+};
 
 const WM_MOUSEMOVE   = 0x0200;
 const WM_LBUTTONDOWN = 0x0201;
@@ -51,6 +68,11 @@ function packLParam(x, y) {
   return ((y & 0xffff) << 16) | (x & 0xffff);
 }
 
+// Expose inputState so user32.js GetCursorPos / GetAsyncKeyState can read it.
+// state.inputState is read in user32.js via the shared state module.
+import { state as _stateForExport } from "./win32/context.js";
+_stateForExport.inputState = inputState;
+
 export function attachInput(canvas) {
   // Browser autoplay policy: AudioContext starts suspended until a user
   // gesture lands. Unblock on the first pointer/key event so any sound
@@ -79,23 +101,29 @@ export function attachInput(canvas) {
 
   canvas.addEventListener("mousemove", (e) => {
     const [x, y] = canvasCoords(e);
-    post(WM_MOUSEMOVE, 0, packLParam(x, y));
+    inputState.cursorX = x;
+    inputState.cursorY = y;
+    post(WM_MOUSEMOVE, inputState.mouseButtons, packLParam(x, y));
   });
 
   canvas.addEventListener("mousedown", (e) => {
     unlockAudio();
     const [x, y] = canvasCoords(e);
-    if (e.button === 0)      post(WM_LBUTTONDOWN, 1, packLParam(x, y));
-    else if (e.button === 1) post(WM_MBUTTONDOWN, 0x10, packLParam(x, y));
-    else if (e.button === 2) post(WM_RBUTTONDOWN, 2, packLParam(x, y));
+    inputState.cursorX = x;
+    inputState.cursorY = y;
+    if (e.button === 0)      { inputState.mouseButtons |= 1; post(WM_LBUTTONDOWN, 1, packLParam(x, y)); }
+    else if (e.button === 1) { inputState.mouseButtons |= 4; post(WM_MBUTTONDOWN, 0x10, packLParam(x, y)); }
+    else if (e.button === 2) { inputState.mouseButtons |= 2; post(WM_RBUTTONDOWN, 2, packLParam(x, y)); }
     e.preventDefault();
   });
 
   canvas.addEventListener("mouseup", (e) => {
     const [x, y] = canvasCoords(e);
-    if (e.button === 0)      post(WM_LBUTTONUP, 0, packLParam(x, y));
-    else if (e.button === 1) post(WM_MBUTTONUP, 0, packLParam(x, y));
-    else if (e.button === 2) post(WM_RBUTTONUP, 0, packLParam(x, y));
+    inputState.cursorX = x;
+    inputState.cursorY = y;
+    if (e.button === 0)      { inputState.mouseButtons &= ~1; post(WM_LBUTTONUP, 0, packLParam(x, y)); }
+    else if (e.button === 1) { inputState.mouseButtons &= ~4; post(WM_MBUTTONUP, 0, packLParam(x, y)); }
+    else if (e.button === 2) { inputState.mouseButtons &= ~2; post(WM_RBUTTONUP, 0, packLParam(x, y)); }
     e.preventDefault();
   });
 
@@ -114,11 +142,17 @@ export function attachInput(canvas) {
   document.addEventListener("keydown", (e) => {
     unlockAudio();
     const vk = vkFor(e);
-    if (vk) post(WM_KEYDOWN, vk, 1);
+    if (vk) {
+      inputState.keysDown[vk & 0xff] = 1;
+      post(WM_KEYDOWN, vk, 1);
+    }
     if (e.key.length === 1) post(WM_CHAR, e.key.charCodeAt(0), 1);
   });
   document.addEventListener("keyup", (e) => {
     const vk = vkFor(e);
-    if (vk) post(WM_KEYUP, vk, 1);
+    if (vk) {
+      inputState.keysDown[vk & 0xff] = 0;
+      post(WM_KEYUP, vk, 1);
+    }
   });
 }

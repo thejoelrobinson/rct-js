@@ -199,10 +199,20 @@ export function GetClientRect(heap, hWnd, lpRect) {
 export function ClientToScreen(heap, hWnd, lpPoint) { return 1; }
 export function ScreenToClient(heap, hWnd, lpPoint) { return 1; }
 export function GetCursorPos(heap, lpPoint) {
-  if (lpPoint) { heap.setU32(lpPoint, 0); heap.setU32(lpPoint + 4, 0); }
+  if (lpPoint) {
+    // Read live cursor coords from runtime/input.js's polled state, if
+    // attachInput was wired up. Falls back to (0,0) for headless / pre-init.
+    let x = 0, y = 0;
+    if (state.inputState) { x = state.inputState.cursorX | 0; y = state.inputState.cursorY | 0; }
+    heap.setU32(lpPoint, x);
+    heap.setU32(lpPoint + 4, y);
+  }
   return 1;
 }
-export function SetCursorPos(heap, x, y) { return 1; }
+export function SetCursorPos(heap, x, y) {
+  if (state.inputState) { state.inputState.cursorX = x | 0; state.inputState.cursorY = y | 0; }
+  return 1;
+}
 
 // ---- Paint ----
 
@@ -378,8 +388,20 @@ export function SetDlgItemTextA(heap, hDlg, nIDDlgItem, lpString) { return 1; }
 
 // ---- Mouse helpers ----
 
-export function GetKeyState(heap, nVirtKey) { return 0; }
-export function GetAsyncKeyState(heap, vKey) { return 0; }
+// Win32 GetKeyState/GetAsyncKeyState return a SHORT where:
+//   high bit (0x8000) = key currently down
+//   low bit  (0x0001) = toggled (sticky)
+// We only model "currently down" here.
+export function GetKeyState(heap, nVirtKey) {
+  if (!state.inputState) return 0;
+  const vk = nVirtKey & 0xff;
+  // Special-case mouse buttons (VK_LBUTTON=1, VK_RBUTTON=2, VK_MBUTTON=4).
+  if (vk === 1) return (state.inputState.mouseButtons & 1) ? 0xffff8000 | 0 : 0;
+  if (vk === 2) return (state.inputState.mouseButtons & 2) ? 0xffff8000 | 0 : 0;
+  if (vk === 4) return (state.inputState.mouseButtons & 4) ? 0xffff8000 | 0 : 0;
+  return state.inputState.keysDown[vk] ? 0xffff8000 | 0 : 0;
+}
+export function GetAsyncKeyState(heap, vKey) { return GetKeyState(heap, vKey); }
 
 // ---- System parameters ----
 
