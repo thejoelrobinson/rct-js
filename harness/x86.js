@@ -461,8 +461,34 @@ export function step(cpu) {
   //
   // Conditions: no 0x66 prefix (32-bit operand), ModR/M rm != 4 (no SIB),
   // rm != 5 when mod==0 (no disp32-only — falls through to slow path).
-  if (!prefixOperandSize) {
-    const regs = cpu.regs;
+  const regs = cpu.regs;
+  if (prefixOperandSize) {
+    // 16-bit fast paths for MOV (0x8b/0x89) reg-reg (mod=3) — the painter
+    // CodeSeg uses 0x66-prefixed forms extensively.
+    if (opcode === 0x8b) {
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[regField];
+        const srcKey = REG32[rm];
+        const v = regs[srcKey] & 0xffff;
+        regs[dstKey] = ((regs[dstKey] & 0xffff0000) | v) >>> 0;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0x89) {
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[rm];
+        const srcKey = REG32[regField];
+        const v = regs[srcKey] & 0xffff;
+        regs[dstKey] = ((regs[dstKey] & 0xffff0000) | v) >>> 0;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+    }
+  } else {
     if (opcode === 0x8b) {
       // MOV r32, r/m32
       const modrm = m[ip + 1];
@@ -562,6 +588,81 @@ export function step(cpu) {
         ef.OF = ((~(sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
         regs[dstKey] = r;
         regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0x3b) {
+      // CMP r32, r/m32 — reg-reg form. Computes a-b and sets flags only.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const a = regs[REG32[regField]] >>> 0;
+        const b = regs[REG32[rm]] >>> 0;
+        const r = (a - b) >>> 0;
+        const ef = cpu.eflags;
+        ef.CF = (a < b) ? 1 : 0;
+        ef.ZF = (r === 0) ? 1 : 0;
+        ef.SF = (r >>> 31) & 1;
+        const sa = a | 0, sb = b | 0, sr = r | 0;
+        ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0x83) {
+      // r/m32 op imm8 (sign-extended). Reg-form mod=3 only — the dominant case.
+      // /0 ADD /1 OR /4 AND /5 SUB /6 XOR /7 CMP — cover the most common ones.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[rm];
+        const a = regs[dstKey] >>> 0;
+        const immByte = m[ip + 2];
+        const imm = (immByte & 0x80) ? ((immByte | 0xffffff00) >>> 0) : immByte;
+        const ef = cpu.eflags;
+        let r;
+        switch (regField) {
+          case 0: { // ADD
+            r = (a + imm) >>> 0;
+            ef.CF = (r < a) ? 1 : 0;
+            const sa = a | 0, sb = imm | 0, sr = r | 0;
+            ef.OF = ((~(sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
+            ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 31) & 1;
+            regs[dstKey] = r;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+          case 1: // OR
+            r = (a | imm) >>> 0;
+            ef.CF = 0; ef.OF = 0; ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 31) & 1;
+            regs[dstKey] = r;
+            regs.eip = (ip + 3) >>> 0; return true;
+          case 4: // AND
+            r = (a & imm) >>> 0;
+            ef.CF = 0; ef.OF = 0; ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 31) & 1;
+            regs[dstKey] = r;
+            regs.eip = (ip + 3) >>> 0; return true;
+          case 5: { // SUB
+            r = (a - imm) >>> 0;
+            ef.CF = (a < imm) ? 1 : 0;
+            const sa = a | 0, sb = imm | 0, sr = r | 0;
+            ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
+            ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 31) & 1;
+            regs[dstKey] = r;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+          case 6: // XOR
+            r = (a ^ imm) >>> 0;
+            ef.CF = 0; ef.OF = 0; ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 31) & 1;
+            regs[dstKey] = r;
+            regs.eip = (ip + 3) >>> 0; return true;
+          case 7: { // CMP
+            r = (a - imm) >>> 0;
+            ef.CF = (a < imm) ? 1 : 0;
+            const sa = a | 0, sb = imm | 0, sr = r | 0;
+            ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
+            ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 31) & 1;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+          // /2 ADC /3 SBB are rare — fall through.
+        }
       }
     }
   }
