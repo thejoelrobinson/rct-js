@@ -116,5 +116,11 @@ export function FUN_004367cb(heap) {
 
   // Off-map path: dispatch via PTR_LAB_00436a8c (no tile_element setup —
   // these painters draw water/dark fill, no per-tile state needed).
+  // HAND-FIX (Phase O): binary @ 0x436a76..0x436a8e sets edx = rotation
+  // and edi = DPI ptr before the jmp. Without edi, the off-map painter
+  // (e.g. 0x436a9c) reads [edi+0x6] / [edi+0xa] off whatever stale edi
+  // happened to be — typically 0 or a high pointer, both cause OOB.
+  regs.edx = heap.u32(0x00991f88) >>> 0;
+  regs.edi = heap.u32(0x00981ef8) >>> 0;
   return (regs.eax = callIndirect(heap, heap.u32(0x00436a8c + (heap.u8(0x00991f88)) * 4)));
 }

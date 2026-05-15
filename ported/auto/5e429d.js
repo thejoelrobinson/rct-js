@@ -111,6 +111,14 @@ export function FUN_005e429d(heap) {
         regs.edx = (((regs.ecx >>> 0) >>> 16) & 0xffff) >>> 0;
         _saveBxIn = regs.ebx & 0xffff;
       }
+      // HAND-FIX (Phase O): the painter-bridge interpreter at 0x5e4378's
+      // epilogue (0x5e43c6) does `mov dx, [edi+0xc]; sub ax, dx>>1` to
+      // subtract view_w/2 from iso_x. The binary's prologue at 0x5e429d
+      // sets `edi = piVar3` (the viewport pool slot) and keeps it live
+      // across the call to 0x5e4355. The translated JS uses piVar3 as a
+      // local variable, so we must mirror it into regs.edi for the
+      // interpreter to read [edi+0xc] / [edi+0xe] correctly.
+      regs.edi = piVar3 >>> 0;
       sVar1 = (((regs.eax = FUN_005e4355(heap))) & 0xffff);
       // Post-call: 5e4355's rotation handler modifies ax (= iso_x - view_w/2)
       // and bx (= iso_y - view_h/2). Read regs.ebx for the bx value.

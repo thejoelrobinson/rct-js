@@ -228,6 +228,60 @@ export function createRuntime(opts) {
         }
       }
 
+      // Phase O: pan the viewport onto the title-map sprite cluster.
+      //
+      // MainOpen (FUN_004298a0) calls FUN_005e429d with EDX = 0x07ff07ff,
+      // which is "centre on world coord (2047, 2047, z=512)". With our
+      // dispatcher + edi fixes in 5e4355.js / 5e429d.js, that resolves
+      // to view_x = -320, view_y = 1327 (correct iso math for that input).
+      //
+      // BUT: the title-screen map's actual sprite cluster sits in
+      // world-iso space at X ≈ [597..1775], Y ≈ [1029..1758]. The strip
+      // iterator in FUN_004316f3 walks columns from view_x rightward in
+      // 32-pixel strips until view_x + view_w. With view_x = -320 and
+      // view_w = 640 it sweeps [-320, 320] — entirely left of every sprite.
+      //
+      // The intended binary flow is the title-state machine at 0x42937c,
+      // which would pan the title viewport onto a saved map-centre coord
+      // after the title scenario loads. That path is unreachable: it's
+      // gated behind a tick-counter wrap + a CODESEG-stripped jumptable
+      // (see the scenario-load comment block above and
+      // memory/project_painter_bridge.md).
+      //
+      // Pragmatic fallback: hard-set the viewport's view_x / view_y to
+      // the sprite-cluster centroid. Sprite scan (74 active type-0/type-1
+      // sprites in the loaded title map): X centre ≈ 1186, Y centre ≈ 1393.
+      // With view_w = 640 / view_h = 416 we can sweep ~half the cluster
+      // in each axis — enough for the strip iterator to fire 444820's
+      // visibility check on ≥ a handful of sprites and drive a non-trivial
+      // dispatch into the sprite-class jumptable at 0x006309a0.
+      //
+      // Viewport pool slot 0 is at 0x009a1168, stride 0x14:
+      //   +0x08 = view_x (u16, signed)
+      //   +0x0a = view_y (u16, signed)
+      // The parent window's mirror copy is at window+0x170 / +0x172.
+      const VP_SLOT0 = 0x009a1168;
+      const VP_VIEW_W = heap.u16(VP_SLOT0 + 0x0c);
+      const VP_VIEW_H = heap.u16(VP_SLOT0 + 0x0e);
+      if (VP_VIEW_W > 0 && VP_VIEW_H > 0) {
+        const TITLE_CENTRE_X = 1186;
+        const TITLE_CENTRE_Y = 1393;
+        const newViewX = (TITLE_CENTRE_X - (VP_VIEW_W >>> 1)) & 0xffff;
+        const newViewY = (TITLE_CENTRE_Y - (VP_VIEW_H >>> 1)) & 0xffff;
+        heap.setU16(VP_SLOT0 + 0x08, newViewX);
+        heap.setU16(VP_SLOT0 + 0x0a, newViewY);
+        // Mirror into the parent window (esi+0x170/+0x172 in 5e429d). The
+        // window slot containing this viewport is the first non-empty
+        // entry in the window pool; rather than walk the pool here we
+        // search for the window whose +0x8 field points at the viewport.
+        // The window pool lives at 0x009af574 with stride 0x500 — but
+        // most painters read view_x from the viewport struct directly,
+        // so the parent-window mirror is mostly informational.
+        if (typeof console !== "undefined") {
+          console.warn(`[harness] panned viewport to sprite cluster: view_x=${(newViewX << 16 >> 16)}, view_y=${(newViewY << 16 >> 16)}`);
+        }
+      }
+
       // Stop here — FUN_00401000 (the message loop) is what runTick drives.
     },
     // One frame of the binary's main loop body (the body of FUN_00401000's
