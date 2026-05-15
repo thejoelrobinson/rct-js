@@ -487,6 +487,103 @@ export function step(cpu) {
         regs[dstKey] = ((regs[dstKey] & 0xffff0000) | v) >>> 0;
         regs.eip = (ip + 2) >>> 0; return true;
       }
+    } else if (opcode === 0x03) {
+      // 16-bit ADD r16, r/m16 reg-reg form. The CodeSeg painter preamble
+      // (0x4368d8 etc.) does `66 03 d1`-style add dx, cx repeatedly.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[regField];
+        const a = regs[dstKey] & 0xffff;
+        const b = regs[REG32[rm]] & 0xffff;
+        const r = (a + b) & 0xffff;
+        const ef = cpu.eflags;
+        ef.CF = ((a + b) > 0xffff) ? 1 : 0;
+        ef.ZF = (r === 0) ? 1 : 0;
+        ef.SF = (r >>> 15) & 1;
+        const sa = (a << 16) >> 16, sb = (b << 16) >> 16, sr = (r << 16) >> 16;
+        ef.OF = ((~(sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
+        regs[dstKey] = ((regs[dstKey] & 0xffff0000) | r) >>> 0;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0x2b) {
+      // 16-bit SUB r16, r/m16 reg-reg form.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[regField];
+        const a = regs[dstKey] & 0xffff;
+        const b = regs[REG32[rm]] & 0xffff;
+        const r = (a - b) & 0xffff;
+        const ef = cpu.eflags;
+        ef.CF = (a < b) ? 1 : 0;
+        ef.ZF = (r === 0) ? 1 : 0;
+        ef.SF = (r >>> 15) & 1;
+        const sa = (a << 16) >> 16, sb = (b << 16) >> 16, sr = (r << 16) >> 16;
+        ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
+        regs[dstKey] = ((regs[dstKey] & 0xffff0000) | r) >>> 0;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0x3b) {
+      // 16-bit CMP r16, r/m16 reg-reg form.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const a = regs[REG32[regField]] & 0xffff;
+        const b = regs[REG32[rm]] & 0xffff;
+        const r = (a - b) & 0xffff;
+        const ef = cpu.eflags;
+        ef.CF = (a < b) ? 1 : 0;
+        ef.ZF = (r === 0) ? 1 : 0;
+        ef.SF = (r >>> 15) & 1;
+        const sa = (a << 16) >> 16, sb = (b << 16) >> 16, sr = (r << 16) >> 16;
+        ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0x83) {
+      // 16-bit r/m16 op imm8 (sign-extended). Reg-form mod=3 only.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[rm];
+        const a = regs[dstKey] & 0xffff;
+        const immByte = m[ip + 2];
+        const imm = (immByte & 0x80) ? ((immByte | 0xff00) & 0xffff) : immByte;
+        const ef = cpu.eflags;
+        let r;
+        switch (regField) {
+          case 0: { // ADD
+            r = (a + imm) & 0xffff;
+            ef.CF = ((a + imm) > 0xffff) ? 1 : 0;
+            const sa = (a << 16) >> 16, sb = (imm << 16) >> 16, sr = (r << 16) >> 16;
+            ef.OF = ((~(sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
+            ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 15) & 1;
+            regs[dstKey] = ((regs[dstKey] & 0xffff0000) | r) >>> 0;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+          case 5: { // SUB
+            r = (a - imm) & 0xffff;
+            ef.CF = (a < imm) ? 1 : 0;
+            const sa = (a << 16) >> 16, sb = (imm << 16) >> 16, sr = (r << 16) >> 16;
+            ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
+            ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 15) & 1;
+            regs[dstKey] = ((regs[dstKey] & 0xffff0000) | r) >>> 0;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+          case 7: { // CMP
+            r = (a - imm) & 0xffff;
+            ef.CF = (a < imm) ? 1 : 0;
+            const sa = (a << 16) >> 16, sb = (imm << 16) >> 16, sr = (r << 16) >> 16;
+            ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
+            ef.ZF = (r === 0) ? 1 : 0; ef.SF = (r >>> 15) & 1;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+        }
+      }
     }
   } else {
     if (opcode === 0x8b) {
@@ -2485,7 +2582,9 @@ export function step(cpu) {
 }
 
 // Run from `funcAddr` until ret to sentinel or instruction limit hit.
-export function runFunction(cpu, funcAddr, { stackTop, limit = 100_000 } = {}) {
+export function runFunction(cpu, funcAddr, opts) {
+  const stackTop = opts ? opts.stackTop : undefined;
+  const limit = (opts && opts.limit !== undefined) ? opts.limit : 100_000;
   cpu.regs.esp = (stackTop - 4) >>> 0;
   write32(cpu.memory, cpu.regs.esp, RET_SENTINEL);
   cpu.regs.eip = funcAddr >>> 0;
