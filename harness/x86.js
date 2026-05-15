@@ -253,20 +253,35 @@ function jccTaken(cc, ef) {
 }
 
 // ---- ModR/M decoder ----
-// Returns { operand, regField, len } where operand is { kind:"reg", reg } | { kind:"mem", addr }
-// `len` = bytes consumed AFTER the opcode (modrm + optional sib + optional disp).
+// Two-object allocations per call (operand + outer record) made this the #3
+// hottest function. To stay byte-compatible with the existing decodeModrm()
+// callers we still RETURN the same shape, but reuse two singleton objects
+// (`_mrmOut` and `_mrmOperand`) so the allocator stays cold.
+//
+// Callers must not retain the returned object across another decodeModrm
+// call. All current callers consume it immediately, so this is safe.
+const _mrmOperand = { kind: "reg", reg: 0, addr: 0 };
+const _mrmOut = { operand: _mrmOperand, regField: 0, len: 0 };
+
 function decodeModrm(cpu, ip) {
   const m = cpu.memory;
-  const modrm = mem8(m, ip);
+  const modrm = m[ip];
+  if (ip >= m.length) throw new Error(`mem8 OOB: 0x${ip.toString(16)}`);
   const mod = (modrm >> 6) & 0x3;
   const reg = (modrm >> 3) & 0x7;
   const rm  = modrm & 0x7;
 
-  if (mod === 3) return { operand: { kind: "reg", reg: rm }, regField: reg, len: 1 };
+  if (mod === 3) {
+    _mrmOperand.kind = "reg";
+    _mrmOperand.reg = rm;
+    _mrmOut.regField = reg;
+    _mrmOut.len = 1;
+    return _mrmOut;
+  }
 
   // SIB byte applies when rm == 4 in mod = 0/1/2.
   if (rm === 4) {
-    const sib = mem8(m, ip + 1);
+    const sib = m[ip + 1];
     const scale = 1 << ((sib >> 6) & 0x3);
     const indexIdx = (sib >> 3) & 0x7;
     const baseIdx  = sib & 0x7;
@@ -288,15 +303,18 @@ function decodeModrm(cpu, ip) {
       }
     } else if (mod === 1) {
       baseVal = cpu.regs[REG32[baseIdx]] >>> 0;
-      dispVal = signExtend8(mem8(m, ip + 2));
+      dispVal = signExtend8(m[ip + 2]);
       dispLen = 1;
     } else { // mod === 2
       baseVal = cpu.regs[REG32[baseIdx]] >>> 0;
       dispVal = mem32(m, ip + 2);
       dispLen = 4;
     }
-    const addr = (baseVal + indexVal + dispVal) >>> 0;
-    return { operand: { kind: "mem", addr }, regField: reg, len: 1 + 1 + dispLen };
+    _mrmOperand.kind = "mem";
+    _mrmOperand.addr = (baseVal + indexVal + dispVal) >>> 0;
+    _mrmOut.regField = reg;
+    _mrmOut.len = 2 + dispLen;
+    return _mrmOut;
   }
 
   let addr, dispLen;
@@ -309,13 +327,17 @@ function decodeModrm(cpu, ip) {
       dispLen = 0;
     }
   } else if (mod === 1) {
-    addr = (cpu.regs[REG32[rm]] + signExtend8(mem8(m, ip + 1))) >>> 0;
+    addr = (cpu.regs[REG32[rm]] + signExtend8(m[ip + 1])) >>> 0;
     dispLen = 1;
   } else { // mod === 2
     addr = (cpu.regs[REG32[rm]] + mem32(m, ip + 1)) >>> 0;
     dispLen = 4;
   }
-  return { operand: { kind: "mem", addr }, regField: reg, len: 1 + dispLen };
+  _mrmOperand.kind = "mem";
+  _mrmOperand.addr = addr;
+  _mrmOut.regField = reg;
+  _mrmOut.len = 1 + dispLen;
+  return _mrmOut;
 }
 
 // Read/write a 32-bit operand
@@ -347,6 +369,8 @@ export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); }
 export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); }
 export function hasEipHook(eip) { return _eipHooks.has(eip >>> 0); }
 
+// Opcode histogram instrumentation (opt-in via _X86_OP_HIST = new Uint32Array(256)).
+// Enable by setting `globalThis._X86_OP_HIST = new Uint32Array(256)` before running.
 export function step(cpu) {
   // Win32 import trap: if eip lands in the sentinel range, dispatch to the shim.
   if ((cpu.regs.eip >>> 0) >= SHIM_BASE) {
@@ -371,13 +395,21 @@ export function step(cpu) {
     }
   }
   // Wild-jump guard (opt-in via cpu.bailOnWildJump): a PE image's executable
-  // code never lives below 0x1000 (DOS-header / null page is unmapped on
-  // Windows). If EIP wandered into low memory the painter has fallen off the
-  // rails — bail cleanly to the sentinel rather than spend tens of thousands
-  // of steps walking through zero bytes before some downstream OOB throw
-  // aborts the tick. The lifted-vs-interpreter diff test sets up the cpu
-  // without this flag so it preserves the original divergence semantics.
-  if (cpu.bailOnWildJump && (cpu.regs.eip >>> 0) < 0x1000) {
+  // code never lives below imageBase (= 0x00400000 for rct.exe). If EIP
+  // wandered into low memory the painter has fallen off the rails — bail
+  // cleanly to the sentinel rather than spend hundreds of millions of steps
+  // walking through zero bytes (each `add [eax],al` consumes only 2 bytes
+  // but stepping through a 0x300000-byte zero region at 2 bytes per step
+  // takes ~150 million steps). Profile (tools/profile-opcode-hist.js) showed
+  // 97.7% of all interpreter steps were 0x00-opcodes in EIP buckets at
+  // 0x10000..0x4ac0000 — i.e. data memory below imageBase. The lifted-vs-
+  // interpreter diff test sets up the cpu without this flag so it preserves
+  // the original divergence semantics.
+  //
+  // Threshold = 0x401000 (start of rct.exe's .text section). Anything
+  // below that is data/heap, never code. Also bail on the sentinel above
+  // SHIM_BASE, which is handled separately.
+  if (cpu.bailOnWildJump && (cpu.regs.eip >>> 0) < 0x00401000) {
     cpu.regs.eip = RET_SENTINEL;
     cpu.callDepth = 0;
     return false;
@@ -393,6 +425,13 @@ export function step(cpu) {
     if (opcode === 0x66) { prefixOperandSize = true; ip++; opcode = mem8(m, ip); continue; }
     if (opcode === 0x67) { prefixAddressSize = true; ip++; opcode = mem8(m, ip); continue; }
     break;
+  }
+  if (typeof globalThis._X86_OP_HIST !== "undefined" && globalThis._X86_OP_HIST) {
+    globalThis._X86_OP_HIST[opcode]++;
+    if (opcode === 0x00 && globalThis._X86_OP_HIST_EIP) {
+      const bk = (ip & 0xfffff000) >>> 0;
+      globalThis._X86_OP_HIST_EIP.set(bk, (globalThis._X86_OP_HIST_EIP.get(bk) || 0) + 1);
+    }
   }
 
   // ---- 1-byte register opcodes ----
