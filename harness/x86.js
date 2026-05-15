@@ -12,6 +12,14 @@
 const REG32 = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"]; // ModR/M order
 const REG8  = ["al",  "cl",  "dl",  "bl",  "ah",  "ch",  "dh",  "bh"];
 
+// Opcode lookup tables (Uint8Array — V8 keeps these monomorphic and inlines indexing).
+// Avoids `[...].includes(opcode)` allocations inside the hot step() loop, which were
+// the #2 hottest function in the CPU profile (~10s/tick).
+const _ALU_R8_OPCODES = new Uint8Array(256);
+for (const o of [0x00, 0x02, 0x08, 0x0a, 0x20, 0x22, 0x28, 0x2a, 0x30, 0x38, 0x84, 0x86]) _ALU_R8_OPCODES[o] = 1;
+const _STRING_OPCODES = new Uint8Array(256);
+for (const o of [0xa4, 0xa5, 0xa6, 0xa7, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf]) _STRING_OPCODES[o] = 1;
+
 export function makeCpu(memory) {
   return {
     regs: { eax:0, ebx:0, ecx:0, edx:0, esi:0, edi:0, esp:0, ebp:0, eip:0 },
@@ -92,6 +100,68 @@ function write32(mem, addr, value) {
   mem[addr+1] = (value >>> 8)  & 0xff;
   mem[addr+2] = (value >>> 16) & 0xff;
   mem[addr+3] = (value >>> 24) & 0xff;
+}
+
+// ---- 8-bit ALU helper (top-level so step() doesn't allocate a closure per step) ----
+// Handles 0x00, 0x02, 0x08, 0x0a, 0x20, 0x22, 0x28, 0x2a, 0x30, 0x38, 0x84, 0x86 — the r/m8, r8 family.
+// Inlines decodeModrm fields to avoid the per-step object allocation in decodeModrm.
+function aluR8Op(cpu, m, ip, opc) {
+  // Inline decodeModrm to dodge object allocation for the operand/result.
+  const modrm = m[ip + 1];
+  const mod = (modrm >> 6) & 0x3;
+  const regField = (modrm >> 3) & 0x7;
+  const rm = modrm & 0x7;
+
+  let a, b, isRegOp;
+  let regIdx = 0, memAddr = 0;
+  let len = 1;
+  if (mod === 3) {
+    isRegOp = true;
+    regIdx = rm;
+    a = regIdx < 4 ? cpu.regs[REG32[regIdx]] & 0xff : (cpu.regs[REG32[regIdx - 4]] >>> 8) & 0xff;
+  } else {
+    isRegOp = false;
+    // Fall back to full decodeModrm for memory operands (SIB / disp8 / disp32).
+    const dm = decodeModrm(cpu, ip + 1);
+    const op = dm.operand;
+    memAddr = op.addr;
+    len = dm.len;
+    a = m[memAddr];
+  }
+  b = regField < 4 ? cpu.regs[REG32[regField]] & 0xff : (cpu.regs[REG32[regField - 4]] >>> 8) & 0xff;
+
+  let r = a, write = true, isSub = false;
+  switch (opc) {
+    case 0x00: case 0x02: r = (a + b) & 0xff; break;
+    case 0x08: case 0x0a: r = (a | b) & 0xff; break;
+    case 0x20: case 0x22: r = (a & b) & 0xff; break;
+    case 0x28: case 0x2a: r = (a - b) & 0xff; isSub = true; break;
+    case 0x30: r = (a ^ b) & 0xff; break;
+    case 0x38: r = (a - b) & 0xff; write = false; isSub = true; break;
+    case 0x84: r = (a & b) & 0xff; write = false; break;
+    case 0x86: {
+      // XCHG r8, r/m8: write a into reg-field, b into r/m operand.
+      write8reg(cpu, regField, a);
+      if (isRegOp) write8reg(cpu, regIdx, b); else m[memAddr] = b & 0xff;
+      cpu.regs.eip = (ip + 1 + len) >>> 0;
+      return;
+    }
+  }
+  if (write) {
+    if (opc === 0x02 || opc === 0x0a || opc === 0x22 || opc === 0x2a) {
+      // Result goes to reg field.
+      write8reg(cpu, regField, r);
+    } else if (isRegOp) {
+      write8reg(cpu, regIdx, r);
+    } else {
+      m[memAddr] = r & 0xff;
+    }
+  }
+  cpu.eflags.ZF = (r === 0) ? 1 : 0;
+  cpu.eflags.SF = (r >>> 7) & 1;
+  cpu.eflags.CF = isSub ? ((a < b) ? 1 : 0) : 0;
+  cpu.eflags.OF = 0;
+  cpu.regs.eip = (ip + 1 + len) >>> 0;
 }
 
 // ---- 8-bit register access (al, ah, etc.) ----
@@ -478,34 +548,12 @@ export function step(cpu) {
   // ---- 8-bit ALU r/m8, r8 / r8, r/m8 ----
   // 0x00 add, 0x02 add | 0x08 or, 0x0a or | 0x20 and, 0x22 and | 0x28 sub, 0x2a sub
   // 0x30 xor | 0x38 cmp r/m8, r8 | 0x84 test r/m8, r8 | 0x86 xchg r8, r/m8
-  const aluR8 = (opc) => {
-    const { operand, regField, len } = decodeModrm(cpu, ip + 1);
-    const a = operand.kind === "reg" ? read8reg(cpu, operand.reg) : mem8(m, operand.addr);
-    const b = read8reg(cpu, regField);
-    const writeRes = (v) => { if (operand.kind === "reg") write8reg(cpu, operand.reg, v); else write8(m, operand.addr, v); };
-    let r = a, write = true, isCmp = false, isTest = false, isSub = false;
-    switch (opc) {
-      case 0x00: case 0x02: r = (a + b) & 0xff; break;
-      case 0x08: case 0x0a: r = (a | b) & 0xff; break;
-      case 0x20: case 0x22: r = (a & b) & 0xff; break;
-      case 0x28: case 0x2a: r = (a - b) & 0xff; isSub = true; break;
-      case 0x30: r = (a ^ b) & 0xff; break;
-      case 0x38: r = (a - b) & 0xff; write = false; isCmp = true; isSub = true; break;
-      case 0x84: r = (a & b) & 0xff; write = false; isTest = true; break;
-      case 0x86: write8reg(cpu, regField, a); writeRes(b); cpu.regs.eip = (ip + 1 + len) >>> 0; return; // XCHG
-    }
-    if (write) {
-      if (opc === 0x02 || opc === 0x0a || opc === 0x22 || opc === 0x2a) write8reg(cpu, regField, r);
-      else writeRes(r);
-    }
-    cpu.eflags.ZF = (r === 0) ? 1 : 0;
-    cpu.eflags.SF = (r >>> 7) & 1;
-    cpu.eflags.CF = isSub ? ((a < b) ? 1 : 0) : 0;
-    cpu.eflags.OF = 0;
-    cpu.regs.eip = (ip + 1 + len) >>> 0;
-  };
-  if ([0x00, 0x02, 0x08, 0x0a, 0x20, 0x22, 0x28, 0x2a, 0x30, 0x38, 0x84, 0x86].includes(opcode)) {
-    aluR8(opcode); return true;
+  // Moved out of step() as `aluR8Op(cpu, m, ip, opc)` to avoid creating a fresh
+  // closure (and a nested writeRes closure) on every step — they were the #2
+  // hottest function in the CPU profile (~10s/tick). See aluR8Op below.
+  if (_ALU_R8_OPCODES[opcode]) {
+    aluR8Op(cpu, m, ip, opcode);
+    return true;
   }
 
   // ---- AL, imm8 short forms ----
@@ -743,7 +791,7 @@ export function step(cpu) {
     }
   };
   // Bare string ops (no rep)
-  if ([0xa4, 0xa5, 0xa6, 0xa7, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf].includes(opcode)) {
+  if (_STRING_OPCODES[opcode]) {
     doStringStep(opcode);
     cpu.regs.eip = (ip + 1) >>> 0; return true;
   }
