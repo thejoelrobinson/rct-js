@@ -63,18 +63,62 @@ export function FUN_005e429d(heap) {
         heap.setU16((((piVar3) >>> 0) + 0x12), (heap.u16((((piVar3) >>> 0) + 0x12)) | 0x100) & 0xffff);
       }
       heap.setU32((unaff_ESI + 8), (piVar3) & 0xffffffff);
+      // HAND-FIX (Phase N): Ghidra's C decompile dropped the post-call read
+      // of `bx` from FUN_005e4355 — it stored the PRE-call sVar2 at
+      // viewport+0xa / window+0x172 instead. The binary at 0x5e4348..0x5e434f
+      // is `mov [edi+8], ax ; mov [edi+0xa], bx`, both AX and BX are MODIFIED
+      // by the rotation handler called via 5e4355. The handler (e.g.
+      // 0x5e4378 for rot=0) does the iso projection then jumps to a common
+      // epilogue at 0x5e43c5 that subtracts view_w/2 from ax and view_h/2
+      // from bx (so ax = iso_x - view_w/2, bx = iso_y - view_h/2 — i.e. the
+      // "centre the view on this iso coord" math).
+      //
+      // Without this, viewport+0xa got the literal high-half of EDX (e.g.
+      // 0x07ff = 2047 when MainOpen passes EDX = 0x07ff07ff) — a fixed
+      // "world centre" iso-y that doesn't match where any sprite-bbox lives.
+      // The visibility check at 444820.js:76 then rejected every sprite
+      // (clipY=2047 vs bbox.y_bot ≤ ~1758) → no terrain rendered.
+      //
+      // Also need to set up the input registers. Binary 0x5e4318..0x5e432f:
+      //   mov ax, dx     ; ax = low(EDX)
+      //   shr edx, 16    ; edx = high(EDX_in)
+      //   mov cx, dx     ; cx = high(EDX_in)
+      //   mov edx, ecx   ; edx = ECX_in
+      //   shr edx, 16    ; edx = high(ECX_in)
+      //   mov bx, cx     ; bx = high(EDX_in)
+      //   mov cx, dx     ; cx = high(ECX_in)
+      // For the bit-31-set branch (sprite-pool read), the binary loads ax/bx/cx
+      // from sprite[low(edx)].wx/wy/wz at 0x5e430a..0x5e4312, then dx is
+      // also high(ECX_in) via the same pre-call setup at 0x5e4326..0x5e432f.
+      let _saveBxIn;
       if ((in_EDX & 0x80000000) == 0) {
         sVar2 = ((((((in_EDX & 0xbfffffff) >>> 0x10)) << 16 >> 16)) & 0xffff);
         heap.setU16((unaff_ESI + 0x16e), (0xffff) & 0xffff);
+        // 5e4318 path: ax = low(EDX), bx = high(EDX), cx = dx = high(ECX).
+        regs.eax = (in_EDX & 0xffff) >>> 0;
+        regs.ebx = ((in_EDX >>> 16) & 0xffff) >>> 0;
+        regs.ecx = (((regs.ecx >>> 0) >>> 16) & 0xffff) >>> 0;
+        regs.edx = regs.ecx;
+        _saveBxIn = regs.ebx & 0xffff;
       } else {
         heap.setI16((unaff_ESI + 0x16e), ((((in_EDX & 0xbfffffff)) << 16 >> 16)) & 0xffff);
         sVar2 = ((heap.u32((0x00743ba4) + ((in_EDX & 0xffff) * 0x80) * 4)) & 0xffff);
+        // 5e42f7 path: read sprite-pool entry indexed by low(EDX).
+        const _spriteSlot = (0x00743b94 + ((in_EDX & 0xffff) << 8)) >>> 0;
+        regs.eax = heap.u16(_spriteSlot + 0xe) >>> 0;
+        regs.ebx = heap.u16(_spriteSlot + 0x10) >>> 0;
+        regs.ecx = heap.u16(_spriteSlot + 0x12) >>> 0;
+        regs.edx = (((regs.ecx >>> 0) >>> 16) & 0xffff) >>> 0;
+        _saveBxIn = regs.ebx & 0xffff;
       }
       sVar1 = (((regs.eax = FUN_005e4355(heap))) & 0xffff);
+      // Post-call: 5e4355's rotation handler modifies ax (= iso_x - view_w/2)
+      // and bx (= iso_y - view_h/2). Read regs.ebx for the bx value.
+      const _bxAfter = (regs.ebx & 0xffff);
       heap.setI16((unaff_ESI + 0x170), (sVar1) & 0xffff);
-      heap.setI16((unaff_ESI + 0x172), (sVar2) & 0xffff);
+      heap.setI16((unaff_ESI + 0x172), _bxAfter & 0xffff);
       heap.setI16((piVar3 + ((2) * 4)), (sVar1) & 0xffff);
-      heap.setI16((((piVar3) >>> 0) + 10), (sVar2) & 0xffff);
+      heap.setI16((((piVar3) >>> 0) + 10), _bxAfter & 0xffff);
       return (regs.eax = FUN_005e6a83(heap));
     }
     piVar3 = ((piVar3 + ((5) * 4)) >>> 0);
