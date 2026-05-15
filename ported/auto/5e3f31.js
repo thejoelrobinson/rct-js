@@ -117,6 +117,21 @@ export function FUN_005e3f31(heap) {
   heap.setU16((puVar3 + ((0x5a) * 4)), (0) & 0xffff);
   heap.setU16((((puVar3) >>> 0) + 0x16a), (0) & 0xffff);
   heap.setU16((puVar3 + ((0x5b) * 4)), (0) & 0xffff);
+  // Hand-fix (Phase O): set regs.esi = puVar3 (new window slot) BEFORE the
+  // wndProc callIndirect. The binary's cdecl-ish convention has ESI live
+  // across child calls and equal to the current window pointer at every
+  // `call [esi+0x0]` site; window procs (e.g. 0x42afb5 the top-toolbar
+  // proc, 0x42b079 the main-viewport proc) all read window fields via
+  // `mov reg, [esi+...]`. Without this, the wndProc inherits whatever
+  // ESI the LAST child call left behind — typically 0x9a013c (the FIRST
+  // window slot), so every newly-created window's proc paints with the
+  // MAIN viewport's rect. For the top toolbar (slot 0x9a02b4, rect
+  // (0,0)+640x30) this caused the toolbar's solid-fill paint to use rect
+  // (0,30)+640x416 instead, filling 133,120 pixels of palette idx 169
+  // (forest green) across the entire game-back buffer at runInit. Boot-time
+  // FRONT/GAME-BACK saw distinct=2 (idx 0 sky + idx 169 fill) instead of
+  // the textured terrain the per-tile painters would otherwise produce.
+  regs.esi = puVar3 >>> 0;
   (regs.eax = callIndirect(heap, heap.u32(puVar3), unaff_EDI, puVar3, unaff_EBP, __addr_stack0x00000000, unaff_EBX, uVar2, in_ECX, ((uVar5) >>> 0)));
   // Hand-fixed: 0x5e undefined4-elements = 0x178 bytes (see header comment).
   heap.setU32(0x009a1164, (heap.u32(0x009a1164) + 0x178) >>> 0);
