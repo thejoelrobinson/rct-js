@@ -114,5 +114,25 @@
   {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [0]=terrain renderer. Reached from 0x444820 (per-tile sprite walker) via callIndirect(jumptable[spriteType]).", "name": "FUN_extra_paint_5d7503", "addr": "0x5d7503", "section": "CODESEG"},
   {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [1]. Type-1 sprite (peeps/vehicles per agent-C audit, 63 sprites in pool).", "name": "FUN_extra_paint_439178", "addr": "0x439178", "section": ".text"},
   {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [2].", "name": "FUN_extra_paint_42d69f", "addr": "0x42d69f", "section": ".text"},
-  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [3].", "name": "FUN_extra_paint_42e001", "addr": "0x42e001", "section": ".text"}
+  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [3].", "name": "FUN_extra_paint_42e001", "addr": "0x42e001", "section": ".text"},
+
+  {"_table": "PTR_LAB_005d97b4", "_comment": "Per-sprite update vtable, called from FUN_005d94b6 indexed by sprite[0x50] (subtype/state). 19 entries in CODESEG (between FUN_005d94b6 end at 0x5d97b4 and first target at 0x5d9800). Phase O: all 63 type-1 sprites currently have [0x50]=0 → only entry [0] dispatches, but registering all 19 is the same work and avoids future regressions when peeps transition into other states (walking/queueing/being-on-ride/etc)."},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5d9800", "addr": "0x5d9800", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5d99a2", "addr": "0x5d99a2", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5d9c95", "addr": "0x5d9c95", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5d9f8b", "addr": "0x5d9f8b", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5da274", "addr": "0x5da274", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5da4d0", "addr": "0x5da4d0", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5da799", "addr": "0x5da799", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dae71", "addr": "0x5dae71", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5daf1b", "addr": "0x5daf1b", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5da924", "addr": "0x5da924", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5da98e", "addr": "0x5da98e", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5daa24", "addr": "0x5daa24", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5daaf8", "addr": "0x5daaf8", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dabd7", "addr": "0x5dabd7", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dac92", "addr": "0x5dac92", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dae1c", "addr": "0x5dae1c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dac2c", "addr": "0x5dac2c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dacdc", "addr": "0x5dacdc", "section": "CODESEG"}
 ]
