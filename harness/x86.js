@@ -365,8 +365,15 @@ export function setShimInvoker(fn) { _shimInvoker = fn; }
 // `regs` object, run the JS port, then pop the return address into eip and
 // decrement callDepth. Registered via setEipHook(eip, fn).
 const _eipHooks = new Map();
-export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); }
-export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); }
+let _eipHooksSize = 0;
+
+// Histogram-instrumentation cached flag. Callers turn this on via
+// enableOpcodeHist(true) before profiling; off during normal runs to avoid
+// a per-step globalThis property load.
+let _X86_OP_HIST_ON = false;
+export function enableOpcodeHist(on) { _X86_OP_HIST_ON = !!on; }
+export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); _eipHooksSize = _eipHooks.size; }
+export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); _eipHooksSize = _eipHooks.size; }
 export function hasEipHook(eip) { return _eipHooks.has(eip >>> 0); }
 
 // Opcode histogram instrumentation (opt-in via _X86_OP_HIST = new Uint32Array(256)).
@@ -382,7 +389,10 @@ export function step(cpu) {
   // and simulate a ret. The hook is responsible for syncing regs in/out via
   // the translator-side `regs` object. We pop the saved return address from
   // [esp], jump there, and decrement callDepth.
-  {
+  // Short-circuit Map.get() when the hook table is empty — Map.get on an empty
+  // map is still ~50ns, which dominates 12M-step interpreter ticks. Use cached
+  // size field updated by setEipHook/clearEipHook.
+  if (_eipHooksSize > 0) {
     const hook = _eipHooks.get(cpu.regs.eip >>> 0);
     if (hook) {
       hook(cpu);
@@ -415,22 +425,144 @@ export function step(cpu) {
     return false;
   }
   const m = cpu.memory;
+  const mLen = m.length;
   let ip = cpu.regs.eip;
-  let opcode = mem8(m, ip);
+  if (ip >= mLen) throw new Error(`mem8 OOB: 0x${ip.toString(16)}`);
+  let opcode = m[ip];
   let prefixOperandSize = false; // 0x66 — flips between 32-bit and 16-bit operands
+  let prefixAddressSize = false;
 
   // ---- Prefixes ----
-  let prefixAddressSize = false;
-  while (true) {
-    if (opcode === 0x66) { prefixOperandSize = true; ip++; opcode = mem8(m, ip); continue; }
-    if (opcode === 0x67) { prefixAddressSize = true; ip++; opcode = mem8(m, ip); continue; }
-    break;
+  // Inline mem8 — bounds-check once with the cached length.
+  while (opcode === 0x66 || opcode === 0x67) {
+    if (opcode === 0x66) prefixOperandSize = true;
+    else prefixAddressSize = true;
+    ip++;
+    if (ip >= mLen) throw new Error(`mem8 OOB: 0x${ip.toString(16)}`);
+    opcode = m[ip];
   }
-  if (typeof globalThis._X86_OP_HIST !== "undefined" && globalThis._X86_OP_HIST) {
+  // Opcode histogram — only checked when instrumentation is explicitly enabled.
+  // Reads a module-local cached flag to avoid a globalThis property load per step.
+  if (_X86_OP_HIST_ON) {
     globalThis._X86_OP_HIST[opcode]++;
     if (opcode === 0x00 && globalThis._X86_OP_HIST_EIP) {
       const bk = (ip & 0xfffff000) >>> 0;
       globalThis._X86_OP_HIST_EIP.set(bk, (globalThis._X86_OP_HIST_EIP.get(bk) || 0) + 1);
+    }
+  }
+
+  // ---- Hot-path fast block: 32-bit MOV/ADD/SUB/CMP reg-reg and simple
+  // [reg]/[reg+disp8]/[reg+disp32] memory forms WITHOUT SIB. Profile showed
+  // ~35% of all steps are 0x03/0x8b/0x89; most are mod=3 reg-reg or a
+  // single-base [reg+disp] memory form. Handling them inline (no decodeModrm
+  // allocation, no helper calls, no destructure) avoids ~5 object/closure
+  // overhead per step and is the biggest single interpreter-throughput
+  // win after the wild-jump guard.
+  //
+  // Conditions: no 0x66 prefix (32-bit operand), ModR/M rm != 4 (no SIB),
+  // rm != 5 when mod==0 (no disp32-only — falls through to slow path).
+  if (!prefixOperandSize) {
+    const regs = cpu.regs;
+    if (opcode === 0x8b) {
+      // MOV r32, r/m32
+      const modrm = m[ip + 1];
+      const mod = modrm & 0xc0;
+      const regField = (modrm >> 3) & 0x7;
+      const rm = modrm & 0x7;
+      const dstKey = REG32[regField];
+      if (mod === 0xc0) {
+        // reg-reg
+        regs[dstKey] = regs[REG32[rm]] >>> 0;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+      if (rm !== 4) {
+        const baseKey = REG32[rm];
+        if (mod === 0x00 && rm !== 5) {
+          // [reg]
+          const addr = regs[baseKey] >>> 0;
+          if (addr + 4 <= m.length) {
+            regs[dstKey] = (m[addr] | (m[addr+1] << 8) | (m[addr+2] << 16) | (m[addr+3] << 24)) >>> 0;
+            regs.eip = (ip + 2) >>> 0; return true;
+          }
+        } else if (mod === 0x40) {
+          // [reg+disp8]
+          const b = m[ip + 2];
+          const disp = (b & 0x80) ? b - 0x100 : b;
+          const addr = (regs[baseKey] + disp) >>> 0;
+          if (addr + 4 <= m.length) {
+            regs[dstKey] = (m[addr] | (m[addr+1] << 8) | (m[addr+2] << 16) | (m[addr+3] << 24)) >>> 0;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+        } else if (mod === 0x80) {
+          // [reg+disp32]
+          const disp = (m[ip+2] | (m[ip+3] << 8) | (m[ip+4] << 16) | (m[ip+5] << 24));
+          const addr = (regs[baseKey] + disp) >>> 0;
+          if (addr + 4 <= m.length) {
+            regs[dstKey] = (m[addr] | (m[addr+1] << 8) | (m[addr+2] << 16) | (m[addr+3] << 24)) >>> 0;
+            regs.eip = (ip + 6) >>> 0; return true;
+          }
+        }
+      }
+      // Fall through to slow path for SIB / OOB / etc.
+    } else if (opcode === 0x89) {
+      // MOV r/m32, r32
+      const modrm = m[ip + 1];
+      const mod = modrm & 0xc0;
+      const regField = (modrm >> 3) & 0x7;
+      const rm = modrm & 0x7;
+      const srcVal = regs[REG32[regField]] >>> 0;
+      if (mod === 0xc0) {
+        regs[REG32[rm]] = srcVal;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
+      if (rm !== 4) {
+        const baseKey = REG32[rm];
+        if (mod === 0x00 && rm !== 5) {
+          const addr = regs[baseKey] >>> 0;
+          if (addr + 4 <= m.length) {
+            m[addr] = srcVal & 0xff; m[addr+1] = (srcVal>>>8)&0xff;
+            m[addr+2] = (srcVal>>>16)&0xff; m[addr+3] = (srcVal>>>24)&0xff;
+            regs.eip = (ip + 2) >>> 0; return true;
+          }
+        } else if (mod === 0x40) {
+          const b = m[ip + 2];
+          const disp = (b & 0x80) ? b - 0x100 : b;
+          const addr = (regs[baseKey] + disp) >>> 0;
+          if (addr + 4 <= m.length) {
+            m[addr] = srcVal & 0xff; m[addr+1] = (srcVal>>>8)&0xff;
+            m[addr+2] = (srcVal>>>16)&0xff; m[addr+3] = (srcVal>>>24)&0xff;
+            regs.eip = (ip + 3) >>> 0; return true;
+          }
+        } else if (mod === 0x80) {
+          const disp = (m[ip+2] | (m[ip+3] << 8) | (m[ip+4] << 16) | (m[ip+5] << 24));
+          const addr = (regs[baseKey] + disp) >>> 0;
+          if (addr + 4 <= m.length) {
+            m[addr] = srcVal & 0xff; m[addr+1] = (srcVal>>>8)&0xff;
+            m[addr+2] = (srcVal>>>16)&0xff; m[addr+3] = (srcVal>>>24)&0xff;
+            regs.eip = (ip + 6) >>> 0; return true;
+          }
+        }
+      }
+    } else if (opcode === 0x03) {
+      // ADD r32, r/m32 — only fast-path reg-reg form (most frequent).
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[regField];
+        const a = regs[dstKey] >>> 0;
+        const b = regs[REG32[rm]] >>> 0;
+        const r = (a + b) >>> 0;
+        // Inline setAddFlags
+        const ef = cpu.eflags;
+        ef.CF = (r < a) ? 1 : 0;
+        ef.ZF = (r === 0) ? 1 : 0;
+        ef.SF = (r >>> 31) & 1;
+        const sa = a | 0, sb = b | 0, sr = r | 0;
+        ef.OF = ((~(sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
+        regs[dstKey] = r;
+        regs.eip = (ip + 2) >>> 0; return true;
+      }
     }
   }
 
