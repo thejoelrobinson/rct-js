@@ -21,6 +21,7 @@
 import { state } from "./win32/context.js";
 import { postWindowMessage } from "./win32/user32.js";
 import { resumeAudioContext } from "./win32/dsound.js";
+import { retryPendingMusic } from "./win32/winmm.js";
 
 // Polled state read by GetCursorPos / GetAsyncKeyState in user32.js.
 // Mutated by DOM event handlers below.
@@ -82,6 +83,10 @@ export function attachInput(canvas) {
     if (_audioUnlocked) return;
     _audioUnlocked = true;
     try { resumeAudioContext(); } catch (_) {}
+    // Retry any MIDI/MCI playback the browser blocked pre-gesture. winmm
+    // parks the most-recent play request when HTMLAudioElement.play()
+    // rejects; this kicks it off now that we have a gesture.
+    try { retryPendingMusic(); } catch (_) {}
   };
 
   const post = (msg, wParam, lParam) => {
