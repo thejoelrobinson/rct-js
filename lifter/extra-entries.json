@@ -111,5 +111,8 @@
   {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5a75", "addr": "0x5e5a75", "section": "CODESEG"},
   {"_table": "PTR_LAB_005e5a08", "name": "FUN_extra_paint_5e5aa2", "addr": "0x5e5aa2", "section": "CODESEG"},
 
-  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [0]=terrain renderer. Reached from 0x444820 (per-tile sprite walker) via callIndirect(jumptable[spriteType]).", "name": "FUN_extra_paint_5d7503", "addr": "0x5d7503", "section": "CODESEG"}
+  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [0]=terrain renderer. Reached from 0x444820 (per-tile sprite walker) via callIndirect(jumptable[spriteType]).", "name": "FUN_extra_paint_5d7503", "addr": "0x5d7503", "section": "CODESEG"},
+  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [1]. Type-1 sprite (peeps/vehicles per agent-C audit, 63 sprites in pool).", "name": "FUN_extra_paint_439178", "addr": "0x439178", "section": ".text"},
+  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [2].", "name": "FUN_extra_paint_42d69f", "addr": "0x42d69f", "section": ".text"},
+  {"_table": "PTR_LAB_006309a0", "_comment": "Sprite-class dispatch jumptable [3].", "name": "FUN_extra_paint_42e001", "addr": "0x42e001", "section": ".text"}
 ]
