@@ -96,12 +96,20 @@ export function FUN_004316f3(heap) {
     }
     heap.setU32(0x005f96e0, (0x006284ac) >>> 0);
     heap.setU32(0x00981ef8, (piVar11) >>> 0);
-    // HAND-FIX: binary executes `lea ebp,[0x006284ac]` immediately before
-    // `call 00431b6f`; the translator dropped that register setup. 00431b6f
-    // then does `mov [0x5f96e8], ebp` — without this seed the ring head
-    // starts at 0 and paint-slot stores (slot+0x20, slot+0x1c, ...) land in
-    // virtual addresses 0x0..0xfff (DOS header) instead of the ring buffer.
-    regs.ebp = 0x006284ac;
+    // HAND-FIX (Phase N, corrected): the binary at 0x43185f executes
+    // `mov ebp, 0x5f96ec` (NOT `lea ebp, [0x6284ac]` as previously
+    // documented — the prior hand-fix was wrong). 00431b6f then does
+    // `mov [0x5f96e8], ebp`, seeding the paint-ring head at 0x5f96ec.
+    //
+    // The paint-ring layout has TWO globals:
+    //   • [0x5f96e0] = ring END (limit) = 0x6284ac
+    //   • [0x5f96e8] = ring HEAD (current bump pointer)
+    // 433b76's gate `if (head < limit) { write slot; head += 12 }` requires
+    // head start LESS THAN limit. With the previous EBP=0x6284ac fix, head
+    // started AT limit, so 433b76 always failed and the ring stayed empty
+    // after the seed slot from 433bae. The correct EBP=0x5f96ec gives the
+    // ring ~0x29ec0 bytes of capacity (≈3500 paint slots).
+    regs.ebp = 0x005f96ec;
     (regs.eax = FUN_00431b6f(heap));
     (regs.eax = FUN_00436b2a(heap));
     (regs.eax = FUN_00433bae(heap));
