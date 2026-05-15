@@ -265,12 +265,40 @@ const SHIM_BASE = 0xF0000000 >>> 0;
 let _shimInvoker = null;
 export function setShimInvoker(fn) { _shimInvoker = fn; }
 
+// Optional JS-callout table — per-EIP hook that replaces native x86 execution
+// with a JS callback (used by the painter-bridge to short-circuit functions
+// that have known-good hand-ports, e.g. FUN_00444927 whose bucket-relink loop
+// at 0x444985 deadlocks the interpreter when called from a bridge shim). The
+// hook signature is (cpu) => void; it must sync GPRs to/from a translator
+// `regs` object, run the JS port, then pop the return address into eip and
+// decrement callDepth. Registered via setEipHook(eip, fn).
+const _eipHooks = new Map();
+export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); }
+export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); }
+export function hasEipHook(eip) { return _eipHooks.has(eip >>> 0); }
+
 export function step(cpu) {
   // Win32 import trap: if eip lands in the sentinel range, dispatch to the shim.
   if ((cpu.regs.eip >>> 0) >= SHIM_BASE) {
     if (!_shimInvoker) throw new Error(`shim invoked but no invoker registered (eip=0x${cpu.regs.eip.toString(16)})`);
     _shimInvoker(cpu, cpu.regs.eip >>> 0);
     return true;
+  }
+  // JS hand-port trap: if eip matches a registered hook, invoke the JS port
+  // and simulate a ret. The hook is responsible for syncing regs in/out via
+  // the translator-side `regs` object. We pop the saved return address from
+  // [esp], jump there, and decrement callDepth.
+  {
+    const hook = _eipHooks.get(cpu.regs.eip >>> 0);
+    if (hook) {
+      hook(cpu);
+      // Simulate `ret`: pop return address from stack and resume there.
+      const ret = mem32(cpu.memory, cpu.regs.esp) >>> 0;
+      cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
+      cpu.regs.eip = ret;
+      if (cpu.callDepth > 0) cpu.callDepth--;
+      return ret !== RET_SENTINEL;
+    }
   }
   // Wild-jump guard (opt-in via cpu.bailOnWildJump): a PE image's executable
   // code never lives below 0x1000 (DOS-header / null page is unmapped on

@@ -19,10 +19,11 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { makeCpu, runFunction } from "../harness/x86.js";
+import { makeCpu, runFunction, setEipHook } from "../harness/x86.js";
 import { loadPEFromBytes } from "../harness/loader.js";
 import { regs } from "./regs.js";
 import { state } from "./win32/context.js";
+import { FUN_00444927 } from "../ported/auto/444927.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const EXTRA_ENTRIES = resolve(HERE, "..", "lifter", "extra-entries.json");
@@ -80,6 +81,38 @@ export function installPainterBridge(heap, opts = {}) {
   // vtable like 0x628a94[15]=0) should bail cleanly instead of executing
   // 70 000+ zero-byte instructions before some downstream OOB aborts the tick.
   cpu.bailOnWildJump = true;
+
+  // Install a JS hook for FUN_00444927 (sprite tile-grid relink + bbox).
+  // When a bridge-shim runs binary code that CALLs 0x444927 (e.g. the per-sprite
+  // update vtable target at 0x5da274), the interpreter's chain-walk loop at
+  // 0x444985 deadlocks because the bridge-cpu's bucket-chain state diverges
+  // from what the binary expects (the chain index at sprite+0xa is a stride-1
+  // u16 that the JS hand-port computes correctly while the bridge cpu may
+  // observe a not-yet-relinked state when called mid-update). Replace the
+  // entire native call with the JS hand-port, which already handles all four
+  // rotation branches inline and writes the post-relink bbox to esi+0x16..0x1c.
+  // The hook syncs cpu.regs ↔ regs so the hand-port reads the right inputs.
+  setEipHook(0x444927, (cpu) => {
+    // Sync cpu → regs so FUN_00444927 reads bridge-cpu's register state.
+    regs.eax = cpu.regs.eax >>> 0;
+    regs.ecx = cpu.regs.ecx >>> 0;
+    regs.edx = cpu.regs.edx >>> 0;
+    regs.ebx = cpu.regs.ebx >>> 0;
+    regs.esi = cpu.regs.esi >>> 0;
+    regs.edi = cpu.regs.edi >>> 0;
+    regs.ebp = cpu.regs.ebp >>> 0;
+    try { FUN_00444927(heap); } catch (e) { /* hand-port errors are non-fatal */ }
+    // Sync back regs → cpu. The hand-port only writes regs.eax (the return
+    // value) — but the binary's 0x444927 prologue saves eax/ecx/edi and the
+    // epilogue restores them. Mirror that by leaving cpu.regs.eax/ecx/edi
+    // unchanged from their pre-call values (they're already in cpu.regs from
+    // before this hook fired). Sync only the writeable regs back.
+    cpu.regs.edx = regs.edx >>> 0;
+    cpu.regs.ebx = regs.ebx >>> 0;
+    cpu.regs.esi = regs.esi >>> 0;
+    cpu.regs.ebp = regs.ebp >>> 0;
+  });
+
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
   // down; reserve the top 64 KB exclusively for the painter cpu's ESP.
