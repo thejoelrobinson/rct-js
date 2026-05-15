@@ -88,8 +88,26 @@ export function installPainterBridge(heap, opts = {}) {
   heap.sp = Math.min(heap.sp, STACK_TOP - STACK_REGION);
 
   const painters = loadPainterAddresses();
+  // Some "painter" addresses are NOT standalone functions — they're internal
+  // jump labels of a larger function whose dispatcher prologue does
+  // `push eax; push ecx; jmp [edx*4 + tbl]` (where edx = camera-rotation
+  // index from DAT_00991f88). The painter body assumes those 2 saves are
+  // already on the stack and unwinds them with `pop ecx; pop eax; ret` at
+  // its tail. When the bridge invokes the painter directly with a fresh
+  // RET_SENTINEL-only stack, the trailing 2 pops read past stackTop and
+  // mem32 throws OOB at addr = mem.length (= 0x4ac4000 for default 64MB
+  // heap). Affected jumptables: PTR_LAB_004368c8 (4 painters @ 0x4368d8/
+  // 0x4368e0/0x4368ec/0x4368ff, common epilogue at 0x436a73) and
+  // PTR_LAB_00436a8c (4 painters @ 0x436a9c/0x436aa4/0x436ab0/0x436ac3,
+  // common epilogue at 0x436b27). Pre-push two dwords so the epilogue
+  // unwinds cleanly back to RET_SENTINEL.
+  const NEEDS_PRE_PUSH = new Set([
+    0x4368d8, 0x4368e0, 0x4368ec, 0x4368ff,
+    0x436a9c, 0x436aa4, 0x436ab0, 0x436ac3,
+  ]);
   let bridged = 0;
   for (const addr of painters) {
+    const prePush = NEEDS_PRE_PUSH.has(addr) ? 2 : 0;
     state.fnDispatch.set(addr, function _paintShim(_heap, ..._args) {
       // Sync translator regs → cpu.regs. We sync the integer GPRs; eflags
       // and FPU aren't expected to be live across the call boundary.
@@ -108,8 +126,23 @@ export function installPainterBridge(heap, opts = {}) {
       // into a value that addressed 0x4ac4000 (just past heap end) in 0x4368d8.
       cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
       cpu.fpuTop = 0; cpu.fpuTags = 0xffff; cpu.fpuSw = 0;
+      // Pre-push saved regs for jump-target painters (see NEEDS_PRE_PUSH
+      // above). Lower stackTop by 8 and write the 2 expected dword slots:
+      // memory layout (low → high): [RET_SENTINEL][saved_ecx][saved_eax].
+      // We seed with the current EAX/ECX so if the painter accidentally
+      // reads them via mov-from-mem they get sane values; the pop sequence
+      // restores EAX/ECX to these same values, then ret pops RET_SENTINEL.
+      let stackTop = STACK_TOP;
+      if (prePush) {
+        stackTop = STACK_TOP - 8;
+        // [stackTop+0..3] = saved ecx, [stackTop+4..7] = saved eax.
+        const m = memory;
+        const ax = cpu.regs.eax >>> 0, cx = cpu.regs.ecx >>> 0;
+        m[stackTop+0] = cx & 0xff; m[stackTop+1] = (cx>>>8)&0xff; m[stackTop+2] = (cx>>>16)&0xff; m[stackTop+3] = (cx>>>24)&0xff;
+        m[stackTop+4] = ax & 0xff; m[stackTop+5] = (ax>>>8)&0xff; m[stackTop+6] = (ax>>>16)&0xff; m[stackTop+7] = (ax>>>24)&0xff;
+      }
       try {
-        runFunction(cpu, addr, { stackTop: STACK_TOP, limit: 50_000_000 });
+        runFunction(cpu, addr, { stackTop, limit: 50_000_000 });
       } catch (e) {
         if (typeof console !== "undefined") {
           console.warn(`[painter-bridge] 0x${addr.toString(16)}: ${(e.message || e).slice(0, 160)}`);
