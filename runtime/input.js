@@ -22,6 +22,7 @@ import { state } from "./win32/context.js";
 import { postWindowMessage } from "./win32/user32.js";
 import { resumeAudioContext } from "./win32/dsound.js";
 import { retryPendingMusic } from "./win32/winmm.js";
+import { regs } from "./regs.js";
 
 // Polled state read by GetCursorPos / GetAsyncKeyState in user32.js.
 // Mutated by DOM event handlers below.
@@ -61,6 +62,23 @@ function panViewport(heap, dx, dy) {
   const newY = (heap.i16(vp + 0xa) + dy) | 0;
   heap.setI16(vp + 8, newX);
   heap.setI16(vp + 0xa, newY);
+}
+
+// Pause toggle: directly drives FUN_00427247, which XORs DAT_0099c169 (the
+// pause flag read by the game-update gate in FUN_0043f325 / FUN_005e39c6 /
+// FUN_004385d8). The binary's normal path lights this from the pause-button
+// click in the toolbar's WM_LBUTTONDOWN handler, but our toolbar hit-test
+// is still broken downstream of the input-mode dispatch — so wire a Space
+// keybind directly to it. FUN_00427247 requires EBX & 1 to toggle, matching
+// the cmp/jne preamble at 0x427247.
+//
+// Returns the new pause flag value (0 or 1) for caller verification.
+export function togglePause(heap) {
+  const fn = state.fnDispatch.get(0x427247);
+  if (typeof fn !== "function") return -1;
+  regs.ebx = 1;
+  fn(heap);
+  return heap.u8(0x0099c169) & 1;
 }
 
 const WM_MOUSEMOVE   = 0x0200;
@@ -212,6 +230,10 @@ export function attachInput(canvas, opts = {}) {
         else if (vk === 0x27) panViewport(heap,  STEP, 0);  // ArrowRight
         else if (vk === 0x26) panViewport(heap, 0, -STEP);  // ArrowUp
         else if (vk === 0x28) panViewport(heap, 0,  STEP);  // ArrowDown
+        // Space → toggle pause. Fires once per keydown (browsers auto-repeat
+        // keydown while held; e.repeat filters out the repeats so a held
+        // Space doesn't strobe pause on/off every frame).
+        else if (vk === 0x20 && !e.repeat) togglePause(heap);
       }
     }
     if (e.key.length === 1) post(WM_CHAR, e.key.charCodeAt(0), 1);

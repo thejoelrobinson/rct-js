@@ -152,4 +152,27 @@ describe("interactive input → game state", () => {
     expect(runtime.heap.u32(scratch)).toBe(321);
     expect(runtime.heap.u32(scratch + 4)).toBe(234);
   }, 60_000);
+
+  // END-TO-END WIN: Space key → game pause toggle.
+  //
+  // Calls togglePause() directly to verify the FUN_00427247 plumbing — this
+  // is what runtime/input.js's keydown(Space) handler invokes. The binary's
+  // own toolbar-button-click → pause-toggle path is still broken downstream
+  // of input-mode dispatch (PTR_LAB_005e2248 jumptable hit-test does not
+  // resolve cursor → button-id correctly yet), so the keybinding is the
+  // shortest route to a verifiable user-input → game-state change.
+  //
+  // DAT_0099c169 is the pause flag read by FUN_0043f325 / FUN_005e39c6 to
+  // gate the per-tick game-state update (so this DOES change observable
+  // game behaviour, not just a status byte).
+  it("togglePause() flips DAT_0099c169 (game-pause flag)", async () => {
+    const { togglePause } = await import("../../runtime/input.js");
+    runtime.heap.setU8(0x0099c169, 0);
+    const after1 = togglePause(runtime.heap);
+    expect(after1).toBe(1);
+    expect(runtime.heap.u8(0x0099c169) & 1).toBe(1);
+    const after2 = togglePause(runtime.heap);
+    expect(after2).toBe(0);
+    expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
+  }, 60_000);
 });
