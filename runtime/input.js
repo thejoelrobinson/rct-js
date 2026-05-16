@@ -96,13 +96,11 @@ export function togglePause(heap) {
 //
 // Pragmatic shortcut: find the toolbar window slot in the pool, walk its
 // widget table to find which widget contains (x, y), and directly invoke
-// the documented action for that widget. Today we wire only widget #0 (the
-// pause button at L=0..R=29, T=0..B=29) → togglePause(). This matches the
-// pattern used for Space → togglePause and gives a verified user-input →
-// observable-game-state path through the toolbar.
+// the documented action for that widget. Each widget action is exposed as
+// a standalone exported helper so tests can verify it without a click.
 //
 // Widget table layout (16 bytes per entry):
-//   +0  type (u8)   — 0x06 = button, 0xff = end-of-list sentinel
+//   +0  type (u8)   — 0x06 = button, 0x15 = dropdown, 0xff = end-of-list
 //   +1  cursor (u8)
 //   +2  left   (s16)
 //   +4  right  (s16)
@@ -114,9 +112,88 @@ export function togglePause(heap) {
 // The toolbar window's widget array starts at 0x005f5124 (per the
 // `mov [esi+0x1c], 0x5f5124` in 4298a0.js); slot+0x20..+0x26 hold the
 // window rect, so widget rects are window-relative.
+//
+// Live widget-rect dump (after runInit + 1 tick — see scratch/agent-
+// toolbar-findings.md and runtime probe in tools/probe-toolbar-fast.js):
+//   [ 0] L=  0..29  img=0x20026048 tip=0x342  — pause
+//   [ 1] L= 30..59  img=0x2002604a tip=0x343  — file menu icon
+//   [ 2] L= 60..89  img=0x20026060 tip=0x568  — file menu dropdown
+//   [ 3] L=104..133 img=0x2002604c tip=0x33e  — zoom out
+//   [ 4] L=134..163 img=0x2002604f tip=0x33d  — zoom in
+//   [ 5] L=164..193 img=0x20026052 tip=0x33f  — rotate view
+//   [ 6] L=194..223 img=0x20026066 tip=0x3bb  — view options
+//   [ 7] L=224..253 img=0x20026056 tip=0xb19  — map view
+//   [ 8..19] further 30-px buttons (land/water/scenery/path/ride/park/
+//            staff/guests/research/finances/news/options-menu) — open
+//            their own windows, no simple state flip → left as TODOs.
+//   [20] type=0x15 large dropdown panel (file menu body)
+//   [21] type=0xff sentinel
+//
+// Index → action mapping below is conservative: we wire only those whose
+// effect is a single documented state mutation (pause flag, viewport zoom,
+// camera rotation, map-view mode) so tests can verify them without bridging
+// the per-widget window-open handlers (which live in CODESEG-stripped code).
 const TOOLBAR_WIDGETS_BASE = 0x005f5124;
-const PAUSE_WIDGET_INDEX = 0;
 const WIDGET_STRIDE = 0x10;
+
+// Widget indices (per layout above). Names match the visible toolbar order.
+const PAUSE_WIDGET_INDEX     = 0;
+const FILE_MENU_WIDGET_INDEX = 1;  // image-only icon for file menu
+const FILE_DROP_WIDGET_INDEX = 2;  // dropdown arrow next to file icon
+const ZOOM_OUT_WIDGET_INDEX  = 3;
+const ZOOM_IN_WIDGET_INDEX   = 4;
+const ROTATE_WIDGET_INDEX    = 5;
+const VIEW_OPTS_WIDGET_INDEX = 6;
+const MAP_VIEW_WIDGET_INDEX  = 7;
+
+// Viewport zoom controls. The main viewport's struct has a u8 at +0x10 that
+// holds zoom level (0=closest, 3=farthest). This matches the wheel handler
+// below — clicking zoom-out increments the byte (one step farther), clicking
+// zoom-in decrements it (one step closer). Returns the new zoom level, or
+// -1 if the viewport is not yet allocated.
+export function zoomOut(heap) {
+  const vp = findMainViewport(heap);
+  if (vp === 0) return -1;
+  let z = heap.u8(vp + 0x10);
+  if (z < 3) z++;
+  heap.setU8(vp + 0x10, z);
+  return z;
+}
+export function zoomIn(heap) {
+  const vp = findMainViewport(heap);
+  if (vp === 0) return -1;
+  let z = heap.u8(vp + 0x10);
+  if (z > 0) z--;
+  heap.setU8(vp + 0x10, z);
+  return z;
+}
+
+// Camera rotation. DAT_00991f88 is a u8 cycling 0..3 (mod 4). The binary's
+// rotate-button handler at FUN_004340f5 also recomputes the viewport's
+// world coords (so the view rotates around the on-screen center), but the
+// observable scalar is the rotation byte itself — tests + the painter
+// re-read it on next frame to redraw at the new angle.
+// 4298a0 zeros DAT_00991f88 at toolbar-window create, so it's always present
+// after runInit. Increment + mask matches the binary's `inc; and 3` pair.
+export function rotateView(heap) {
+  const cur = heap.u8(0x00991f88);
+  const next = (cur + 1) & 3;
+  heap.setU8(0x00991f88, next);
+  return next;
+}
+
+// Map-view toggle. DAT_0099c16b is the input-mode flag read by FUN_005e1fdd
+// / FUN_005e1f70 on every tick: ==1 routes input-pos through the map-view
+// projection (FUN_0042d56c / FUN_0042d60a), ==0 routes through the normal
+// world-coord projection. FUN_0042d4a8 sets it to 1 (enter map mode); we
+// flip between 0 and 1 here to mirror the toolbar button's toggle behavior.
+// Returns the new mode value.
+export function toggleMapView(heap) {
+  const cur = heap.u8(0x0099c16b);
+  const next = cur === 1 ? 0 : 1;
+  heap.setU8(0x0099c16b, next);
+  return next;
+}
 
 function findToolbarSlot(heap) {
   const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
@@ -154,16 +231,29 @@ function toolbarWidgetAt(heap, x, y) {
 }
 
 // Routes a left-click at (x, y) to a toolbar widget action, if applicable.
-// Returns the widget index that was activated, or -1.
+// Returns the widget index that was activated, or -1 if either (a) the click
+// missed every widget rect, or (b) the widget hit has no wired action yet.
 export function clickToolbar(heap, x, y) {
   const idx = toolbarWidgetAt(heap, x, y);
   if (idx < 0) return -1;
-  if (idx === PAUSE_WIDGET_INDEX) {
-    togglePause(heap);
-    return idx;
+  switch (idx) {
+    case PAUSE_WIDGET_INDEX:    togglePause(heap);  return idx;
+    case ZOOM_OUT_WIDGET_INDEX: zoomOut(heap);      return idx;
+    case ZOOM_IN_WIDGET_INDEX:  zoomIn(heap);       return idx;
+    case ROTATE_WIDGET_INDEX:   rotateView(heap);   return idx;
+    case MAP_VIEW_WIDGET_INDEX: toggleMapView(heap); return idx;
+    // FILE_MENU / FILE_DROP / VIEW_OPTS open dropdowns / sub-windows whose
+    // handlers live in CODESEG (0x42a830 widget-event proc, not bridged).
+    // Return -1 so the caller knows nothing happened, matching the existing
+    // "unmapped widget" semantics.
+    /* TODO: case FILE_MENU_WIDGET_INDEX: open file dropdown window */
+    /* TODO: case FILE_DROP_WIDGET_INDEX: open file dropdown window */
+    /* TODO: case VIEW_OPTS_WIDGET_INDEX: open view-options dropdown */
+    /* TODO: widgets 8..19 (land, water, scenery, path, ride, park, staff,
+       guests, research, finances, news, options-menu) — each opens its own
+       window via FUN_0042xxxx; need 0x42a830 bridged or per-button hand-port. */
+    default: return -1;
   }
-  // Other widgets unmapped for now.
-  return -1;
 }
 
 const WM_MOUSEMOVE   = 0x0200;
