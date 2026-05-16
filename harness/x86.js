@@ -451,6 +451,39 @@ export function step(cpu) {
     }
   }
 
+  // ---- Hot conditional-jump fast paths ----
+  // 0x74 JE rel8, 0x75 JNE rel8 — together account for ~5% of all dispatched
+  // opcodes per profile. Tight inner loops in CodeSeg sprite painters use
+  // them to walk RLE buffers. Avoid the jccTaken switch dispatch by inlining
+  // the ZF test directly.
+  if (opcode === 0x75) {
+    const b = m[ip + 1];
+    const rel = (b & 0x80) ? b - 0x100 : b;
+    cpu.regs.eip = ((ip + 2) + ((cpu.eflags.ZF === 0) ? rel : 0)) >>> 0;
+    return true;
+  }
+  if (opcode === 0x74) {
+    const b = m[ip + 1];
+    const rel = (b & 0x80) ? b - 0x100 : b;
+    cpu.regs.eip = ((ip + 2) + ((cpu.eflags.ZF === 1) ? rel : 0)) >>> 0;
+    return true;
+  }
+  // 0x0f 0x85 JNE rel32 — common long-range conditional jump in painter loops.
+  if (opcode === 0x0f) {
+    const op2 = m[ip + 1];
+    if (op2 === 0x85) {
+      const rel = (m[ip+2] | (m[ip+3]<<8) | (m[ip+4]<<16) | (m[ip+5]<<24)) | 0;
+      cpu.regs.eip = ((ip + 6) + ((cpu.eflags.ZF === 0) ? rel : 0)) >>> 0;
+      return true;
+    }
+    if (op2 === 0x84) {
+      const rel = (m[ip+2] | (m[ip+3]<<8) | (m[ip+4]<<16) | (m[ip+5]<<24)) | 0;
+      cpu.regs.eip = ((ip + 6) + ((cpu.eflags.ZF === 1) ? rel : 0)) >>> 0;
+      return true;
+    }
+    // Fall through to the full 0x0f handler below for other op2 values.
+  }
+
   // ---- Hot-path fast block: 32-bit MOV/ADD/SUB/CMP reg-reg and simple
   // [reg]/[reg+disp8]/[reg+disp32] memory forms WITHOUT SIB. Profile showed
   // ~35% of all steps are 0x03/0x8b/0x89; most are mod=3 reg-reg or a
@@ -702,6 +735,56 @@ export function step(cpu) {
         const sa = a | 0, sb = b | 0, sr = r | 0;
         ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 31) & 1;
         regs.eip = (ip + 2) >>> 0; return true;
+      }
+    } else if (opcode === 0xc1) {
+      // 32-bit shift/rotate r/m32, imm8 reg-form (mod=3). Common cases:
+      // SHL /4, SHR /5, SAR /7, ROL /0, ROR /1.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[rm];
+        const a = regs[dstKey] >>> 0;
+        const cnt = m[ip + 2] & 0x1f;
+        let r;
+        const ef = cpu.eflags;
+        switch (regField) {
+          case 0: { // ROL
+            const c = cnt & 31;
+            r = c === 0 ? a : (((a << c) | (a >>> (32 - c))) >>> 0);
+            if (cnt !== 0) ef.CF = r & 1;
+            break;
+          }
+          case 1: { // ROR
+            const c = cnt & 31;
+            r = c === 0 ? a : (((a >>> c) | (a << (32 - c))) >>> 0);
+            if (cnt !== 0) ef.CF = (r >>> 31) & 1;
+            break;
+          }
+          case 4: // SHL
+            r = (a << cnt) >>> 0;
+            if (cnt !== 0) ef.CF = (a >>> (32 - cnt)) & 1;
+            break;
+          case 5: // SHR
+            r = a >>> cnt;
+            if (cnt !== 0) ef.CF = (a >>> (cnt - 1)) & 1;
+            break;
+          case 7: // SAR
+            r = (a >> cnt) >>> 0;
+            if (cnt !== 0) ef.CF = (a >>> (cnt - 1)) & 1;
+            break;
+          default:
+            // /2 RCL /3 RCR — fall through to slow BigInt path.
+            r = -1;
+        }
+        if (r !== -1) {
+          regs[dstKey] = r;
+          if (cnt !== 0) {
+            ef.ZF = (r === 0) ? 1 : 0;
+            ef.SF = (r >>> 31) & 1;
+          }
+          regs.eip = (ip + 3) >>> 0; return true;
+        }
       }
     } else if (opcode === 0x83) {
       // r/m32 op imm8 (sign-extended). Reg-form mod=3 only — the dominant case.
