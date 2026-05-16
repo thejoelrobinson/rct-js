@@ -476,13 +476,40 @@ function vfsLookup(path) {
   return getVfs().get(vfsBasename(path));
 }
 
+// CreationDisposition constants (winbase.h).
+const CREATE_NEW        = 1;
+const CREATE_ALWAYS     = 2;
+const OPEN_EXISTING     = 3;
+const OPEN_ALWAYS       = 4;
+const TRUNCATE_EXISTING = 5;
+
 export function CreateFileA(heap, lpFileName, dwDesiredAccess, dwShareMode, lpSecAttr, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile) {
   if (!lpFileName) return 0xffffffff | 0;
   const name = heap.readCStr(lpFileName);
-  const bytes = vfsLookup(name);
-  if (!bytes) return 0xffffffff | 0;             // INVALID_HANDLE_VALUE
+  const key = vfsBasename(name);
+  let bytes = getVfs().get(key);
+  const disp = dwCreationDisposition >>> 0;
+  // Writable path: CREATE_ALWAYS / CREATE_NEW / OPEN_ALWAYS create a new
+  // in-memory file if missing. CREATE_ALWAYS / TRUNCATE_EXISTING also reset
+  // existing content. The writable buffer accumulates via WriteFile and is
+  // installed into the VFS on CloseHandle so subsequent OPEN_EXISTING reads
+  // see it (in-session save→load round-trip).
+  if (disp === CREATE_NEW && bytes) return 0xffffffff | 0; // file exists
+  if ((disp === CREATE_ALWAYS || disp === TRUNCATE_EXISTING) && bytes) {
+    bytes = null; // reset
+  }
+  const writable = disp === CREATE_NEW || disp === CREATE_ALWAYS || disp === OPEN_ALWAYS;
+  if (!bytes && !writable) return 0xffffffff | 0; // INVALID_HANDLE_VALUE
   const h = state.nextHandle++;
-  state.openHandles.set(h, { name, bytes, offset: 0 });
+  state.openHandles.set(h, {
+    name: key,
+    bytes: bytes || new Uint8Array(0),
+    offset: 0,
+    writable,
+    // writeBuf accumulates appended/replaced content while writable.
+    writeBuf: writable ? [] : null,
+    writeLen: bytes ? bytes.length : 0,
+  });
   return h;
 }
 
@@ -498,12 +525,33 @@ export function ReadFile(heap, hFile, lpBuffer, nBytesToRead, lpBytesRead, lpOve
 }
 
 export function WriteFile(heap, hFile, lpBuffer, nBytesToWrite, lpBytesWritten, lpOverlapped) {
-  // Pretend we wrote everything. Future: persist to IndexedDB-backed VFS.
+  const file = state.openHandles.get(hFile);
+  if (!file || !file.writable) {
+    if (lpBytesWritten) heap.setU32(lpBytesWritten, nBytesToWrite);
+    return 1; // silent success on non-writable handles (back-compat)
+  }
+  const chunk = new Uint8Array(nBytesToWrite);
+  for (let i = 0; i < nBytesToWrite; i++) chunk[i] = heap.bytes[lpBuffer + i];
+  file.writeBuf.push({ off: file.offset, data: chunk });
+  file.offset += nBytesToWrite;
+  if (file.offset > file.writeLen) file.writeLen = file.offset;
   if (lpBytesWritten) heap.setU32(lpBytesWritten, nBytesToWrite);
   return 1;
 }
 
 export function CloseHandle(heap, hObject) {
+  const file = state.openHandles.get(hObject);
+  if (file && file.writable && file.writeBuf && file.writeBuf.length > 0) {
+    // Commit accumulated writes to the VFS. Start from any pre-existing
+    // bytes (e.g. OPEN_ALWAYS on an existing file kept its content) and
+    // apply each chunk at its recorded offset.
+    const out = new Uint8Array(file.writeLen);
+    out.set(file.bytes.subarray(0, Math.min(file.bytes.length, file.writeLen)));
+    for (const { off, data } of file.writeBuf) {
+      for (let i = 0; i < data.length; i++) out[off + i] = data[i];
+    }
+    getVfs().set(file.name, out);
+  }
   state.openHandles.delete(hObject);
   state.fileMappings.delete(hObject);
   return 1;
@@ -541,8 +589,12 @@ export function GetFileAttributesA(heap, lpFileName) {
 export function SetFileAttributesA(heap, lpFileName, dwFileAttributes) { return 1; }
 
 export function DeleteFileA(heap, lpFileName) {
-  // We can't actually delete from the read-only fetch'd VFS. Return success
-  // so callers think it worked.
+  // Delete from VFS so subsequent CreateFileA(OPEN_EXISTING) returns
+  // INVALID_HANDLE. Original asset files (csg1.dat etc.) live in the same
+  // map, so this WILL nuke them if the binary asks — that's fine, RCT only
+  // deletes save files it created.
+  const key = vfsBasename(heap.readCStr(lpFileName));
+  getVfs().delete(key);
   return 1;
 }
 

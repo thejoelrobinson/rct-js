@@ -12,8 +12,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { Heap } from "../../runtime/heap.js";
 import {
   initHeap,
-  CreateFileA, ReadFile, CloseHandle, GetFileSize, SetFilePointer,
-  FindFirstFileA, FindNextFileA, FindClose,
+  CreateFileA, ReadFile, WriteFile, CloseHandle, GetFileSize, SetFilePointer,
+  FindFirstFileA, FindNextFileA, FindClose, DeleteFileA,
 } from "../../runtime/win32/kernel32.js";
 import {
   RegOpenKeyA, RegOpenKeyExA, RegCreateKeyExA, RegCloseKey,
@@ -151,6 +151,57 @@ describe("kernel32 VFS — file open + read", () => {
     expect(FindNextFileA(heap, hFind, findData)).toBe(0);
 
     FindClose(heap, hFind);
+  });
+
+  it("WriteFile→CloseHandle persists; CreateFileA(OPEN_EXISTING) reads back (save/load round-trip)", () => {
+    const vfs = new Map();
+    setRuntimeContext({ vfs });
+
+    const lpName = heap.allocFrame(64);
+    heap.writeCStr(lpName, "park.sv4", 64);
+
+    // CREATE_ALWAYS (=2), generic_write — open writable; file didn't exist.
+    const hWrite = CreateFileA(heap, lpName, 0, 0, 0, 2, 0, 0);
+    expect(hWrite).toBeGreaterThan(0);
+    expect(hWrite).not.toBe(0xffffffff | 0);
+
+    // Write 16 bytes
+    const lpBuf = heap.allocFrame(16);
+    for (let i = 0; i < 16; i++) heap.setU8(lpBuf + i, 0xa0 + i);
+    const lpWritten = heap.allocFrame(4);
+    expect(WriteFile(heap, hWrite, lpBuf, 16, lpWritten, 0)).toBe(1);
+    expect(heap.u32(lpWritten)).toBe(16);
+
+    CloseHandle(heap, hWrite);
+
+    // Now OPEN_EXISTING and read it back
+    const hRead = CreateFileA(heap, lpName, 0, 0, 0, 3, 0, 0);
+    expect(hRead).toBeGreaterThan(0);
+    expect(hRead).not.toBe(0xffffffff | 0);
+    expect(GetFileSize(heap, hRead, 0)).toBe(16);
+
+    const lpReadBuf = heap.allocFrame(16);
+    const lpRead = heap.allocFrame(4);
+    expect(ReadFile(heap, hRead, lpReadBuf, 16, lpRead, 0)).toBe(1);
+    expect(heap.u32(lpRead)).toBe(16);
+    for (let i = 0; i < 16; i++) expect(heap.u8(lpReadBuf + i)).toBe(0xa0 + i);
+    CloseHandle(heap, hRead);
+
+    // DeleteFileA removes it; OPEN_EXISTING then fails
+    DeleteFileA(heap, lpName);
+    expect(CreateFileA(heap, lpName, 0, 0, 0, 3, 0, 0)).toBe(0xffffffff | 0);
+  });
+
+  it("OPEN_ALWAYS on missing file creates writable empty handle", () => {
+    setRuntimeContext({ vfs: new Map() });
+    const lpName = heap.allocFrame(64);
+    heap.writeCStr(lpName, "scratch.dat", 64);
+    // OPEN_ALWAYS = 4
+    const h = CreateFileA(heap, lpName, 0, 0, 0, 4, 0, 0);
+    expect(h).toBeGreaterThan(0);
+    expect(h).not.toBe(0xffffffff | 0);
+    expect(GetFileSize(heap, h, 0)).toBe(0);
+    CloseHandle(heap, h);
   });
 });
 
