@@ -576,6 +576,101 @@ export function step(cpu) {
         ef.OF = (((sa ^ sb) & (sa ^ sr)) >>> 15) & 1;
         regs.eip = (ip + 2) >>> 0; return true;
       }
+    } else if (opcode === 0xd1) {
+      // 16-bit shift/rotate r/m16, 1 reg-form (mod=3). painter `66 d1 fa`
+      // = sar dx, 1. Subops 0=ROL 1=ROR 4=SHL 5=SHR 7=SAR.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[rm];
+        const a = regs[dstKey] & 0xffff;
+        let r;
+        const ef = cpu.eflags;
+        switch (regField) {
+          case 0: { // ROL
+            r = ((a << 1) | (a >>> 15)) & 0xffff;
+            ef.CF = r & 1;
+            break;
+          }
+          case 1: { // ROR
+            r = ((a >>> 1) | ((a & 1) << 15)) & 0xffff;
+            ef.CF = (r >>> 15) & 1;
+            break;
+          }
+          case 4: // SHL
+            r = (a << 1) & 0xffff;
+            ef.CF = (a >>> 15) & 1;
+            break;
+          case 5: // SHR
+            r = (a >>> 1) & 0xffff;
+            ef.CF = a & 1;
+            break;
+          case 7: { // SAR
+            const sa = (a & 0x8000) ? (a | 0xffff0000) : a;
+            r = (sa >> 1) & 0xffff;
+            ef.CF = a & 1;
+            break;
+          }
+          default: r = -1;
+        }
+        if (r !== -1) {
+          regs[dstKey] = ((regs[dstKey] & 0xffff0000) | r) >>> 0;
+          ef.ZF = (r === 0) ? 1 : 0;
+          ef.SF = (r >>> 15) & 1;
+          regs.eip = (ip + 2) >>> 0; return true;
+        }
+      }
+    } else if (opcode === 0xc1) {
+      // 16-bit shift/rotate r/m16, imm8 reg-form (mod=3). painter
+      // `66 c1 c7 07` = rol di, 7.
+      const modrm = m[ip + 1];
+      if ((modrm & 0xc0) === 0xc0) {
+        const regField = (modrm >> 3) & 0x7;
+        const rm = modrm & 0x7;
+        const dstKey = REG32[rm];
+        const a = regs[dstKey] & 0xffff;
+        const cnt = m[ip + 2] & 0xf;
+        let r;
+        const ef = cpu.eflags;
+        switch (regField) {
+          case 0: { // ROL
+            const c = cnt & 15;
+            r = c === 0 ? a : (((a << c) | (a >>> (16 - c))) & 0xffff);
+            if (cnt !== 0) ef.CF = r & 1;
+            break;
+          }
+          case 1: { // ROR
+            const c = cnt & 15;
+            r = c === 0 ? a : (((a >>> c) | (a << (16 - c))) & 0xffff);
+            if (cnt !== 0) ef.CF = (r >>> 15) & 1;
+            break;
+          }
+          case 4: // SHL
+            r = (a << cnt) & 0xffff;
+            if (cnt !== 0) ef.CF = (a >>> (16 - cnt)) & 1;
+            break;
+          case 5: // SHR
+            r = (a >>> cnt) & 0xffff;
+            if (cnt !== 0) ef.CF = (a >>> (cnt - 1)) & 1;
+            break;
+          case 7: { // SAR
+            const sa = (a & 0x8000) ? (a | 0xffff0000) : a;
+            r = (sa >> cnt) & 0xffff;
+            if (cnt !== 0) ef.CF = (a >>> (cnt - 1)) & 1;
+            break;
+          }
+          default: r = -1;
+        }
+        if (r !== -1) {
+          regs[dstKey] = ((regs[dstKey] & 0xffff0000) | r) >>> 0;
+          if (cnt !== 0) {
+            ef.ZF = (r === 0) ? 1 : 0;
+            ef.SF = (r >>> 15) & 1;
+          }
+          regs.eip = (ip + 3) >>> 0; return true;
+        }
+      }
     } else if (opcode === 0x83) {
       // 16-bit r/m16 op imm8 (sign-extended). Reg-form mod=3 only.
       const modrm = m[ip + 1];
@@ -2673,8 +2768,11 @@ export function runFunction(cpu, funcAddr, opts) {
   cpu.regs.eip = funcAddr >>> 0;
   cpu.callDepth = 0;
 
+  // Cache step in a local so the loop body's call site is a direct slot load,
+  // not a module-level lookup through the function environment each iteration.
+  const _step = step;
   let steps = 0;
-  while (step(cpu)) {
+  while (_step(cpu)) {
     if (++steps > limit) throw new Error(`instruction limit (${limit}) exceeded at eip 0x${cpu.regs.eip.toString(16)}`);
   }
   return steps + 1;
