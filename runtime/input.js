@@ -181,6 +181,18 @@ export function attachInput(canvas, opts = {}) {
     // wParam high word = wheel delta (signed); low word = key flags.
     const delta = e.deltaY < 0 ? 120 : -120;
     post(WM_MOUSEWHEEL, (delta & 0xffff) << 16, packLParam(x, y));
+    // Also drive zoom directly (binary's title-state pan/zoom unreachable).
+    // Viewport struct: +0x10 = zoom (u8, 0=close..3=far). Inverted from wheel
+    // direction: scroll up = zoom in = decrement zoom.
+    if (heap) {
+      const vp = findMainViewport(heap);
+      if (vp) {
+        let z = heap.u8(vp + 0x10);
+        if (delta > 0 && z > 0) z--;
+        else if (delta < 0 && z < 3) z++;
+        heap.setU8(vp + 0x10, z);
+      }
+    }
     e.preventDefault();
   }, { passive: false });
 
@@ -191,6 +203,16 @@ export function attachInput(canvas, opts = {}) {
     if (vk) {
       inputState.keysDown[vk & 0xff] = 1;
       post(WM_KEYDOWN, vk, 1);
+      // Arrow-key panning. RCT1 normally drives this via the title-state
+      // machine; here we mutate viewport.world_x/y directly. Step ~32 px
+      // per press (matches one tile width).
+      if (heap) {
+        const STEP = 32;
+        if (vk === 0x25) panViewport(heap, -STEP, 0);       // ArrowLeft
+        else if (vk === 0x27) panViewport(heap,  STEP, 0);  // ArrowRight
+        else if (vk === 0x26) panViewport(heap, 0, -STEP);  // ArrowUp
+        else if (vk === 0x28) panViewport(heap, 0,  STEP);  // ArrowDown
+      }
     }
     if (e.key.length === 1) post(WM_CHAR, e.key.charCodeAt(0), 1);
   });
