@@ -1,6 +1,8 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/42f3e5.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Adds a register-prelude before FUN_0042f6a8 that the translator dropped:
+// see comment on that call site for details.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -47,6 +49,12 @@ export function FUN_0042f3e5(heap) {
     if ((iVar1 | 0) != -1) {
       heap.setU32(0x005f88a4, (iVar1) >>> 0);
       (regs.eax = FUN_0042f6b3(heap));
+      // Binary (0x42f475..0x42f481) sets ESI/ECX before calling 42f6a8:
+      //   mov esi, 0x6e3b80
+      //   mov ecx, 0x8dc08c ; sub ecx, esi   → ecx = 0x1e850c
+      // (translator dropped register-arg MOVs; see 42f6a8.js comment.)
+      regs.esi = 0x006e3b80 >>> 0;
+      regs.ecx = (0x008dc08c - 0x006e3b80) >>> 0;
       (regs.eax = FUN_0042f6a8(heap));
       (regs.eax = FUN_0042f74a(heap));
       (regs.eax = FUN_0042fa02(heap));

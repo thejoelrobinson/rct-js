@@ -1,6 +1,8 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/430113.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Adds a register-prelude before FUN_0042f6a8 that the translator dropped:
+// see comment on that call site for details.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -41,6 +43,18 @@ export function FUN_00430113(heap) {
   if ((iVar2 | 0) != -1) {
     heap.setU32(0x005f88a4, (iVar2) >>> 0);
     (regs.eax = FUN_0042f6b3(heap));
+    // FUN_0042f6a8 is a "process N bytes via 42f77c" wrapper whose call
+    // convention is ECX=count, ESI=pointer. Binary asm at 0x43015f..0x430164:
+    //   mov esi, 0x99c16c
+    //   mov ecx, 0x3a10
+    //   call 42f6a8
+    // The translator dropped these register-arg MOVs because Ghidra's C
+    // decompile didn't surface them (calling-convention params, not C
+    // args), which left 42f6a8's `do { ... } while (extraout_ECX != 1)`
+    // looping forever. See ported/auto/42f6a8.js for the hand-port that
+    // reads regs.esi / regs.ecx.
+    regs.esi = 0x0099c16c >>> 0;
+    regs.ecx = 0x3a10;
     (regs.eax = FUN_0042f6a8(heap));
     (regs.eax = FUN_0042f74a(heap));
     (regs.eax = FUN_0042fa02(heap));

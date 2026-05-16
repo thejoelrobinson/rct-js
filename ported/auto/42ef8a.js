@@ -26,6 +26,25 @@ import { FUN_0042f239 } from "./42f239.js";
 import { FUN_00458bcf } from "./458bcf.js";
 import { FUN_005df472 } from "./5df472.js";
 
+// Build "<prefix><suffix>\0" at dst by copying NUL-terminated prefix from
+// `prefixAddr`, then appending NUL-terminated suffix from `suffixAddr`.
+// Used to recreate 42ef8a's path-concatenation loops without registry data.
+function _buildPath(heap, dst, prefixAddr, suffixAddr) {
+  let w = dst;
+  if (prefixAddr) {
+    while (true) {
+      const c = heap.u8(prefixAddr++);
+      if (c === 0) break;
+      heap.setU8(w++, c);
+    }
+  }
+  while (true) {
+    const c = heap.u8(suffixAddr++);
+    heap.setU8(w++, c);
+    if (c === 0) break;
+  }
+}
+
 export function FUN_0042ef8a(heap) {
   // Try registry path probe; on miss, zero the path bufs (binary's behaviour).
   const iVar2_probe = FUN_00405653(heap, 0x005f8540, 0x005f8850) >>> 0;
@@ -37,6 +56,28 @@ export function FUN_0042ef8a(heap) {
     // Path-build chain (string copies). Skip — only matters if registry hit.
     // (Original C does several do-while string concatenations here.)
   }
+  // Always populate the four path-pattern buffers (registry hit or miss).
+  // Downstream functions (FUN_0042fdf4 Track enumeration, FUN_0042eae0
+  // Scenarios-dir scan) walk DAT_005f8fb3 byte-by-byte looking for the '*'
+  // wildcard char that the binary's path-concatenation embeds. With empty
+  // strings these loops never terminate — runInit's pre-tick FUN_004385d8
+  // call hangs in FUN_0042fdf4's first do-while (cVar1 stays 0, never == 42).
+  // In the registry-hit case the binary built these as
+  // "<install>\Scenarios\*.SC4" etc.; with no install dir the wildcard
+  // suffix alone is a valid "search current dir" pattern for our VFS-backed
+  // FindFirstFileA. Source-string addresses come from rct.exe's .rdata:
+  //   0x005f8fa5 = "\Saved Games\"
+  //   0x005f90b4 = "\Scenarios\*.SC4"
+  //   0x005f91c6 = "\Tracks\*.TD4"
+  // (and DAT_005f8648 is the empty install-dir, so prefix is "").
+  _buildPath(heap, 0x005f8da3, 0x005f8648, 0x005f8648 /* just NUL */);
+  // For 5f8da3 we want "\\\0" (single backslash terminator like the binary
+  // appends when prefix is empty). Reset and write that explicitly.
+  heap.setU8(0x005f8da3, 0x5c);
+  heap.setU8(0x005f8da3 + 1, 0);
+  _buildPath(heap, 0x005f8ea4, 0x005f8648, 0x005f8fa5);
+  _buildPath(heap, 0x005f8fb3, 0x005f8648, 0x005f90b4);
+  _buildPath(heap, 0x005f90c5, 0x005f8648, 0x005f91c6);
   FUN_0042f199(heap);
   if ((FUN_00405949(heap, 0x005f886b) >>> 0) !== 0) {
     FUN_005df472(heap);
