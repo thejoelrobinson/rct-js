@@ -67,6 +67,17 @@ async function main() {
   const dataBin = await fetchBytes("../decompiled/data.bin");
   log(`data.bin: ${(dataBin.length / 1e6).toFixed(2)} MB`, "ok");
 
+  status("fetching binary/rct.exe + lifter/extra-entries.json…");
+  // painter-bridge needs rct.exe's .text/CODESEG bytes plus the extras list
+  // to know which addresses to bridge. In Node it reads from disk; in the
+  // browser we hand it pre-fetched bytes.
+  const [exeBytes, extraEntriesText] = await Promise.all([
+    fetchBytes("../binary/rct.exe"),
+    fetch("../lifter/extra-entries.json").then((r) => r.text()),
+  ]);
+  const extraEntriesJson = JSON.parse(extraEntriesText);
+  log(`rct.exe: ${(exeBytes.length / 1e6).toFixed(2)} MB, extras: ${extraEntriesJson.length} entries`, "ok");
+
   status("fetching asset files…");
   const vfs = new Map();
   let totalBytes = 0;
@@ -79,16 +90,16 @@ async function main() {
   log(`vfs: ${VFS_FILES.length} files (${VFS_PLACEHOLDERS.length} placeholders), ${(totalBytes / 1e6).toFixed(1)} MB`, "ok");
 
   status("createRuntime…");
-  const runtime = createRuntime({ dataBin, vfs, canvas });
+  const runtime = createRuntime({ dataBin, vfs, canvas, exeBytes, extraEntriesJson });
   log(`heap: ${(runtime.heap.bytes.length / 1e6).toFixed(0)} MB allocated`, "ok");
 
   // Watchdog: per-phase heap-op budget + wallclock. Init has a generous
   // budget; tick resets both before each runTick. Throws on overrun with
   // a stack trace.
   let _ops = 0;
-  let _budget = 10_000_000;
+  let _budget = 200_000_000; // init may exercise painter-bridge interpreter
   let _startMs = Date.now();
-  let _wallBudgetMs = 30_000; // 30s for init
+  let _wallBudgetMs = 60_000; // 60s for init (was 30s)
   for (const name of ["u8","i8","u16","i16","u32","i32","setU8","setI8","setU16","setI16","setU32","setI32"]) {
     const orig = runtime.heap[name].bind(runtime.heap);
     runtime.heap[name] = (...args) => {

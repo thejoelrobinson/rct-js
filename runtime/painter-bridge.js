@@ -16,20 +16,38 @@
 // 00431bb8 / 00432204 / 00434e98 / 00436b40 / 005e5874). Each table is
 // indexed by DAT_00991f88 (camera rotation, 0..3).
 
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, resolve } from "node:path";
 import { makeCpu, runFunction, setEipHook } from "../harness/x86.js";
 import { loadPEFromBytes } from "../harness/loader.js";
 import { regs } from "./regs.js";
 import { state } from "./win32/context.js";
 import { FUN_00444927 } from "../ported/auto/444927.js";
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const EXTRA_ENTRIES = resolve(HERE, "..", "lifter", "extra-entries.json");
+// Node-only fs/path/url accessors. Top-level-await dynamic imports so the
+// browser (which has no `node:` scheme) can still load this module — the
+// imports reject and we leave the helpers null. Browser callers must pass
+// opts.exeBytes + opts.painterAddresses to installPainterBridge instead.
+let _nodeFs = null, _nodePath = null, _nodeUrl = null;
+try { _nodeFs   = await import("node:fs");   } catch (_) {}
+try { _nodePath = await import("node:path"); } catch (_) {}
+try { _nodeUrl  = await import("node:url");  } catch (_) {}
 
-function loadPainterAddresses() {
-  const json = JSON.parse(readFileSync(EXTRA_ENTRIES, "utf8"));
+function nodeReadExtraEntries() {
+  if (!_nodeFs || !_nodePath || !_nodeUrl) return null;
+  const here = _nodePath.dirname(_nodeUrl.fileURLToPath(import.meta.url));
+  const path = _nodePath.resolve(here, "..", "lifter", "extra-entries.json");
+  return JSON.parse(_nodeFs.readFileSync(path, "utf8"));
+}
+
+function nodeReadExe() {
+  if (!_nodeFs || !_nodePath || !_nodeUrl) return null;
+  const here = _nodePath.dirname(_nodeUrl.fileURLToPath(import.meta.url));
+  return _nodeFs.readFileSync(_nodePath.resolve(here, "..", "binary", "rct.exe"));
+}
+
+function loadPainterAddresses(opts) {
+  if (Array.isArray(opts?.painterAddresses)) return opts.painterAddresses;
+  const json = opts?.extraEntriesJson || nodeReadExtraEntries();
+  if (!json) return [];
   return json
     .filter((x) => x.addr !== undefined)
     .map((x) => (typeof x.addr === "string" ? parseInt(x.addr, 16) : x.addr));
@@ -61,12 +79,10 @@ export function installPainterBridge(heap, opts = {}) {
   // browser, callers must pass `opts.exeBytes` (a Uint8Array of rct.exe).
   let exeBytes = opts.exeBytes;
   if (!exeBytes) {
-    try {
-      const exePath = resolve(HERE, "..", "binary", "rct.exe");
-      exeBytes = readFileSync(exePath);
-    } catch (e) {
+    try { exeBytes = nodeReadExe(); } catch (_) {}
+    if (!exeBytes) {
       if (typeof console !== "undefined") {
-        console.warn(`[painter-bridge] no rct.exe available; painters will not run: ${e.message}`);
+        console.warn(`[painter-bridge] no rct.exe available; painters will not run`);
       }
       return 0;
     }
@@ -120,7 +136,7 @@ export function installPainterBridge(heap, opts = {}) {
   const STACK_TOP = memory.byteLength;
   heap.sp = Math.min(heap.sp, STACK_TOP - STACK_REGION);
 
-  const painters = loadPainterAddresses();
+  const painters = loadPainterAddresses(opts);
   // Some "painter" addresses are NOT standalone functions — they're internal
   // jump labels of a larger function whose dispatcher prologue does
   // `push eax; push ecx; jmp [edx*4 + tbl]` (where edx = camera-rotation

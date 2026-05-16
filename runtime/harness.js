@@ -58,7 +58,11 @@ export function createRuntime(opts) {
   // interpreter handles the 0x66 operand-size prefix that's pervasive in
   // these painters (the static lifter mis-decodes it). Painter addresses
   // live in lifter/extra-entries.json.
-  installPainterBridge(heap);
+  installPainterBridge(heap, {
+    exeBytes: opts.exeBytes,
+    painterAddresses: opts.painterAddresses,
+    extraEntriesJson: opts.extraEntriesJson,
+  });
 
   // Override the painter-bridge shim for FUN_extra_paint_436b50 (rotation-0
   // terrain painter) with a hand-port. The interpreter shim bombs because
