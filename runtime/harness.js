@@ -492,3 +492,52 @@ export function createRuntime(opts) {
     },
   };
 }
+
+/**
+ * Bypass the boot fade-in state machine so callers (tests, dev tools) can
+ * exercise the normal-tick input/paint chain immediately, without waiting
+ * ~80 ticks for the binary's natural fade-in to complete.
+ *
+ * Background — see ported/auto/4385d8.js lines ~149-176:
+ *   DAT_005f8da2 is the boot fade-in counter. The first tick sets it to 0x10.
+ *   Each subsequent tick increments it by 1 and short-circuits the rest of
+ *   the tick body (`break LAB_00438a0d`) while the counter is in 0x10..0x5f
+ *   — meaning no input dispatch and limited paint runs during that window.
+ *   At 0x60 the fade-in completes: the counter snaps to 1 (or 2 if the
+ *   binary detected an event during fade-in via DAT_00628ce0), then
+ *   FUN_0042f3a2 runs as a one-shot post-fade init (sound/font setup).
+ *
+ * At 60Hz that's ~1.3s in a foregrounded browser — but in hidden tabs
+ * (rAF throttled to ~1Hz) and in node tests it can be 80+ real seconds
+ * and blocks any test that wants to verify the post-fade input/dispatch
+ * chain.
+ *
+ * This helper sets DAT_005f8da2 directly to the same post-fade value the
+ * binary would land on naturally (preserving the 1-vs-2 distinction based
+ * on DAT_00628ce0), then fires FUN_0042f3a2 once to match what 4385d8
+ * does at the natural 0x60 transition.
+ *
+ * Call AFTER runInit() + at least one runTick() so the first-tick lazy
+ * init in 4385d8 has populated DAT_00628ce0 / DAT_00628cd0 etc.
+ *
+ * @param {Heap} heap  runtime heap (from createRuntime().heap)
+ */
+export function skipFadeIn(heap) {
+  // Set counter to post-fade-in state. Mirrors lines 172-174 of 4385d8:
+  //   heap.setU8(0x005f8da2, 1);
+  //   if (heap.u32(0x00628ce0) != 0) heap.setU8(0x005f8da2, 2);
+  heap.setU8(0x005f8da2, 1);
+  if (heap.u32(0x00628ce0) !== 0) heap.setU8(0x005f8da2, 2);
+  // Fire the one-shot post-fade init the same way 4385d8 would. Use
+  // state.fnDispatch instead of a static import so any monkey-patch
+  // (painter-bridge / hand-port overlay installed in createRuntime) wins.
+  const fn_42f3a2 = state.fnDispatch.get(0x42f3a2);
+  if (typeof fn_42f3a2 === "function") {
+    try { fn_42f3a2(heap); }
+    catch (e) {
+      if (typeof console !== "undefined") {
+        console.warn(`[harness] skipFadeIn: FUN_0042f3a2 threw: ${(e.message || e).slice(0, 160)}`);
+      }
+    }
+  }
+}
