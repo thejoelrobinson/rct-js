@@ -134,5 +134,13 @@
   {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dac92", "addr": "0x5dac92", "section": "CODESEG"},
   {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dae1c", "addr": "0x5dae1c", "section": "CODESEG"},
   {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dac2c", "addr": "0x5dac2c", "section": "CODESEG"},
-  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dacdc", "addr": "0x5dacdc", "section": "CODESEG"}
+  {"_table": "PTR_LAB_005d97b4", "name": "FUN_extra_sprite_5dacdc", "addr": "0x5dacdc", "section": "CODESEG"},
+
+  {"_table": "PTR_LAB_005e2248", "_comment": "Input-mode dispatch jumptable indexed by DAT_00991f36. Reached from FUN_005e2225 (per-tick input event handler) — when a click is dequeued, this routes to the per-mode handler (idle / placement-tool / right-drag-pan / etc).", "name": "FUN_extra_input_5e2b52", "addr": "0x5e2b52", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e27de", "addr": "0x5e27de", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e2713", "addr": "0x5e2713", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e2510", "addr": "0x5e2510", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e2388", "addr": "0x5e2388", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e226c", "addr": "0x5e226c", "section": "CODESEG"},
+  {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e2601", "addr": "0x5e2601", "section": "CODESEG"}
 ]
