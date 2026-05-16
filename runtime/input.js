@@ -34,6 +34,35 @@ export const inputState = {
   mouseButtons: 0,
 };
 
+// Mouse-drag camera pan: right-click + drag mutates the active viewport's
+// world_x/world_y directly. RCT1's binary expects this via its title-state
+// machine which is unreachable in our harness, so we do it client-side.
+// Uses window-pool slot 0x9a013c (main viewport, wndProc=0x42b079).
+const POOL_START   = 0x009a013c;
+const POOL_END_PTR = 0x009a1164;
+const SLOT_STRIDE  = 0x178;
+
+function findMainViewport(heap) {
+  const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
+  if (poolEnd <= POOL_START || poolEnd > 0x009a013c + 256 * SLOT_STRIDE) return 0;
+  for (let slot = POOL_START; slot < poolEnd; slot += SLOT_STRIDE) {
+    if ((heap.u32(slot) >>> 0) === 0x42b079) {
+      return heap.u32(slot + 8) >>> 0;
+    }
+  }
+  return 0;
+}
+
+function panViewport(heap, dx, dy) {
+  const vp = findMainViewport(heap);
+  if (vp === 0) return;
+  // viewport.world_x at +8 (s16), world_y at +0xa (s16).
+  const newX = (heap.i16(vp + 8) + dx) | 0;
+  const newY = (heap.i16(vp + 0xa) + dy) | 0;
+  heap.setI16(vp + 8, newX);
+  heap.setI16(vp + 0xa, newY);
+}
+
 const WM_MOUSEMOVE   = 0x0200;
 const WM_LBUTTONDOWN = 0x0201;
 const WM_LBUTTONUP   = 0x0202;
@@ -74,7 +103,11 @@ function packLParam(x, y) {
 import { state as _stateForExport } from "./win32/context.js";
 _stateForExport.inputState = inputState;
 
-export function attachInput(canvas) {
+export function attachInput(canvas, opts = {}) {
+  // Caller passes the runtime heap so drag-pan can mutate the viewport.
+  const heap = opts.heap || null;
+  let _dragLastX = -1, _dragLastY = -1;
+
   // Browser autoplay policy: AudioContext starts suspended until a user
   // gesture lands. Unblock on the first pointer/key event so any sound
   // queued during boot (UI clicks, music) becomes audible immediately.
@@ -108,6 +141,14 @@ export function attachInput(canvas) {
     const [x, y] = canvasCoords(e);
     inputState.cursorX = x;
     inputState.cursorY = y;
+    // Right-button drag → pan camera. Standard RCT1 control.
+    if (heap && (inputState.mouseButtons & 2) && _dragLastX >= 0) {
+      const dx = _dragLastX - x;
+      const dy = _dragLastY - y;
+      if (dx !== 0 || dy !== 0) panViewport(heap, dx, dy);
+      _dragLastX = x;
+      _dragLastY = y;
+    }
     post(WM_MOUSEMOVE, inputState.mouseButtons, packLParam(x, y));
   });
 
@@ -118,7 +159,7 @@ export function attachInput(canvas) {
     inputState.cursorY = y;
     if (e.button === 0)      { inputState.mouseButtons |= 1; post(WM_LBUTTONDOWN, 1, packLParam(x, y)); }
     else if (e.button === 1) { inputState.mouseButtons |= 4; post(WM_MBUTTONDOWN, 0x10, packLParam(x, y)); }
-    else if (e.button === 2) { inputState.mouseButtons |= 2; post(WM_RBUTTONDOWN, 2, packLParam(x, y)); }
+    else if (e.button === 2) { inputState.mouseButtons |= 2; post(WM_RBUTTONDOWN, 2, packLParam(x, y)); _dragLastX = x; _dragLastY = y; }
     e.preventDefault();
   });
 
@@ -128,7 +169,7 @@ export function attachInput(canvas) {
     inputState.cursorY = y;
     if (e.button === 0)      { inputState.mouseButtons &= ~1; post(WM_LBUTTONUP, 0, packLParam(x, y)); }
     else if (e.button === 1) { inputState.mouseButtons &= ~4; post(WM_MBUTTONUP, 0, packLParam(x, y)); }
-    else if (e.button === 2) { inputState.mouseButtons &= ~2; post(WM_RBUTTONUP, 0, packLParam(x, y)); }
+    else if (e.button === 2) { inputState.mouseButtons &= ~2; post(WM_RBUTTONUP, 0, packLParam(x, y)); _dragLastX = -1; }
     e.preventDefault();
   });
 

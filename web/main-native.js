@@ -147,7 +147,10 @@ async function main() {
   const hwnd = state.firstHwnd || 0;
 
   // Wire DOM events on the canvas to the message queue.
-  attachInput(canvas);
+  // Pass the heap so right-drag pan can mutate viewport coords directly
+  // (the binary's title-state machine that normally drives the pan is
+  // gated behind unreachable CODESEG code).
+  attachInput(canvas, { heap: runtime.heap });
 
   // Expose state for browser-console inspection.
   window._runtime = runtime;
