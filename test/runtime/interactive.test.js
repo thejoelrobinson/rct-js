@@ -175,4 +175,39 @@ describe("interactive input → game state", () => {
     expect(after2).toBe(0);
     expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
   }, 60_000);
+
+  // END-TO-END WIN: toolbar pause-button click → pause toggle.
+  //
+  // clickToolbar() walks the toolbar window pool slot's widget array, maps
+  // (x, y) → widget index, and routes widget 0 (the pause button at L=0,
+  // R=29, T=0, B=29) to togglePause(). This is the same plumbing path as
+  // Space → togglePause, but driven by a left-click in the toolbar rect —
+  // exactly the user action that should pause/unpause the game.
+  //
+  // The binary's full input-dispatch chain (FUN_005e2225 / FUN_005e3ace
+  // → 0x42a830 widget-click handler) is still stalled at two upstream
+  // gates (DAT_005f8da2 fade-in not reaching 0x60, FUN_005e38f5's
+  // extraout_CX register-leak not reconstructed). This shortcut lets
+  // toolbar buttons work today; bridging 0x42a830 + fixing the chain
+  // is a future Phase O task.
+  it("clickToolbar() at pause button (10,10) flips DAT_0099c169", async () => {
+    const { clickToolbar } = await import("../../runtime/input.js");
+    runtime.heap.setU8(0x0099c169, 0);
+    const idx = clickToolbar(runtime.heap, 10, 10);
+    expect(idx).toBe(0); // widget 0 = pause
+    expect(runtime.heap.u8(0x0099c169) & 1).toBe(1);
+    // Click again → toggle back off.
+    clickToolbar(runtime.heap, 10, 10);
+    expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
+  }, 60_000);
+
+  // Negative case: clicking outside the toolbar rect doesn't change pause.
+  it("clickToolbar() outside toolbar returns -1 and does NOT toggle pause", async () => {
+    const { clickToolbar } = await import("../../runtime/input.js");
+    runtime.heap.setU8(0x0099c169, 0);
+    // y=300 is below the toolbar (which is y=0..29).
+    const idx = clickToolbar(runtime.heap, 100, 300);
+    expect(idx).toBe(-1);
+    expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
+  }, 60_000);
 });

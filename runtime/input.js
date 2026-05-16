@@ -81,6 +81,91 @@ export function togglePause(heap) {
   return heap.u8(0x0099c169) & 1;
 }
 
+// Top-toolbar click router. The binary's path is:
+//   WM_LBUTTONDOWN → WndProc 0x403d79 → enqueue event
+//   per-tick FUN_005e2225 → FUN_005e3ace (hit-test pool by click coords)
+//   → toolbar window's widget-event handler at 0x42a830 (CODESEG, not bridged)
+//   → dispatches per-widget action (widget 0 = pause → FUN_00427247).
+//
+// That chain is currently stalled at two points: (a) the boot fade-in gate
+// at DAT_005f8da2 prevents FUN_005e1653 from running until ~80 ticks in, and
+// (b) FUN_005e38f5's `extraout_CX` loop break/continue isn't reconstructed
+// from the x86 (the translator left it as `0`, so the dequeue loop breaks
+// immediately). Bridging 0x42a830 via the painter-bridge would require
+// substantial work on the CODESEG interpreter path too.
+//
+// Pragmatic shortcut: find the toolbar window slot in the pool, walk its
+// widget table to find which widget contains (x, y), and directly invoke
+// the documented action for that widget. Today we wire only widget #0 (the
+// pause button at L=0..R=29, T=0..B=29) → togglePause(). This matches the
+// pattern used for Space → togglePause and gives a verified user-input →
+// observable-game-state path through the toolbar.
+//
+// Widget table layout (16 bytes per entry):
+//   +0  type (u8)   — 0x06 = button, 0xff = end-of-list sentinel
+//   +1  cursor (u8)
+//   +2  left   (s16)
+//   +4  right  (s16)
+//   +6  top    (s16)
+//   +8  bottom (s16)
+//   +0xa imageId (u32)
+//   +0xe tooltip (u16)
+//
+// The toolbar window's widget array starts at 0x005f5124 (per the
+// `mov [esi+0x1c], 0x5f5124` in 4298a0.js); slot+0x20..+0x26 hold the
+// window rect, so widget rects are window-relative.
+const TOOLBAR_WIDGETS_BASE = 0x005f5124;
+const PAUSE_WIDGET_INDEX = 0;
+const WIDGET_STRIDE = 0x10;
+
+function findToolbarSlot(heap) {
+  const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
+  if (poolEnd <= POOL_START || poolEnd > 0x009a013c + 256 * SLOT_STRIDE) return 0;
+  for (let slot = POOL_START; slot < poolEnd; slot += SLOT_STRIDE) {
+    // Toolbar uses paint wndProc 0x42afb5 (slot+0) and click handler
+    // 0x42a830 (slot+4). Match on paint proc since it's stable.
+    if ((heap.u32(slot) >>> 0) === 0x42afb5) return slot;
+  }
+  return 0;
+}
+
+// Returns the widget index (0..N-1) at (x, y) within the toolbar, or -1.
+function toolbarWidgetAt(heap, x, y) {
+  const slot = findToolbarSlot(heap);
+  if (slot === 0) return -1;
+  const winLeft = heap.i16(slot + 0x20);
+  const winTop  = heap.i16(slot + 0x22);
+  const winW    = heap.i16(slot + 0x24);
+  const winH    = heap.i16(slot + 0x26);
+  if (x < winLeft || y < winTop || x >= winLeft + winW || y >= winTop + winH) return -1;
+  const lx = x - winLeft, ly = y - winTop;
+  // Walk widget table until type 0xff sentinel. Cap iteration to avoid runaway.
+  for (let i = 0; i < 64; i++) {
+    const w = TOOLBAR_WIDGETS_BASE + i * WIDGET_STRIDE;
+    const type = heap.u8(w);
+    if (type === 0xff || type === 0) return -1;
+    const l = heap.i16(w + 2);
+    const r = heap.i16(w + 4);
+    const t = heap.i16(w + 6);
+    const b = heap.i16(w + 8);
+    if (lx >= l && lx <= r && ly >= t && ly <= b) return i;
+  }
+  return -1;
+}
+
+// Routes a left-click at (x, y) to a toolbar widget action, if applicable.
+// Returns the widget index that was activated, or -1.
+export function clickToolbar(heap, x, y) {
+  const idx = toolbarWidgetAt(heap, x, y);
+  if (idx < 0) return -1;
+  if (idx === PAUSE_WIDGET_INDEX) {
+    togglePause(heap);
+    return idx;
+  }
+  // Other widgets unmapped for now.
+  return -1;
+}
+
 const WM_MOUSEMOVE   = 0x0200;
 const WM_LBUTTONDOWN = 0x0201;
 const WM_LBUTTONUP   = 0x0202;
@@ -175,7 +260,14 @@ export function attachInput(canvas, opts = {}) {
     const [x, y] = canvasCoords(e);
     inputState.cursorX = x;
     inputState.cursorY = y;
-    if (e.button === 0)      { inputState.mouseButtons |= 1; post(WM_LBUTTONDOWN, 1, packLParam(x, y)); }
+    if (e.button === 0)      {
+      inputState.mouseButtons |= 1;
+      post(WM_LBUTTONDOWN, 1, packLParam(x, y));
+      // Toolbar shortcut: route LMB clicks in toolbar widget rects directly
+      // to their actions (see clickToolbar). Bypasses the per-tick hit-test
+      // chain (FUN_005e2225/FUN_005e3ace/0x42a830) which is still stalled.
+      if (heap) clickToolbar(heap, x, y);
+    }
     else if (e.button === 1) { inputState.mouseButtons |= 4; post(WM_MBUTTONDOWN, 0x10, packLParam(x, y)); }
     else if (e.button === 2) { inputState.mouseButtons |= 2; post(WM_RBUTTONDOWN, 2, packLParam(x, y)); _dragLastX = x; _dragLastY = y; }
     e.preventDefault();
