@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5e3ace.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x5e3874 (FUN_005e3874) shows `push ecx ... pop ecx; ret`,
+// so ECX is preserved across the call. Ghidra's `extraout_ECX` therefore
+// reflects the caller's incoming ECX (which we already track as in_ECX).
+// Translator-emitted `let extraout_ECX = 0` defeated that — restore the
+// `in_ECX = extraout_ECX` line's intent by sourcing it from in_ECX.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -15,7 +20,7 @@ export function FUN_005e3ace(heap) {
   let puVar1 = 0;
   let in_EAX = regs.eax >>> 0;
   let in_ECX = regs.ecx >>> 0;
-  let extraout_ECX = 0;
+  let extraout_ECX = in_ECX;
   let sVar2 = 0;
   let unaff_EBX = regs.ebx >>> 0;
   let unaff_EBP = regs.ebp >>> 0;

@@ -62,6 +62,10 @@ export function FUN_005e3f31(heap) {
     
     }
     uVar5 = (((regs.eax = FUN_005e5bd8(heap))) >>> 0);
+    // Hand-fix (extraout_ECX): FUN_005e5bd8 is pushal/popal-bracketed —
+    // ECX is preserved across the call, so the reload should pull from
+    // in_ECX (caller's original ECX) rather than the translator's `0`.
+    extraout_ECX = in_ECX;
     in_ECX = ((extraout_ECX) >>> 0);
   }
   puVar3 = ((heap.u32(0x009a1164)) >>> 0);

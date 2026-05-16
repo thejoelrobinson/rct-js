@@ -1,6 +1,10 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5e412c.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Same widget-resize pattern as 5e40c4: per widget, call [esi+4] (the
+// handler), then store CX into [esi+0x38] and DX into [esi+0x40]. Ghidra
+// captures these as extraout_CX / extraout_DX; translator emits zeros.
+// Read regs.ecx / regs.edx after the callIndirect.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -24,6 +28,10 @@ export function FUN_005e412c(heap) {
     if (heap.i8(pcVar4) == 17) {
       heap.setU16((iVar3 + 0x34 + unaff_ESI), (0) & 0xffff);
       (regs.eax = callIndirect(heap, heap.u32((unaff_ESI + 4)), pcVar4, iVar3, iVar2));
+      // Hand-fix: widget handler reports its laid-out (x,y) in CX,DX. Read
+      // from regs so the stored offsets reflect the actual placement.
+      extraout_CX = regs.ecx & 0xffff;
+      extraout_DX = regs.edx & 0xffff;
       heap.setU16((iVar3 + 0x36 + unaff_ESI), (0) & 0xffff);
       heap.setU16((iVar3 + 0x38 + unaff_ESI), (extraout_CX) & 0xffff);
       heap.setU16((iVar3 + 0x3e + unaff_ESI), (0) & 0xffff);
