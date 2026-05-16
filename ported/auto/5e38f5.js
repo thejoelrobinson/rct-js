@@ -1,6 +1,20 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5e38f5.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Ghidra emits a `short extraout_CX` local that the original x86 leaves in
+// CX after each `FUN_005e1fdd` call (the event-type code: 0 = no event,
+// 1 = LMB-down, 2 = RMB-down, 3 = LMB-up, 4 = mouse-move/other). The
+// translator emits `let extraout_CX = 0` (never written), so the inner
+// `while(true)` dequeue loop hits `if (extraout_CX == 0) break;` on the
+// first iteration and bails before any `FUN_005e2225` dispatch fires —
+// which means the per-tick input chain never delivers clicks to widgets.
+//
+// Hand-port reads CX from `regs.ecx` (low 16 bits, sign-extended) after
+// FUN_005e1fdd, mirroring the x86's `mov cx, ...; ret` pattern. The
+// matching hand-port in `5e1fdd.js` writes `regs.ecx` at every return.
+//
+// Confirmed against disassembly at 0x5e205b-0x5e2186 (capstone) and the
+// caller in 5e38f5 at 0x5e3920 onward.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -31,6 +45,9 @@ export function FUN_005e38f5(heap) {
     (regs.eax = FUN_005e1f70(heap));
     while (true) {
       in_EAX = (((regs.eax = FUN_005e1fdd(heap))) >>> 0);
+      // x86: 5e1fdd leaves event-type in CX. Read the low 16 bits and
+      // sign-extend to match `short extraout_CX` in Ghidra C.
+      extraout_CX = ((regs.ecx << 16) >> 16);
       if (extraout_CX == 0) {
         break;
       }
