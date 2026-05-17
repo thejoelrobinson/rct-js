@@ -1,4 +1,14 @@
 // @manual — do not regenerate.
+// HAND-FIX (Phase R+4, RLE byte-store): translator emitted heap.setU32(ptr, byte & 0xffffffff)
+// for C-source `*pbVar = *src;` where pbVar is a byte-pointer in this remap blitter's
+// per-pixel loops. Each iteration advances ptr by 1 but the setU32 was writing 4 bytes —
+// corrupting the next 3 bytes with zero, only partly overwritten by later iterations.
+// Fixed by switching the per-pixel writes to heap.setU8(..., ... & 0xff).
+//
+// HAND-FIX (Phase R+4, int3 cast): translator mis-emitted Ghidra's `(int3)X` 24-bit cast
+// as `callIndirect(heap, int3, X)`. The `int3` symbol here is Ghidra's pseudo-type for
+// 3-byte integers, not the `int 3` opcode stub. Replaced with `X & 0xffffff`.
+//
 // Source: decompiled/c/9b4660.c — sprite remap-copy inner loop.
 //
 // Translator bug: the outer loop's exit check `if (iVar7 < 0) return;`
@@ -50,7 +60,7 @@ export function FUN_009b4660(heap) {
     if (heap.u32(0x009a2028) == 4) {
       do {
         if (heap.u8((heap.u32(unaff_ESI) + iVar2)) != 0) {
-          heap.setU32(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xffffffff);
+          heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xff);
         }
         if (heap.u8((((heap.u8(unaff_ESI + (1))) >>> 0) + iVar2)) != 0) {
           heap.setU8((unaff_EDI + (1)), (heap.u8((((heap.u8(unaff_ESI + (1))) >>> 0) + iVar2))) & 0xff);
@@ -71,7 +81,7 @@ export function FUN_009b4660(heap) {
       iVar7 = ((CONCAT22((((((iVar7) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x009a2028))) >>> 0);
       do {
         if (heap.u8((heap.u32(unaff_ESI) + iVar2)) != 0) {
-          heap.setU32(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xffffffff);
+          heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xff);
         }
         sVar5 = ((((iVar7) << 16 >> 16)) & 0xffff);
         uVar8 = ((((((iVar7) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
@@ -124,7 +134,7 @@ export function FUN_009b4660(heap) {
     if ((heap.u32(0x009a201c) & 1) == 0) {
       do {
         for (uVar6 = ((((uVar1) >>> 0)) >>> 0); uVar6 != 0; uVar6 = (((uVar6 - 1) >>> 0)) >>> 0) {
-          heap.setU32(unaff_EDI, (heap.u8(unaff_ESI)) & 0xffffffff);
+          heap.setU8(unaff_EDI, (heap.u8(unaff_ESI)) & 0xff);
           unaff_ESI = ((unaff_ESI + 1) >>> 0);
           unaff_EDI = ((unaff_EDI + 1) >>> 0);
         }
@@ -138,7 +148,7 @@ export function FUN_009b4660(heap) {
     LAB_009b4732: do {
       iVar2 = ((in_EAX) >>> 0);
       if (heap.u8(unaff_ESI) != 0) {
-        heap.setU32(unaff_EDI, (heap.u8(unaff_ESI)) & 0xffffffff);
+        heap.setU8(unaff_EDI, (heap.u8(unaff_ESI)) & 0xff);
       }
       pbVar9 = ((unaff_ESI + 1) >>> 0);
       pbVar10 = ((unaff_EDI + 1) >>> 0);
@@ -164,7 +174,11 @@ export function FUN_009b4660(heap) {
             }
             unaff_EDI = ((unaff_EDI + 4) >>> 0);
             uVar4 = ((uVar4 - 4) & 0xffff);
-            in_EAX = ((CONCAT31((regs.eax = callIndirect(heap, int3, ((iVar2) >>> 0) >>> 8)), bVar3)) >>> 0);
+            // HAND-FIX: translator mis-emitted the Ghidra cast `(int3)X` as
+            // `callIndirect(heap, int3, X)`. int3 here is a 3-byte truncation
+            // cast, not the `int 3` opcode stub. The semantics is just
+            // CONCAT31(iVar2 >> 8 masked to 24 bits, bVar3).
+            in_EAX = ((CONCAT31((((iVar2) >>> 0) >>> 8) & 0xffffff, bVar3)) >>> 0);
             pbVar9 = ((unaff_ESI) >>> 0);
             pbVar10 = ((unaff_EDI) >>> 0);
             if (uVar4 != 0) {
@@ -186,7 +200,7 @@ export function FUN_009b4660(heap) {
       iVar7 = ((CONCAT22((((((iVar7) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x009a2028))) >>> 0);
       do {
         if (heap.u8(unaff_ESI) != 0) {
-          heap.setU32(unaff_EDI, (heap.u8((heap.u32(unaff_EDI) + iVar2))) & 0xffffffff);
+          heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_EDI) + iVar2))) & 0xff);
         }
         pbVar10 = ((unaff_EDI + 1) >>> 0);
         sVar5 = ((((iVar7) << 16 >> 16)) & 0xffff);
@@ -197,7 +211,7 @@ export function FUN_009b4660(heap) {
           break;
         }
         if (heap.u8(unaff_ESI + (1)) != 0) {
-          heap.setU32(pbVar10, (heap.u8((heap.u32(pbVar10) + iVar2))) & 0xffffffff);
+          heap.setU8(pbVar10, (heap.u8((heap.u32(pbVar10) + iVar2))) & 0xff);
         }
         pbVar10 = ((unaff_EDI + 2) >>> 0);
         iVar7 = ((CONCAT22(uVar8, sVar5 + -2)) >>> 0);
@@ -207,7 +221,7 @@ export function FUN_009b4660(heap) {
         }
         pbVar9 = ((unaff_ESI + 3) >>> 0);
         if (heap.u8(unaff_ESI + (2)) != 0) {
-          heap.setU32(pbVar10, (heap.u8((heap.u32(pbVar10) + iVar2))) & 0xffffffff);
+          heap.setU8(pbVar10, (heap.u8((heap.u32(pbVar10) + iVar2))) & 0xff);
         }
         pbVar10 = ((unaff_EDI + 3) >>> 0);
         iVar7 = ((CONCAT22(uVar8, sVar5 + -3)) >>> 0);
@@ -216,7 +230,7 @@ export function FUN_009b4660(heap) {
         }
         unaff_ESI = ((unaff_ESI + 4) >>> 0);
         if (heap.u8(pbVar9) != 0) {
-          heap.setU32(pbVar10, (heap.u8((heap.u32(pbVar10) + iVar2))) & 0xffffffff);
+          heap.setU8(pbVar10, (heap.u8((heap.u32(pbVar10) + iVar2))) & 0xff);
         }
         unaff_EDI = ((unaff_EDI + 4) >>> 0);
         iVar7 = ((CONCAT22(uVar8, sVar5 + -4)) >>> 0);

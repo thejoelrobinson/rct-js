@@ -1,3 +1,12 @@
+// @manual — do not regenerate.
+// HAND-FIX (Phase R+4, RLE byte-store): translator emitted heap.setU32(ptr, byte & 0xffffffff)
+// for C-source `*pbVar = *src;` where pbVar is a byte-pointer in RLE-decode/blitter loops.
+// Each iteration advances ptr by 1 but the setU32 was writing 4 bytes — corrupting the next
+// 3 bytes in the row with zero, then they get overwritten by subsequent iterations EXCEPT
+// for the last 3 bytes of each run which stayed zero, and the 3 bytes immediately past the
+// run end which also got zeroed. In the RLE-decompress scratchpad at 0x9a2032, downstream
+// back-references then copied that corruption into the visible sprite. Fixed by switching
+// the per-pixel write to heap.setU8(..., ... & 0xff).
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
 // Source: decompiled/c/9b8705.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
@@ -42,7 +51,7 @@ export function FUN_009b8705(heap) {
           uVar7 = ((uVar10) >>> 0);
           LAB_009b8843: do {
             if (heap.u8(unaff_ESI) != 0) {
-              heap.setU32(unaff_EDI, (heap.u8(unaff_ESI)) & 0xffffffff);
+              heap.setU8(unaff_EDI, (heap.u8(unaff_ESI)) & 0xff);
             }
             sVar6 = ((((uVar7) << 16 >> 16)) & 0xffff);
             pbVar11 = ((unaff_ESI + 4) >>> 0);
@@ -95,7 +104,7 @@ export function FUN_009b8705(heap) {
           iVar8 = ((CONCAT22((((((iVar8) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x009a2028))) >>> 0);
           do {
             if (heap.u8(unaff_ESI) != 0) {
-              heap.setU32(unaff_EDI, (heap.u8((heap.u32(unaff_EDI) + iVar2))) & 0xffffffff);
+              heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_EDI) + iVar2))) & 0xff);
             }
             pbVar12 = ((unaff_EDI + 1) >>> 0);
             sVar6 = ((((iVar8) << 16 >> 16)) & 0xffff);
@@ -106,7 +115,7 @@ export function FUN_009b8705(heap) {
               break;
             }
             if (heap.u8(unaff_ESI + (4)) != 0) {
-              heap.setU32(pbVar12, (heap.u8((heap.u32(pbVar12) + iVar2))) & 0xffffffff);
+              heap.setU8(pbVar12, (heap.u8((heap.u32(pbVar12) + iVar2))) & 0xff);
             }
             pbVar12 = ((unaff_EDI + 2) >>> 0);
             iVar8 = ((CONCAT22(uVar9, sVar6 + -2)) >>> 0);
@@ -116,7 +125,7 @@ export function FUN_009b8705(heap) {
             }
             pbVar11 = ((unaff_ESI + 0xc) >>> 0);
             if (heap.u8(unaff_ESI + (8)) != 0) {
-              heap.setU32(pbVar12, (heap.u8((heap.u32(pbVar12) + iVar2))) & 0xffffffff);
+              heap.setU8(pbVar12, (heap.u8((heap.u32(pbVar12) + iVar2))) & 0xff);
             }
             pbVar12 = ((unaff_EDI + 3) >>> 0);
             iVar8 = ((CONCAT22(uVar9, sVar6 + -3)) >>> 0);
@@ -125,7 +134,7 @@ export function FUN_009b8705(heap) {
             }
             unaff_ESI = ((unaff_ESI + 0x10) >>> 0);
             if (heap.u8(pbVar11) != 0) {
-              heap.setU32(pbVar12, (heap.u8((heap.u32(pbVar12) + iVar2))) & 0xffffffff);
+              heap.setU8(pbVar12, (heap.u8((heap.u32(pbVar12) + iVar2))) & 0xff);
             }
             unaff_EDI = ((unaff_EDI + 4) >>> 0);
             iVar8 = ((CONCAT22(uVar9, sVar6 + -4)) >>> 0);
@@ -156,7 +165,7 @@ export function FUN_009b8705(heap) {
           iVar8 = ((CONCAT22((((((iVar8) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x009a2028))) >>> 0);
           do {
             if (heap.u8((heap.u32(unaff_ESI) + iVar2)) != 0) {
-              heap.setU32(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xffffffff);
+              heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xff);
             }
             sVar6 = ((((iVar8) << 16 >> 16)) & 0xffff);
             uVar9 = ((((((iVar8) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);

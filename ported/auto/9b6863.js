@@ -1,3 +1,12 @@
+// @manual — do not regenerate.
+// HAND-FIX (Phase R+4, RLE byte-store): translator emitted heap.setU32(ptr, byte & 0xffffffff)
+// for C-source `*pbVar = *src;` where pbVar is a byte-pointer in RLE-decode/blitter loops.
+// Each iteration advances ptr by 1 but the setU32 was writing 4 bytes — corrupting the next
+// 3 bytes in the row with zero, then they get overwritten by subsequent iterations EXCEPT
+// for the last 3 bytes of each run which stayed zero, and the 3 bytes immediately past the
+// run end which also got zeroed. In the RLE-decompress scratchpad at 0x9a2032, downstream
+// back-references then copied that corruption into the visible sprite. Fixed by switching
+// the per-pixel write to heap.setU8(..., ... & 0xff).
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
 // Source: decompiled/c/9b6863.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
@@ -218,7 +227,7 @@ export function FUN_009b6863(heap) {
       if ((sVar7 == 0 || (((sVar6 + uVar2)) << 16 >> 16) < heap.u32(0x009a2028)) || (uVar3 = ((uVar2 - sVar7) & 0xffff), uVar3 != 0 && sVar7 <= ((uVar2) << 16 >> 16))) {
         for (uVar3 = ((((uVar3 + 1) & 0xffff) >>> 1) & 0xffff); uVar3 != 0; uVar3 = (((uVar3 - 1) & 0xffff)) >>> 0) {
           in_AL = ((heap.u8(puVar14)) & 0xff);
-          heap.setU32(puVar15, (in_AL) & 0xffffffff);
+          heap.setU8(puVar15, (in_AL) & 0xff);
           puVar14 = ((puVar14 + ((1) * 2)) >>> 0);
           puVar15 = ((puVar15 + 1) >>> 0);
         }

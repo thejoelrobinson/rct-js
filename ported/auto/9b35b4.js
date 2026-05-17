@@ -1,3 +1,12 @@
+// @manual — do not regenerate.
+// HAND-FIX (Phase R+4, RLE byte-store): translator emitted heap.setU32(ptr, byte & 0xffffffff)
+// for C-source `*pbVar = *src;` where pbVar is a byte-pointer in RLE-decode/blitter loops.
+// Each iteration advances ptr by 1 but the setU32 was writing 4 bytes — corrupting the next
+// 3 bytes in the row with zero, then they get overwritten by subsequent iterations EXCEPT
+// for the last 3 bytes of each run which stayed zero, and the 3 bytes immediately past the
+// run end which also got zeroed. In the RLE-decompress scratchpad at 0x9a2032, downstream
+// back-references then copied that corruption into the visible sprite. Fixed by switching
+// the per-pixel write to heap.setU8(..., ... & 0xff).
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
 // Source: decompiled/c/9b35b4.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
@@ -160,14 +169,14 @@ export function FUN_009b35b4(heap) {
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
             for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >>> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar10)) & 0xff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           } else {
             sVar5 = ((sVar5 - ((bVar1) & 0xffff)) & 0xffff);
             for (; pbVar9 = ((pbVar9 + 1) >>> 0), uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar9)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar9)) & 0xff);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           }
@@ -332,14 +341,14 @@ export function FUN_009b35b4(heap) {
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
             for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >>> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar10)) & 0xff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           } else {
             sVar5 = ((sVar5 - ((bVar1) & 0xffff)) & 0xffff);
             for (; pbVar9 = ((pbVar9 + 1) >>> 0), uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar9)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar9)) & 0xff);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           }

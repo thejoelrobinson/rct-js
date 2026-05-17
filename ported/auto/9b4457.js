@@ -207,14 +207,14 @@ export function FUN_009b4457(heap) {
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
             for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar10)) & 0xff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           } else {
             sVar4 = ((sVar4 - ((bVar1) & 0xffff)) & 0xffff);
             for (; pbVar9 = ((pbVar9 + 1) >>> 0), uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar9)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar9)) & 0xff);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           }
@@ -423,14 +423,14 @@ export function FUN_009b4457(heap) {
             pbVar9 = ((pbVar9 + 2) >>> 0);
             pbVar10 = ((pbVar11 + -((CONCAT11(bVar1, heap.u8(pbVar10)) & 0x7ff) >>> 0)) >>> 0);
             for (uVar7 = ((((0) >>> 0) - (((bVar1) << 24 >> 24) >> 3)) >>> 0); uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar10)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar10)) & 0xff);
               pbVar10 = ((pbVar10 + 1) >>> 0);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           } else {
             sVar4 = ((sVar4 - ((bVar1) & 0xffff)) & 0xffff);
             for (; pbVar9 = ((pbVar9 + 1) >>> 0), uVar7 != 0; uVar7 = (((uVar7 - 1) >>> 0)) >>> 0) {
-              heap.setU32(pbVar11, (heap.u8(pbVar9)) & 0xffffffff);
+              heap.setU8(pbVar11, (heap.u8(pbVar9)) & 0xff);
               pbVar11 = ((pbVar11 + 1) >>> 0);
             }
           }
