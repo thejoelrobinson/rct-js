@@ -106,6 +106,22 @@ function IDS_QueryInterface(heap, self, lpRiid, ppvObj) {
   if (ppvObj) heap.setU32(ppvObj, allocListener());
   return DS_OK;
 }
+
+// DuplicateSoundBuffer(self, lpcDsbOriginal, lplpDsbDuplicate)
+// Real DSound shares PCM between original and duplicate; we just alias
+// (the duplicate is functionally identical for our purposes since we
+// don't model independent play cursors per duplicate).
+//
+// R+9b: previously this slot was aliased to IDS_QueryInterface, which
+// wrote a 3DListener to the duplicate pointer. FUN_004079d3 then
+// returned "success" without populating the caller's buffer handle, so
+// every IDirectSoundBuffer_Play call through this code path was a
+// silent no-op (the handle was 0; FUN_00407c42 early-exits at the
+// null-handle check).
+function IDS_DuplicateSoundBuffer(heap, self, lpcOrig, lplpDup) {
+  if (lplpDup) heap.setU32(lplpDup, lpcOrig);
+  return DS_OK;
+}
 function IDS_AddRef(heap, self)  { return 1; }
 function IDS_Release(heap, self) { return 0; }
 
@@ -339,7 +355,7 @@ function ensureVtables() {
     [0x08, IDS_Release,             "IDirectSound_Release"],
     [0x0C, IDS_CreateSoundBuffer,   "IDirectSound_CreateSoundBuffer"],
     [0x10, IDS_GetCaps,             "IDirectSound_GetCaps"],
-    [0x14, IDS_QueryInterface,      "IDirectSound_DuplicateSoundBuffer"],   // alias slot
+    [0x14, IDS_DuplicateSoundBuffer, "IDirectSound_DuplicateSoundBuffer"],
     [0x18, IDS_SetCooperativeLevel, "IDirectSound_SetCooperativeLevel"],
     [0x1C, IDS_Compact,             "IDirectSound_Compact"],
     [0x20, IDS_GetSpeakerConfig,    "IDirectSound_GetSpeakerConfig"],
@@ -560,6 +576,10 @@ export function resumeAudioContext() {
   if (ac.state === "running") return Promise.resolve();
   return ac.resume().catch(() => {});
 }
+
+// Diagnostic accessor — tools/probe-sound-state.js inspects the live
+// buffer map without poking at module internals.
+export function _getDsoundBuffers() { return _buffers; }
 
 // Test-only: reset internal state between cases.
 export function _resetDsound() {
