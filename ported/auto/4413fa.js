@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/4413fa.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+//
+// Source: decompiled/c/4413fa.c — per-peep tiredness-accumulator update
+// (sister of FUN_004413c5). All accesses to per-peep struct via
+// unaff_EDI (= peep_index * 0x260) are byte-typed in the binary
+// (`addb`/`incb`/`cmpb`/`xchgb`/`movb` at 0x4413fa..0x441424).
+// Translator emitted u32 with bogus stride *4 because Ghidra typed
+// DAT_00887528 et al. as int*.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -10,16 +15,17 @@ export function FUN_004413fa(heap) {
   let uVar1 = 0;
   let unaff_BL = regs.ebx & 0xff;
   let unaff_EDI = regs.edi >>> 0;
-  heap.setU32(((0x0088752a) + (unaff_EDI) * 4), (heap.u32((0x0088752a) + (unaff_EDI) * 4) + unaff_BL) & 0xffffffff);
-  heap.setU32(((0x00887529) + (unaff_EDI) * 4), (heap.u32((0x00887529) + (unaff_EDI) * 4) + 1) & 0xffffffff);
-  if (0x18 < heap.u32(((0x00887529) & 0xff) + (unaff_EDI) * 4)) {
+  // BYTE-typed per-peep struct accesses (see header for the bug).
+  heap.setU8((0x0088752a + unaff_EDI) >>> 0, (heap.u8(0x0088752a + unaff_EDI) + unaff_BL) & 0xff);
+  heap.setU8((0x00887529 + unaff_EDI) >>> 0, (heap.u8(0x00887529 + unaff_EDI) + 1) & 0xff);
+  if (0x18 < heap.u8(0x00887529 + unaff_EDI)) {
     LOCK();
-    uVar1 = ((heap.u32((0x0088752a) + (unaff_EDI) * 4)) & 0xff);
-    heap.setU32(((0x0088752a) + (unaff_EDI) * 4), (0) & 0xffffffff);
+    uVar1 = heap.u8(0x0088752a + unaff_EDI);
+    heap.setU8((0x0088752a + unaff_EDI) >>> 0, 0);
     UNLOCK();
-    heap.setU32(((0x00887528) + (unaff_EDI) * 4), (uVar1) & 0xffffffff);
-    heap.setU32(((0x00887529) + (unaff_EDI) * 4), (0) & 0xffffffff);
-    heap.setU32(((0x0088751d) + (unaff_EDI) * 4), (heap.u32((0x0088751d) + (unaff_EDI) * 4) | 1) & 0xffffffff);
+    heap.setU8((0x00887528 + unaff_EDI) >>> 0, uVar1 & 0xff);
+    heap.setU8((0x00887529 + unaff_EDI) >>> 0, 0);
+    heap.setU8((0x0088751d + unaff_EDI) >>> 0, (heap.u8(0x0088751d + unaff_EDI) | 1) & 0xff);
   }
   return;
 }
