@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/44153e.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `(&DAT_008d7e2a)[byte_idx] = 0` is a byte store with stride 1;
+// translator emitted setU32 with `*4`. Replaced with setU8 at base+idx.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -19,7 +20,7 @@ export function FUN_0044153e(heap) {
   (regs.ecx = 0x17, regs.eax = FUN_005e5b80(heap));
   (regs.eax = 0x18, regs.ecx = 0x17, regs.eax = FUN_005e5301(heap));
   if (heap.i8((unaff_ESI + 0x2e)) == 1) {
-    heap.setU32(((0x008d7e2a) + (heap.u8((unaff_ESI + 0xc5))) * 4), (0) & 0xffffffff);
+    heap.setU8(((0x008d7e2a) + heap.u8((unaff_ESI + 0xc5))), (0) & 0xff);
     (regs.eax = FUN_004575af(heap));
   }
   (regs.eax = 0x2, regs.eax = FUN_0042cbb0(heap));

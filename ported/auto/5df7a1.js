@@ -1,6 +1,8 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5df7a1.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `(&DAT_005f8d62)[i]` is a ushort[] array (`movw ..., 0x5f8d62(,%ebx,2)`);
+// translator typed it as u32 with `*4` stride. Changed setU32→setU16,
+// heap.u32→heap.u16, stride `*4`→`*2` at 3 sites.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -105,12 +107,12 @@ export function FUN_005df7a1(heap) {
           sVar3 = ((CONCAT11(heap.u8(0x0099c16a), uVar2)) & 0xffff);
           uVar5 = ((0) >>> 0);
           do {
-            if (sVar3 == heap.u32((0x005f8d62) + (uVar5) * 4)) {
-              heap.setU32(((0x005f8d62) + (uVar5) * 4), (0xffff) & 0xffffffff);
+            if (sVar3 == heap.u16((0x005f8d62) + uVar5 * 2)) {
+              heap.setU16(((0x005f8d62) + uVar5 * 2), (0xffff) & 0xffff);
             }
             uVar5 = ((uVar5 + 1) >>> 0);
           } while (uVar5 < 0x1f);
-          heap.setU32(((0x005f8d62) + (heap.u8(0x006e2b75)) * 4), (sVar3) & 0xffffffff);
+          heap.setU16(((0x005f8d62) + heap.u8(0x006e2b75) * 2), (sVar3) & 0xffff);
           (regs.eax = FUN_005e5b80(heap));
           (regs.eax = FUN_005e5301(heap));
           (regs.eax = FUN_0042f3a2(heap));
@@ -129,7 +131,7 @@ export function FUN_005df7a1(heap) {
     }
     uVar5 = ((0) >>> 0);
     do {
-      if (CONCAT11(heap.u8(0x0099c16a), uVar2) == heap.u32((0x005f8d62) + (uVar5) * 4)) {
+      if (CONCAT11(heap.u8(0x0099c16a), uVar2) == heap.u16((0x005f8d62) + uVar5 * 2)) {
         (regs.eax = callIndirect(heap, heap.u32((0x005dfb64) + (uVar5) * 4)));
         break;
       }

@@ -1,6 +1,8 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/4531f6.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: puVar7 = DAT_00632408 is `undefined2*` (movw stores at +0/+2/+4/+6);
+// translator emitted setU32 with `*4` for the `+(1)*4` site and for
+// `*puVar7 = uVar2`. Replaced with setU16/+2 / +0.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -55,7 +57,7 @@ export function FUN_004531f6(heap) {
             uVar12 = ((0x40) >>> 0);
           }
           heap.setU8(0x006326c4, (uVar4) & 0xff);
-          heap.setU32((heap.u32(0x00632408) + (1) * 4), ((((((((((((((sVar10 >>> 1) - heap.i16((heap.u32(0x006323fc) + 8)))) << 16 >> 16) >>> (heap.u8((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + heap.i16((heap.u32(0x006323fc) + 4))) >>> 0) << 0x10)) | 0) / ((uVar12) | 0) + -0x8000 >>> 4)) << 16 >> 16)) & 0xffffffff);
+          heap.setU16((heap.u32(0x00632408) + 2), ((((((((((((((sVar10 >>> 1) - heap.i16((heap.u32(0x006323fc) + 8)))) << 16 >> 16) >>> (heap.u8((heap.u32(0x006323fc) + 0x10)) & 0x1f)) + heap.i16((heap.u32(0x006323fc) + 4))) >>> 0) << 0x10)) | 0) / ((uVar12) | 0) + -0x8000 >>> 4)) << 16 >> 16)) & 0xffff);
           uVar12 = ((heap.u32(0x00971ed8)) >>> 0);
           if (uVar12 < 0x40) {
             uVar12 = ((0x40) >>> 0);
@@ -70,7 +72,7 @@ export function FUN_004531f6(heap) {
           }
           uVar2 = ((heap.u16((unaff_ESI + 10))) & 0xffff);
           heap.setU16((puVar7 + (3) * 2), (((((uVar12 >>> 5) * 0x1588 >>> 0xe)) << 16 >> 16) + 0x2b11 + heap.i8((unaff_ESI + 0xbf)) * 0x10) & 0xffff);
-          heap.setU32(puVar7, (uVar2) & 0xffffffff);
+          heap.setU16(puVar7, (uVar2) & 0xffff);
           heap.setU8((puVar7 + ((4) * 2)), (0) & 0xff);
           if (heap.u16((unaff_ESI + 0xe)) != 0x8000) {
             uVar14 = ((heap.u16((unaff_ESI + 0x10)) >>> 9) & 0xffff);

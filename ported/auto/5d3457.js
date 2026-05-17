@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5d3457.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: 2 byte stores into per-peep struct (stride 0x260) emitted as
+// setU32 with bogus `*4`. Replaced with setU8 at base + stride.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -48,7 +49,7 @@ export function FUN_005d3457(heap) {
     bVar1 = ((heap.u8(heap.u32(__addr_puStack_18) + (7))) & 0xff);
     bVar5 = (((((in_ECX) & 0xffff) >>> 4 & 1) != 0) & 0xff);
     heap.setU16((0x0088750a + ((bVar1) >>> 0) * 0x260), (CONCAT11((((((in_ECX) & 0xffff) >>> 5)) << 24 >> 24), (((((uVar3) & 0xffff) >>> 5)) << 24 >> 24))) & 0xffff);
-    heap.setU32(((0x0088750e) + (((bVar1) >>> 0) * 0x260) * 4), (heap.u8(heap.u32(__addr_puStack_18) + (2))) & 0xffffffff);
+    heap.setU8(((0x0088750e) + ((bVar1) >>> 0) * 0x260), (heap.u8(heap.u32(__addr_puStack_18) + (2))) & 0xff);
     while (true) {
       heap.setU32(__addr_puStack_18, (puVar2) >>> 0);
       uVar4 = (((regs.eax = FUN_005cfac7(heap))) >>> 0);
@@ -62,7 +63,7 @@ export function FUN_005d3457(heap) {
     if ((heap.u32((0x006559d8) + (((((heap.u8(heap.u32(__addr_puStack_18) + (4))) & 0xff)) >>> 0) * 0x10) * 4) & 0x10) != 0) {
       bVar1 = ((heap.u8(heap.u32(__addr_puStack_18) + (7))) & 0xff);
       heap.setU16((0x0088750c + ((bVar1) >>> 0) * 0x260), (CONCAT11((((in_ECX >>> 5)) << 24 >> 24), (((uVar3 >>> 5)) << 24 >> 24))) & 0xffff);
-      heap.setU32(((0x0088750f) + (((bVar1) >>> 0) * 0x260) * 4), (heap.u8(heap.u32(__addr_puStack_18) + (2))) & 0xffffffff);
+      heap.setU8(((0x0088750f) + ((bVar1) >>> 0) * 0x260), (heap.u8(heap.u32(__addr_puStack_18) + (2))) & 0xff);
       return CONCAT44(heap.u32(__addr_uStack_4), uVar3);
     }
   }
