@@ -21,6 +21,7 @@ import { loadPEFromBytes } from "../harness/loader.js";
 import { regs } from "./regs.js";
 import { state } from "./win32/context.js";
 import { FUN_00444927 } from "../ported/auto/444927.js";
+import { FUN_00452fce } from "../ported/auto/452fce.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -127,6 +128,34 @@ export function installPainterBridge(heap, opts = {}) {
     cpu.regs.ebx = regs.ebx >>> 0;
     cpu.regs.esi = regs.esi >>> 0;
     cpu.regs.ebp = regs.ebp >>> 0;
+  });
+
+  // Install a JS hook for FUN_00452fce (sound-queue / pan helper). Called
+  // from the LMB-down handler at 0x5e2b52 (CODESEG, runs in the bridge cpu)
+  // with EAX=event-class, EBX=screen coord or 0x8001. The native body falls
+  // through to a DirectSound vtable call via DAT_005ec05c+0xc — whose slot
+  // contains a synthetic proc address (0x10100xxx range, registered by
+  // runtime/win32/dsound.js). The bridge cpu can't execute synthetic addrs,
+  // so it OOBs with `mem8 OOB: 0x10100098`. The JS port routes the same
+  // call through callIndirect, which looks up the synthetic addr in
+  // state.fnDispatch and dispatches to the real JS DirectSound impl.
+  setEipHook(0x452fce, (cpu) => {
+    regs.eax = cpu.regs.eax >>> 0;
+    regs.ecx = cpu.regs.ecx >>> 0;
+    regs.edx = cpu.regs.edx >>> 0;
+    regs.ebx = cpu.regs.ebx >>> 0;
+    regs.esi = cpu.regs.esi >>> 0;
+    regs.edi = cpu.regs.edi >>> 0;
+    regs.ebp = cpu.regs.ebp >>> 0;
+    try { FUN_00452fce(heap); } catch (e) { /* hand-port errors are non-fatal */ }
+    // Native 0x452fce prologue pushes ecx/edx/edi/esi/ebp (asm 0x452fe2-6,
+    // before the 0x8001 branch test) and the epilogue at 0x4531aa pops them
+    // back, so all five are callee-preserved. The JS port only writes to
+    // regs.eax via internal callIndirect side-effects — leave cpu's saved
+    // regs unchanged. Sync nothing back: cpu.regs already holds the entry
+    // values for ecx/edx/edi/esi/ebp, and eax is also unchanged (the asm
+    // doesn't preserve eax, but the C decompile's path writes nothing
+    // meaningful to eax that the caller observes here).
   });
 
   // Carve a private stack region from the top of memory. The translator
