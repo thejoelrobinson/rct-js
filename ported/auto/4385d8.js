@@ -251,6 +251,13 @@ export function FUN_004385d8(heap) {
       }
       (regs.eax = FUN_005e1653(heap));
       heap.setU8(0x008ad1c0, (heap.u8(0x008ad1c0) + 1) & 0xff);
+      // x86: `mov ax, 0x1` before `call 0x4270f2`. Ghidra C-decompile dropped
+      // the assignment because it inferred FUN_004270f2 as `void(void)`, but
+      // the actual function reads AX as an argument (`or ax,ax; jz $+0x10`)
+      // and short-circuits when AX==0. Without this, the post-fade input-
+      // dispatch chain (4270f2 → 5e38f5 → 5e1fdd → 5e2225 → 5e3ace → 42a830 →
+      // 427247) never executes, so the native click→pause flow is dead.
+      regs.eax = 1;
       (regs.eax = FUN_004270f2(heap));
       (regs.eax = FUN_009bb7bb(heap));
       (regs.eax = FUN_009bbfb3(heap));
