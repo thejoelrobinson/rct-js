@@ -307,9 +307,15 @@ export function FUN_009b8aa9(heap) {
       uVar2 = ((uVar3) & 0xffff);
       if ((sVar7 == 0 || (((sVar6 + uVar3)) << 16 >> 16) < heap.u32(0x009a2028)) || (uVar2 = ((uVar3 - sVar7) & 0xffff), uVar2 != 0 && sVar7 <= ((uVar3) << 16 >> 16))) {
         for (uVar3 = ((((uVar2 + 3) & 0xffff) >>> 2) & 0xffff); uVar3 != 0; uVar3 = (((uVar3 - 1) & 0xffff)) >>> 0) {
+          // @manual HAND-FIX (painter-noise round 2): asm 0x9b8b48-0x9b8b52 is
+          //   movb (%esi),%al ; movb %al,(%edi) ; addl $4,%esi ; incl %edi
+          // The translator emitted setU32 (4-byte write) for *puVar15 = in_AL
+          // because Ghidra typed puVar15 as ushort* — but the asm is a single
+          // byte write. setU32 was smearing each pixel across 4 columns,
+          // producing the chaotic per-pixel pattern observed in surface dumps.
           in_AL = ((heap.u8(puVar14)) & 0xff);
-          heap.setU32(puVar15, (in_AL) & 0xffffffff);
-          puVar14 = ((puVar14 + ((2) * 2)) >>> 0);
+          heap.setU8(puVar15, in_AL & 0xff);
+          puVar14 = ((puVar14 + 4) >>> 0);
           puVar15 = ((puVar15 + 1) >>> 0);
         }
       }
@@ -325,7 +331,11 @@ export function FUN_009b8aa9(heap) {
     sVar6 = ((heap.u32(0x009a202c)) & 0xffff);
     puVar12 = ((puVar11) >>> 0);
     if ((heap.u32(0x009aa032) & 0x80) != 0) {
-      unaff_EDI = ((unaff_EDI + heap.u32(0x009a2030)) >>> 0);
+      // @manual HAND-FIX (painter-noise round 2): asm 0x9b8b61 is
+      //   movzwl 0x9a2030, %edx ; addl %edx, %ebp
+      // 0x9a2030 holds a 16-bit row-stride; reading as u32 would pull in
+      // adjacent global at 0x9a2032 (the RLE flag byte) into the high bits.
+      unaff_EDI = ((unaff_EDI + heap.u16(0x009a2030)) >>> 0);
       heap.setU32(0x009a202c, (heap.u32(0x009a202c) + -1) >>> 0);
       if (heap.u32(0x009a202c) == 0) {
         return in_AL;

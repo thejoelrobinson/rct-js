@@ -68,7 +68,11 @@ export function FUN_009b30f1(heap) {
         uVar6 = ((CONCAT22(((uVar6 >>> 0x11) & 0xffff) | ((((((local_1a & 1) != 0) >>> 0) << 0x1f) >>> 0x10) & 0xffff), sVar9 - uVar3)) >>> 0);
         do {
           if ((((uVar6 ^ 0x80000000)) | 0) < 0) {
-            heap.setU32(puVar15, (uVar1) & 0xffffffff);
+            // @manual HAND-FIX (painter-noise round 2): asm 0x9b3275 is `movb %al,(%edi)`
+            // — single byte write of the EBP-derived palette index. The
+            // translator emitted setU32, which smears 4 bytes per pixel and
+            // produces chaotic per-pixel garbage (verified in surface dumps).
+            heap.setU8(puVar15, uVar1 & 0xff);
           }
           puVar15 = ((puVar15 + 1) >>> 0);
           sVar5 = ((((uVar6) << 16 >> 16) + -1) & 0xffff);
@@ -119,7 +123,10 @@ export function FUN_009b30f1(heap) {
           }
           for (; uVar6 != 0; uVar6 = (((uVar6 - 1) >>> 0)) >>> 0) {
             uVar13 = ((uVar12 + 1 & 0x3f) >>> 0);
-            heap.setU32(puVar17, (CONCAT11(heap.u8((uVar13 + iVar11)), heap.u8((uVar12 + iVar11)))) & 0xffffffff);
+            // @manual HAND-FIX: asm 0x9b3571 `movw %ax, (%edi)` is a 2-byte
+            // write of CONCAT11(hi,lo). Translator emitted setU32 which would
+            // smear into the next two pixels.
+            heap.setU16(puVar17, (CONCAT11(heap.u8((uVar13 + iVar11)), heap.u8((uVar12 + iVar11)))) & 0xffff);
             puVar17 = ((puVar17 + ((1) * 2)) >>> 0);
             uVar12 = ((uVar13 + 1 & 0x3f) >>> 0);
           }
@@ -200,7 +207,11 @@ export function FUN_009b30f1(heap) {
         uVar4 = ((uVar10) & 0xffff);
         do {
           do {
-            heap.setU32(pbVar16, (heap.u8((heap.u32(pbVar16) + iVar11))) & 0xffffffff);
+            // @manual HAND-FIX: asm 0x9b32df-0x9b32e4 is movb (%edi),%al ; movb (%eax,%ebx),%al ; movb %al,(%edi)
+            // — byte read of current dest, palette lookup, byte write. Translator
+            // emitted setU32/u32 for both, smearing across 4 bytes and reading
+            // the wrong byte for the lookup.
+            heap.setU8(pbVar16, heap.u8(heap.u8(pbVar16) + iVar11) & 0xff);
             pbVar16 = ((pbVar16 + 1) >>> 0);
             uVar4 = ((uVar4 - 1) & 0xffff);
           } while (uVar4 != 0);
@@ -218,7 +229,8 @@ export function FUN_009b30f1(heap) {
         uVar3 = ((uVar10) & 0xffff);
         do {
           do {
-            heap.setU32(pbVar16, (heap.u8((heap.u32(pbVar16) + iVar11))) & 0xffffffff);
+            // @manual HAND-FIX: same byte read/write fix as above (zoom 0 branch).
+            heap.setU8(pbVar16, heap.u8(heap.u8(pbVar16) + iVar11) & 0xff);
             pbVar16 = ((pbVar16 + 1) >>> 0);
             uVar3 = ((uVar3 - 1) & 0xffff);
           } while (uVar3 != 0);
@@ -237,7 +249,8 @@ export function FUN_009b30f1(heap) {
       uVar4 = ((uVar10) & 0xffff);
       do {
         do {
-          heap.setU32(pbVar16, (heap.u8((heap.u32(pbVar16) + iVar11))) & 0xffffffff);
+          // @manual HAND-FIX: byte read/write (zoom 2+ branch).
+          heap.setU8(pbVar16, heap.u8(heap.u8(pbVar16) + iVar11) & 0xff);
           pbVar16 = ((pbVar16 + 1) >>> 0);
           uVar4 = ((uVar4 - 1) & 0xffff);
         } while (uVar4 != 0);

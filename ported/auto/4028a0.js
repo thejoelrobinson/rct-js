@@ -21,14 +21,20 @@ export function FUN_004028a0(heap) {
   heap.setU32(__addr_local_b8, (0x005f2420) >>> 0);
   (regs.eax = callIndirect(heap, heap.u32(0x005ebe58), __addr_local_b0));
   heap.setU32(__addr_local_8, (0) >>> 0);
+  // @manual HAND-FIX (painter-noise round 2): see 4023b2.js — clip the
+  // outer loop bounds to the actual back-surface dimensions to avoid OOB
+  // reads when the binary's window dims (800x600 from GetSystemMetrics)
+  // exceed the runtime's hardcoded 640x480 surfaces.
+  const __wBound = Math.min(heap.u32(0x005f15c4) >>> 0, heap.u32(0x005f2400) >>> 0);
+  const __hBound = Math.min(heap.u32(0x005f1b34) >>> 0, heap.u32(0x005f1ff0) >>> 0);
   do {
-    if (heap.u32(0x005f15c4) <= heap.u32(__addr_local_8)) {
+    if (__wBound <= heap.u32(__addr_local_8)) {
       heap.setU32(0x005f1fe0, (6) >>> 0);
       return 1;
     }
     local_cc = ((0) >>> 0);
     heap.setU32(__addr_local_b4, (0) >>> 0);
-    while (heap.u32(__addr_local_b4) < heap.u32(0x005f1b34)) {
+    while (heap.u32(__addr_local_b4) < __hBound) {
       if (heap.u8(heap.u32(__addr_local_b8) + (local_cc)) == 0) {
         local_cc = ((local_cc + 0x14) >>> 0);
         heap.setU32(__addr_local_b4, (heap.u32(__addr_local_b4) + 8) >>> 0);
@@ -41,7 +47,7 @@ export function FUN_004028a0(heap) {
           local_cc = ((local_cc + 0x14) >>> 0);
           heap.setU32(__addr_local_bc, (heap.u32(__addr_local_b4) + 8) >>> 0);
           heap.setU32(__addr_local_b4, (heap.u32(__addr_local_bc)) >>> 0);
-          if (heap.u32(0x005f1b34) <= heap.u32(__addr_local_bc)) {
+          if (__hBound <= heap.u32(__addr_local_bc)) {
             break;
           }
         } while (heap.u8(heap.u32(__addr_local_b8) + (local_cc)) != 0);
