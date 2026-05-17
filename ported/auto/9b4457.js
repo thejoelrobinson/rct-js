@@ -46,6 +46,19 @@ export function FUN_009b4457(heap) {
   let pbVar11 = 0;
   uVar7 = ((unaff_EBX & 0x1ffff) >>> 0);
   iVar8 = ((uVar7 * 0x10) >>> 0);
+  // HAND-FIX (painter-noise root cause): the asm prologue at 0x9b4457 is
+  //   81 e3 ff ff 01 00     and ebx, 0x1ffff
+  //   c1 e3 04              shl ebx, 4
+  // which leaves EBX = iVar8 (the scaled sprite-class offset) for the rest
+  // of the function AND for any callee. The C decompile hides this because
+  // Ghidra promotes the scaled value into `iVar8` and treats `unaff_EBX` as
+  // const. But the tail-call `jmp 9b8491` at offset 0x40 (via the `if zoom !=
+  // 1` branch translated as `e9 1f 40 00 00 jmp +0x401f`) hands EBX off to
+  // 9b8491, which then uses it as `[ebx + 0x8dc0c0]`. Without this update,
+  // 9b8491 would read the WRONG class entry (offset by raw EBX instead of
+  // iVar8). Update regs.ebx so the JS port matches the binary's register
+  // state at every callee boundary.
+  regs.ebx = iVar8 >>> 0;
   if (heap.i16((unaff_EDI + 0xe)) == 0) {
     pbVar9 = ((heap.u32((0x008dc0b4) + (uVar7 * 4) * 4)) >>> 0);
     uVar7 = ((heap.u32((0x008dc0b8 + iVar8))) >>> 0);
@@ -197,10 +210,18 @@ export function FUN_009b4457(heap) {
   }
   if ((heap.u16((0x008dc0c0 + iVar8)) & 0x10) != 0) {
     heap.setI16((unaff_EDI + 0xe), (heap.i16((unaff_EDI + 0xe)) + -1) & 0xffff);
-    heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 8), (heap.i16((unaff_EDI + 8)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) >>> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 8), (heap.i16((unaff_EDI + 8)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) >> 1) & 0xffff);
+    // HAND-FIX (painter-noise root cause, same pattern as 9b8491): advance
+    // EBX to sub-sprite handle from class[+2], then halve CX/DX. These are
+    // dropped by Ghidra C decompile (pure register dataflow). Without them
+    // the recursion (calling itself) never advances past the original sprite
+    // and the zoom field underflows unboundedly.
+    regs.ebx = heap.u16(iVar8 + 0x008dc0c2) >>> 0;
+    regs.ecx = ((((regs.ecx << 16) >> 16) >> 1)) & 0xffff;
+    regs.edx = ((((regs.edx << 16) >> 16) >> 1)) & 0xffff;
     uVar7 = (((regs.eax = FUN_009b4457(heap))) >>> 0);
     heap.setI16((unaff_EDI + 0xe), (heap.i16((unaff_EDI + 0xe)) + 1) & 0xffff);
     heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) << 1) & 0xffff);

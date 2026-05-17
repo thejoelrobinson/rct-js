@@ -1,6 +1,31 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/9b8491.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: decompiled/c/9b8491.c PLUS hand-disassembly of 0x9b8491 in rct.exe.
+//
+// HAND-FIX (painter-noise root cause): the Ghidra C decompilation of the
+// "class & 0x10 recursive halve" branch (lines 27-39 of 9b8491.c) is INCOMPLETE.
+// The real asm at 0x9b84b8..0x9b84cb does THREE extra ops that Ghidra's
+// optimizer dropped (because the C-level register-promotion model can't see
+// register-to-register dataflow across the recursive call):
+//
+//   0x9b84b8  0f b7 9b c2 c0 8d 00   movzx ebx, word [ebx + 0x8dc0c2]   ; load sub-sprite handle
+//   0x9b84bf  66 d1 f9               sar  cx, 1                          ; halve X coord
+//   0x9b84c2  66 d1 fa               sar  dx, 1                          ; halve Y coord
+//   0x9b84c5  e8 8a bf ff ff         call 0x9b4457
+//
+// Without these, every recursive descent re-reads the SAME class flag (bit 0x10
+// stays set forever), the zoom field at [edi+0xe] underflows from 0 → -1 → -2 →
+// ... → -1837 before the JS stack overflows, and the back-buffer fills with
+// garbage from partial sprite blits inside the broken recursion.
+//
+// The C decompile's `unaff_EBX` is treated as a const C param, so Ghidra emits
+// `(&DAT_008dc0c0 + unaff_EBX)` for all the table reads — masking the fact that
+// the asm rewires EBX mid-function via `movzx ebx, [ebx+0x8dc0c2]`. This is a
+// well-known limitation of Ghidra register-promotion. Same pattern affects
+// 9b4457.c line 187 (its self-recursion to itself).
+//
+// EBX-scaling convention: callers (9b438b, 9b4457) pre-scale via
+// `and ebx,0x1ffff; shl ebx,4` so EBX inside 9b8491 is `(raw & 0x1ffff) * 0x10`.
+// The movzx above loads a fresh RAW sub-handle; 9b4457's prologue rescales it.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -31,10 +56,17 @@ export function FUN_009b8491(heap) {
   }
   if ((heap.u16((0x008dc0c0 + unaff_EBX)) & 0x10) != 0) {
     heap.setI16((unaff_EDI + 0xe), (heap.i16((unaff_EDI + 0xe)) + -1) & 0xffff);
-    heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 8), (heap.i16((unaff_EDI + 8)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) >>> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 8), (heap.i16((unaff_EDI + 8)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) >> 1) & 0xffff);
+    // HAND-FIX (see header): advance EBX to sub-sprite handle + halve CX/DX
+    // before the recursive descent. Ghidra omitted these because they're pure
+    // register dataflow with no C-visible variable. Without them the recursion
+    // is unbounded.
+    regs.ebx = heap.u16(unaff_EBX + 0x008dc0c2) >>> 0;
+    regs.ecx = ((((regs.ecx << 16) >> 16) >> 1)) & 0xffff;
+    regs.edx = ((((regs.edx << 16) >> 16) >> 1)) & 0xffff;
     uVar3 = (((regs.eax = FUN_009b4457(heap))) >>> 0);
     heap.setI16((unaff_EDI + 0xe), (heap.i16((unaff_EDI + 0xe)) + 1) & 0xffff);
     heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) << 1) & 0xffff);

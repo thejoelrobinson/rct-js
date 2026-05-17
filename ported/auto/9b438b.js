@@ -55,6 +55,12 @@ export function FUN_009b438b(heap) {
   }
   uVar3 = ((unaff_EBX & 0x1ffff) >>> 0);
   iVar8 = ((uVar3 * 0x10) >>> 0);
+  // HAND-FIX (painter-noise root cause): asm at 0x9b4458 (the shared common
+  // body 9b438b reaches via fall-through) does `and ebx,0x1ffff; shl ebx,4`
+  // which scales EBX in place. The tail-call `jmp 9b8491` at offset 0xe3
+  // hands the SCALED EBX to 9b8491, which uses it as `[ebx + 0x8dc0c0]`.
+  // Without this, 9b8491 reads the wrong class entry — see 9b8491.js header.
+  regs.ebx = iVar8 >>> 0;
   if (heap.i16((unaff_EDI + 0xe)) == 0) {
     pbVar9 = ((heap.u32((0x008dc0b4) + (uVar3 * 4) * 4)) >>> 0);
     uVar3 = ((heap.u32((0x008dc0b8 + iVar8))) >>> 0);
@@ -206,10 +212,15 @@ export function FUN_009b438b(heap) {
   }
   if ((heap.u16((0x008dc0c0 + iVar8)) & 0x10) != 0) {
     heap.setI16((unaff_EDI + 0xe), (heap.i16((unaff_EDI + 0xe)) + -1) & 0xffff);
-    heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 8), (heap.i16((unaff_EDI + 8)) >>> 1) & 0xffff);
-    heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) >>> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 6), (heap.i16((unaff_EDI + 6)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 8), (heap.i16((unaff_EDI + 8)) >> 1) & 0xffff);
+    heap.setI16((unaff_EDI + 10), (heap.i16((unaff_EDI + 10)) >> 1) & 0xffff);
+    // HAND-FIX (painter-noise root cause, same as 9b8491/9b4457):
+    // advance EBX to sub-sprite handle + halve CX/DX before recursive call.
+    regs.ebx = heap.u16(iVar8 + 0x008dc0c2) >>> 0;
+    regs.ecx = ((((regs.ecx << 16) >> 16) >> 1)) & 0xffff;
+    regs.edx = ((((regs.edx << 16) >> 16) >> 1)) & 0xffff;
     uVar3 = (((regs.eax = FUN_009b4457(heap))) >>> 0);
     heap.setI16((unaff_EDI + 0xe), (heap.i16((unaff_EDI + 0xe)) + 1) & 0xffff);
     heap.setI16((unaff_EDI + 4), (heap.i16((unaff_EDI + 4)) << 1) & 0xffff);
