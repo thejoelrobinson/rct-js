@@ -40,7 +40,7 @@ const ROOT = resolve(HERE, "..");
 // Suppress render-trace noise so the output is readable.
 globalThis._renderTrace = () => {};
 
-const { createRuntime, skipFadeIn } = await import("../runtime/harness.js");
+const { createRuntime, skipFadeIn, skipTitleIntro } = await import("../runtime/harness.js");
 
 // Build VFS the same way other probes do.
 const VFS_FILES = [
@@ -156,8 +156,16 @@ for (let t = 1; t <= 30; t++) {
     // exports as skipFadeIn).
     try { skipFadeIn(r.heap); appliedSkip = true; }
     catch (e) { console.warn(`skipFadeIn threw: ${e.message}`); }
+    // Also open the cb9 splash-state gate so the sprite-update while-loop
+    // in FUN_004385d8 runs (otherwise FUN_00438aac cycles cb9 through
+    // splash phases 1→2→3→…→0 over ~1000 ticks before the gate opens).
+    // Without this, DAT_0099a4fe (sprite-tick counter) stays 0 the whole
+    // probe window and nothing animates. skipTitleIntro mirrors the
+    // splash-state-default cleanup arm of 438aac.
+    try { skipTitleIntro(r.heap); }
+    catch (e) { console.warn(`skipTitleIntro threw: ${e.message}`); }
     if (SKIP_INTRO) {
-      // Force splash state machine to "done" (case default → 0).
+      // (Kept for back-compat with old invocation flag; same end-state.)
       r.heap.setU8(0x00628cb9, 0);
     }
   }
