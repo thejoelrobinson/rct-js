@@ -144,5 +144,5 @@
   {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e226c", "addr": "0x5e226c", "section": "CODESEG"},
   {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e2601", "addr": "0x5e2601", "section": "CODESEG"},
 
-  {"_comment": "Toolbar window's widget-event-handler proc (slot+4 callback). CODESEG-stripped from Ghidra; reached from FUN_005e3ace's hit-test indirect call. Dispatcher prologue jumps to 0x42af5a which switches on BP (event type) and DX (widget index). Bridging this unblocks all 20 toolbar widget clicks at once via the binary's own dispatch path, retiring the per-widget clickToolbar() shortcut in runtime/input.js.", "name": "FUN_extra_widget_42a830", "addr": "0x42a830", "section": "CODESEG"}
+  {"_comment": "Toolbar window's widget-event-handler proc (slot+4 callback). CODESEG-stripped from Ghidra; reached from FUN_005e3ace's hit-test indirect call. Dispatcher prologue jumps to 0x42af5a which switches on BP (event type) and DX (widget index). Bridging this unblocked all 20 toolbar widget clicks via the binary's own dispatch path, which retired the per-widget clickToolbar() shortcut that previously lived in runtime/input.js.", "name": "FUN_extra_widget_42a830", "addr": "0x42a830", "section": "CODESEG"}
 ]

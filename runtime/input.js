@@ -66,11 +66,10 @@ function panViewport(heap, dx, dy) {
 
 // Pause toggle: directly drives FUN_00427247, which XORs DAT_0099c169 (the
 // pause flag read by the game-update gate in FUN_0043f325 / FUN_005e39c6 /
-// FUN_004385d8). The binary's normal path lights this from the pause-button
-// click in the toolbar's WM_LBUTTONDOWN handler, but our toolbar hit-test
-// is still broken downstream of the input-mode dispatch — so wire a Space
-// keybind directly to it. FUN_00427247 requires EBX & 1 to toggle, matching
-// the cmp/jne preamble at 0x427247.
+// FUN_004385d8). Kept as a helper for the Space keybind (below) and for
+// isolated test assertions — the binary's full LBUTTONDOWN-driven path is
+// already covered end-to-end by test/runtime/native_dispatch.test.js.
+// FUN_00427247 requires EBX & 1 to toggle, matching the cmp/jne preamble.
 //
 // Returns the new pause flag value (0 or 1) for caller verification.
 export function togglePause(heap) {
@@ -81,77 +80,21 @@ export function togglePause(heap) {
   return heap.u8(0x0099c169) & 1;
 }
 
-// Top-toolbar click router. The binary's path is:
-//   WM_LBUTTONDOWN → WndProc 0x403d79 → enqueue event
-//   per-tick FUN_005e2225 → FUN_005e3ace (hit-test pool by click coords)
-//   → toolbar window's widget-event handler at 0x42a830 (CODESEG, not bridged)
-//   → dispatches per-widget action (widget 0 = pause → FUN_00427247).
+// Per-widget state-mutation helpers (zoom/rotate/map-view/sound). These are
+// kept as standalone exports because (a) tests assert each effect in
+// isolation without depending on the full input-dispatch chain, and (b) the
+// keyboard shortcuts below (Space → pause, arrows → pan, wheel → zoom) reach
+// the same observable state without routing through Win32 messages.
 //
-// That chain is currently stalled at two points: (a) the boot fade-in gate
-// at DAT_005f8da2 prevents FUN_005e1653 from running until ~80 ticks in, and
-// (b) FUN_005e38f5's `extraout_CX` loop break/continue isn't reconstructed
-// from the x86 (the translator left it as `0`, so the dequeue loop breaks
-// immediately). Bridging 0x42a830 via the painter-bridge would require
-// substantial work on the CODESEG interpreter path too.
+// The clickToolbar() shortcut that previously dispatched these helpers on
+// LBUTTONDOWN was retired once the native dispatch chain went end-to-end
+// (commits c4cb89f + c449072 + 508a537). Real toolbar clicks now flow
+// WM_LBUTTONDOWN → WndProc 0x403d79 → ring buffer → FUN_005e2225 →
+// FUN_005e3ace hit-test → 0x42a830 widget dispatch → per-widget game-cmd,
+// covering all 20 toolbar widgets — including the ones the shortcut never
+// wired up (land/water/scenery/path/ride/park/staff/etc.). See
+// test/runtime/native_dispatch.test.js for the end-to-end pause assertion.
 //
-// Pragmatic shortcut: find the toolbar window slot in the pool, walk its
-// widget table to find which widget contains (x, y), and directly invoke
-// the documented action for that widget. Each widget action is exposed as
-// a standalone exported helper so tests can verify it without a click.
-//
-// Widget table layout (16 bytes per entry):
-//   +0  type (u8)   — 0x06 = button, 0x15 = dropdown, 0xff = end-of-list
-//   +1  cursor (u8)
-//   +2  left   (s16)
-//   +4  right  (s16)
-//   +6  top    (s16)
-//   +8  bottom (s16)
-//   +0xa imageId (u32)
-//   +0xe tooltip (u16)
-//
-// The toolbar window's widget array starts at 0x005f5124 (per the
-// `mov [esi+0x1c], 0x5f5124` in 4298a0.js); slot+0x20..+0x26 hold the
-// window rect, so widget rects are window-relative.
-//
-// Live widget-rect dump (after runInit + 1 tick — see scratch/agent-
-// toolbar-findings.md and runtime probe in tools/probe-toolbar-fast.js):
-//   [ 0] L=  0..29  img=0x20026048 tip=0x342  — pause
-//   [ 1] L= 30..59  img=0x2002604a tip=0x343  — file menu icon (click no-op;
-//        only the bp=3 "dropdown-open" event opens the menu — see 0x42b817)
-//   [ 2] L= 60..89  img=0x20026060 tip=0x568  — sound mute (binary click
-//        handler @0x42a976 calls FUN_00452876 which XORs DAT_006326bd; the
-//        paint proc at 0x42afba..c8 picks sprite 0x20026060/62 based on
-//        that bit, confirming this is the sound-on/off speaker button)
-//   [ 3] L=104..133 img=0x2002604c tip=0x33e  — zoom out
-//   [ 4] L=134..163 img=0x2002604f tip=0x33d  — zoom in
-//   [ 5] L=164..193 img=0x20026052 tip=0x33f  — rotate view
-//   [ 6] L=194..223 img=0x20026066 tip=0x3bb  — view options (click no-op;
-//        only bp=3 dropdown event opens the menu at 0x42b40f)
-//   [ 7] L=224..253 img=0x20026056 tip=0xb19  — map view
-//   [ 8..19] further 30-px buttons (land/water/scenery/path/ride/park/
-//            staff/guests/research/finances/news/options-menu) — open
-//            their own windows via per-tool active-flag latching +
-//            WindowFindByClass; need 0x42a830 bridged for a faithful port.
-//   [20] type=0x15 large dropdown panel (file menu body)
-//   [21] type=0xff sentinel
-//
-// Index → action mapping below is conservative: we wire only those whose
-// effect is a single documented state mutation (pause flag, viewport zoom,
-// camera rotation, map-view mode) so tests can verify them without bridging
-// the per-widget window-open handlers (which live in CODESEG-stripped code).
-const TOOLBAR_WIDGETS_BASE = 0x005f5124;
-const WIDGET_STRIDE = 0x10;
-
-// Widget indices (per layout above). Names match the visible toolbar order.
-const PAUSE_WIDGET_INDEX     = 0;
-const FILE_MENU_WIDGET_INDEX = 1;  // image-only icon for file menu (click no-op)
-const SOUND_WIDGET_INDEX     = 2;  // speaker mute toggle (was mislabeled as file dropdown)
-const ZOOM_OUT_WIDGET_INDEX  = 3;
-const ZOOM_IN_WIDGET_INDEX   = 4;
-const ROTATE_WIDGET_INDEX    = 5;
-const VIEW_OPTS_WIDGET_INDEX = 6;
-const MAP_VIEW_WIDGET_INDEX  = 7;
-
 // Viewport zoom controls. The main viewport's struct has a u8 at +0x10 that
 // holds zoom level (0=closest, 3=farthest). This matches the wheel handler
 // below — clicking zoom-out increments the byte (one step farther), clicking
@@ -224,68 +167,6 @@ export function toggleSound(heap) {
     heap.setU8(0x006326bd, (heap.u8(0x006326bd) ^ 1) & 0xff);
   }
   return heap.u8(0x006326bd) & 1;
-}
-
-function findToolbarSlot(heap) {
-  const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
-  if (poolEnd <= POOL_START || poolEnd > 0x009a013c + 256 * SLOT_STRIDE) return 0;
-  for (let slot = POOL_START; slot < poolEnd; slot += SLOT_STRIDE) {
-    // Toolbar uses paint wndProc 0x42afb5 (slot+0) and click handler
-    // 0x42a830 (slot+4). Match on paint proc since it's stable.
-    if ((heap.u32(slot) >>> 0) === 0x42afb5) return slot;
-  }
-  return 0;
-}
-
-// Returns the widget index (0..N-1) at (x, y) within the toolbar, or -1.
-function toolbarWidgetAt(heap, x, y) {
-  const slot = findToolbarSlot(heap);
-  if (slot === 0) return -1;
-  const winLeft = heap.i16(slot + 0x20);
-  const winTop  = heap.i16(slot + 0x22);
-  const winW    = heap.i16(slot + 0x24);
-  const winH    = heap.i16(slot + 0x26);
-  if (x < winLeft || y < winTop || x >= winLeft + winW || y >= winTop + winH) return -1;
-  const lx = x - winLeft, ly = y - winTop;
-  // Walk widget table until type 0xff sentinel. Cap iteration to avoid runaway.
-  for (let i = 0; i < 64; i++) {
-    const w = TOOLBAR_WIDGETS_BASE + i * WIDGET_STRIDE;
-    const type = heap.u8(w);
-    if (type === 0xff || type === 0) return -1;
-    const l = heap.i16(w + 2);
-    const r = heap.i16(w + 4);
-    const t = heap.i16(w + 6);
-    const b = heap.i16(w + 8);
-    if (lx >= l && lx <= r && ly >= t && ly <= b) return i;
-  }
-  return -1;
-}
-
-// Routes a left-click at (x, y) to a toolbar widget action, if applicable.
-// Returns the widget index that was activated, or -1 if either (a) the click
-// missed every widget rect, or (b) the widget hit has no wired action yet.
-export function clickToolbar(heap, x, y) {
-  const idx = toolbarWidgetAt(heap, x, y);
-  if (idx < 0) return -1;
-  switch (idx) {
-    case PAUSE_WIDGET_INDEX:    togglePause(heap);  return idx;
-    case SOUND_WIDGET_INDEX:    toggleSound(heap);  return idx;
-    case ZOOM_OUT_WIDGET_INDEX: zoomOut(heap);      return idx;
-    case ZOOM_IN_WIDGET_INDEX:  zoomIn(heap);       return idx;
-    case ROTATE_WIDGET_INDEX:   rotateView(heap);   return idx;
-    case MAP_VIEW_WIDGET_INDEX: toggleMapView(heap); return idx;
-    // FILE_MENU / VIEW_OPTS click is a no-op in the binary too — the menu
-    // opens via the bp=3 "dropdown-open" event path (0x42b817 / 0x42b40f),
-    // which our LMB-down shortcut doesn't drive. Return -1.
-    /* TODO: case FILE_MENU_WIDGET_INDEX: dispatch as bp=3 to 0x42a830 */
-    /* TODO: case VIEW_OPTS_WIDGET_INDEX: dispatch as bp=3 to 0x42a830 */
-    /* TODO: widgets 8..19 (land, water, scenery, path, ride, park, staff,
-       guests, research, finances, news, options-menu) — each opens its own
-       window via FUN_0042xxxx; per-widget toggle latches DAT_00991f5c +
-       0x991f30 bit 6 and runs a WindowFindByClass round-trip that needs
-       slot/esi context. Wait for 0x42a830 bridge (parallel agent). */
-    default: return -1;
-  }
 }
 
 const WM_MOUSEMOVE   = 0x0200;
@@ -385,10 +266,12 @@ export function attachInput(canvas, opts = {}) {
     if (e.button === 0)      {
       inputState.mouseButtons |= 1;
       post(WM_LBUTTONDOWN, 1, packLParam(x, y));
-      // Toolbar shortcut: route LMB clicks in toolbar widget rects directly
-      // to their actions (see clickToolbar). Bypasses the per-tick hit-test
-      // chain (FUN_005e2225/FUN_005e3ace/0x42a830) which is still stalled.
-      if (heap) clickToolbar(heap, x, y);
+      // Toolbar (and other window) clicks now flow through the binary's
+      // native dispatch chain: WndProc 0x403d79 enqueues into the ring
+      // buffer, then the per-tick FUN_005e2225 / FUN_005e3ace hit-test
+      // routes to slot+4 (toolbar = 0x42a830) which dispatches the widget
+      // action. The matching WM_LBUTTONUP from the mouseup handler is what
+      // the CODESEG LMB handler 5e2b52 waits on before firing the action.
     }
     else if (e.button === 1) { inputState.mouseButtons |= 4; post(WM_MBUTTONDOWN, 0x10, packLParam(x, y)); }
     else if (e.button === 2) { inputState.mouseButtons |= 2; post(WM_RBUTTONDOWN, 2, packLParam(x, y)); _dragLastX = x; _dragLastY = y; }

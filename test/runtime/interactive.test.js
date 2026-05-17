@@ -62,64 +62,6 @@ describe("interactive input → game state", () => {
     hwnd = state.firstHwnd;
   }, 120_000);
 
-  // Pool-slot helpers used by the toolbar-click tests below. The binary's
-  // MainOpen (FUN_004298a0) normally puts the toolbar window in the pool,
-  // but it can fail early at boot when the fade-in counter hasn't reached
-  // 0x60 yet (~80 settle ticks). To keep tests deterministic, we inject a
-  // toolbar slot with the same wndProc + widget-table ptr + rect that
-  // 4298a0 would have set; clickToolbar() walks the pool looking for the
-  // 0x42afb5 paint proc, so this is the minimum it needs.
-  //
-  // ALSO populates the widget rect table at 0x005f5124. The binary normally
-  // initializes this from a static blob (probably copied during MainOpen or
-  // a parent layout pass), but at +1 tick the table is still all 0xff
-  // (sentinel). Without rects, clickToolbar would return -1 on every hit.
-  function ensureToolbarSlot() {
-    const POOL_START = 0x009a013c;
-    const POOL_END_PTR = 0x009a1164;
-    const SLOT_STRIDE = 0x178;
-    let slot = 0;
-    let poolEnd = runtime.heap.u32(POOL_END_PTR);
-    if (poolEnd < POOL_START) poolEnd = POOL_START;
-    for (let s = POOL_START; s < poolEnd; s += SLOT_STRIDE) {
-      if (runtime.heap.u32(s) === 0x42afb5) { slot = s; break; }
-    }
-    if (slot === 0) {
-      slot = poolEnd;
-      runtime.heap.setU32(slot, 0x42afb5);          // wndProc (paint)
-      runtime.heap.setU32(slot + 4, 0x42a830);      // widget-event proc (CODESEG)
-      runtime.heap.setU32(slot + 0x1c, 0x005f5124); // widget array ptr (static)
-      runtime.heap.setI16(slot + 0x20, 0);          // rect.x
-      runtime.heap.setI16(slot + 0x22, 0);          // rect.y
-      runtime.heap.setI16(slot + 0x24, 640);        // rect.w
-      runtime.heap.setI16(slot + 0x26, 30);         // rect.h
-      runtime.heap.setU32(POOL_END_PTR, slot + SLOT_STRIDE);
-    }
-    // Stamp the widget table from the documented layout (see runtime/
-    // input.js comments). If the table is already populated (the boot path
-    // ran far enough) we leave it alone.
-    const W0 = 0x005f5124;
-    if (runtime.heap.u8(W0) === 0xff || runtime.heap.u8(W0) === 0x00) {
-      const setW = (i, type, l, r, t, b) => {
-        const a = W0 + i * 0x10;
-        runtime.heap.setU8(a, type);
-        runtime.heap.setI16(a + 2, l); runtime.heap.setI16(a + 4, r);
-        runtime.heap.setI16(a + 6, t); runtime.heap.setI16(a + 8, b);
-      };
-      setW(0, 0x06,   0,  29, 0, 29);  // pause
-      setW(1, 0x06,  30,  59, 0, 29);  // file menu icon
-      setW(2, 0x06,  60,  89, 0, 29);  // sound mute
-      setW(3, 0x06, 104, 133, 0, 29);  // zoom out
-      setW(4, 0x06, 134, 163, 0, 29);  // zoom in
-      setW(5, 0x06, 164, 193, 0, 29);  // rotate view
-      setW(6, 0x06, 194, 223, 0, 29);  // view options
-      setW(7, 0x06, 224, 253, 0, 29);  // map view
-      setW(8, 0x06, 267, 296, 0, 29);  // land (unmapped widget for negative test)
-      setW(9, 0xff,  -1,  -1, -1, -1); // sentinel
-    }
-    return slot;
-  }
-
   function findViewport() {
     const POOL_START = 0x009a013c;
     const POOL_END_PTR = 0x009a1164;
@@ -245,68 +187,12 @@ describe("interactive input → game state", () => {
     expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
   }, 60_000);
 
-  // END-TO-END WIN: toolbar pause-button click → pause toggle.
-  //
-  // clickToolbar() walks the toolbar window pool slot's widget array, maps
-  // (x, y) → widget index, and routes widget 0 (the pause button at L=0,
-  // R=29, T=0, B=29) to togglePause(). This is the same plumbing path as
-  // Space → togglePause, but driven by a left-click in the toolbar rect —
-  // exactly the user action that should pause/unpause the game.
-  //
-  // The binary's full input-dispatch chain (FUN_005e2225 / FUN_005e3ace
-  // → 0x42a830 widget-click handler) is still stalled at two upstream
-  // gates (DAT_005f8da2 fade-in not reaching 0x60, FUN_005e38f5's
-  // extraout_CX register-leak not reconstructed). This shortcut lets
-  // toolbar buttons work today; bridging 0x42a830 + fixing the chain
-  // is a future Phase O task.
-  it("clickToolbar() at pause button (10,10) flips DAT_0099c169", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    runtime.heap.setU8(0x0099c169, 0);
-    const idx = clickToolbar(runtime.heap, 10, 10);
-    expect(idx).toBe(0); // widget 0 = pause
-    expect(runtime.heap.u8(0x0099c169) & 1).toBe(1);
-    // Click again → toggle back off.
-    clickToolbar(runtime.heap, 10, 10);
-    expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
-  }, 60_000);
-
-  // Negative case: clicking outside the toolbar rect doesn't change pause.
-  it("clickToolbar() outside toolbar returns -1 and does NOT toggle pause", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    runtime.heap.setU8(0x0099c169, 0);
-    // y=300 is below the toolbar (which is y=0..29).
-    const idx = clickToolbar(runtime.heap, 100, 300);
-    expect(idx).toBe(-1);
-    expect(runtime.heap.u8(0x0099c169) & 1).toBe(0);
-  }, 60_000);
-
-  // ---- additional toolbar widgets (zoom out/in, rotate, map view) ---------
-  //
-  // Each widget action is exposed as a standalone helper so the test can
-  // verify the state mutation directly (without depending on a successful
-  // hit-test round-trip). A separate assertion uses clickToolbar() with a
-  // coordinate inside the widget's rect to confirm the index routing.
-  //
-  // Pool / toolbar-slot prerequisite: clickToolbar() walks the window pool
-  // looking for a slot whose wndProc is 0x42afb5 (the toolbar paint proc).
-  // The binary's MainOpen at FUN_004298a0 normally creates that slot, but
-  // runInit + the first tick can exit early before MainOpen completes
-  // (FUN_005e1653 is gated behind the boot fade-in counter at DAT_005f8da2,
-  // which doesn't reach 0x60 until ~80 settle ticks). To keep the tests
-  // deterministic — and avoid coupling them to the boot-time bug — we
-  // INJECT a toolbar slot at the next free pool address with the same
-  // wndProc + widget-table pointer + rect that 4298a0 would have set.
-  // This isolates the click-routing logic under test.
-  //
-  // Rects (window-relative, toolbar window at (0, 0, 640, 30)):
-  //   widget 3 (zoom out)  L=104..133 → click x=120 hits it
-  //   widget 4 (zoom in)   L=134..163 → click x=150
-  //   widget 5 (rotate)    L=164..193 → click x=180
-  //   widget 7 (map view)  L=224..253 → click x=240
-  //   widget 8 (land)      L=267..296 → click x=280 (unmapped → -1)
-  // T=0..29 for all, so y=10 is inside every row.
+  // Per-widget state-mutation helpers below. The earlier clickToolbar() tests
+  // (which routed a synthetic toolbar click → helper) were retired once the
+  // native dispatch chain went end-to-end — see
+  // test/runtime/native_dispatch.test.js for the full WM_LBUTTONDOWN+UP →
+  // ring buffer → 0x42a830 widget dispatch → pause toggle, which is what the
+  // browser path actually exercises today.
 
   it("zoomOut()/zoomIn() mutate viewport+0x10 within [0, 3]", async () => {
     const { zoomIn, zoomOut } = await import("../../runtime/input.js");
@@ -323,28 +209,6 @@ describe("interactive input → game state", () => {
     expect(zoomOut(runtime.heap)).toBe(3);         // clamps at 3
   }, 60_000);
 
-  it("clickToolbar() at zoom-out widget (120,10) returns 3 and zooms out", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    const vp = findViewport();
-    expect(vp).not.toBe(0);
-    runtime.heap.setU8(vp + 0x10, 1);   // start mid-zoom
-    const idx = clickToolbar(runtime.heap, 120, 10);
-    expect(idx).toBe(3);                // widget 3 = zoom out
-    expect(runtime.heap.u8(vp + 0x10)).toBe(2);
-  }, 60_000);
-
-  it("clickToolbar() at zoom-in widget (150,10) returns 4 and zooms in", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    const vp = findViewport();
-    expect(vp).not.toBe(0);
-    runtime.heap.setU8(vp + 0x10, 2);   // start mid-zoom
-    const idx = clickToolbar(runtime.heap, 150, 10);
-    expect(idx).toBe(4);                // widget 4 = zoom in
-    expect(runtime.heap.u8(vp + 0x10)).toBe(1);
-  }, 60_000);
-
   it("rotateView() cycles DAT_00991f88 through 0 → 1 → 2 → 3 → 0", async () => {
     const { rotateView } = await import("../../runtime/input.js");
     runtime.heap.setU8(0x00991f88, 0);
@@ -355,15 +219,6 @@ describe("interactive input → game state", () => {
     expect(runtime.heap.u8(0x00991f88)).toBe(0);
   }, 60_000);
 
-  it("clickToolbar() at rotate widget (180,10) returns 5 and rotates", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    runtime.heap.setU8(0x00991f88, 0);
-    const idx = clickToolbar(runtime.heap, 180, 10);
-    expect(idx).toBe(5);                  // widget 5 = rotate
-    expect(runtime.heap.u8(0x00991f88)).toBe(1);
-  }, 60_000);
-
   it("toggleMapView() flips DAT_0099c16b between 0 and 1", async () => {
     const { toggleMapView } = await import("../../runtime/input.js");
     runtime.heap.setU8(0x0099c16b, 0);
@@ -371,25 +226,6 @@ describe("interactive input → game state", () => {
     expect(runtime.heap.u8(0x0099c16b)).toBe(1);
     expect(toggleMapView(runtime.heap)).toBe(0);
     expect(runtime.heap.u8(0x0099c16b)).toBe(0);
-  }, 60_000);
-
-  it("clickToolbar() at map-view widget (240,10) returns 7 and sets map mode", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    runtime.heap.setU8(0x0099c16b, 0);
-    const idx = clickToolbar(runtime.heap, 240, 10);
-    expect(idx).toBe(7);                  // widget 7 = map view
-    expect(runtime.heap.u8(0x0099c16b)).toBe(1);
-  }, 60_000);
-
-  // Negative case: clicking on an unmapped widget rect (e.g. land tools at
-  // widget 8, L=267..296) returns -1 — the click is dispatched but no action
-  // is wired yet (those open sub-windows via the CODESEG-stripped 0x42a830).
-  it("clickToolbar() at unmapped widget 8 (280,10) returns -1", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    const idx = clickToolbar(runtime.heap, 280, 10);
-    expect(idx).toBe(-1);
   }, 60_000);
 
   // Widget 2 — sound mute. The binary's click handler @0x42a976 calls
@@ -406,13 +242,4 @@ describe("interactive input → game state", () => {
     expect(runtime.heap.u8(0x006326bd) & 1).toBe(0);
   }, 60_000);
 
-  // Widget 2 lives at L=60..89, T=0..29 — click at x=75 hits it.
-  it("clickToolbar() at sound widget (75,10) returns 2 and flips sound bit", async () => {
-    const { clickToolbar } = await import("../../runtime/input.js");
-    ensureToolbarSlot();
-    runtime.heap.setU8(0x006326bd, 0);
-    const idx = clickToolbar(runtime.heap, 75, 10);
-    expect(idx).toBe(2);                  // widget 2 = sound mute
-    expect(runtime.heap.u8(0x006326bd) & 1).toBe(1);
-  }, 60_000);
 });
