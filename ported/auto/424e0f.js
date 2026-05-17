@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/424e0f.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `*pbVar1 = *pbVar1 + 0x10` is a byte store; translator emitted
+// setU32 — replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -71,7 +72,7 @@ export function FUN_00424e0f(heap) {
     if ((heap.u8(pbVar11 + (1)) & 0x80) != 0) {
       pbVar1 = ((pbVar9 + 6) >>> 0);
       bVar5 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) + 0x10) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) + 0x10) & 0xff);
       if (bVar5 < 0xf0) {
         break LAB_00424f60;
       }

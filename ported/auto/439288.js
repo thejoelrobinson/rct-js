@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/439288.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: byte-pointer RMW (`*pbVar = *pbVar <op> N`) was emitted as setU32;
+// replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -85,7 +86,7 @@ export function FUN_00439288(heap) {
     if (0xe < heap.u8((unaff_ESI + 0xe2))) {
       pbVar1 = (((unaff_ESI + 0x3b)) >>> 0);
       bVar4 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) - 5) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) - 5) & 0xff);
       if (bVar4 < 5) {
         heap.setU8((unaff_ESI + 0x3b), (0) & 0xff);
       }
@@ -98,7 +99,7 @@ export function FUN_00439288(heap) {
   if ((((heap.i8((unaff_ESI + 0x2a)) == 0) && (heap.i8((unaff_ESI + 0x2b)) == 5)) && ((heap.i8((unaff_ESI + 0x2f)) == 0 && ((((heap.u16((unaff_ESI + 200)) & 1) == 0 && ((heap.i8((unaff_ESI + 0xc5)) | 0) == -1)) && (4 < ((heap.u32(0x006e3b84) - heap.i32((unaff_ESI + 0xa8))) >>> 0) >>> 0xb)))))) && ((regs.eax = FUN_0043e0dd(heap)), (heap.i8((unaff_ESI + 0xc5)) | 0) == -1)) {
     pbVar1 = (((unaff_ESI + 0x3b)) >>> 0);
     bVar4 = ((heap.u8(pbVar1)) & 0xff);
-    heap.setU32(pbVar1, (heap.u8(pbVar1) + 0x80) & 0xffffffff);
+    heap.setU8(pbVar1, (heap.u8(pbVar1) + 0x80) & 0xff);
     if (bVar4 < 0x80) {
       heap.setU8((unaff_ESI + 0x3b), (0) & 0xff);
     }
@@ -118,7 +119,7 @@ export function FUN_00439288(heap) {
       heap.setI8((unaff_ESI + 0x3e), (heap.i8((unaff_ESI + 0x3e)) + -2) & 0xff);
       pbVar1 = (((unaff_ESI + 0x39)) >>> 0);
       bVar4 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) + 2) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) + 2) & 0xff);
       if (0xfd < bVar4) {
         heap.setU8((unaff_ESI + 0x39), (0xff) & 0xff);
       }
@@ -201,7 +202,7 @@ export function FUN_00439288(heap) {
         if (1999 < heap.u16((unaff_ESI + 0x7a))) {
           pbVar1 = (((unaff_ESI + 0x3b)) >>> 0);
           bVar4 = ((heap.u8(pbVar1)) & 0xff);
-          heap.setU32(pbVar1, (heap.u8(pbVar1) - 4) & 0xffffffff);
+          heap.setU8(pbVar1, (heap.u8(pbVar1) - 4) & 0xff);
           if (bVar4 < 4) {
             heap.setU8((unaff_ESI + 0x3b), (0) & 0xff);
           }
@@ -222,7 +223,7 @@ export function FUN_00439288(heap) {
       heap.setI8((unaff_ESI + 0x3f), (heap.i8((unaff_ESI + 0x3f)) + -4) & 0xff);
       pbVar1 = (((unaff_ESI + 0x40)) >>> 0);
       bVar4 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) + 3) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) + 3) & 0xff);
       if (0xfc < bVar4) {
         heap.setU8((unaff_ESI + 0x40), (0xff) & 0xff);
       }
@@ -241,7 +242,7 @@ export function FUN_00439288(heap) {
   if (heap.u8((unaff_ESI + 0x38)) < 0x33) {
     pbVar1 = (((unaff_ESI + 0x3b)) >>> 0);
     bVar4 = ((heap.u8(pbVar1)) & 0xff);
-    heap.setU32(pbVar1, (heap.u8(pbVar1) - 2) & 0xffffffff);
+    heap.setU8(pbVar1, (heap.u8(pbVar1) - 2) & 0xff);
     if (bVar4 < 2) {
       heap.setU8((unaff_ESI + 0x3b), (0) & 0xff);
     }
@@ -281,7 +282,7 @@ export function FUN_00439288(heap) {
   if ((heap.i8((unaff_ESI + 0x42)) != 0) && (heap.i8((unaff_ESI + 0x2b)) != 3)) {
     pbVar1 = (((unaff_ESI + 0x42)) >>> 0);
     bVar4 = ((heap.u8(pbVar1)) & 0xff);
-    heap.setU32(pbVar1, (heap.u8(pbVar1) - 3) & 0xffffffff);
+    heap.setU8(pbVar1, (heap.u8(pbVar1) - 3) & 0xff);
     if (bVar4 < 3) {
       heap.setU8((unaff_ESI + 0x42), (0) & 0xff);
     }
@@ -291,20 +292,20 @@ export function FUN_00439288(heap) {
     }
     pbVar1 = (((iVar11 + unaff_ESI)) >>> 0);
     bVar4 = ((heap.u8(pbVar1)) & 0xff);
-    heap.setU32(pbVar1, (heap.u8(pbVar1) + 7) & 0xffffffff);
+    heap.setU8(pbVar1, (heap.u8(pbVar1) + 7) & 0xff);
     if (0xf8 < bVar4) {
       heap.setU8((iVar11 + unaff_ESI), (0xff) & 0xff);
     }
     if (iVar11 == 0x3e) {
       pbVar1 = (((unaff_ESI + 0x3f)) >>> 0);
       bVar4 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) - 3) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) - 3) & 0xff);
       if (bVar4 < 3) {
         heap.setU8((unaff_ESI + 0x3f), (0) & 0xff);
       }
       pbVar1 = (((unaff_ESI + 0x40)) >>> 0);
       bVar4 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) + 2) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) + 2) & 0xff);
       if (0xfd < bVar4) {
         heap.setU8((unaff_ESI + 0x40), (0xff) & 0xff);
       }
@@ -319,11 +320,11 @@ export function FUN_00439288(heap) {
       }
       if (bVar13) {
         pbVar1 = (((unaff_ESI + 0xca + (((((((iVar11) & 0xffff)) << 16 >> 16)) | 0) >>> 3))) >>> 0);
-        heap.setU32(pbVar1, (heap.u8(pbVar1) & ~(1 << (((iVar11) & 0xffff) & 7))) & 0xffffffff);
+        heap.setU8(pbVar1, (heap.u8(pbVar1) & ~(1 << (((iVar11) & 0xffff) & 7))) & 0xff);
         bVar4 = ((heap.u32((0x0062d610) + (iVar11) * 4)) & 0xff);
         if (bVar4 != 0xff) {
           pbVar1 = (((unaff_ESI + 0xca + (((((((bVar4) & 0xffff)) << 16 >> 16)) | 0) >>> 3))) >>> 0);
-          heap.setU32(pbVar1, (heap.u8(pbVar1) | 1 << (bVar4 & 7)) & 0xffffffff);
+          heap.setU8(pbVar1, (heap.u8(pbVar1) | 1 << (bVar4 & 7)) & 0xff);
         }
         heap.setU8((unaff_ESI + 0x45), (heap.u8((unaff_ESI + 0x45)) | 8) & 0xff);
         (regs.eax = FUN_004420e0(heap));

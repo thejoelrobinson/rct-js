@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/43da82.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: byte-pointer RMW (`*pbVar = *pbVar <op> N`) was emitted as setU32;
+// replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -111,7 +112,7 @@ export function FUN_0043da82(heap) {
     pbVar2 = (((unaff_ESI + 0x7c + ((bVar6 >>> 5) >>> 0) * 4 + ((((bVar6 & 0x1f)) | 0) >>> 3))) >>> 0);
     uVar11 = ((bVar6 & 7) >>> 0);
     bVar6 = ((heap.u8(pbVar2)) & 0xff);
-    heap.setU32(pbVar2, (heap.u8(pbVar2) | 1 << uVar11) & 0xffffffff);
+    heap.setU8(pbVar2, (heap.u8(pbVar2) | 1 << uVar11) & 0xff);
     if ((bVar6 >>> uVar11 & 1) != 0) {
       sVar8 = ((sVar8 + 10) & 0xffff);
     }
@@ -124,7 +125,7 @@ export function FUN_0043da82(heap) {
     pbVar2 = (((unaff_ESI + 0x48 + ((bVar6 >>> 5) >>> 0) * 4 + ((((bVar6 & 0x1f)) | 0) >>> 3))) >>> 0);
     uVar11 = ((bVar6 & 7) >>> 0);
     bVar6 = ((heap.u8(pbVar2)) & 0xff);
-    heap.setU32(pbVar2, (heap.u8(pbVar2) | 1 << uVar11) & 0xffffffff);
+    heap.setU8(pbVar2, (heap.u8(pbVar2) | 1 << uVar11) & 0xff);
     if ((bVar6 >>> uVar11 & 1) != 0) {
       sVar8 = ((sVar8 + 10) & 0xffff);
     }
@@ -170,7 +171,7 @@ export function FUN_0043da82(heap) {
     if ((199 < heap.u8((unaff_ESI + 0x3a))) && (heap.u8((unaff_ESI + 0x43)) <= ((uVar5) & 0xff))) {
       pbVar2 = (((unaff_ESI + 0x43)) >>> 0);
       bVar6 = ((heap.u8(pbVar2)) & 0xff);
-      heap.setU32(pbVar2, (heap.u8(pbVar2) + 0x10) & 0xffffffff);
+      heap.setU8(pbVar2, (heap.u8(pbVar2) + 0x10) & 0xff);
       if (0xef < bVar6) {
         heap.setI8((unaff_ESI + 0x43), (heap.i8((unaff_ESI + 0x43)) + -0x10) & 0xff);
       }

@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/441a10.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: byte-pointer RMW (`*pbVar = *pbVar <op> N`) was emitted as setU32;
+// replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -105,13 +106,13 @@ export function FUN_00441a10(heap) {
           bVar4 = ((bVar4 * 4) & 0xff);
           pbVar1 = (((unaff_ESI + 0x3b)) >>> 0);
           bVar5 = ((heap.u8(pbVar1)) & 0xff);
-          heap.setU32(pbVar1, (heap.u8(pbVar1) + bVar4) & 0xffffffff);
+          heap.setU8(pbVar1, (heap.u8(pbVar1) + bVar4) & 0xff);
           if (CARRY1(bVar5, bVar4)) {
             heap.setU8((unaff_ESI + 0x3b), (0xff) & 0xff);
           }
           pbVar1 = (((unaff_ESI + 0x3a)) >>> 0);
           bVar5 = ((heap.u8(pbVar1)) & 0xff);
-          heap.setU32(pbVar1, (heap.u8(pbVar1) + bVar4) & 0xffffffff);
+          heap.setU8(pbVar1, (heap.u8(pbVar1) + bVar4) & 0xff);
           if (CARRY1(bVar5, bVar4)) {
             heap.setU8((unaff_ESI + 0x3a), (0xff) & 0xff);
           }
@@ -124,14 +125,14 @@ export function FUN_00441a10(heap) {
       }
       uVar6 = ((((in_EAX) & 0xffff)) & 0xffff);
       pbVar1 = (((unaff_ESI + 0xca + (((((uVar9) << 16 >> 16)) | 0) >>> 3))) >>> 0);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) | 1 << (uVar9 & 7)) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) | 1 << (uVar9 & 7)) & 0xff);
       if (uVar9 == 2) {
         uVar6 = (((regs.eax = FUN_00441891(heap))) & 0xffff);
       }
       bVar5 = ((heap.u32((0x0062d600) + (uVar10) * 4)) & 0xff);
       pbVar1 = (((unaff_ESI + 0x42)) >>> 0);
       bVar4 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) + bVar5) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) + bVar5) & 0xff);
       if (CARRY1(bVar4, bVar5)) {
         heap.setU8((unaff_ESI + 0x42), (0xff) & 0xff);
       }

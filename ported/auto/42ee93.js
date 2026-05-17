@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/42ee93.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `*pbVar5 = nibble-swap(*pbVar5)` is a byte store; translator
+// emitted setU32 — replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -37,7 +38,7 @@ export function FUN_0042ee93(heap) {
           pbVar5 = ((0x00981efc) >>> 0);
           uVar4 = ((uVar3) >>> 0);
           do {
-            heap.setU32(pbVar5, (heap.u8(pbVar5) >>> 4 | heap.u8(pbVar5) << 4) & 0xffffffff);
+            heap.setU8(pbVar5, (heap.u8(pbVar5) >>> 4 | heap.u8(pbVar5) << 4) & 0xff);
             pbVar5 = ((pbVar5 + 1) >>> 0);
             uVar4 = ((uVar4 - 1) >>> 0);
           } while (uVar4 != 0);

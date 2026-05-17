@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5d13e2.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: byte-pointer RMW (`*pbVar = *pbVar <op> N`) was emitted as setU32;
+// replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -148,10 +149,10 @@ export function FUN_005d13e2(heap) {
           heap.setU32(puVar15, (((uVar18) << 24 >> 24)) & 0xffffffff);
           puVar15 = ((puVar15 + 1) >>> 0);
           pbVar3 = (((((0x00652284) | 0) + (((uVar8) | 0) >>> 3))) >>> 0);
-          heap.setU32(pbVar3, (heap.u8(pbVar3) | 1 << (uVar8 & 7)) & 0xffffffff);
+          heap.setU8(pbVar3, (heap.u8(pbVar3) | 1 << (uVar8 & 7)) & 0xff);
           if (((heap.u8(0x00652290) < 4) && (cVar11 == heap.u8(0x0065229a))) && (cVar14 == heap.u8(0x00652299))) {
             pbVar3 = (((((0x00652284) | 0) + (((uVar8) | 0) >>> 3))) >>> 0);
-            heap.setU32(pbVar3, (heap.u8(pbVar3) & ~(1 << (uVar8 & 7))) & 0xffffffff);
+            heap.setU8(pbVar3, (heap.u8(pbVar3) & ~(1 << (uVar8 & 7))) & 0xff);
             heap.setU32(0x0065226a, (heap.u32(0x0065226a) + 1) >>> 0);
           }
           uVar8 = ((uVar8 + 1) >>> 0);

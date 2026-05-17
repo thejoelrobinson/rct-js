@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5d88ec.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: byte-pointer RMW (`*pbVar = *pbVar <op> N`) was emitted as setU32;
+// replaced with setU8 to avoid trailing-byte corruption.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -26,7 +27,7 @@ export function FUN_005d88ec(heap) {
     if ((((heap.u16((unaff_ESI + 0x48)) & 0x100) == 0) || (heap.u8(unaff_ESI + (0xb5)) == 0)) || ((uVar4 = ((((((heap.u8(unaff_ESI + (0x30))) & 0xff)) >>> 0)) >>> 0), iVar5 = ((uVar4 * 0x260) >>> 0), heap.u32((0x0088755c) + (iVar5) * 4) != 2 && (heap.u32((0x0088755c) + (iVar5) * 4) != 4)))) {
       pbVar1 = ((unaff_ESI + 0xb5) >>> 0);
       bVar2 = ((heap.u8(pbVar1)) & 0xff);
-      heap.setU32(pbVar1, (heap.u8(pbVar1) - 0x14) & 0xffffffff);
+      heap.setU8(pbVar1, (heap.u8(pbVar1) - 0x14) & 0xff);
       if (0x13 < bVar2) {
         /* goto LAB_005d8994 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_005d88ec/LAB_005d8994"); return 0;
       }
