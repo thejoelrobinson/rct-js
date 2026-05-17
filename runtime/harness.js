@@ -543,3 +543,42 @@ export function skipFadeIn(heap) {
     }
   }
 }
+
+/**
+ * Skip the title-intro state machine in FUN_00438aac so the cb9==0 gate in
+ * FUN_004385d8 (sprite-update + DAT_0099a4fe increment + palette
+ * AnimatePalette) opens immediately. The intro normally runs through cases
+ * 1→2→3→4→5→6→7→0xFE→0xFF→default(0) over ~700 game ticks; at this runtime's
+ * speed (~80s/tick under Node), that's hours of wall-clock just to reach
+ * sprite animation.
+ *
+ * The "default" arm of 438aac (case any-other) sets cb9=0 + runs
+ * FUN_009bb717 + zeroes DAT_005e9154 + runs FUN_005e6028 — equivalent to
+ * "intro finished cleanup". We mirror that here so any animation state
+ * 438aac would have settled is also reached.
+ *
+ * @param {Heap} heap  runtime heap (from createRuntime().heap)
+ */
+export function skipTitleIntro(heap) {
+  // Stuff cb9 with an out-of-range value so the next 438aac call hits the
+  // default arm — but also do the cleanup directly so the gate opens this
+  // tick even if 438aac isn't called between now and the next runTick.
+  heap.setU8(0x00628cb9, 0);
+  heap.setU32(0x005e9154, 0);
+  const fn_9bb717 = state.fnDispatch.get(0x9bb717);
+  if (typeof fn_9bb717 === "function") {
+    try { fn_9bb717(heap); } catch (e) {
+      if (typeof console !== "undefined") {
+        console.warn(`[harness] skipTitleIntro: FUN_009bb717 threw: ${(e.message || e).slice(0, 160)}`);
+      }
+    }
+  }
+  const fn_5e6028 = state.fnDispatch.get(0x5e6028);
+  if (typeof fn_5e6028 === "function") {
+    try { fn_5e6028(heap); } catch (e) {
+      if (typeof console !== "undefined") {
+        console.warn(`[harness] skipTitleIntro: FUN_005e6028 threw: ${(e.message || e).slice(0, 160)}`);
+      }
+    }
+  }
+}
