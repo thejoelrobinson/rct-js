@@ -1,10 +1,10 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/423c54.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: Ghidra `(int3)X` is a 3-byte truncation cast; translator emitted
+// `callIndirect(heap, int3, X)` — replaced with `(X & 0xffffff)`.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { int3 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT31, CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
@@ -125,5 +125,5 @@ export function FUN_00423c54(heap) {
       }
     }
   }
-  return CONCAT44(in_EDX, CONCAT31((regs.eax = callIndirect(heap, int3, in_EAX >>> 8)), heap.u8(0x005f4949)));
+  return CONCAT44(in_EDX, CONCAT31((in_EAX >>> 8) & 0xffffff, heap.u8(0x005f4949)));
 }

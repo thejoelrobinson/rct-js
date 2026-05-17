@@ -1,12 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/442516.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: Ghidra `(int3)X` is a 3-byte truncation cast; translator emitted
+// `callIndirect(heap, int3, X)` — replaced with `(X & 0xffffff)`.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { int3 } from "../../runtime/win32.js";
 import { CONCAT11, CONCAT22, CONCAT31 } from "../../runtime/ghidra-builtins.js";
-import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
 import { FUN_0042c711 } from "./42c711.js";
 export function FUN_00442516(heap) {
@@ -46,7 +45,7 @@ export function FUN_00442516(heap) {
       in_EAX = ((((bVar1) >>> 0)) >>> 0);
       if (bVar1 == 0x14) {
         if (((heap.u32((0x00743c59) + (iVar8) * 4) | 0) == -1) || (unaff_EBP = ((heap.u32(((0x00887420) >>> 0) + (heap.u32(((0x00743c59) >>> 0) + (iVar8) * 4) * 0x260) * 4)) >>> 0), (heap.u32((0x005f5b78 + unaff_EBP * 8)) & 0x800000) == 0)) {
-          uVar5 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar5 >>> 8)), bVar4 + 1)) >>> 0);
+          uVar5 = ((CONCAT31((uVar5 >>> 8) & 0xffffff, bVar4 + 1)) >>> 0);
         }
       } else {
         if (bVar1 == 0x15) {
@@ -56,14 +55,14 @@ export function FUN_00442516(heap) {
       } else {
         if (bVar1 == 0x16) {
         if (((heap.u32((0x00743c59) + (iVar8) * 4) | 0) == -1) || (unaff_EBP = ((heap.u32(((0x00887420) >>> 0) + (heap.u32(((0x00743c59) >>> 0) + (iVar8) * 4) * 0x260) * 4)) >>> 0), (heap.u32((0x005f5b78 + unaff_EBP * 8)) & 0x2000000) == 0)) {
-          uVar2 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar2 >>> 8)), ((uVar2) << 24 >> 24) + 1)) >>> 0);
+          uVar2 = ((CONCAT31((uVar2 >>> 8) & 0xffffff, ((uVar2) << 24 >> 24) + 1)) >>> 0);
         }
       } else {
         if (bVar1 == 0x1a) {
         uVar2 = ((((CONCAT11((((uVar2 >>> 8)) << 24 >> 24) + 1, ((uVar2) << 24 >> 24))) >>> 0)) >>> 0);
       } else {
         if (bVar1 == 0x1f) {
-        uVar3 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar3 >>> 8)), ((uVar3) << 24 >> 24) + 1)) >>> 0);
+        uVar3 = ((CONCAT31((uVar3 >>> 8) & 0xffffff, ((uVar3) << 24 >> 24) + 1)) >>> 0);
       } else {
         if (bVar1 == 0x21) {
         uVar3 = ((CONCAT22((((uVar3 >>> 0x10)) << 16 >> 16), CONCAT11((((uVar3 >>> 8)) << 24 >> 24) + 1, ((uVar3) << 24 >> 24)))) >>> 0);

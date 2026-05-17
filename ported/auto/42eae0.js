@@ -1,12 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/42eae0.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: Ghidra `(int3)X` is a 3-byte truncation cast; translator emitted
+// `callIndirect(heap, int3, X)` — replaced with `(X & 0xffffff)`.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { int3 } from "../../runtime/win32.js";
 import { CONCAT31 } from "../../runtime/ghidra-builtins.js";
-import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
 import { FUN_0040844b } from "./40844b.js";
 import { FUN_00408490 } from "./408490.js";
@@ -101,22 +100,22 @@ export function FUN_0042eae0(heap) {
   uVar8 = ((heap.u32(puVar14)) >>> 0);
   bVar5 = ((((uVar8) & 0xff)) & 0xff);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar8 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar8 >>> 8)), bVar5 - 0x20)) >>> 0);
+    uVar8 = ((CONCAT31((uVar8 >>> 8) & 0xffffff, bVar5 - 0x20)) >>> 0);
   }
   uVar7 = ((uVar8 >>> 8 | uVar8 << 0x18) >>> 0);
   bVar5 = ((((uVar8 >>> 8) & 0xff)) & 0xff);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar7 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar7 >>> 8)), bVar5 - 0x20)) >>> 0);
+    uVar7 = ((CONCAT31((uVar7 >>> 8) & 0xffffff, bVar5 - 0x20)) >>> 0);
   }
   uVar8 = ((uVar7 >>> 8 | uVar7 << 0x18) >>> 0);
   bVar5 = ((((uVar7 >>> 8) & 0xff)) & 0xff);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar8 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar8 >>> 8)), bVar5 - 0x20)) >>> 0);
+    uVar8 = ((CONCAT31((uVar8 >>> 8) & 0xffffff, bVar5 - 0x20)) >>> 0);
   }
   uVar7 = ((uVar8 >>> 8 | uVar8 << 0x18) >>> 0);
   bVar5 = ((((uVar8 >>> 8) & 0xff)) & 0xff);
   if ((0x60 < bVar5) && (bVar5 < 0x7b)) {
-    uVar7 = ((CONCAT31((regs.eax = callIndirect(heap, int3, uVar7 >>> 8)), bVar5 - 0x20)) >>> 0);
+    uVar7 = ((CONCAT31((uVar7 >>> 8) & 0xffffff, bVar5 - 0x20)) >>> 0);
   }
   uVar8 = ((uVar7 >>> 8 | uVar7 << 0x18) >>> 0);
   if (uVar8 == heap.u32(0x005f92db)) {
