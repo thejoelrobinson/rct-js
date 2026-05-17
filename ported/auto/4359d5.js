@@ -19,8 +19,9 @@ export function FUN_004359d5(heap) {
   let unaff_BL = regs.ebx & 0xff;
   (regs.edx = 0xffda, regs.eax = FUN_00431510(heap));
   // Hand-fix: extraout_EDX is the tile-element pointer FUN_00431510
-  // re-loads into EDX at its epilogue (movl 0x628918, %edx).
-  const extraout_EDX = heap.u32(0x00628918) >>> 0;
+  // re-loads into EDX at its epilogue. 431510.js now publishes via
+  // regs.edx, so read directly.
+  const extraout_EDX = regs.edx >>> 0;
   if ((unaff_BL == 3) && ((heap.u8(extraout_EDX) & 0x3c) == 0x10)) {
     if ((heap.u32((0x005f4970) + (((heap.u8(extraout_EDX + (4))) >>> 0) * 0x10 + (heap.u8(extraout_EDX + (5)) & 0xf)) * 4) & 0xf) != 0) {
       sVar1 = ((0) & 0xffff);

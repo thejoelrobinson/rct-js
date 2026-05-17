@@ -1,6 +1,14 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/4415e6.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x4415e6 shows the call to FUN_005df40c is wrapped in
+// `push eax / pop eax`; FUN_005df40c itself only pushes/pops EBX (its
+// only clobber). ECX and EDX are untouched, so the post-call reloads
+// extraout_ECX / regs.edx both equal the caller's incoming values.
+// Translator's `extraout_ECX = 0` made the subsequent
+// `CONCAT11(in_ECX>>5, in_EAX>>5)` tile-hash compare bogus — every
+// peep failed the "still at same tile" cache check and rebuilt its
+// pathfinding map every frame.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -15,7 +23,8 @@ export function FUN_004415e6(heap) {
   let sVar4 = 0;
   let in_EAX = regs.eax >>> 0;
   let in_ECX = regs.ecx >>> 0;
-  let extraout_ECX = 0;
+  // Hand-fix: FUN_005df40c only push/pops EBX — ECX is preserved.
+  let extraout_ECX = in_ECX;
   let in_DL = regs.edx & 0xff;
   let uVar5 = 0;
   let uVar6 = 0;

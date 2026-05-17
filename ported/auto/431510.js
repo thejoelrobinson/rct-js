@@ -1,6 +1,20 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/431510.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x431510: this is the tile-pick function. Its epilogue
+// at 0x4315fa..0x431614 unconditionally reloads the result registers
+// from the result-struct at 0x628910:
+//   movb 0x628910, %bl    ; status flag
+//   movw 0x628914, %ax    ; pick world-x
+//   movw 0x628916, %cx    ; pick world-y
+//   movl 0x628918, %edx   ; tile-element pointer
+//   pop esi
+//   ret
+//
+// Ghidra's C only surfaces `return DAT_00628914` (the AX return), so
+// the translated JS misses the CX, DX (high), and EDX channel — and
+// every caller that reads them via extraout_CX / extraout_EDX gets 0.
+// Plumb all three through regs.* before returning.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -45,5 +59,10 @@ export function FUN_00431510(heap) {
       (regs.eax = FUN_00433f20(heap));
     }
   }
+  // Hand-fix: epilogue reloads CX (world-y) and EDX (tile-element ptr)
+  // from the result struct — every caller that reads extraout_CX /
+  // extraout_EDX needs these in regs.
+  regs.ecx = (regs.ecx & 0xffff0000) | heap.u16(0x00628916);
+  regs.edx = heap.u32(0x00628918) >>> 0;
   return heap.u32(0x00628914);
 }

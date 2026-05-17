@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/448c64.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x448c64 shows function entry is `pushal`; the call to
+// FUN_00448d15 at 0x448c8e does not modify ECX (callee only touches DL,
+// ESI). So extraout_ECX after the call equals caller's incoming ECX.
+// Translator zero left uVar2=0, making all three FUN_00448a45
+// invocations receive (esi, 0, eax) — a wrong sprite-frame index.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -11,7 +16,9 @@ import { FUN_00448d15 } from "./448d15.js";
 export function FUN_00448c64(heap) {
   let in_EAX = regs.eax >>> 0;
   let uVar1 = 0;
-  let extraout_ECX = 0;
+  // Hand-fix: ECX is preserved across FUN_00448d15 (which touches only
+  // DL/ESI), so source from caller's incoming ECX.
+  let extraout_ECX = regs.ecx >>> 0;
   let uVar2 = 0;
   let in_EDX = regs.edx >>> 0;
   let unaff_ESI = regs.esi >>> 0;

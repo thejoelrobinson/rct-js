@@ -19,8 +19,8 @@ export function FUN_0043424f(heap) {
   let unaff_BL = regs.ebx & 0xff;
   sVar1 = (((regs.edx = 0xfffe, regs.eax = FUN_00431510(heap))) & 0xffff);
   // Hand-fix: extraout_CX is the y-coordinate FUN_00431510 reloads into
-  // CX at its epilogue (movw 0x628916, %cx).
-  const extraout_CX = heap.u16(0x00628916);
+  // CX at its epilogue. 431510.js now publishes via regs.ecx.
+  const extraout_CX = regs.ecx & 0xffff;
   if (unaff_BL != 0) {
     heap.setU32(0x00628a34, (sVar1 + 0x1f) >>> 0);
     heap.setU32(0x00628a36, (extraout_CX + 0x1f) >>> 0);
