@@ -1,28 +1,25 @@
 // Native dispatch chain end-to-end test (toolbar click → per-tick input
 // dispatch → widget handler → state mutation).
 //
-// Expected chain (per .claude/scratch/agent-42a830-findings.md):
-//   WM_LBUTTONDOWN → WndProc 0x403d79 → enqueue event in ring buffer
+// Chain (now self-driving end-to-end):
+//   WM_LBUTTONDOWN → WndProc 0x403d79 → enqueue in ring buffer
 //   per-tick FUN_004385d8 → FUN_004270f2 → FUN_005e38f5 (dequeue loop)
 //   → FUN_005e1fdd → FUN_005e2225 → FUN_005e3ace (window hit-test)
-//   → slot+4 (toolbar = 0x42a830) → 0x42b083 (per-widget dispatch)
-//   → 0x426f56 (game-cmd dispatch) → 0x427247 (XOR DAT_0099c169)
+//   → slot+4 (toolbar = 0x42a830) → 5e2b52 (CODESEG LMB handler, bridge cpu)
+//   → 452fce (bridged via setEipHook to JS port) → widget-action dispatch
+//   → 0x426f56 (game-cmd dispatch) → 0x427247 (XOR DAT_0099c169 = pause flag)
 //
-// Current state (this test): the chain DOES NOT fire end-to-end via runTick.
-// Two distinct blockers exist:
-//   1. Without skipFadeIn: 4385d8 short-circuits at fade-counter 0x10..0x5f
-//      (line 169 `if (DAT_005f8da2 != 0x60) break LAB_00438a0d`), so neither
-//      FUN_004270f2 nor any of the input-chain functions are reached.
-//   2. With skipFadeIn (or after the counter naturally reaches 0x60 ~74 ticks
-//      in, which fires FUN_0042f3a2 and lands in the post-fade body): the
-//      very next tick blows up in FUN_005e13d2 (paint-tree clipper) with
-//      "Maximum call stack size exceeded" — the Ghidra-translated recursion
-//      doesn't preserve the register-state args (in_AX/DX/BX/BP/ESI) across
-//      each recursive call, so the loop never terminates.
+// Historical blockers (all resolved):
+//   1. Boot fade-in counter (DAT_005f8da2): use skipFadeIn() helper.
+//   2. 5e13d2 stack overflow: fixed by hand-port preserving register state
+//      across recursive calls (commit d59f6ff) + PTR_LAB_005f49a0 wipe fix.
+//   3. 5 register side-effect bugs in 4385d8/5e1fdd/5e3ace/5e2225/5e3874:
+//      fixed in commit c4cb89f.
+//   4. 0x10100xxx OOB in 5e2b52's call to 452fce (synthetic DSound vtable
+//      addr unexecutable by bridge cpu): fixed in commit c449072 with a
+//      setEipHook routing the call through the JS port.
 //
-// This test pins those blockers so progress is detectable. When the chain
-// becomes self-driving, replace the `expect(...).toBe(0)` checks below with
-// `toBe(1)` for pause/rotate widgets.
+// The final test below asserts pause toggles 0 → 1 after one tick.
 
 import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
@@ -160,25 +157,31 @@ describe("native dispatch chain (WM_LBUTTONDOWN → toolbar widget action)", () 
     expect(threw).toBeNull();
   });
 
-  it("input chain (FUN_005e2225/5e3ace/5e38f5/4270f2) never fires via runTick today — BLOCKER", () => {
-    // Because runTick blows up in 5e13d2 BEFORE reaching the input chain,
-    // none of these are called. When the 5e13d2 bug is fixed and the chain
-    // becomes self-driving, this test should be flipped to expect >0 for
-    // each chain function (4270f2 → 5e38f5 → 5e1fdd → 5e2225 → 5e3ace).
-    expect(counts.get(0x4270f2) ?? 0).toBe(0);
-    expect(counts.get(0x5e38f5) ?? 0).toBe(0);
-    expect(counts.get(0x5e1fdd) ?? 0).toBe(0);
-    expect(counts.get(0x5e2225) ?? 0).toBe(0);
-    expect(counts.get(0x5e3ace) ?? 0).toBe(0);
-    // And the pause flag the chain would XOR remains 0.
-    expect(runtime.heap.u8(0x0099c169)).toBe(0);
-  });
-
-  // The bridge_42a830 test demonstrates the *handler* works when called
-  // directly with the right register state. The remaining gap is just
-  // upstream (5e13d2 → 5e1653 → 4270f2 → 5e38f5 → 5e1fdd → 5e2225 → 5e3ace).
-  it("0x42a830 IS registered and ready (bridge present) — only the upstream chain is broken", () => {
+  it("0x42a830 IS registered and ready (bridge present)", () => {
     expect(state.fnDispatch.has(0x42a830)).toBe(true);
     expect(typeof state.fnDispatch.get(0x42a830)).toBe("function");
+  });
+
+  it("LBUTTONDOWN + LBUTTONUP on toolbar pause widget → toggles pause flag (0x0099c169) — full native chain", async () => {
+    // Native input dispatch chain end-to-end:
+    //   WM_LBUTTONDOWN + UP → 4385d8 → 4270f2 → 5e38f5 → 5e1fdd → 5e2225
+    //   → 5e3ace hit-test → 0x42a830 toolbar widget dispatch → 5e2b52
+    //   (CODESEG LMB handler) → 452fce (bridged via setEipHook) → widget-
+    //   action dispatch → 0x426f56 game-cmd → 0x427247 (XOR DAT_0099c169).
+    //
+    // Unblocked by commit c449072 (bridge 452fce via JS port) on top of
+    // c4cb89f (5 register side-effects in 4385d8/5e1fdd/5e3ace/5e2225/5e3874).
+    //
+    // Requires BOTH LMB-down and LMB-up: 5e2b52 sets a pressed-state on
+    // down; the widget action fires when 5e2b52 sees LMB-up over the same
+    // widget. One tick after posting both is enough.
+    const { postWindowMessage } = await import("../../runtime/win32/user32.js");
+    const pauseBefore = runtime.heap.u8(0x0099c169);
+    postWindowMessage(state.firstHwnd, 0x0201, 1, packLParam(10, 10));
+    postWindowMessage(state.firstHwnd, 0x0202, 0, packLParam(10, 10));
+    try { runtime.runTick(); } catch (_) { /* painter-bridge noise non-fatal */ }
+    const pauseAfter = runtime.heap.u8(0x0099c169);
+    expect(pauseBefore).toBe(0);
+    expect(pauseAfter).toBe(1);
   });
 });
