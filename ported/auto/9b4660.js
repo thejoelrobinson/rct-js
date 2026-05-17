@@ -9,6 +9,34 @@
 // as `callIndirect(heap, int3, X)`. The `int3` symbol here is Ghidra's pseudo-type for
 // 3-byte integers, not the `int 3` opcode stub. Replaced with `X & 0xffffff`.
 //
+// HAND-FIX (Phase R+9c, zero-cols infinite loop): when the slow per-pixel
+// path is entered with column-count DAT_009a2028 == 0, the inner loop
+//   do { ... if ((short)(sVar5 + -1) == 0) break; ... if ((short)(sVar5 + -4) == 0) break;
+//       sVar5 -= 4; } while ((short)(sVar5 + -4) != 0);
+// underflows: sVar5 starts at 0, decrements to -1, -2, -3, ... and the
+// breakpoints `(short)(sVar5+-N) == 0` only fire when sVar5 wraps back through
+// 4 — i.e. after ~16384 iterations. EDI advances by 4 per iteration, so a
+// single zero-cols invocation walks ~64KB per row; with height=18 that is
+// ~1.2 MB of stray writes past the destination.
+//
+// Concrete casualty (Phase R+9b, commit 4e84a83): the IDirectSound singleton
+// COM object heap-allocated at _heapPtr just after the DDraw primary surface
+// (gap ~768 bytes past back-buf end) is stomped with palette-index 0x22 pixel
+// data. The vtable pointer at obj+0 is overwritten to 0xf222212 (out of bounds);
+// IDS_DuplicateSoundBuffer (slot 0x14) thereafter reads 0 from the corrupted
+// vtable and `callIndirect(0)` short-circuits, leaving *0x628cbc = 0 so every
+// in-game Play() silently no-ops.
+//
+// Translator bug class: the C source uses signed `short` comparison on a value
+// produced by a CONCAT22 cast; the auto-translator preserves the unsigned wrap
+// semantics of `>>> 0` but not the early-exit on a zero entry that the binary's
+// caller must have relied on (the asm presumably has a sub-zero check before
+// entering the loop). The deepest correct fix is to recover the missing
+// caller-side guard in 9b438b / its prelude; the tactical fix here is to bail
+// when DAT_009a2028 (column count low-word) is zero before entering the slow
+// per-pixel loop. The fast-path (line 91) already special-cases cols==4, so the
+// only loop entry that needs the guard is the slow do-while at line 110.
+//
 // Source: decompiled/c/9b4660.c — sprite remap-copy inner loop.
 //
 // Translator bug: the outer loop's exit check `if (iVar7 < 0) return;`
@@ -52,6 +80,12 @@ export function FUN_009b4660(heap) {
   uVar1 = ((heap.u32(0x009a2028)) & 0xffff);
   iVar2 = ((heap.u32(0x009a200c)) >>> 0);
   bVar3 = ((((((in_EAX) >>> 0) >>> 8) & 0xff)) & 0xff);
+  // R+9c guard: when the column-count low-word is zero, the slow inner per-
+  // pixel loop underflows and walks ~64KB per row past the destination — see
+  // header for the full bug-class write-up and DSound corruption casualty.
+  // Early-return covers both flag branches; cols==0 means "no pixels to draw",
+  // which is the binary's caller-side gate intent.
+  if (uVar1 === 0) return;
   if ((unaff_EBX & 0x20000000) != 0) {
     if ((heap.u32(0x009a201c) & 1) == 0) {
       return;
