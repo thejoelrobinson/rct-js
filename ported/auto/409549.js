@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/409549.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: first store in palette loop was emitted as setU32; replaced with
+// setU8 + corrected index (was `(local_c * 4) * 4`, should be `local_c * 4`).
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -16,7 +17,7 @@ export function FUN_00409549(heap, param_1, param_2, param_3) {
       param_3 = ((0xf6 - param_2) >>> 0);
     }
     for (local_c = ((param_2) >>> 0); local_c < param_3 + param_2; local_c = (((local_c + 1) >>> 0)) >>> 0) {
-      heap.setU32(((0x005f0960) + (local_c * 4) * 4), (heap.u8((param_1 + 2 + local_c * 4))) & 0xffffffff);
+      heap.setU8(((0x005f0960) + local_c * 4), (heap.u8((param_1 + 2 + local_c * 4))) & 0xff);
       heap.setU8((local_c * 4 + 0x5f0961), (heap.u8((param_1 + 1 + local_c * 4))) & 0xff);
       heap.setU8((local_c * 4 + 0x5f0962), (heap.u8((param_1 + local_c * 4))) & 0xff);
       heap.setU8((local_c * 4 + 0x5f0963), (5) & 0xff);

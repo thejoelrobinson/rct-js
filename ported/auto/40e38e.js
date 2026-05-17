@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/40e38e.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: PALETTEENTRY[i] byte-stride writes were emitted as setU32; replaced
+// with setU8. Also removed bogus extra `*4` on the index.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -17,12 +18,12 @@ export function FUN_0040e38e(heap, param_1, param_2, param_3) {
       param_3 = ((heap.u32(0x005ec0e0) - param_2) >>> 0);
     }
     for (local_10 = ((param_2) >>> 0); ((local_10) | 0) < (((param_3 + param_2)) | 0); local_10 = (((local_10 + 1) >>> 0)) >>> 0) {
-      heap.setU32(((0x005eee9a) + (local_10 * 4) * 4), (heap.u8((param_1 + 2 + local_10 * 4))) & 0xffffffff);
-      heap.setU32(((0x005ef2a4) + (local_10 * 4) * 4), (heap.u32((0x005eee9a) + (local_10 * 4) * 4)) & 0xffffffff);
-      heap.setU32(((0x005eee99) + (local_10 * 4) * 4), (heap.u8((param_1 + 1 + local_10 * 4))) & 0xffffffff);
-      heap.setU32(((0x005ef2a5) + (local_10 * 4) * 4), (heap.u32((0x005eee99) + (local_10 * 4) * 4)) & 0xffffffff);
-      heap.setU32(((0x005eee98) + (local_10 * 4) * 4), (heap.u8((param_1 + local_10 * 4))) & 0xffffffff);
-      heap.setU32(((0x005ef2a6) + (local_10 * 4) * 4), (heap.u32((0x005eee98) + (local_10 * 4) * 4)) & 0xffffffff);
+      heap.setU8(((0x005eee9a) + local_10 * 4), (heap.u8((param_1 + 2 + local_10 * 4))) & 0xff);
+      heap.setU8(((0x005ef2a4) + local_10 * 4), (heap.u8((0x005eee9a) + local_10 * 4)) & 0xff);
+      heap.setU8(((0x005eee99) + local_10 * 4), (heap.u8((param_1 + 1 + local_10 * 4))) & 0xff);
+      heap.setU8(((0x005ef2a5) + local_10 * 4), (heap.u8((0x005eee99) + local_10 * 4)) & 0xff);
+      heap.setU8(((0x005eee98) + local_10 * 4), (heap.u8((param_1 + local_10 * 4))) & 0xff);
+      heap.setU8(((0x005ef2a6) + local_10 * 4), (heap.u8((0x005eee98) + local_10 * 4)) & 0xff);
     }
     hdc = ((GetDC(heap, heap.u32(0x005e916c))) >>> 0);
     hPal = ((SelectPalette(heap, hdc, heap.u32(0x005ec07c), 0)) >>> 0);

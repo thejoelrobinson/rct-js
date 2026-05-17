@@ -1,6 +1,6 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/44414c.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `*pbVar5 = byte` was emitted as setU32; replaced with setU8.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -65,7 +65,7 @@ export function FUN_0044414c(heap) {
       pbVar6 = ((pbVar6 + 1) >>> 0);
     } while (pbVar6 < pbVar4);
     do {
-      heap.setU32(pbVar5, (heap.u8(pbVar5 + (1))) & 0xffffffff);
+      heap.setU8(pbVar5, (heap.u8(pbVar5 + (1))) & 0xff);
       pbVar5 = ((pbVar5 + 1) >>> 0);
     } while (pbVar5 < pbVar4);
   }
@@ -87,9 +87,9 @@ export function FUN_0044414c(heap) {
       }
       LOCK();
       bVar1 = ((heap.u8(pbVar5)) & 0xff);
-      heap.setU32(pbVar5, (heap.u8(pbVar6)) & 0xffffffff);
+      heap.setU8(pbVar5, (heap.u8(pbVar6)) & 0xff);
       UNLOCK();
-      heap.setU32(pbVar6, (bVar1) & 0xffffffff);
+      heap.setU8(pbVar6, (bVar1) & 0xff);
       pbVar5 = ((pbVar6) >>> 0);
     }
     pbVar4 = ((pbVar4 + 1) >>> 0);

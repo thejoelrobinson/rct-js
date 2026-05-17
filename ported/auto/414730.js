@@ -1,6 +1,8 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/414730.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `*param_3 = byte` was emitted as setU32 in 10 places; replaced with
+// setU8. param_3 is byte* (output buffer); int* params (param_4, param_5,
+// piVar6) and undefined4* (param_2) remain setU32.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -24,13 +26,13 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
     bVar2 = ((heap.u8(param_1 + (1))) & 0xff);
     while (pbVar7 = ((param_1 + 1) >>> 0), bVar2 != 0x22 && (bVar2 != 0)) {
       if (((heap.u8((((0x005f0020) | 0) + bVar2 + 1)) & 4) != 0) && (heap.setU32(param_5, (heap.i32(param_5) + 1) & 0xffffffff), param_3 != 0x0)) {
-        heap.setU32(param_3, (heap.u8(pbVar7)) & 0xffffffff);
+        heap.setU8(param_3, (heap.u8(pbVar7)) & 0xff);
         param_3 = ((param_3 + 1) >>> 0);
         pbVar7 = ((param_1 + 2) >>> 0);
       }
       heap.setU32(param_5, (heap.i32(param_5) + 1) & 0xffffffff);
       if (param_3 != 0x0) {
-        heap.setU32(param_3, (heap.u8(pbVar7)) & 0xffffffff);
+        heap.setU8(param_3, (heap.u8(pbVar7)) & 0xff);
         param_3 = ((param_3 + 1) >>> 0);
       }
       param_1 = ((pbVar7) >>> 0);
@@ -38,7 +40,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
     }
     heap.setU32(param_5, (heap.i32(param_5) + 1) & 0xffffffff);
     if (param_3 != 0x0) {
-      heap.setU32(param_3, (0) & 0xffffffff);
+      heap.setU8(param_3, (0) & 0xff);
       param_3 = ((param_3 + 1) >>> 0);
     }
     if (heap.u8(pbVar7) == 0x22) {
@@ -48,7 +50,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
     do {
       heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
       if (param_3 != 0x0) {
-        heap.setU32(param_3, (heap.u8(param_1)) & 0xffffffff);
+        heap.setU8(param_3, (heap.u8(param_1)) & 0xff);
         param_3 = ((param_3 + 1) >>> 0);
       }
       bVar2 = ((heap.u8(param_1)) & 0xff);
@@ -57,7 +59,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       if ((heap.u8((((0x005f0020) | 0) + ((param_5) | 0) + 1)) & 4) != 0) {
         heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
         if (param_3 != 0x0) {
-          heap.setU32(param_3, (heap.u8(pbVar7)) & 0xffffffff);
+          heap.setU8(param_3, (heap.u8(pbVar7)) & 0xff);
           param_3 = ((param_3 + 1) >>> 0);
         }
         pbVar7 = ((param_1 + 2) >>> 0);
@@ -116,7 +118,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       }
       for (; uVar8 != 0; uVar8 = (((uVar8 - 1) >>> 0)) >>> 0) {
         if (param_3 != 0x0) {
-          heap.setU32(param_3, (0x5c) & 0xffffffff);
+          heap.setU8(param_3, (0x5c) & 0xff);
           param_3 = ((param_3 + 1) >>> 0);
         }
         heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
@@ -134,7 +136,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
           heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
           pbVar7 = ((pbVar7 + 1) >>> 0);
           if (param_3 != 0x0) {
-            heap.setU32(param_3, (0) & 0xffffffff);
+            heap.setU8(param_3, (0) & 0xff);
             param_3 = ((param_3 + 1) >>> 0);
           }
           heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
@@ -145,12 +147,12 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
           return;
         }
         if ((heap.u8((((0x005f0020) | 0) + bVar2 + 1)) & 4) != 0) {
-          heap.setU32(param_3, (bVar2) & 0xffffffff);
+          heap.setU8(param_3, (bVar2) & 0xff);
           param_3 = ((param_3 + 1) >>> 0);
           pbVar7 = ((pbVar7 + 1) >>> 0);
           heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
         }
-        heap.setU32(param_3, (heap.u8(pbVar7)) & 0xffffffff);
+        heap.setU8(param_3, (heap.u8(pbVar7)) & 0xff);
         param_3 = ((param_3 + 1) >>> 0);
         heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);
         pbVar7 = ((pbVar7 + 1) >>> 0);
@@ -159,7 +161,7 @@ export function FUN_00414730(heap, param_1, param_2, param_3, param_4, param_5) 
       }
     }
     if (param_3 != 0x0) {
-      heap.setU32(param_3, (0) & 0xffffffff);
+      heap.setU8(param_3, (0) & 0xff);
       param_3 = ((param_3 + 1) >>> 0);
     }
     heap.setU32(piVar6, (heap.i32(piVar6) + 1) & 0xffffffff);

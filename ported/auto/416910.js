@@ -1,6 +1,7 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/416910.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `*puVar2 = byte` was emitted as setU32 in 3 places; replaced with
+// setU8 to avoid trailing-byte corruption. puVar4 stores remain setU32.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -22,13 +23,13 @@ export function FUN_00416910(heap, param_1, param_2, param_3, param_4) {
   }
   puVar2 = ((param_2) >>> 0);
   if (heap.i32(piVar1) == 0x2d) {
-    heap.setU32(param_2, (0x2d) & 0xffffffff);
+    heap.setU8(param_2, (0x2d) & 0xff);
     puVar2 = ((param_2 + 1) >>> 0);
   }
   if (0 < param_3) {
-    heap.setU32(puVar2, (heap.u8(puVar2 + (1))) & 0xffffffff);
+    heap.setU8(puVar2, (heap.u8(puVar2 + (1))) & 0xff);
     puVar2 = ((puVar2 + 1) >>> 0);
-    heap.setU32(puVar2, (heap.u32(0x005ee758)) & 0xffffffff);
+    heap.setU8(puVar2, (heap.u8(0x005ee758)) & 0xff);
   }
   puVar4 = (((puVar2 + param_3 + ((heap.u8(0x005f0254) == 0) >>> 0))) >>> 0);
   heap.setU32(puVar4, (0x30302b65) & 0xffffffff);
