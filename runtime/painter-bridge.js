@@ -22,6 +22,7 @@ import { regs } from "./regs.js";
 import { state } from "./win32/context.js";
 import { FUN_00444927 } from "../ported/auto/444927.js";
 import { FUN_00452fce } from "../ported/auto/452fce.js";
+import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -129,6 +130,17 @@ export function installPainterBridge(heap, opts = {}) {
     cpu.regs.esi = regs.esi >>> 0;
     cpu.regs.ebp = regs.ebp >>> 0;
   });
+
+  // Install JS hooks for the per-tile surface painters at PTR_LAB_004368c8
+  // (0x4368d8 / 0x4368e0 / 0x4368ec / 0x4368ff). The native body throws
+  // `mem8 OOB: 0xa200460` warnings when the tile-element chain walk at
+  // 0x4369e7 hits a corrupt tile_pointers entry (esi walks off into
+  // 0xa2000000-range garbage); the bridge catches the throw but the
+  // warnings clog logs and the interpreter runs these ~9,000+ times per
+  // 5 ticks. The JS port uses a bounded chain walk and stays in JS for
+  // the hot loop, dispatching per-element painters via runFunction on
+  // the same bridge cpu to preserve the CODESEG-only callees' behaviour.
+  install4368d8Hooks(cpu, runFunction, setEipHook, heap);
 
   // Install a JS hook for FUN_00452fce (sound-queue / pan helper). Called
   // from the LMB-down handler at 0x5e2b52 (CODESEG, runs in the bridge cpu)
