@@ -80,8 +80,24 @@ export function FUN_004316f3(heap) {
     heap.setU16(0x005f96d6, (heap.u16(0x005f96c6)) & 0xffff);
     heap.setU16(0x005f96da, (heap.u16(0x005f96ca)) & 0xffff);
     heap.setU16(0x005f96de, (heap.u8(0x005f96ce)) & 0xffff);
-    uVar3 = ((heap.u32(0x005f96c4)) >>> 0);
-    uVar6 = ((heap.u32(0x005f96c8)) >>> 0);
+    // HAND-FIX (Phase R+6): DAT_005f96c4 and DAT_005f96c8 are u16 (ushort) per
+    // the writes at lines 46/48 (and matching binary at 4316f3 prologue). The
+    // C decompile shows `uVar3 = (uint)DAT_005f96c4` — the `(uint)` cast widens
+    // a smaller type. The translator emitted heap.u32 which reads 4 bytes:
+    // [c4][c5][c6][c7] = (c4_lo16) | (c6_hi16 << 16). With clipY at c6, that
+    // pollutes uVar3 with a huge value (~85M for viewport (976, 1304)). The
+    // `if (uVar3 <= uVar4)` test then fails on EVERY strip — the branch that
+    // advances `uVar3 = uVar4` per strip never fires. Result: clipX written to
+    // the per-strip DPI stays at 976 across all 21 strips (only clipW grows
+    // from 16 to 656). The iso painter at extra_paint_436b50 then reads the
+    // SAME starting (clipX, clipY) every strip and walks the SAME 47-cell
+    // diagonal of tile-grid hashes — painting the same single sprite (idx 37,
+    // type-1 vehicle) up to 21 times per tick. Fixing the read to u16 advances
+    // clipX by 0x20 per strip, sweeping the full viewport width and visiting
+    // ~21× more tile-grid heads. Lifts visible-sprite coverage from 1/31 → 31/31
+    // (peep painter 0x5d7503 now fires; distinct palette indices: 45 → 244).
+    uVar3 = ((heap.u16(0x005f96c4)) >>> 0);
+    uVar6 = ((heap.u16(0x005f96c8)) >>> 0);
     iVar5 = ((heap.u32(0x005f96c0)) >>> 0);
     sVar7 = ((heap.u8(0x005f96cc)) & 0xffff);
     if (((uVar3) | 0) <= ((uVar4) | 0)) {
