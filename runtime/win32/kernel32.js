@@ -194,12 +194,151 @@ export function GetProcAddress(heap, hModule, lpProcName) {
   return state.procRegistry.get(name) || 0;
 }
 
-export function FindResourceA(heap, hModule, lpName, lpType) { return 0; }
-export function FindResourceW(heap, hModule, lpName, lpType) { return 0; }
-export function LoadResource(heap, hModule, hResInfo) { return 0; }
-export function LockResource(heap, hResData) { return 0; }
+// ---- PE .rsrc resource directory ----
+//
+// The .rsrc section is already mapped at its image VA in heap.bytes by the
+// loader. We walk the IMAGE_RESOURCE_DIRECTORY tree on first access to
+// build a lookup table { type, name, lang } → { dataVA, size }, then
+// FindResourceA returns a handle (the dataVA) and LockResource returns
+// the same address (data is already at its VA).
+//
+// PE resource directory layout (offsets relative to .rsrc section base):
+//   IMAGE_RESOURCE_DIRECTORY (16 bytes):
+//     +0  Characteristics
+//     +4  TimeDateStamp
+//     +8  MajorVersion, MinorVersion
+//     +12 NumberOfNamedEntries (u16)
+//     +14 NumberOfIdEntries    (u16)
+//   followed by NamedEntries + IdEntries × IMAGE_RESOURCE_DIRECTORY_ENTRY (8 bytes):
+//     +0  Name (high bit set → string offset, else ID)
+//     +4  OffsetToData (high bit set → subdir, else leaf IMAGE_RESOURCE_DATA_ENTRY)
+//   Leaf IMAGE_RESOURCE_DATA_ENTRY (16 bytes):
+//     +0  OffsetToData (RVA of payload)
+//     +4  Size
+//     +8  CodePage
+//     +12 Reserved
+//
+// Resource type IDs (lpType in FindResourceA):
+//   RT_CURSOR=1, RT_BITMAP=2, RT_ICON=3, RT_MENU=4, RT_DIALOG=5,
+//   RT_STRING=6, RT_FONTDIR=7, RT_FONT=8, RT_ACCELERATOR=9,
+//   RT_RCDATA=10, RT_MESSAGETABLE=11, RT_GROUP_CURSOR=12, RT_GROUP_ICON=14,
+//   RT_VERSION=16, ...
+
+// rct.exe has its .rsrc mapped at VA 0x9bd000 (file 0x5b4600). Hardcoded —
+// we only ever run one binary, so static is fine. If we later support other
+// PE images we can re-parse from the in-heap PE headers (imageBase + 0x3c
+// → e_lfanew → SectionTable).
+const _RSRC_BASE_VA = 0x9bd000;
+
+// Cached resource index — built lazily on first FindResourceA call.
+// Map "type|name|lang" → { dataVA, size, hRsrc }. hRsrc is a token returned
+// from FindResourceA; LoadResource/LockResource map it back to the data VA.
+let _rsrcIndex = null;
+let _rsrcHandles = null;  // hRsrc (token) → { dataVA, size }
+let _rsrcNextToken = 0x20000000;
+
+function _buildRsrcIndex(heap) {
+  _rsrcIndex = new Map();
+  _rsrcHandles = new Map();
+  const base = _RSRC_BASE_VA;
+  // Sanity-check: if the section isn't there, leave the index empty.
+  if (heap.u32(base) === 0 && heap.u32(base + 12) === 0) return;
+  // Walk the 3-level directory tree.
+  walkDir(heap, base, base, 0, 0, 0);
+}
+
+function walkDir(heap, base, dirAddr, level, typeId, nameId) {
+  const named = heap.u16(dirAddr + 12);
+  const ided  = heap.u16(dirAddr + 14);
+  const total = named + ided;
+  for (let i = 0; i < total; i++) {
+    const eAddr = dirAddr + 16 + i * 8;
+    const nameOrId = heap.u32(eAddr + 0);
+    const dataOrSub = heap.u32(eAddr + 4);
+    const isString = (nameOrId & 0x80000000) !== 0;
+    const id = nameOrId & 0x7fffffff;
+    const subOffset = dataOrSub & 0x7fffffff;
+    const isSubdir = (dataOrSub & 0x80000000) !== 0;
+    let key;
+    if (level === 0) key = id;
+    else if (level === 1) key = id;       // resource name (may be int ID)
+    else key = id;                         // language ID
+    let nextType = typeId, nextName = nameId;
+    if (level === 0) nextType = id;
+    if (level === 1) nextName = id;
+    if (isSubdir) {
+      walkDir(heap, base, base + subOffset, level + 1, nextType, nextName);
+    } else {
+      // Leaf: IMAGE_RESOURCE_DATA_ENTRY at base+subOffset.
+      const dataRva = heap.u32(base + subOffset + 0);
+      const size    = heap.u32(base + subOffset + 4);
+      // dataRva is an image-RVA — add imageBase (0x400000) to get the VA in heap.
+      const dataVA = 0x400000 + dataRva;
+      const key3 = `${nextType}|${nextName}|${id}`;
+      _rsrcIndex.set(key3, { dataVA, size });
+      // Also store a "any language" entry so FindResourceA can match without
+      // specifying language.
+      const key2 = `${nextType}|${nextName}|*`;
+      if (!_rsrcIndex.has(key2)) _rsrcIndex.set(key2, { dataVA, size });
+    }
+  }
+}
+
+// FindResourceA(hModule, lpName, lpType)
+//   lpName / lpType may be either a string pointer or MAKEINTRESOURCE(id)
+//   (small integer encoded as the low 16 bits of the "pointer"). The MSDN
+//   rule: if the high 16 bits are zero, it's an integer ID; otherwise it's
+//   a pointer to a NUL-terminated string.
+function _resolveNameOrId(heap, ptr) {
+  if (!ptr) return { id: 0, name: null };
+  const u = ptr >>> 0;
+  if (u >>> 16 === 0) {
+    // Integer ID (MAKEINTRESOURCE).
+    return { id: u & 0xffff, name: null };
+  }
+  // String — read C string.
+  const s = heap.readCStr(u, 256);
+  // If string is "#<digits>", treat as ID.
+  if (s[0] === "#") {
+    const n = parseInt(s.slice(1), 10);
+    if (!Number.isNaN(n)) return { id: n, name: null };
+  }
+  return { id: 0, name: s };
+}
+
+export function FindResourceA(heap, hModule, lpName, lpType) {
+  if (_rsrcIndex === null) _buildRsrcIndex(heap);
+  const n = _resolveNameOrId(heap, lpName);
+  const t = _resolveNameOrId(heap, lpType);
+  // We only index by integer ID right now (which is what rct.exe uses).
+  if (n.id === 0 || t.id === 0) return 0;
+  const key = `${t.id}|${n.id}|*`;
+  const entry = _rsrcIndex.get(key);
+  if (!entry) return 0;
+  // Allocate a small token, remember the data location.
+  const h = _rsrcNextToken;
+  _rsrcNextToken += 4;
+  _rsrcHandles.set(h, entry);
+  return h;
+}
+export function FindResourceW(heap, hModule, lpName, lpType) {
+  return FindResourceA(heap, hModule, lpName, lpType);
+}
+export function LoadResource(heap, hModule, hResInfo) {
+  // In Win32 LoadResource returns an HGLOBAL handle. We pass the same token
+  // through; LockResource then maps it to the data VA.
+  return hResInfo;
+}
+export function LockResource(heap, hResData) {
+  if (!hResData) return 0;
+  const entry = _rsrcHandles && _rsrcHandles.get(hResData);
+  return entry ? entry.dataVA : 0;
+}
 export function FreeResource(heap, hResData) { return 1; }
-export function SizeofResource(heap, hModule, hResInfo) { return 0; }
+export function SizeofResource(heap, hModule, hResInfo) {
+  const entry = _rsrcHandles && _rsrcHandles.get(hResInfo);
+  return entry ? entry.size : 0;
+}
 
 // ---- Environment / locale ----
 

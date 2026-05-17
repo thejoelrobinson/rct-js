@@ -362,13 +362,41 @@ export function GetSystemMetrics(heap, nIndex) {
     default: return 0;
   }
 }
+// Win32 8bpp "static system palette" — the 20 reserved colours every Windows
+// app sees in indices 0-9 and 246-255 when the display is in palettized mode.
+// These match the literal entries in RCT's embedded master-palette resource
+// (TYPE=3 NAMEID=33 in .rsrc), so when the binary's FUN_0040ae98 calls
+// GetSystemPaletteEntries(0, 10, ...) + (0xf6, 10, ...) the resulting
+// CreatePalette has the right RGBs at those slots instead of a grey ramp
+// that would later overwrite our pre-seeded defaultPalette() defaults.
+const _WIN32_STATIC_SYSTEM_PALETTE = [
+  // 0-9 (low reserved)
+  [0,0,0], [128,0,0], [0,128,0], [128,128,0],
+  [0,0,128], [128,0,128], [0,128,128], [192,192,192],
+  [192,220,192], [166,202,240],
+  // 246-255 (high reserved)
+  [255,251,240], [160,160,164], [128,128,128], [255,0,0],
+  [0,255,0], [255,255,0], [0,0,255], [255,0,255],
+  [0,255,255], [255,255,255],
+];
 export function GetSystemPaletteEntries(heap, hDC, iStartIndex, nEntries, lpPaletteEntries) {
-  // Fill with neutral grey ramp; real impl reads gdi32's palette.
+  if (!lpPaletteEntries) return 0;
   for (let i = 0; i < nEntries; i++) {
-    const v = (i * 255 / nEntries) | 0;
-    heap.setU8(lpPaletteEntries + i * 4 + 0, v);
-    heap.setU8(lpPaletteEntries + i * 4 + 1, v);
-    heap.setU8(lpPaletteEntries + i * 4 + 2, v);
+    const idx = (iStartIndex + i) | 0;
+    let rgb;
+    if (idx >= 0 && idx <= 9) {
+      rgb = _WIN32_STATIC_SYSTEM_PALETTE[idx];
+    } else if (idx >= 246 && idx <= 255) {
+      rgb = _WIN32_STATIC_SYSTEM_PALETTE[10 + (idx - 246)];
+    } else {
+      // Non-reserved range: real Windows returns whatever's currently mapped
+      // (the application palette). Zero is the documented "not yet set"
+      // result and matches an unpopulated logical palette.
+      rgb = [0, 0, 0];
+    }
+    heap.setU8(lpPaletteEntries + i * 4 + 0, rgb[0]);
+    heap.setU8(lpPaletteEntries + i * 4 + 1, rgb[1]);
+    heap.setU8(lpPaletteEntries + i * 4 + 2, rgb[2]);
     heap.setU8(lpPaletteEntries + i * 4 + 3, 0);
   }
   return nEntries;

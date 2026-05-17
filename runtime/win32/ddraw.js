@@ -147,21 +147,24 @@ function IDDS_SetPalette(heap, self, lpPalette) {
   return DD_OK;
 }
 
-// Merge `src` into state.capturedPalette: only overwrite entries where src is
-// non-black AND the source palette is rich enough to be real. The binary's
-// resource-loader (FUN_00411b58) is broken — its FindResourceA/LoadResource/
-// LockResource path returns 0 (stubbed), so the palette it builds via
-// CreatePalette is mostly zeros with a sparse 9-entry greyscale ramp at
-// indices 1-9 (the Win32 GDI system-palette reservation). If we let that
-// "palette" overwrite our pre-seeded defaults, indices 1-9 become dull
-// greys (25,25,25 .. 229,229,229) instead of the sky-blue defaults — and
-// since palette index 1 covers ~96% of the title screen (the unpainted
-// void), the whole screen looks like dark grey static.
+// Merge `src` into state.capturedPalette.
 //
-// Heuristic: if src has fewer than 32 non-black entries, treat it as a
-// stub/system palette and skip the merge entirely. Real palette updates
-// (e.g. SPR_G1_PALETTE_DEFAULT contents, AnimatePalette cycling) carry
-// 100+ non-black entries and still get through.
+// The binary's title-screen palette is built in two phases:
+//   1. FUN_0040ae98 creates a "logical palette" via CreatePalette where
+//      entries 0-9 and 246-255 come from GetSystemPaletteEntries (real
+//      Win32 reserved RGBs) and entries 10-245 are placeholder greyscale
+//      stamped with peFlags = PC_RESERVED (0x05) — meaning "don't use this
+//      RGB, the app will overwrite it later".
+//   2. Later code paths (csg1.dat-loaded sprite palette + AnimatePalette
+//      sky/water/sparkle cycles) overwrite the PC_RESERVED slots with
+//      actual RGB content via SetEntries.
+//
+// Primary defense: honour peFlags by skipping entries marked PC_RESERVED
+// so the pre-seeded defaultPalette() defaults survive until phase-2 fills
+// them. Each `src` palette stores its flags alongside RGB (see
+// readPaletteFromEntries). Backstop: also bail entirely if src has <32
+// non-black entries, in case a code path constructs a palette without
+// recording flags.
 function mergePaletteIntoCaptured(src) {
   if (!state.capturedPalette || state.capturedPalette.length < 1024) {
     state.capturedPalette = new Uint8ClampedArray(1024);
@@ -174,7 +177,12 @@ function mergePaletteIntoCaptured(src) {
   }
   if (nonBlack < 32) return;
   const dst = state.capturedPalette;
+  const flags = src.peFlags || null;        // optional Uint8Array(256) if recorded
   for (let i = 0; i < 256; i++) {
+    // Skip slots the caller marked PC_RESERVED (0x01) — the app will fill
+    // them later via SetEntries / AnimatePalette and we don't want the
+    // placeholder grey/black to overwrite our defaults.
+    if (flags && (flags[i] & 0x01)) continue;
     const r = src[i*4], g = src[i*4 + 1], b = src[i*4 + 2];
     if (r || g || b) {
       dst[i*4]     = r;
@@ -345,7 +353,9 @@ function allocClipper() {
 }
 
 // PALETTEENTRY is 4 bytes: peRed, peGreen, peBlue, peFlags. Convert to
-// our captured palette format (Uint8ClampedArray of RGBA, 256*4).
+// our captured palette format (Uint8ClampedArray of RGBA, 256*4) and
+// retain peFlags in a sidecar Uint8Array(256) so mergePaletteIntoCaptured
+// can honour PC_RESERVED (0x01).
 function readPaletteFromEntries(heap, lpEntries, count, startIdx, surfaceObj) {
   // Re-use existing palette if surfaceObj given (SetEntries appends to it).
   let out;
@@ -354,6 +364,7 @@ function readPaletteFromEntries(heap, lpEntries, count, startIdx, surfaceObj) {
   } else {
     out = new Uint8ClampedArray(256 * 4);
   }
+  if (!out.peFlags) out.peFlags = new Uint8Array(256);
   for (let i = 0; i < count; i++) {
     const src = lpEntries + i * 4;
     const dst = (startIdx + i) * 4;
@@ -361,6 +372,7 @@ function readPaletteFromEntries(heap, lpEntries, count, startIdx, surfaceObj) {
     out[dst + 1] = heap.u8(src + 1);  // G
     out[dst + 2] = heap.u8(src + 2);  // B
     out[dst + 3] = 255;
+    out.peFlags[startIdx + i] = heap.u8(src + 3);
   }
   return out;
 }
