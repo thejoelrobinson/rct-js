@@ -140,16 +140,24 @@ describe("native dispatch chain (WM_LBUTTONDOWN → toolbar widget action)", () 
     expect(runtime.heap.u32(slot + 8)).toBe(1);
   });
 
-  it("runTick after skipFadeIn currently blows up in FUN_005e13d2 — BLOCKER", () => {
-    // Documents the actual blocker preventing native chain end-to-end. When
-    // 5e13d2's register-state recursion bug is fixed (translator-side), this
-    // test should be inverted: the runTick should complete and the chain
-    // functions below should fire.
+  it("runTick after skipFadeIn no longer throws — 5e13d2 blow-up un-pinned", () => {
+    // Was: pinned `Maximum call stack size exceeded` in FUN_005e13d2.
+    // The 5e13d2 stack overflow stopped reproducing once two upstream
+    // memory-corruption bugs were fixed (see
+    // .claude/scratch/agent-ptr5f49a0-findings.md):
+    //   - translator stride bug in ported/auto/40179d.js
+    //   - dirty-bitmap over-fill bound in runtime/harness.js
+    // Both were clobbering DATASEG globals around 0x5f4xxx — including
+    // PTR_LAB_005f49a0 (the game-cmd jumptable) — and altering the
+    // dispatch path through the paint code such that 5e13d2's
+    // register-state recursion ran away.
+    //
+    // With those fixed runTick completes. The downstream input chain
+    // (next test) still does not fire end-to-end, so the click → action
+    // chain remains incomplete — but no longer because of 5e13d2.
     let threw = null;
     try { runtime.runTick(); } catch (e) { threw = e; }
-    expect(threw).not.toBeNull();
-    expect(String(threw.message)).toMatch(/Maximum call stack size/);
-    expect(String(threw.stack)).toMatch(/FUN_005e13d2/);
+    expect(threw).toBeNull();
   });
 
   it("input chain (FUN_005e2225/5e3ace/5e38f5/4270f2) never fires via runTick today — BLOCKER", () => {

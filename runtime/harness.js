@@ -476,14 +476,16 @@ export function createRuntime(opts) {
       if (heap.u32(0x005e9174) !== 0 && heap.u32(0x005e9178) === 0) {
         // Mark the entire 4023b2 dirty-flag bitmap as dirty so the
         // whole back buffer is copied to the front surface this tick.
-        // Layout (per FUN_004015f0): each cell is u32 at
-        // [0x005f2420 + cell_idx*4], cell_idx = row_idx*0x14 + col_idx,
-        // where row_idx walks over (height/8) rows and col_idx walks
-        // over (width/0x40) columns. For 640x480 surface that's 60*10
-        // cells but the bitmap is sized for up to 800x600 in 4023b2's
-        // iteration. Just fill the whole 0x5000-byte buffer.
+        // Layout (per FUN_004015f0 + FUN_004023b2): each cell is ONE BYTE
+        // at [0x005f2420 + row_idx + col_idx*0x14], walking row_idx over
+        // (height/8) rows and col_idx over (width/0x40) columns. For
+        // 640x480 surface that's 60*10 cells; max-supported is well under
+        // 0xa00 bytes (the same bound FUN_0040179d clears at end-of-tick).
+        // Bound was 0x5000 — that overran the table and clobbered globals
+        // downstream including PTR_LAB_005f49a0 (game-cmd jumptable at
+        // 0x5f49a0..0x5f49e0). See .claude/scratch/agent-ptr5f49a0-findings.md.
         heap.setU32(0x005e9158, 1);
-        for (let i = 0; i < 0x5000; i++) heap.bytes[0x005f2420 + i] = 0xff;
+        for (let i = 0; i < 0xa00; i++) heap.bytes[0x005f2420 + i] = 0xff;
         const fn_40179d = state.fnDispatch.get(0x40179d);
         if (typeof fn_40179d === "function") {
           try { fn_40179d(heap); } catch (e) { /* presenter errors are non-fatal */ }

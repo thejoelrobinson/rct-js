@@ -19,12 +19,13 @@
 //   3. A second click toggles the flag back off — confirming the dispatch
 //      is deterministic and not just clobbering memory.
 //
-// Pre-existing bug worked around: something during the first runTick() zeroes
-// PTR_LAB_005f49a0 (the game-cmd jumptable in DATASEG, intact in data.bin
-// but wiped by some interpreter shim during the first tick — not caused by
-// this bridge). We repair it from the raw data.bin bytes before invoking the
-// bridge so the indirect call inside 0x426f56 lands on the right target.
-// See .claude/scratch/agent-42a830-findings.md for the chase.
+// Pre-existing bug — now fixed: the first runTick() previously zeroed
+// PTR_LAB_005f49a0 via two independent over-writes (a translator stride
+// bug in `ported/auto/40179d.js` and an over-fill bound in
+// `runtime/harness.js`). See `.claude/scratch/agent-ptr5f49a0-findings.md`
+// for the chase + fix. The `repairGameCmdTable` helper below is now a
+// no-op (writing the same bytes that are already there) — kept for
+// defence-in-depth so this test stays decoupled from the upstream fix.
 
 import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
@@ -119,18 +120,19 @@ describe("FUN_0042a830 bridge (toolbar widget-event-handler proc)", () => {
     expect(typeof state.fnDispatch.get(0x42a830)).toBe("function");
   });
 
-  it("bridge invocation with bp=1 dx=0 advances the game-cmd queue depth", () => {
-    // Even without the PTR table repair, the path 0x42a830 → 0x42b083 →
-    // 0x426f56 increments DAT_005f4a6a (cmd depth) and latches EBX into
-    // DAT_005f4a68 before the (potentially-null) PTR_LAB_005f49a0[ESI]
-    // indirect. Verifying these side effects proves the bridge successfully
-    // executed binary code through the dispatch chain.
+  it("bridge invocation with bp=1 dx=0 latches EBX into DAT_005f4a68", () => {
+    // The path 0x42a830 → 0x42b083 → 0x426f56 latches EBX into
+    // DAT_005f4a68 (cmd-flag scratch) before the PTR_LAB_005f49a0[ESI]
+    // indirect — and DAT_005f4a68 stays latched after the indirect
+    // returns (FUN_00426f56 writes it again to `uVar1` post-dispatch).
+    // The cmd-depth counter DAT_005f4a6a is bumped (+1) then decremented
+    // (-1) inside the function, so it nets to 0 across a complete call
+    // — observing it is not a robust witness. EBX latching is.
     ensureToolbarSlot();
     const slot = ensureToolbarSlot();
     runtime.heap.setU8(0x005f4a6a, 0);
     runtime.heap.setU16(0x005f4a68, 0);
     invokeBridge({ slot, widgetIdx: 0, eventType: 1 });
-    expect(runtime.heap.u8(0x005f4a6a)).toBeGreaterThan(0); // cmd depth advanced
     expect(runtime.heap.u16(0x005f4a68)).toBe(1);           // EBX & 0xffff latched
   }, 60_000);
 
