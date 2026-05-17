@@ -24,6 +24,7 @@ import { state } from "./win32/context.js";
 import { FUN_00444927 } from "../ported/auto/444927.js";
 import { FUN_00452fce } from "../ported/auto/452fce.js";
 import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
+import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -184,6 +185,16 @@ export function installPainterBridge(heap, opts = {}) {
   // the hot loop, dispatching per-element painters via runFunction on
   // the same bridge cpu to preserve the CODESEG-only callees' behaviour.
   install4368d8Hooks(cpu, runFunction, setEipHook, heap);
+
+  // Install JS hook for FUN_extra_paint_421d2c (terrain surface per-element
+  // painter at PTR_LAB_00628a94[0]). Dispatched from the per-element loop in
+  // 0x4368d8's body; Phase R+11 profiler showed it consuming ~65% of per-
+  // tick wall time (954 calls/tick × ~200µs each in the interpreter). The
+  // JS port handles the hot path inline (preamble + palette swizzle + base-
+  // tile sub-painter dispatch) and falls back to `runFunction` for cold
+  // tails (slope-extra, cliff-edge, corner-heights jumptable). Sub-painter
+  // dispatches into PTR_LAB_00431bb8 still go through the bridge.
+  install421d2cHook(cpu, runFunction, setEipHook, heap);
 
   // Install a JS hook for FUN_00452fce (sound-queue / pan helper). Called
   // from the LMB-down handler at 0x5e2b52 (CODESEG, runs in the bridge cpu)
