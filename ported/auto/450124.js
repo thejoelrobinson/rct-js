@@ -1,6 +1,10 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/450124.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x450125: calls FUN_00450b21 which only pushes/pops
+// EBX and ESI — EDX/DL is preserved. extraout_EDX & 0xff therefore
+// equals caller's incoming DL (the ride index). Translator zeroed it,
+// so the function reset slot 0 of the ride table every invocation.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -11,7 +15,8 @@ import { FUN_005e5301 } from "./5e5301.js";
 export function FUN_00450124(heap) {
   let in_EAX = regs.eax >>> 0;
   let in_EDX = regs.edx >>> 0;
-  let extraout_EDX = 0;
+  // Hand-fix: FUN_00450b21 preserves EDX (only push/pops EBX,ESI).
+  let extraout_EDX = in_EDX;
   let iVar1 = 0;
   let uVar2 = 0;
   (regs.eax = FUN_00450b21(heap));

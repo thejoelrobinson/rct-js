@@ -1,6 +1,13 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/455ade.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x455b25..0x455b87: ride-window viewport sync. EDX = a
+// packed ride-id|0xc0000000 (or 0xffff if water-ride), ECX = packed
+// rotation byte at bits 8-15. Both are set before the call to FUN_005e6a83
+// (free-routine) and read back after — and 5e6a83 only push/pops EDI/ESI
+// so EDX/ECX survive intact. Ghidra's extraout_EDX/extraout_ECX correctly
+// model that reload, but the translator initialised both to 0 — making
+// every viewport's stored ride-id reset to 0 instead of the actual ride.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -40,6 +47,11 @@ export function FUN_00455ade(heap) {
       UNLOCK();
       heap.setU32(puVar1, (0) & 0xffffffff);
       uVar2 = (((regs.eax = FUN_005e6a83(heap))) & 0xffff);
+      // Hand-fix: FUN_005e6a83 only push/pops EDI,ESI — EDX (uVar4) and
+      // ECX (iVar3) are preserved. Reload from the local copies, not the
+      // translator's zeroed extraout_* sentinels.
+      extraout_ECX = iVar3;
+      extraout_EDX = uVar4;
       iVar3 = ((extraout_ECX) >>> 0);
       uVar4 = ((extraout_EDX) >>> 0);
     }
