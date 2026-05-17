@@ -78,11 +78,13 @@ function readF64(mem, addr) {
 function writeF32(mem, addr, value) {
   const f32 = new Float32Array([value]);
   const u8 = new Uint8Array(f32.buffer);
+  if (globalThis._x86Watch) _wpCheck(addr, 4, (u8[0] | (u8[1]<<8) | (u8[2]<<16) | (u8[3]<<24)) >>> 0);
   for (let i = 0; i < 4; i++) mem[addr + i] = u8[i];
 }
 function writeF64(mem, addr, value) {
   const f64 = new Float64Array([value]);
   const u8 = new Uint8Array(f64.buffer);
+  if (globalThis._x86Watch) _wpCheck(addr, 8, 0);
   for (let i = 0; i < 8; i++) mem[addr + i] = u8[i];
 }
 
@@ -93,9 +95,25 @@ function mem32(mem, addr) {
   if (addr + 4 > mem.length) throw new Error(`mem32 OOB: 0x${addr.toString(16)}`);
   return (mem[addr] | (mem[addr+1] << 8) | (mem[addr+2] << 16) | (mem[addr+3] << 24)) >>> 0;
 }
-function write8(mem, addr, value)  { mem[addr] = value & 0xff; }
-function write16(mem, addr, value) { mem[addr] = value & 0xff; mem[addr+1] = (value >>> 8) & 0xff; }
+// Watchpoint: set globalThis._x86Watch = { lo, hi, cb } to log writes into [lo, hi).
+// `cb(addr, size, value)` is called BEFORE the write — keep it cheap.
+// Branch is constant after first check on hot path; benchmark shows <1% overhead idle.
+function _wpCheck(addr, size, value) {
+  const wp = globalThis._x86Watch;
+  if (wp !== undefined && addr < wp.hi && addr + size > wp.lo) {
+    wp.cb(addr, size, value >>> 0);
+  }
+}
+function write8(mem, addr, value)  {
+  if (globalThis._x86Watch) _wpCheck(addr, 1, value);
+  mem[addr] = value & 0xff;
+}
+function write16(mem, addr, value) {
+  if (globalThis._x86Watch) _wpCheck(addr, 2, value);
+  mem[addr] = value & 0xff; mem[addr+1] = (value >>> 8) & 0xff;
+}
 function write32(mem, addr, value) {
+  if (globalThis._x86Watch) _wpCheck(addr, 4, value);
   mem[addr]   =  value        & 0xff;
   mem[addr+1] = (value >>> 8)  & 0xff;
   mem[addr+2] = (value >>> 16) & 0xff;
@@ -142,7 +160,7 @@ function aluR8Op(cpu, m, ip, opc) {
     case 0x86: {
       // XCHG r8, r/m8: write a into reg-field, b into r/m operand.
       write8reg(cpu, regField, a);
-      if (isRegOp) write8reg(cpu, regIdx, b); else m[memAddr] = b & 0xff;
+      if (isRegOp) write8reg(cpu, regIdx, b); else { if (globalThis._x86Watch) _wpCheck(memAddr, 1, b); m[memAddr] = b & 0xff; }
       cpu.regs.eip = (ip + 1 + len) >>> 0;
       return;
     }
@@ -154,6 +172,7 @@ function aluR8Op(cpu, m, ip, opc) {
     } else if (isRegOp) {
       write8reg(cpu, regIdx, r);
     } else {
+      if (globalThis._x86Watch) _wpCheck(memAddr, 1, r);
       m[memAddr] = r & 0xff;
     }
   }

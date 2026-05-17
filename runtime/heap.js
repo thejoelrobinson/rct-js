@@ -44,12 +44,14 @@ export class Heap {
   i32(a) { a = a >>> 0; return a + 4 > this._n ? 0 : this.view.getInt32 (a, true); }
 
   // Writes — silently drop OOB writes for symmetry with reads.
-  setU8 (a, v) { a = a >>> 0; if (a + 1 <= this._n) this.view.setUint8 (a, v & 0xff); }
-  setI8 (a, v) { a = a >>> 0; if (a + 1 <= this._n) this.view.setInt8  (a, v & 0xff); }
-  setU16(a, v) { a = a >>> 0; if (a + 2 <= this._n) this.view.setUint16(a, v & 0xffff, true); }
-  setI16(a, v) { a = a >>> 0; if (a + 2 <= this._n) this.view.setInt16 (a, v & 0xffff, true); }
-  setU32(a, v) { a = a >>> 0; if (a + 4 <= this._n) this.view.setUint32(a, v >>> 0, true); }
-  setI32(a, v) { a = a >>> 0; if (a + 4 <= this._n) this.view.setInt32 (a, v | 0, true); }
+  // Watchpoint: set globalThis._heapWatch = { lo, hi, cb } to log writes
+  // intersecting [lo, hi). `cb(addr, size, value, kind)` runs BEFORE the write.
+  setU8 (a, v) { a = a >>> 0; if (globalThis._heapWatch && a < globalThis._heapWatch.hi && a + 1 > globalThis._heapWatch.lo) globalThis._heapWatch.cb(a, 1, v & 0xff, "u8"); if (a + 1 <= this._n) this.view.setUint8 (a, v & 0xff); }
+  setI8 (a, v) { a = a >>> 0; if (globalThis._heapWatch && a < globalThis._heapWatch.hi && a + 1 > globalThis._heapWatch.lo) globalThis._heapWatch.cb(a, 1, v & 0xff, "i8"); if (a + 1 <= this._n) this.view.setInt8  (a, v & 0xff); }
+  setU16(a, v) { a = a >>> 0; if (globalThis._heapWatch && a < globalThis._heapWatch.hi && a + 2 > globalThis._heapWatch.lo) globalThis._heapWatch.cb(a, 2, v & 0xffff, "u16"); if (a + 2 <= this._n) this.view.setUint16(a, v & 0xffff, true); }
+  setI16(a, v) { a = a >>> 0; if (globalThis._heapWatch && a < globalThis._heapWatch.hi && a + 2 > globalThis._heapWatch.lo) globalThis._heapWatch.cb(a, 2, v & 0xffff, "i16"); if (a + 2 <= this._n) this.view.setInt16 (a, v & 0xffff, true); }
+  setU32(a, v) { a = a >>> 0; if (globalThis._heapWatch && a < globalThis._heapWatch.hi && a + 4 > globalThis._heapWatch.lo) globalThis._heapWatch.cb(a, 4, v >>> 0, "u32"); if (a + 4 <= this._n) this.view.setUint32(a, v >>> 0, true); }
+  setI32(a, v) { a = a >>> 0; if (globalThis._heapWatch && a < globalThis._heapWatch.hi && a + 4 > globalThis._heapWatch.lo) globalThis._heapWatch.cb(a, 4, v >>> 0, "i32"); if (a + 4 <= this._n) this.view.setInt32 (a, v | 0, true); }
 
   // Read a NUL-terminated C string starting at `addr`. Returns a JS string.
   // Stops at NUL or when `maxLen` bytes have been read (default 4096).
