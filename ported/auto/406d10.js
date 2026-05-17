@@ -1,6 +1,10 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/406d10.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+//
+// Source: decompiled/c/406d10.c — DirectInput keyboard/mouse setup.
+// Hand-port fix (stride bug, same family as 40179d.js): the auto-translator
+// emitted the 256-byte zero-fill of the keyboard-state buffer DAT_005f1180
+// with u32 stride. The binary uses a BYTE store
+// (`movb $0x0, 0x5f1180(%eax)` at 0x406d38), bound 0x100.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -18,8 +22,9 @@ export function FUN_00406d10(heap) {
   let iVar1 = 0;
   let uVar2 = 0;
   let local_14 = 0;
+  // BYTE-stride zero-fill of keyboard state buffer (see header for the bug).
   for (local_14 = ((0) >>> 0); local_14 < 0x100; local_14 = (((local_14 + 1) >>> 0)) >>> 0) {
-    heap.setU32(((0x005f1180) + (local_14) * 4), (0) & 0xffffffff);
+    heap.setU8(((0x005f1180) + local_14) >>> 0, 0);
   }
   SystemParametersInfoA(heap, 3, 0, __addr_local_10, 0);
   heap.setU32(0x005f1148, (heap.u32(__addr_local_10)) >>> 0);

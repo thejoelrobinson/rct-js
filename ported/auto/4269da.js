@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/4269da.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+//
+// Source: decompiled/c/4269da.c — peep/AI subsystem init.
+// Hand-port fix (stride bug, same family as 40179d.js): the loop at
+// line 31 zeros 20 BYTES at DAT_0087d0da. The binary uses BYTE store
+// (`movb $0x0, 0x87d0da(%edi)` at 0x426a69), bound 0x14.
+// Other writes in this function (the two dword stride loops at 426a9b
+// and 426af6 stepping by 4/4 with `[base + edi*4]`) are correct.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -27,8 +32,9 @@ export function FUN_004269da(heap) {
   heap.setU8(0x0087ccca, (0xff) & 0xff);
   heap.setU8(0x0087cccc, (0xffffffff) & 0xff);
   uVar1 = ((0) >>> 0);
+  // BYTE-stride zero-fill of DAT_0087d0da[0..0x14] (see header for the bug).
   do {
-    heap.setU32(((0x0087d0da) + (uVar1) * 4), (0) & 0xffffffff);
+    heap.setU8(((0x0087d0da) + uVar1) >>> 0, 0);
     uVar1 = ((uVar1 + 1) >>> 0);
   } while (uVar1 < 0x14);
   heap.setU32(0x0087ccd0, (0xffffffff) >>> 0);

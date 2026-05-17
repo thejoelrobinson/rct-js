@@ -1,6 +1,10 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/402e9b.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+//
+// Source: decompiled/c/402e9b.c — top-level WinMain-equivalent.
+// Hand-port fix (stride bug, same family as 40179d.js): the auto-translator
+// emitted the 32-byte zero-fill of DAT_005f1b60 with u32 stride. The binary
+// uses a BYTE store (`movb $0x0, 0x5f1b60(%eax)` at 0x402f02), bound 0x20.
+// Translator misread Ghidra's `(&DAT_005f1b60)[i] = 0` as u32 stride.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -38,8 +42,9 @@ export function FUN_00402e9b(heap, param_1, param_2, param_3) {
   heap.setU32(0x005f1398, (param_1) >>> 0);
   void (__addr_local_14) /* assign to ExceptionList elided (SEH not modelled) */;
   heap.setU32(0x005e91c8, (LoadCursorA(heap, ((0x0) | 0), ((0x7f00) | 0))) >>> 0);
+  // BYTE-stride zero-fill of DAT_005f1b60[0..0x20] (see header for the bug).
   for (local_24 = ((0) >>> 0); local_24 < 0x20; local_24 = (((local_24 + 1) >>> 0)) >>> 0) {
-    heap.setU32(((0x005f1b60) + (local_24) * 4), (0) & 0xffffffff);
+    heap.setU8(((0x005f1b60) + local_24) >>> 0, 0);
   }
   heap.setU32(0x005f1fdc, (0) >>> 0);
   heap.setU32(0x005f1b30, (0) >>> 0);
