@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/43424f.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Same FUN_00431510-return-channel issue as 4359d5: that function's
+// epilogue at 0x431600..0x431614 reloads AX from 0x628914 and CX from
+// 0x628916. The translator left extraout_CX at 0, so the rect stored
+// for cursor display was {sVar1, 0, sVar1+0x1f, 0x1f} instead of the
+// real tile-y span — visually a horizontal sliver instead of a tile.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -11,9 +16,11 @@ import { FUN_00431510 } from "./431510.js";
 export function FUN_0043424f(heap) {
   let sVar1 = 0;
   let uVar2 = 0;
-  let extraout_CX = 0;
   let unaff_BL = regs.ebx & 0xff;
   sVar1 = (((regs.edx = 0xfffe, regs.eax = FUN_00431510(heap))) & 0xffff);
+  // Hand-fix: extraout_CX is the y-coordinate FUN_00431510 reloads into
+  // CX at its epilogue (movw 0x628916, %cx).
+  const extraout_CX = heap.u16(0x00628916);
   if (unaff_BL != 0) {
     heap.setU32(0x00628a34, (sVar1 + 0x1f) >>> 0);
     heap.setU32(0x00628a36, (extraout_CX + 0x1f) >>> 0);

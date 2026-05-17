@@ -1,23 +1,43 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/4363f1.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x4363f1: rectangle iterator for terrain/clip work.
+//   AX = [0x99a022] (start y)
+//   CX = [0x99a026] (start x)
+//   call FUN_005e5562        ; pushal/popal — preserves AX, CX
+//   CX += 0x20
+//   cmpw CX, [0x99a028]; jle back  ; inner loop
+//   AX += 0x20
+//   cmpw AX, [0x99a024]; jle back  ; outer loop
+//
+// FUN_005e5562 is pushal/popal-bracketed so AX/CX are preserved. The
+// translator's emitted `extraout_CX = 0` froze the inner loop condition
+// at `0x20 <= [0x99a028]`, which is true for any plausible map width and
+// therefore made the inner loop never terminate. Rewrite as the explicit
+// 2D scan the binary actually performs, plumbing CX/AX into regs.ecx /
+// regs.eax so the callee sees the iteration coords.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { regs } from "../../runtime/regs.js";
 import { FUN_005e5562 } from "./5e5562.js";
 export function FUN_004363f1(heap) {
-  let sVar1 = 0;
-  let in_EAX = regs.eax >>> 0;
-  let extraout_CX = 0;
-  let in_EDX = regs.edx >>> 0;
-  if ((heap.u32(0x0099a020) & 1) != 0) {
-    do {
-      do {
-        sVar1 = (((regs.eax = FUN_005e5562(heap))) & 0xffff);
-      } while ((((extraout_CX + 0x20)) << 16 >> 16) <= heap.u32(0x0099a028));
-    } while ((((sVar1 + 0x20)) << 16 >> 16) <= heap.u32(0x0099a024));
+  if ((heap.u32(0x0099a020) & 1) == 0) return 1;
+  const startY = heap.u16(0x0099a022);
+  const startX = heap.u16(0x0099a026);
+  const endX   = heap.u16(0x0099a028);
+  const endY   = heap.u16(0x0099a024);
+  // Safety bound: prevent runaway if map coords are bogus.
+  let outerGuard = 0;
+  for (let ax = startY; ((ax << 16) >> 16) <= ((endY << 16) >> 16); ax = (ax + 0x20) & 0xffff) {
+    if (++outerGuard > 0x10000) break;
+    let innerGuard = 0;
+    for (let cx = startX; ((cx << 16) >> 16) <= ((endX << 16) >> 16); cx = (cx + 0x20) & 0xffff) {
+      if (++innerGuard > 0x10000) break;
+      regs.eax = (regs.eax & 0xffff0000) | ax;
+      regs.ecx = (regs.ecx & 0xffff0000) | cx;
+      FUN_005e5562(heap);
+    }
   }
   return 1;
 }

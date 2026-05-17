@@ -1,6 +1,14 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/43670c.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Disassembly at 0x43670c: this function does `push ecx` at entry and
+// `pop ecx` at return, so caller's ECX is saved/restored. The callee
+// FUN_0043657e also preserves ECX (push/pop ecx wrapping the LOOP). So
+// extraout_CX after the call equals the caller's incoming CX. Ghidra
+// didn't surface in_CX in the C, so the translator initialised
+// extraout_CX to 0 — which makes the `extraout_CX << 7 | extraout_CX >>> 9`
+// terrain-index hash always 0 (always indexing the first sprite slot).
+// Fix: source extraout_CX from regs.ecx low 16 bits.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -9,7 +17,11 @@ import { regs } from "../../runtime/regs.js";
 import { FUN_0043657e } from "./43657e.js";
 export function FUN_0043670c(heap) {
   let uVar1 = 0;
-  let extraout_CX = 0;
+  // Hand-fix: extraout_CX after FUN_0043657e is the caller's incoming
+  // CX (preserved across both this function's `push ecx`/`pop ecx` and
+  // the callee's own push/pop). Capture it before the call lands.
+  const _inCX = regs.ecx & 0xffff;
+  let extraout_CX = _inCX;
   let unaff_BL = regs.ebx & 0xff;
   let unaff_BH = (regs.ebx >>> 8) & 0xff;
   let puVar2 = 0;
