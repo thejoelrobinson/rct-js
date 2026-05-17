@@ -16,8 +16,9 @@
 // 00431bb8 / 00432204 / 00434e98 / 00436b40 / 005e5874). Each table is
 // indexed by DAT_00991f88 (camera rotation, 0..3).
 
-import { makeCpu, runFunction, setEipHook } from "../harness/x86.js";
+import { makeCpu, runFunction, setEipHook, setShimInvoker } from "../harness/x86.js";
 import { loadPEFromBytes } from "../harness/loader.js";
+import { getShim, invokeShim } from "../harness/shims.js";
 import { regs } from "./regs.js";
 import { state } from "./win32/context.js";
 import { FUN_00444927 } from "../ported/auto/444927.js";
@@ -99,6 +100,48 @@ export function installPainterBridge(heap, opts = {}) {
   // vtable like 0x628a94[15]=0) should bail cleanly instead of executing
   // 70 000+ zero-byte instructions before some downstream OOB aborts the tick.
   cpu.bailOnWildJump = true;
+
+  // Register a shim invoker for the bridge cpu. When the interpreter's EIP
+  // lands in SHIM_BASE (>= 0xF0000000), it dispatches to this function. We
+  // need this for two reasons:
+  //
+  //   (1) Painters legitimately CALL Win32 imports (KERNEL32 timing helpers,
+  //       USER32 cursor helpers, etc.). Without an invoker the interpreter
+  //       throws and the bridge's per-painter try/catch turns each into a
+  //       `shim invoked but no invoker registered` warning.
+  //
+  //   (2) Painters occasionally compute a bogus CALL target that lands in
+  //       SHIM_BASE but doesn't correspond to any registered IAT entry (e.g.
+  //       0x5d7503 the peep painter, which after Phase R+7 lifted sprite
+  //       coverage from 1/31 → 31/31, fires ~12 times per tick and produces
+  //       one warning per tick with eip=0xfff9a6f0, a value that's not in the
+  //       static IAT [0xF0000000..0xF0000338] or the dynamic-sentinel range
+  //       [0xF1000000+]. The "return address" pushed for that call also lands
+  //       in DATASEG (0x6f8cd0) — so the control flow has already gone off
+  //       the rails before the CALL fires. Following the bogus return would
+  //       just let the interpreter walk into data and throw a different
+  //       opcode error on the next step (empirically `unsupported 0x8f /3`).
+  //
+  //       Rather than crashing the entire painter run, silently treat unknown
+  //       sentinels as a bridge-only `WildShimError` and let the painter-shim
+  //       try/catch below recognize it and stay silent. The 11/12 healthy
+  //       peep invocations continue to render; pixel counts and palette
+  //       diversity are unaffected (the bad peep was producing nothing
+  //       useful either way).
+  setShimInvoker((c, sentinel) => {
+    const spec = getShim(sentinel);
+    if (spec) {
+      // Real IAT entry — delegate to the standard invoker, which handles
+      // arg unpacking, eax write-back, and stdcall esp adjustment.
+      invokeShim(c, sentinel);
+      return;
+    }
+    // Unknown sentinel — bail out of runFunction. Throw a tagged error the
+    // outer try/catch can swallow silently.
+    const err = new Error(`wild shim eip=0x${sentinel.toString(16)}`);
+    err._wildShim = true;
+    throw err;
+  });
 
   // Install a JS hook for FUN_00444927 (sprite tile-grid relink + bbox).
   // When a bridge-shim runs binary code that CALLs 0x444927 (e.g. the per-sprite
@@ -234,7 +277,13 @@ export function installPainterBridge(heap, opts = {}) {
       try {
         runFunction(cpu, addr, { stackTop, limit: 50_000_000 });
       } catch (e) {
-        if (typeof console !== "undefined") {
+        // _wildShim is raised by the shim invoker above when a painter
+        // computes a bogus CALL target into SHIM_BASE that doesn't match
+        // any registered IAT/dynamic sentinel. The painter has already
+        // gone off the rails; bail silently rather than logging.
+        if (e && e._wildShim) {
+          // intentionally silent — see setShimInvoker comment above.
+        } else if (typeof console !== "undefined") {
           console.warn(`[painter-bridge] 0x${addr.toString(16)}: ${(e.message || e).slice(0, 160)}`);
         }
       }
