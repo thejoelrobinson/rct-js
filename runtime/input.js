@@ -116,16 +116,22 @@ export function togglePause(heap) {
 // Live widget-rect dump (after runInit + 1 tick — see scratch/agent-
 // toolbar-findings.md and runtime probe in tools/probe-toolbar-fast.js):
 //   [ 0] L=  0..29  img=0x20026048 tip=0x342  — pause
-//   [ 1] L= 30..59  img=0x2002604a tip=0x343  — file menu icon
-//   [ 2] L= 60..89  img=0x20026060 tip=0x568  — file menu dropdown
+//   [ 1] L= 30..59  img=0x2002604a tip=0x343  — file menu icon (click no-op;
+//        only the bp=3 "dropdown-open" event opens the menu — see 0x42b817)
+//   [ 2] L= 60..89  img=0x20026060 tip=0x568  — sound mute (binary click
+//        handler @0x42a976 calls FUN_00452876 which XORs DAT_006326bd; the
+//        paint proc at 0x42afba..c8 picks sprite 0x20026060/62 based on
+//        that bit, confirming this is the sound-on/off speaker button)
 //   [ 3] L=104..133 img=0x2002604c tip=0x33e  — zoom out
 //   [ 4] L=134..163 img=0x2002604f tip=0x33d  — zoom in
 //   [ 5] L=164..193 img=0x20026052 tip=0x33f  — rotate view
-//   [ 6] L=194..223 img=0x20026066 tip=0x3bb  — view options
+//   [ 6] L=194..223 img=0x20026066 tip=0x3bb  — view options (click no-op;
+//        only bp=3 dropdown event opens the menu at 0x42b40f)
 //   [ 7] L=224..253 img=0x20026056 tip=0xb19  — map view
 //   [ 8..19] further 30-px buttons (land/water/scenery/path/ride/park/
 //            staff/guests/research/finances/news/options-menu) — open
-//            their own windows, no simple state flip → left as TODOs.
+//            their own windows via per-tool active-flag latching +
+//            WindowFindByClass; need 0x42a830 bridged for a faithful port.
 //   [20] type=0x15 large dropdown panel (file menu body)
 //   [21] type=0xff sentinel
 //
@@ -138,8 +144,8 @@ const WIDGET_STRIDE = 0x10;
 
 // Widget indices (per layout above). Names match the visible toolbar order.
 const PAUSE_WIDGET_INDEX     = 0;
-const FILE_MENU_WIDGET_INDEX = 1;  // image-only icon for file menu
-const FILE_DROP_WIDGET_INDEX = 2;  // dropdown arrow next to file icon
+const FILE_MENU_WIDGET_INDEX = 1;  // image-only icon for file menu (click no-op)
+const SOUND_WIDGET_INDEX     = 2;  // speaker mute toggle (was mislabeled as file dropdown)
 const ZOOM_OUT_WIDGET_INDEX  = 3;
 const ZOOM_IN_WIDGET_INDEX   = 4;
 const ROTATE_WIDGET_INDEX    = 5;
@@ -195,6 +201,31 @@ export function toggleMapView(heap) {
   return next;
 }
 
+// Sound-on toggle. DAT_006326bd bit 0 gates ALL ambient sound playback —
+// FUN_00453f76 / FUN_004543bd / FUN_004533d0 / FUN_00453bf8 etc. all early-
+// return when ((DAT_006326bd & 1) == 0). Toolbar widget 2 (the speaker-icon
+// button at L=60..89) toggles it via FUN_00452876, which also re-loads /
+// re-fires the ambient sound buffers when the bit transitions on → off.
+// We invoke the ported function directly (it's in fnDispatch) so the full
+// transition logic runs, not just the bit flip; the helper returns the new
+// flag value (0 = muted, 1 = audible) so callers/tests can verify.
+//
+// Note: the toolbar paint proc at 0x42afb5 also uses this bit to pick which
+// sprite to draw for the button itself (0x20026060 = sound-on, 0x20026062 =
+// sound-off), so the UI updates on next frame to reflect the toggle.
+export function toggleSound(heap) {
+  const fn = state.fnDispatch.get(0x452876);
+  if (typeof fn === "function") {
+    fn(heap);
+  } else {
+    // Fallback: raw XOR if the ported fn isn't registered (shouldn't happen,
+    // but keeps the helper resilient — bit flip is the only observable
+    // state change a test would assert on anyway).
+    heap.setU8(0x006326bd, (heap.u8(0x006326bd) ^ 1) & 0xff);
+  }
+  return heap.u8(0x006326bd) & 1;
+}
+
 function findToolbarSlot(heap) {
   const poolEnd = heap.u32(POOL_END_PTR) >>> 0;
   if (poolEnd <= POOL_START || poolEnd > 0x009a013c + 256 * SLOT_STRIDE) return 0;
@@ -238,20 +269,21 @@ export function clickToolbar(heap, x, y) {
   if (idx < 0) return -1;
   switch (idx) {
     case PAUSE_WIDGET_INDEX:    togglePause(heap);  return idx;
+    case SOUND_WIDGET_INDEX:    toggleSound(heap);  return idx;
     case ZOOM_OUT_WIDGET_INDEX: zoomOut(heap);      return idx;
     case ZOOM_IN_WIDGET_INDEX:  zoomIn(heap);       return idx;
     case ROTATE_WIDGET_INDEX:   rotateView(heap);   return idx;
     case MAP_VIEW_WIDGET_INDEX: toggleMapView(heap); return idx;
-    // FILE_MENU / FILE_DROP / VIEW_OPTS open dropdowns / sub-windows whose
-    // handlers live in CODESEG (0x42a830 widget-event proc, not bridged).
-    // Return -1 so the caller knows nothing happened, matching the existing
-    // "unmapped widget" semantics.
-    /* TODO: case FILE_MENU_WIDGET_INDEX: open file dropdown window */
-    /* TODO: case FILE_DROP_WIDGET_INDEX: open file dropdown window */
-    /* TODO: case VIEW_OPTS_WIDGET_INDEX: open view-options dropdown */
+    // FILE_MENU / VIEW_OPTS click is a no-op in the binary too — the menu
+    // opens via the bp=3 "dropdown-open" event path (0x42b817 / 0x42b40f),
+    // which our LMB-down shortcut doesn't drive. Return -1.
+    /* TODO: case FILE_MENU_WIDGET_INDEX: dispatch as bp=3 to 0x42a830 */
+    /* TODO: case VIEW_OPTS_WIDGET_INDEX: dispatch as bp=3 to 0x42a830 */
     /* TODO: widgets 8..19 (land, water, scenery, path, ride, park, staff,
        guests, research, finances, news, options-menu) — each opens its own
-       window via FUN_0042xxxx; need 0x42a830 bridged or per-button hand-port. */
+       window via FUN_0042xxxx; per-widget toggle latches DAT_00991f5c +
+       0x991f30 bit 6 and runs a WindowFindByClass round-trip that needs
+       slot/esi context. Wait for 0x42a830 bridge (parallel agent). */
     default: return -1;
   }
 }

@@ -69,24 +69,54 @@ describe("interactive input → game state", () => {
   // toolbar slot with the same wndProc + widget-table ptr + rect that
   // 4298a0 would have set; clickToolbar() walks the pool looking for the
   // 0x42afb5 paint proc, so this is the minimum it needs.
+  //
+  // ALSO populates the widget rect table at 0x005f5124. The binary normally
+  // initializes this from a static blob (probably copied during MainOpen or
+  // a parent layout pass), but at +1 tick the table is still all 0xff
+  // (sentinel). Without rects, clickToolbar would return -1 on every hit.
   function ensureToolbarSlot() {
     const POOL_START = 0x009a013c;
     const POOL_END_PTR = 0x009a1164;
     const SLOT_STRIDE = 0x178;
+    let slot = 0;
     let poolEnd = runtime.heap.u32(POOL_END_PTR);
     if (poolEnd < POOL_START) poolEnd = POOL_START;
     for (let s = POOL_START; s < poolEnd; s += SLOT_STRIDE) {
-      if (runtime.heap.u32(s) === 0x42afb5) return s;  // already present
+      if (runtime.heap.u32(s) === 0x42afb5) { slot = s; break; }
     }
-    const slot = poolEnd;
-    runtime.heap.setU32(slot, 0x42afb5);          // wndProc (paint)
-    runtime.heap.setU32(slot + 4, 0x42a830);      // widget-event proc (CODESEG)
-    runtime.heap.setU32(slot + 0x1c, 0x005f5124); // widget array ptr (static)
-    runtime.heap.setI16(slot + 0x20, 0);          // rect.x
-    runtime.heap.setI16(slot + 0x22, 0);          // rect.y
-    runtime.heap.setI16(slot + 0x24, 640);        // rect.w
-    runtime.heap.setI16(slot + 0x26, 30);         // rect.h
-    runtime.heap.setU32(POOL_END_PTR, slot + SLOT_STRIDE);
+    if (slot === 0) {
+      slot = poolEnd;
+      runtime.heap.setU32(slot, 0x42afb5);          // wndProc (paint)
+      runtime.heap.setU32(slot + 4, 0x42a830);      // widget-event proc (CODESEG)
+      runtime.heap.setU32(slot + 0x1c, 0x005f5124); // widget array ptr (static)
+      runtime.heap.setI16(slot + 0x20, 0);          // rect.x
+      runtime.heap.setI16(slot + 0x22, 0);          // rect.y
+      runtime.heap.setI16(slot + 0x24, 640);        // rect.w
+      runtime.heap.setI16(slot + 0x26, 30);         // rect.h
+      runtime.heap.setU32(POOL_END_PTR, slot + SLOT_STRIDE);
+    }
+    // Stamp the widget table from the documented layout (see runtime/
+    // input.js comments). If the table is already populated (the boot path
+    // ran far enough) we leave it alone.
+    const W0 = 0x005f5124;
+    if (runtime.heap.u8(W0) === 0xff || runtime.heap.u8(W0) === 0x00) {
+      const setW = (i, type, l, r, t, b) => {
+        const a = W0 + i * 0x10;
+        runtime.heap.setU8(a, type);
+        runtime.heap.setI16(a + 2, l); runtime.heap.setI16(a + 4, r);
+        runtime.heap.setI16(a + 6, t); runtime.heap.setI16(a + 8, b);
+      };
+      setW(0, 0x06,   0,  29, 0, 29);  // pause
+      setW(1, 0x06,  30,  59, 0, 29);  // file menu icon
+      setW(2, 0x06,  60,  89, 0, 29);  // sound mute
+      setW(3, 0x06, 104, 133, 0, 29);  // zoom out
+      setW(4, 0x06, 134, 163, 0, 29);  // zoom in
+      setW(5, 0x06, 164, 193, 0, 29);  // rotate view
+      setW(6, 0x06, 194, 223, 0, 29);  // view options
+      setW(7, 0x06, 224, 253, 0, 29);  // map view
+      setW(8, 0x06, 267, 296, 0, 29);  // land (unmapped widget for negative test)
+      setW(9, 0xff,  -1,  -1, -1, -1); // sentinel
+    }
     return slot;
   }
 
@@ -360,5 +390,29 @@ describe("interactive input → game state", () => {
     ensureToolbarSlot();
     const idx = clickToolbar(runtime.heap, 280, 10);
     expect(idx).toBe(-1);
+  }, 60_000);
+
+  // Widget 2 — sound mute. The binary's click handler @0x42a976 calls
+  // FUN_00452876 which XORs DAT_006326bd; that bit gates every ambient
+  // sound playback path (FUN_00453f76 etc. early-return when bit 0 == 0).
+  // Verified by paint-side use too: 42afb5.js picks button sprite based on
+  // the same bit, so the UI updates to match. toggleSound() is the helper.
+  it("toggleSound() flips DAT_006326bd bit 0", async () => {
+    const { toggleSound } = await import("../../runtime/input.js");
+    runtime.heap.setU8(0x006326bd, 0);
+    expect(toggleSound(runtime.heap)).toBe(1);
+    expect(runtime.heap.u8(0x006326bd) & 1).toBe(1);
+    expect(toggleSound(runtime.heap)).toBe(0);
+    expect(runtime.heap.u8(0x006326bd) & 1).toBe(0);
+  }, 60_000);
+
+  // Widget 2 lives at L=60..89, T=0..29 — click at x=75 hits it.
+  it("clickToolbar() at sound widget (75,10) returns 2 and flips sound bit", async () => {
+    const { clickToolbar } = await import("../../runtime/input.js");
+    ensureToolbarSlot();
+    runtime.heap.setU8(0x006326bd, 0);
+    const idx = clickToolbar(runtime.heap, 75, 10);
+    expect(idx).toBe(2);                  // widget 2 = sound mute
+    expect(runtime.heap.u8(0x006326bd) & 1).toBe(1);
   }, 60_000);
 });
