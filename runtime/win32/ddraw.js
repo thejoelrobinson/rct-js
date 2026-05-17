@@ -148,17 +148,31 @@ function IDDS_SetPalette(heap, self, lpPalette) {
 }
 
 // Merge `src` into state.capturedPalette: only overwrite entries where src is
-// non-black. The binary's resource-loader (FUN_00411b58) is broken — its
-// FindResourceA/LoadResource/LockResource path returns 0 (stubbed), so the
-// palette it builds is mostly zeros. Pre-populated default entries should
-// survive so the rendered frame uses sensible colors. Real palette updates
-// (e.g. cycling sky colors via AnimatePalette) still take effect because
-// those entries are non-zero.
+// non-black AND the source palette is rich enough to be real. The binary's
+// resource-loader (FUN_00411b58) is broken — its FindResourceA/LoadResource/
+// LockResource path returns 0 (stubbed), so the palette it builds via
+// CreatePalette is mostly zeros with a sparse 9-entry greyscale ramp at
+// indices 1-9 (the Win32 GDI system-palette reservation). If we let that
+// "palette" overwrite our pre-seeded defaults, indices 1-9 become dull
+// greys (25,25,25 .. 229,229,229) instead of the sky-blue defaults — and
+// since palette index 1 covers ~96% of the title screen (the unpainted
+// void), the whole screen looks like dark grey static.
+//
+// Heuristic: if src has fewer than 32 non-black entries, treat it as a
+// stub/system palette and skip the merge entirely. Real palette updates
+// (e.g. SPR_G1_PALETTE_DEFAULT contents, AnimatePalette cycling) carry
+// 100+ non-black entries and still get through.
 function mergePaletteIntoCaptured(src) {
   if (!state.capturedPalette || state.capturedPalette.length < 1024) {
     state.capturedPalette = new Uint8ClampedArray(1024);
     for (let i = 0; i < 256; i++) state.capturedPalette[i*4 + 3] = i === 0 ? 0 : 255;
   }
+  // Count non-black entries in src; bail if too few (system-palette stub).
+  let nonBlack = 0;
+  for (let i = 0; i < 256; i++) {
+    if (src[i*4] || src[i*4 + 1] || src[i*4 + 2]) nonBlack++;
+  }
+  if (nonBlack < 32) return;
   const dst = state.capturedPalette;
   for (let i = 0; i < 256; i++) {
     const r = src[i*4], g = src[i*4 + 1], b = src[i*4 + 2];
