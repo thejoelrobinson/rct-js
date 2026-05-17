@@ -69,6 +69,17 @@ export function FUN_004316f3(heap) {
   heap.setU16(0x005f96da, (heap.u16(0x005f96ca)) & 0xffff);
   heap.setU16(0x005f96de, (heap.u8(0x005f96ce)) & 0xffff);
   do {
+    // HAND-FIX (terrain3): the per-strip DPI's clipY (+6), clipH (+0xa) and
+    // zoom (+0xe) are set ONCE before the loop and stay constant per the C
+    // decompile (and the binary asm matches). But somewhere inside the
+    // painter chain (436b2a → painters → 433bae → 433e1c → 431ad7 or one of
+    // their callees) these fields get corrupted between strips: probe showed
+    // strip 0 OK (Y=1304, H=416, z=0) but strip 1+ corrupted (Y=-4, H=-4,
+    // z=255). Re-setting the three fields at the start of every iter
+    // restores correct per-strip behavior without finding the corruptor.
+    heap.setU16(0x005f96d6, (heap.u16(0x005f96c6)) & 0xffff);
+    heap.setU16(0x005f96da, (heap.u16(0x005f96ca)) & 0xffff);
+    heap.setU16(0x005f96de, (heap.u8(0x005f96ce)) & 0xffff);
     uVar3 = ((heap.u32(0x005f96c4)) >>> 0);
     uVar6 = ((heap.u32(0x005f96c8)) >>> 0);
     iVar5 = ((heap.u32(0x005f96c0)) >>> 0);
