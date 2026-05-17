@@ -1,6 +1,16 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/452739.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+//
+// Sound-bank loader entry: opens the per-language CSS sound file via
+// FUN_0042f239 (path builder that reads filename index from EBX) and
+// FUN_0040771b (mmap helper). The disassembly at 0x452787 sets
+// `mov ebx, 0x2` — index 2 in the filename table at 0x005f8174 maps to
+// "Data\\CSS1.DAT" (the multi-entry sound bank). The translator emitted
+// `regs.ebx = 0x4`, which selected "Data\\CSS4.DAT" — a single RIFF WAVE
+// file. The RIFF header was then misinterpreted as a sound-bank index,
+// causing FUN_0040de9c to return junk offsets and FUN_0040db5e to read
+// dwBufferBytes = 0x7F807F80 (~2 GB) from the bogus entry → heap
+// exhaustion when IDirectSound::CreateSoundBuffer tried to allocate.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -40,7 +50,9 @@ export function FUN_00452739(heap) {
   } while (sVar3 != 0);
   iVar1 = (((regs.eax = FUN_004072f0(heap, 0, in_EAX, 2, 0x5622, 0x10))) >>> 0);
   if (iVar1 != 0) {
-    (regs.ebx = 0x4, regs.eax = FUN_0042f239(heap));
+    // Translator-bug fix: disasm at 0x452787 is `mov ebx, 0x2` (CSS1.DAT),
+    // not 0x4 (CSS4.DAT). See file header.
+    (regs.ebx = 0x2, regs.eax = FUN_0042f239(heap));
     iVar1 = (((regs.eax = FUN_0040771b(heap, 2))) >>> 0);
     if (iVar1 != 0) {
       piVar5 = ((0x006326c8) >>> 0);
