@@ -113,7 +113,15 @@ export function FUN_009b4457(heap) {
         sVar5 = (((sVar4 + heap.u32(0x009a2028)) - heap.i16((unaff_EDI + 8))) & 0xffff);
         if ((sVar5 == 0 || (((sVar4 + heap.u32(0x009a2028))) << 16 >> 16) < heap.i16((unaff_EDI + 8))) || (heap.setU32(0x009a2028, (heap.u32(0x009a2028) - sVar5) >>> 0), heap.u32(0x009a2028) != 0 && sVar5 <= sVar2)) {
           heap.setU32(0x009a2030, (heap.i16((unaff_EDI + 8)) + heap.i16((unaff_EDI + 0xc))) >>> 0);
+          // HAND-FIX (paint-ring wild-write — same as 9b438b path A): set EDI
+          // to dst pixel ptr = *DPI + y_offset_bytes + x_offset.
+          // (uVar3 holds y_offset_bytes from line 90 above; sVar4 = x_offset
+          //  after possible zeroing at line 110.)
+          regs.ebp = unaff_EDI >>> 0;
+          regs.esi = heap.u32(0x009a2010) >>> 0;
+          regs.edi = (heap.u32(unaff_EDI) + uVar3 + (sVar4 << 16 >> 16)) >>> 0;
           uVar3 = (((regs.eax = FUN_009b4911(heap))) >>> 0);
+          regs.edi = unaff_EDI >>> 0;
           uVar7 = ((heap.u32(0x009a2014)) >>> 0);
         }
       }
@@ -123,6 +131,12 @@ export function FUN_009b4457(heap) {
     uVar3 = ((CONCAT22(sVar4, heap.u32(0x009a2016))) >>> 0);
     heap.setU32(0x009a202c, (heap.u32(0x009a2016)) >>> 0);
     uVar6 = (((in_DX + sVar4) - heap.i16((unaff_EDI + 6))) & 0xffff);
+    // HAND-FIX (painter-noise / blitter-wild-write — path B, calls 9b4660):
+    // mirror 9b438b.js path-B fix. Track dst-EDI offsets and src-ESI
+    // offsets that asm 0x9b44b0-0x9b4659 computes but Ghidra's C drops.
+    let _dstYOff = 0;
+    let _srcYOff = 0;
+    let _srcXSkip = 0;
     if (((uVar6) << 16 >> 16) < 0) {
       heap.setU32(0x009a202c, (heap.u32(0x009a2016) + uVar6) >>> 0);
       if (heap.u32(0x009a202c) < 0) {
@@ -132,9 +146,11 @@ export function FUN_009b4457(heap) {
         return uVar3;
       }
       uVar3 = (((uVar7 & 0xffff) * ((0) >>> 0) - uVar6 & 0xffff) >>> 0);
+      _srcYOff = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar6 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar6 = ((0) & 0xffff);
     } else {
       uVar3 = ((((heap.i16((unaff_EDI + 8)) + heap.i16((unaff_EDI + 0xc))) >>> 0) * ((uVar6) >>> 0)) >>> 0);
+      _dstYOff = uVar3 & 0xffff;
     }
     sVar4 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar6 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -156,6 +172,7 @@ export function FUN_009b4457(heap) {
         }
         heap.setU32(0x009a202e, (-sVar4) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) - sVar4) >>> 0);
+        _srcXSkip = (-((sVar4 << 16) >> 16)) & 0xffff;
         sVar4 = ((0) & 0xffff);
       }
       sVar2 = ((heap.u32(0x009a2028)) & 0xffff);
@@ -168,6 +185,16 @@ export function FUN_009b4457(heap) {
         heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar5) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) + sVar5) >>> 0);
       }
+      const _dpiPtr = (heap.u32(unaff_EDI) + _dstYOff + (sVar4 & 0xffff)) >>> 0;
+      const _srcOff = ((_srcYOff - _srcXSkip) | 0) & 0xffffffff;
+      const _srcPtr = (heap.u32(0x009a2010) + _srcOff) >>> 0;
+      const _setupRegs = () => {
+        regs.ebp = (heap.i16(0x009a2030)) >>> 0;
+        regs.edx = (heap.i16(0x009a202e)) >>> 0;
+        regs.eax = ((heap.u8(0x009a202c) << 8) & 0xff00) >>> 0;
+        regs.ebx = heap.u32(0x009a2000) >>> 0;
+        regs.edi = _dpiPtr;
+      };
       if ((heap.u32(0x009a201c) & 2) != 0) {
         sVar4 = ((heap.u32(0x009a2016) * heap.u32(0x009a2014)) & 0xffff);
         pbVar11 = ((0x009a2032) >>> 0);
@@ -192,10 +219,16 @@ export function FUN_009b4457(heap) {
             }
           }
         }
+        _setupRegs();
+        regs.esi = (0x009a2032 + _srcOff) >>> 0;
         uVar7 = (((regs.eax = FUN_009b4660(heap))) >>> 0);
+        regs.edi = unaff_EDI >>> 0;
         return uVar7;
       }
+      _setupRegs();
+      regs.esi = _srcPtr;
       uVar3 = (((regs.eax = FUN_009b4660(heap))) >>> 0);
+      regs.edi = unaff_EDI >>> 0;
       uVar7 = ((heap.u32(0x009a2014)) >>> 0);
     }
     heap.setU32(0x009a2014, (uVar7) >>> 0);
@@ -252,6 +285,9 @@ export function FUN_009b4457(heap) {
     }
     heap.setU32(0x009a202c, (((uVar3) << 16 >> 16)) >>> 0);
     uVar6 = (((in_DX + sVar4 & 0xfffe) - heap.i16((unaff_EDI + 6))) & 0xffff);
+    // HAND-FIX (painter-noise / blitter-wild-write — path C, calls 9b6863):
+    // mirror 9b438b.js path-C fix.
+    let _dstYOff_C = 0;
     if (((uVar6) << 16 >> 16) < 0) {
       heap.setU32(0x009a202c, (heap.u32(0x009a202c) + uVar6) >>> 0);
       if (heap.u32(0x009a202c) < 0) {
@@ -264,6 +300,7 @@ export function FUN_009b4457(heap) {
       uVar6 = ((0) & 0xffff);
     } else {
       uVar3 = ((((((((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc)))) << 16 >> 16)) | 0) * (((((uVar6 >>> 1)) << 16 >> 16)) | 0)) >>> 0);
+      _dstYOff_C = uVar3 & 0xffff;
     }
     sVar4 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar6 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -289,7 +326,13 @@ export function FUN_009b4457(heap) {
       sVar5 = (((sVar4 + heap.u32(0x009a2028)) - heap.i16((unaff_EDI + 8))) & 0xffff);
       if ((sVar5 == 0 || (((sVar4 + heap.u32(0x009a2028))) << 16 >> 16) < heap.i16((unaff_EDI + 8))) || (heap.setU32(0x009a2028, (heap.u32(0x009a2028) - sVar5) >>> 0), heap.u32(0x009a2028) != 0 && sVar5 <= sVar2)) {
         heap.setU32(0x009a2030, ((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc))) >>> 0);
+        const _dstXOff_C = ((sVar4 & 0xffff) >>> 1);
+        regs.ebx = heap.u32(0x009a2000) >>> 0;
+        regs.esi = heap.u32(0x009a2010) >>> 0;
+        regs.ebp = unaff_EDI >>> 0;
+        regs.edi = (heap.u32(unaff_EDI) + _dstYOff_C + _dstXOff_C) >>> 0;
         uVar3 = (((regs.eax = FUN_009b6863(heap))) >>> 0);
+        regs.edi = unaff_EDI >>> 0;
         uVar7 = ((heap.u32(0x009a2014)) >>> 0);
       }
     }
@@ -297,12 +340,19 @@ export function FUN_009b4457(heap) {
     return uVar3;
   }
   sVar2 = ((heap.u32(0x009a2016)) & 0xffff);
+  // HAND-FIX (painter-noise / blitter-wild-write — path D, calls 9b64ea):
+  // mirror 9b438b.js path-D fix.
+  let _srcInterlace_D = 0;
   if ((uVar7 & 0x10000) != 0) {
     sVar2 = ((heap.u32(0x009a2016) + -1) & 0xffff);
+    _srcInterlace_D = heap.u32(0x009a2014) & 0xffff;
   }
   uVar3 = ((CONCAT22(sVar4, sVar2)) >>> 0);
   if (sVar2 != 0) {
     uVar6 = (((in_DX + sVar4 & 0xfffe) - heap.i16((unaff_EDI + 6))) & 0xffff);
+    let _dstYOff_D = 0;
+    let _srcYOff_D = 0;
+    let _srcXSkip_D = 0;
     if (((uVar6) << 16 >> 16) < 0) {
       heap.setU32(0x009a202c, (sVar2 + uVar6) >>> 0);
       if (heap.u32(0x009a202c) < 0) {
@@ -312,10 +362,12 @@ export function FUN_009b4457(heap) {
         return uVar3;
       }
       uVar3 = (((uVar7 & 0xffff) * ((0) >>> 0) - uVar6 & 0xffff) >>> 0);
+      _srcYOff_D = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar6 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar6 = ((0) & 0xffff);
     } else {
       uVar3 = (((((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc))) >>> 0) * ((uVar6 >>> 1) >>> 0)) >>> 0);
       heap.setU32(0x009a202c, (sVar2) >>> 0);
+      _dstYOff_D = uVar3 & 0xffff;
     }
     sVar4 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar6 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -336,6 +388,7 @@ export function FUN_009b4457(heap) {
           return uVar3;
         }
         heap.setU32(0x009a202e, (-sVar4) >>> 0);
+        _srcXSkip_D = (-((sVar4 << 16) >> 16)) & 0xffff;
         sVar4 = ((0) & 0xffff);
       }
       sVar2 = ((heap.u32(0x009a2028)) & 0xffff);
@@ -347,6 +400,17 @@ export function FUN_009b4457(heap) {
         }
         heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar5) >>> 0);
       }
+      const _dstXOff_D = ((sVar4 & 0xffff) >>> 1);
+      const _dpiPtr_D = (heap.u32(unaff_EDI) + _dstYOff_D + _dstXOff_D) >>> 0;
+      const _srcOff_D = ((_srcInterlace_D + _srcYOff_D - _srcXSkip_D) | 0) & 0xffffffff;
+      const _srcPtr_D = (heap.u32(0x009a2010) + _srcOff_D) >>> 0;
+      const _setupRegs_D = () => {
+        regs.ebp = (heap.i16(0x009a2030)) >>> 0;
+        regs.edx = (heap.i16(0x009a202e)) >>> 0;
+        regs.eax = ((heap.u8(0x009a202c) << 8) & 0xff00) >>> 0;
+        regs.ebx = heap.u32(0x009a2000) >>> 0;
+        regs.edi = _dpiPtr_D;
+      };
       if ((heap.u32(0x009a201c) & 2) != 0) {
         sVar4 = ((heap.u32(0x009a2016) * heap.u32(0x009a2014)) & 0xffff);
         pbVar11 = ((0x009a2032) >>> 0);
@@ -371,10 +435,16 @@ export function FUN_009b4457(heap) {
             }
           }
         }
+        _setupRegs_D();
+        regs.esi = (0x009a2032 + _srcOff_D) >>> 0;
         uVar7 = (((regs.eax = FUN_009b64ea(heap))) >>> 0);
+        regs.edi = unaff_EDI >>> 0;
         return uVar7;
       }
+      _setupRegs_D();
+      regs.esi = _srcPtr_D;
       uVar3 = (((regs.eax = FUN_009b64ea(heap))) >>> 0);
+      regs.edi = unaff_EDI >>> 0;
       uVar7 = ((heap.u32(0x009a2014)) >>> 0);
     }
   }

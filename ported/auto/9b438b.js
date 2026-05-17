@@ -145,6 +145,14 @@ export function FUN_009b438b(heap) {
     uVar4 = ((CONCAT22(sVar5, heap.u32(0x009a2016))) >>> 0);
     heap.setU32(0x009a202c, (heap.u32(0x009a2016)) >>> 0);
     uVar7 = (((in_DX + sVar5) - heap.i16((unaff_EDI + 6))) & 0xffff);
+    // HAND-FIX (painter-noise / blitter-wild-write, same root cause as the
+    // 9b4911 fix above): asm at 0x9b44b0-0x9b4659 sets up EDI=*DPI+y+x and
+    // ESI=srcBase+y-x for the call to 9b4660. Ghidra's C decompile drops
+    // this pure register dataflow. Track the same offsets in JS locals so we
+    // can set regs.edi/regs.esi at the call site.
+    let _dstYOff = 0; // dst row-offset bytes (added to *DPI)
+    let _srcYOff = 0; // src row-offset bytes (added to srcBase, top-clip path)
+    let _srcXSkip = 0; // src x-skip bytes (subtracted from src on left-clip)
     if (((uVar7) << 16 >> 16) < 0) {
       heap.setU32(0x009a202c, (heap.u32(0x009a2016) + uVar7) >>> 0);
       if (heap.u32(0x009a202c) < 0) {
@@ -154,9 +162,13 @@ export function FUN_009b438b(heap) {
         return uVar4;
       }
       uVar4 = (((uVar3 & 0xffff) * ((0) >>> 0) - uVar7 & 0xffff) >>> 0);
+      // asm 0x9b44e8-0x9b44fa: neg dx; ax = [0x9a2014]; mul dx; movzx eax,ax; add esi,eax
+      _srcYOff = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar7 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar7 = ((0) & 0xffff);
     } else {
       uVar4 = ((((heap.i16((unaff_EDI + 8)) + heap.i16((unaff_EDI + 0xc))) >>> 0) * ((uVar7) >>> 0)) >>> 0);
+      // asm 0x9b4511: add edi, eax (= uVar4 = (width+pitch_extra) * dy)
+      _dstYOff = uVar4 & 0xffff;
     }
     sVar5 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar7 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -178,6 +190,8 @@ export function FUN_009b438b(heap) {
         }
         heap.setU32(0x009a202e, (-sVar5) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) - sVar5) >>> 0);
+        // asm 0x9b4578: sub esi, ecx (with ecx<0 → esi += |ecx|)
+        _srcXSkip = (-((sVar5 << 16) >> 16)) & 0xffff;
         sVar5 = ((0) & 0xffff);
       }
       sVar2 = ((heap.u32(0x009a2028)) & 0xffff);
@@ -190,6 +204,21 @@ export function FUN_009b438b(heap) {
         heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar6) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) + sVar6) >>> 0);
       }
+      // HAND-FIX: precompute regs setup for 9b4660 calls (asm 0x9b45cc area).
+      // edi = *DPI + dst_y_off_bytes + dst_x_off
+      // esi = srcBase + src_y_off_bytes - src_x_skip
+      // (For the RLE-decode branch, esi gets repointed to scratch buffer
+      //  0x9a2032 + same offset.)
+      const _dpiPtr = (heap.u32(unaff_EDI) + _dstYOff + (sVar5 & 0xffff)) >>> 0;
+      const _srcOff = ((_srcYOff - _srcXSkip) | 0) & 0xffffffff;
+      const _srcPtr = (heap.u32(0x009a2010) + _srcOff) >>> 0;
+      const _setupRegs = () => {
+        regs.ebp = (heap.i16(0x009a2030)) >>> 0; // movsx ebp, [0x9a2030]
+        regs.edx = (heap.i16(0x009a202e)) >>> 0; // movsx edx, [0x9a202e]
+        regs.eax = ((heap.u8(0x009a202c) << 8) & 0xff00) >>> 0; // mov ah, [0x9a202c]; al=0
+        regs.ebx = heap.u32(0x009a2000) >>> 0;
+        regs.edi = _dpiPtr;
+      };
       if ((heap.u32(0x009a201c) & 2) != 0) {
         sVar5 = ((heap.u32(0x009a2016) * heap.u32(0x009a2014)) & 0xffff);
         pbVar11 = ((0x009a2032) >>> 0);
@@ -214,10 +243,16 @@ export function FUN_009b438b(heap) {
             }
           }
         }
+        _setupRegs();
+        regs.esi = (0x009a2032 + _srcOff) >>> 0;
         uVar3 = (((regs.eax = FUN_009b4660(heap))) >>> 0);
+        regs.edi = unaff_EDI >>> 0;
         return uVar3;
       }
+      _setupRegs();
+      regs.esi = _srcPtr;
       uVar4 = (((regs.eax = FUN_009b4660(heap))) >>> 0);
+      regs.edi = unaff_EDI >>> 0;
       uVar3 = ((heap.u32(0x009a2014)) >>> 0);
     }
     heap.setU32(0x009a2014, (uVar3) >>> 0);
@@ -271,6 +306,11 @@ export function FUN_009b438b(heap) {
     }
     heap.setU32(0x009a202c, (((uVar4) << 16 >> 16)) >>> 0);
     uVar7 = (((in_DX + sVar5 & 0xfffe) - heap.i16((unaff_EDI + 6))) & 0xffff);
+    // HAND-FIX (painter-noise / blitter-wild-write — path C, flag-4 set,
+    // zoom-1, calls 9b6863): asm 0x9b6751-0x9b685c sets up EDI=*DPI+y+x/2
+    // and leaves ESI=srcBase (no x-skip in path C). Mirror the dst-offset
+    // tracking; no src adjustments since asm doesn't touch ESI here.
+    let _dstYOff_C = 0;
     if (((uVar7) << 16 >> 16) < 0) {
       heap.setU32(0x009a202c, (heap.u32(0x009a202c) + uVar7) >>> 0);
       if (heap.u32(0x009a202c) < 0) {
@@ -283,6 +323,8 @@ export function FUN_009b438b(heap) {
       uVar7 = ((0) & 0xffff);
     } else {
       uVar4 = ((((((((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc)))) << 16 >> 16)) | 0) * (((((uVar7 >>> 1)) << 16 >> 16)) | 0)) >>> 0);
+      // asm 0x9b67d3: add edi, eax (= (width/2 + pitch_extra) * (dy/2))
+      _dstYOff_C = uVar4 & 0xffff;
     }
     sVar5 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar7 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -308,7 +350,16 @@ export function FUN_009b438b(heap) {
       sVar6 = (((sVar5 + heap.u32(0x009a2028)) - heap.i16((unaff_EDI + 8))) & 0xffff);
       if ((sVar6 == 0 || (((sVar5 + heap.u32(0x009a2028))) << 16 >> 16) < heap.i16((unaff_EDI + 8))) || (heap.setU32(0x009a2028, (heap.u32(0x009a2028) - sVar6) >>> 0), heap.u32(0x009a2028) != 0 && sVar6 <= sVar2)) {
         heap.setU32(0x009a2030, ((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc))) >>> 0);
+        // HAND-FIX: setup regs for 9b6863 call. asm 0x9b6831: add edi, cx>>1.
+        // (cx was zeroed at 0x9b6826 if left-clipped, so sVar5 holds the
+        // post-clip value already.)
+        const _dstXOff_C = ((sVar5 & 0xffff) >>> 1);
+        regs.ebx = heap.u32(0x009a2000) >>> 0;
+        regs.esi = heap.u32(0x009a2010) >>> 0;
+        regs.ebp = unaff_EDI >>> 0; // 0x9b6752: mov ebp, edi (DPI ptr)
+        regs.edi = (heap.u32(unaff_EDI) + _dstYOff_C + _dstXOff_C) >>> 0;
         uVar4 = (((regs.eax = FUN_009b6863(heap))) >>> 0);
+        regs.edi = unaff_EDI >>> 0;
         uVar3 = ((heap.u32(0x009a2014)) >>> 0);
       }
     }
@@ -316,12 +367,22 @@ export function FUN_009b438b(heap) {
     return uVar4;
   }
   sVar2 = ((heap.u32(0x009a2016)) & 0xffff);
+  // HAND-FIX (painter-noise / blitter-wild-write — path D, flag-4 not set,
+  // zoom-1, calls 9b64ea): asm 0x9b631d-0x9b645c sets up EDI=*DPI+y+x/2 and
+  // ESI=srcBase+interlace+y-x. Mirror the offsets so we can set regs at the
+  // call site.
+  let _srcInterlace_D = 0;
   if ((uVar3 & 0x10000) != 0) {
     sVar2 = ((heap.u32(0x009a2016) + -1) & 0xffff);
+    // asm 0x9b6345: add esi, ebx (= stride_src) when interlace bit set
+    _srcInterlace_D = heap.u32(0x009a2014) & 0xffff;
   }
   uVar4 = ((CONCAT22(sVar5, sVar2)) >>> 0);
   if (sVar2 != 0) {
     uVar7 = (((in_DX + sVar5 & 0xfffe) - heap.i16((unaff_EDI + 6))) & 0xffff);
+    let _dstYOff_D = 0;
+    let _srcYOff_D = 0;
+    let _srcXSkip_D = 0;
     if (((uVar7) << 16 >> 16) < 0) {
       heap.setU32(0x009a202c, (sVar2 + uVar7) >>> 0);
       if (heap.u32(0x009a202c) < 0) {
@@ -331,10 +392,14 @@ export function FUN_009b438b(heap) {
         return uVar4;
       }
       uVar4 = (((uVar3 & 0xffff) * ((0) >>> 0) - uVar7 & 0xffff) >>> 0);
+      // asm 0x9b6373-0x9b6385: neg dx; ax = [0x9a2014]; mul dx; movzx eax,ax; add esi, eax
+      _srcYOff_D = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar7 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar7 = ((0) & 0xffff);
     } else {
       uVar4 = (((((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc))) >>> 0) * ((uVar7 >>> 1) >>> 0)) >>> 0);
       heap.setU32(0x009a202c, (sVar2) >>> 0);
+      // asm 0x9b63a1: add edi, eax (= (width/2 + pitch_extra) * (dy/2))
+      _dstYOff_D = uVar4 & 0xffff;
     }
     sVar5 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar7 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -355,6 +420,8 @@ export function FUN_009b438b(heap) {
           return uVar4;
         }
         heap.setU32(0x009a202e, (-sVar5) >>> 0);
+        // asm 0x9b6409: sub esi, ecx (ecx<0 → esi += |ecx|)
+        _srcXSkip_D = (-((sVar5 << 16) >> 16)) & 0xffff;
         sVar5 = ((0) & 0xffff);
       }
       sVar2 = ((heap.u32(0x009a2028)) & 0xffff);
@@ -366,6 +433,21 @@ export function FUN_009b438b(heap) {
         }
         heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar6) >>> 0);
       }
+      // HAND-FIX: precompute regs setup for 9b64ea calls.
+      //   edi = *DPI + dst_y + (dst_x>>1)
+      //   esi = srcBase + interlace + src_y - src_x_skip   (non-RLE call)
+      //   esi = 0x9a2032 + interlace + src_y - src_x_skip  (RLE call)
+      const _dstXOff_D = ((sVar5 & 0xffff) >>> 1);
+      const _dpiPtr_D = (heap.u32(unaff_EDI) + _dstYOff_D + _dstXOff_D) >>> 0;
+      const _srcOff_D = ((_srcInterlace_D + _srcYOff_D - _srcXSkip_D) | 0) & 0xffffffff;
+      const _srcPtr_D = (heap.u32(0x009a2010) + _srcOff_D) >>> 0;
+      const _setupRegs_D = () => {
+        regs.ebp = (heap.i16(0x009a2030)) >>> 0;
+        regs.edx = (heap.i16(0x009a202e)) >>> 0;
+        regs.eax = ((heap.u8(0x009a202c) << 8) & 0xff00) >>> 0;
+        regs.ebx = heap.u32(0x009a2000) >>> 0;
+        regs.edi = _dpiPtr_D;
+      };
       if ((heap.u32(0x009a201c) & 2) != 0) {
         sVar5 = ((heap.u32(0x009a2016) * heap.u32(0x009a2014)) & 0xffff);
         pbVar11 = ((0x009a2032) >>> 0);
@@ -390,10 +472,16 @@ export function FUN_009b438b(heap) {
             }
           }
         }
+        _setupRegs_D();
+        regs.esi = (0x009a2032 + _srcOff_D) >>> 0;
         uVar3 = (((regs.eax = FUN_009b64ea(heap))) >>> 0);
+        regs.edi = unaff_EDI >>> 0;
         return uVar3;
       }
+      _setupRegs_D();
+      regs.esi = _srcPtr_D;
       uVar4 = (((regs.eax = FUN_009b64ea(heap))) >>> 0);
+      regs.edi = unaff_EDI >>> 0;
       uVar3 = ((heap.u32(0x009a2014)) >>> 0);
     }
   }
