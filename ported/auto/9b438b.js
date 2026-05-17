@@ -115,7 +115,27 @@ export function FUN_009b438b(heap) {
         sVar6 = (((sVar5 + heap.u32(0x009a2028)) - heap.i16((unaff_EDI + 8))) & 0xffff);
         if ((sVar6 == 0 || (((sVar5 + heap.u32(0x009a2028))) << 16 >> 16) < heap.i16((unaff_EDI + 8))) || (heap.setU32(0x009a2028, (heap.u32(0x009a2028) - sVar6) >>> 0), heap.u32(0x009a2028) != 0 && sVar6 <= sVar2)) {
           heap.setU32(0x009a2030, (heap.i16((unaff_EDI + 8)) + heap.i16((unaff_EDI + 0xc))) >>> 0);
+          // HAND-FIX (paint-ring wild-write): asm at 0x9b482d-0x9b48e4 does
+          //   push edi; mov ebp, edi; mov esi, [0x9a2010]; mov edi, [ebp]
+          //   ...clip math computing eax (= rowStride*rowOff) and ecx (= colOff)...
+          //   add edi, eax        ; edi += y_offset_bytes
+          //   add edi, ecx        ; edi += x_offset_bytes
+          //   call 0x9b4911
+          // The C decompile drops all of this (Ghidra register-promotion can't track
+          // EDI being rewritten mid-function), so 9b4911 was receiving EDI=DPI-struct
+          // (0x5f96d0) and treating the DPI struct itself as the destination row,
+          // smearing pixels across [0x5f96d0..ec] — the paint-ring globals at +0x10.
+          //
+          // uVar4 holds y_offset_bytes from line 92 above (= sVar5 * (clipH+pitchExtra)).
+          // sVar5 was reassigned to the x-offset starting line 100; if x-clipped it was
+          // zeroed at line 112, else it's the positive x-offset. Both match the asm's
+          // `add edi, ecx` (with ecx = 0 in clip path).
+          regs.ebp = unaff_EDI >>> 0;
+          regs.esi = heap.u32(0x009a2010) >>> 0;
+          regs.edi = (heap.u32(unaff_EDI) + uVar4 + (sVar5 << 16 >> 16)) >>> 0;
           uVar4 = (((regs.eax = FUN_009b4911(heap))) >>> 0);
+          // Restore regs.edi for the surrounding code's `unaff_EDI` references.
+          regs.edi = unaff_EDI >>> 0;
           uVar3 = ((heap.u32(0x009a2014)) >>> 0);
         }
       }

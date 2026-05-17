@@ -790,6 +790,7 @@ export function step(cpu) {
         if (mod === 0x00 && rm !== 5) {
           const addr = regs[baseKey] >>> 0;
           if (addr + 4 <= m.length) {
+            if (globalThis._x86Watch) _wpCheck(addr, 4, srcVal);
             m[addr] = srcVal & 0xff; m[addr+1] = (srcVal>>>8)&0xff;
             m[addr+2] = (srcVal>>>16)&0xff; m[addr+3] = (srcVal>>>24)&0xff;
             regs.eip = (ip + 2) >>> 0; return true;
@@ -799,6 +800,7 @@ export function step(cpu) {
           const disp = (b & 0x80) ? b - 0x100 : b;
           const addr = (regs[baseKey] + disp) >>> 0;
           if (addr + 4 <= m.length) {
+            if (globalThis._x86Watch) _wpCheck(addr, 4, srcVal);
             m[addr] = srcVal & 0xff; m[addr+1] = (srcVal>>>8)&0xff;
             m[addr+2] = (srcVal>>>16)&0xff; m[addr+3] = (srcVal>>>24)&0xff;
             regs.eip = (ip + 3) >>> 0; return true;
@@ -807,6 +809,7 @@ export function step(cpu) {
           const disp = (m[ip+2] | (m[ip+3] << 8) | (m[ip+4] << 16) | (m[ip+5] << 24));
           const addr = (regs[baseKey] + disp) >>> 0;
           if (addr + 4 <= m.length) {
+            if (globalThis._x86Watch) _wpCheck(addr, 4, srcVal);
             m[addr] = srcVal & 0xff; m[addr+1] = (srcVal>>>8)&0xff;
             m[addr+2] = (srcVal>>>16)&0xff; m[addr+3] = (srcVal>>>24)&0xff;
             regs.eip = (ip + 6) >>> 0; return true;
@@ -2686,12 +2689,12 @@ export function step(cpu) {
           }
           case 2: { // FIST m16
             const v = (fpuSt(cpu, 0) | 0) & 0xffff;
-            mem[memAddr] = v & 0xff; mem[memAddr + 1] = (v >>> 8) & 0xff;
+            if (globalThis._x86Watch) _wpCheck(memAddr, 2, v); mem[memAddr] = v & 0xff; mem[memAddr + 1] = (v >>> 8) & 0xff;
             cpu.regs.eip = (ip + 1 + 1 + memLen) >>> 0; return true;
           }
           case 3: { // FISTP m16
             const v = (fpuSt(cpu, 0) | 0) & 0xffff;
-            mem[memAddr] = v & 0xff; mem[memAddr + 1] = (v >>> 8) & 0xff;
+            if (globalThis._x86Watch) _wpCheck(memAddr, 2, v); mem[memAddr] = v & 0xff; mem[memAddr + 1] = (v >>> 8) & 0xff;
             fpuPop(cpu);
             cpu.regs.eip = (ip + 1 + 1 + memLen) >>> 0; return true;
           }
