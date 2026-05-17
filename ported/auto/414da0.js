@@ -1,6 +1,9 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/414da0.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Fix: `local_514.LeadByte[0] = pBVar5[1]` (both bytes) was emitted as
+// setU32 with the destination address read as a byte VALUE and
+// multiplied by *4. Replaced with setU8 at correct address; pBVar5
+// stride corrected from *4 to *1 (pBVar5 is BYTE*).
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -47,9 +50,9 @@ export function FUN_00414da0(heap) {
             puVar7 = (((((puVar7) | 0) + 1)) >>> 0);
           }
         }
-        heap.setU32((heap.u8((__addr_local_514 + 4)) + (0) * 4), (heap.i32(pBVar5 + (1) * 4)) & 0xffffffff);
-        pBVar5 = ((pBVar5 + ((2) * 4)) >>> 0);
-      } while (heap.u32(heap.u8((__addr_local_514 + 4)) + (0) * 4) != 0);
+        heap.setU8((__addr_local_514 + 4), (heap.u8(pBVar5 + 1)) & 0xff);
+        pBVar5 = ((pBVar5 + 2) >>> 0);
+      } while (heap.u8(__addr_local_514 + 4) != 0);
     }
     (regs.eax = FUN_00417860(heap, 1, __addr_local_500, 0x100, __addr_local_200, heap.u32(0x005f0228), heap.u32(0x005f022c), 0));
     (regs.eax = FUN_00416d00(heap, heap.u32(0x005f022c), 0x100, __addr_local_500, 0x100, __addr_local_400, 0x100, heap.u32(0x005f0228), 0));
