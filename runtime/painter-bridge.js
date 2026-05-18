@@ -29,6 +29,9 @@ import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
 // Phase R+12b: hand-port for small-scenery per-element painter.
 import { install5ce7f8Hook } from "../ported/auto/extra_paint_5ce7f8.js";
+// Phase R+14b: hand-port for palette-swizzle helper #1 of 4 called from
+// the tail of 0x421d2c (terrain painter).
+import { install420d9cHook } from "../ported/auto/extra_paint_420d9c.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -267,6 +270,31 @@ export function installPainterBridge(heap, opts = {}) {
   // painters have no JS port, and they explicitly read the pushed-esi
   // slot via `mov (%esp), %esi` so the stack layout must match exactly.
   install5ce7f8Hook(cpu, runFunction, setEipHook, heap);
+
+  // ######################################################################
+  // ######################################################################
+  // Phase R+14b region — palette-swizzle helper #1 of 4 (0x421d2c tail).
+  // ######################################################################
+  // ######################################################################
+  // FUN_extra_paint_420d9c is the first of four CODESEG-only helpers
+  // dispatched at 0x4225c0..0x4225cf in FUN_extra_paint_421d2c's tail
+  // (the palette-swizzle block). Sibling helpers (0x420f4c / 0x420502 /
+  // 0x42094b) remain on the interpreter path until separately ported.
+  // Phase R+13a (commit 55e72f7) flagged these four as the dominant
+  // interpreter-fallback cost once the cb9==0 sprite-update gate opens.
+  //
+  // The hand-port covers:
+  //   - the bounds-check + tile-pointer chain walk (hot)
+  //   - the al/ah/cl/ch compare → either early-return or push-to-paint-ring
+  //     via FUN_00433b76 (hot — title scene with [0x991f8c]&1==0)
+  //
+  // Cold fallback to runFunction (with clearEipHook recursion guard):
+  //   - the [0x991f8c]&1 branch (multi-call rotation-painter loop at
+  //     0x420e4c..0x420f17). Never fires on title (profile: f8c=0x900).
+  //
+  // Distinct region from Phase R+12 (444e08), R+12b (5ce7f8), R+11
+  // (421d2c), and any parallel agent-G hand-port of 0x431bb8.
+  install420d9cHook(cpu, runFunction, setEipHook, heap);
 
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
