@@ -180,6 +180,16 @@ export function createRuntime(opts) {
           console.warn(`[harness] pre-load tick (FUN_004385d8) threw: ${(e.message || e).slice(0, 160)}`);
         }
       }
+      // The priming call above ran the fade-counter init branch (4385d8:152)
+      // alongside the cb8==0 lazy-init we wanted — both branches are
+      // ungated by separate flags, so the call set DAT_005f8da2 to 0x10 as
+      // a side effect. Reset it back to 0 so the caller's first runTick()
+      // hits the init branch fresh and lands on the documented post-first-
+      // tick state of fade=0x10 (matches the binary's natural boot flow
+      // where the very first FUN_004385d8 call IS the one runTick fires).
+      // Without this, runTick's call takes the else branch and increments
+      // fade to 0x11, off-by-one breaking the fadein test gate.
+      heap.setU8(0x005f8da2, 0);
 
       const path = "sc21.sc4\0";
       for (let i = 0; i < path.length; i++) heap.setU8(0x0099aa88 + i, path.charCodeAt(i));
