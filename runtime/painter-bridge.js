@@ -27,6 +27,8 @@ import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 // Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
 import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
+// Phase R+12b: hand-port for small-scenery per-element painter.
+import { install5ce7f8Hook } from "../ported/auto/extra_paint_5ce7f8.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -247,6 +249,24 @@ export function installPainterBridge(heap, opts = {}) {
   // tail jumptable. Follow-up phase (R+12.next) will swap the stub for the
   // real port; the scaffold here lets that swap be a single-file change.
   install444e08Hook(cpu, runFunction, setEipHook, heap);
+
+  // ====================================================================
+  // Phase R+12b region — small-scenery per-element painter hand-port.
+  // ====================================================================
+  // FUN_extra_paint_5ce7f8 — vtable slot 2 of PTR_LAB_00628a94 (small
+  // scenery: trees, lamps, benches, fences, etc.). Dispatched from
+  // FUN_extra_paint_4368d8's per-element loop alongside 0x421d2c (terrain)
+  // and 0x444e08 (wall). Phase R+11 profiler showed it consuming ~3.5% of
+  // per-tick wall time (71 calls/tick × ~28 µs each ≈ 2 ms/tick). The JS
+  // port handles the hot prologue inline (skip-bit-0x20 branch, scenery-
+  // def fields, sprite-flags dword writes, sub-painter dispatch via
+  // DAT_5f6274[class][subtype][rotation]) and falls back to runFunction for
+  // cold inputs ([0x991f8c] & 0x20 set, or an unregistered scenery class /
+  // subtype). The actual scenery sub-painters at 4eb***/4ec***/4ed*** still
+  // run through the bridge cpu via a manual step-loop — those CODESEG
+  // painters have no JS port, and they explicitly read the pushed-esi
+  // slot via `mov (%esp), %esi` so the stack layout must match exactly.
+  install5ce7f8Hook(cpu, runFunction, setEipHook, heap);
 
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
