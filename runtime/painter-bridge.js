@@ -25,6 +25,8 @@ import { FUN_00444927 } from "../ported/auto/444927.js";
 import { FUN_00452fce } from "../ported/auto/452fce.js";
 import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
+// Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
+import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -223,6 +225,28 @@ export function installPainterBridge(heap, opts = {}) {
     // doesn't preserve eax, but the C decompile's path writes nothing
     // meaningful to eax that the caller observes here).
   });
+
+  // ######################################################################
+  // Phase R+12 (agent A77) — fence/wall per-element painter scaffold.
+  // ######################################################################
+  // FUN_extra_paint_444e08 — vtable slot 1 of PTR_LAB_00628a94 (fence/wall
+  // elements). Dispatched from FUN_extra_paint_4368d8's per-element loop
+  // alongside 0x421d2c (terrain). Profile (Phase R+11) ranks it the second-
+  // hottest per-element painter: 232 calls/tick × ~166 µs each = ~38 ms/tick
+  // (13 % of per-tick wall time).
+  //
+  // Phase R+12 ships only the install scaffold: hook + recursion-safe
+  // fallback (clearEipHook + re-install around runBodyFrom). The JS body
+  // is a STUB that always returns false, so behaviour is byte-equal to no
+  // hook (verified via title_replay hash comparison: stub mode and
+  // hook-disabled mode produce identical frame hashes).
+  //
+  // The full hand-port is documented in extra_paint_444e08.js's header
+  // (preamble + sub-painter dispatch + tail step-loop) and is non-trivial
+  // due to the 0x44635d sub-dispatcher sprawl reached via the door/banner
+  // tail jumptable. Follow-up phase (R+12.next) will swap the stub for the
+  // real port; the scaffold here lets that swap be a single-file change.
+  install444e08Hook(cpu, runFunction, setEipHook, heap);
 
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
