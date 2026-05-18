@@ -29,6 +29,8 @@ import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
 // Phase R+12b: hand-port for small-scenery per-element painter.
 import { install5ce7f8Hook } from "../ported/auto/extra_paint_5ce7f8.js";
+// Phase R+14: hand-port for base-tile rotation sub-painter (PTR_LAB_00431bb8).
+import { install431bb8Hooks } from "../ported/auto/extra_paint_431bb8.js";
 // Phase R+14b: hand-port for palette-swizzle helper #1 of 4 called from
 // the tail of 0x421d2c (terrain painter).
 import { install420d9cHook } from "../ported/auto/extra_paint_420d9c.js";
@@ -272,16 +274,33 @@ export function installPainterBridge(heap, opts = {}) {
   install5ce7f8Hook(cpu, runFunction, setEipHook, heap);
 
   // ######################################################################
+  // Phase R+14 region — base-tile rotation sub-painter hand-port (PTR_LAB_00431bb8).
+  // ######################################################################
+  // The four-entry rotation jumptable at 0x431bb8 (entries 0x431bc8 /
+  // 0x431d4b / 0x431edc / 0x43206f) is invoked from extra_paint_421d2c's
+  // hot path via `runFunction(cpu, [4*ebp + 0x431bb8])`. It's the LARGEST
+  // interpreter-fallback consumer when the cb9==0 sprite-update gate
+  // opens (see tools/probe-cb9-slowpath.js header + Phase R+13a diag):
+  // each call runs ~80 0x66-prefixed insns through harness/x86.js step()
+  // at ~200µs/call × 954 calls/tick ≈ 190 ms/tick.
+  //
+  // The painter is a paint-slot allocator: it computes a 48-byte slot at
+  // DAT_005f96e8, fills bbox + sprite-anchor fields, links the slot into
+  // the bucket-hash at DAT_006284ec[di] (di = clamped y-bucket index), and
+  // advances DAT_005f96e8 by 0x30. All four rotation variants share the
+  // body — only the (di, si, ax, cx) pre-add and bbox-X2/Y2 transforms
+  // differ. The hand-port implements all four faithfully; no cold branches
+  // fall back to interp (the only "abort" is allocator-full, which we
+  // mirror silently).
+  install431bb8Hooks(cpu, runFunction, setEipHook, heap);
+
   // ######################################################################
   // Phase R+14b region — palette-swizzle helper #1 of 4 (0x421d2c tail).
-  // ######################################################################
   // ######################################################################
   // FUN_extra_paint_420d9c is the first of four CODESEG-only helpers
   // dispatched at 0x4225c0..0x4225cf in FUN_extra_paint_421d2c's tail
   // (the palette-swizzle block). Sibling helpers (0x420f4c / 0x420502 /
   // 0x42094b) remain on the interpreter path until separately ported.
-  // Phase R+13a (commit 55e72f7) flagged these four as the dominant
-  // interpreter-fallback cost once the cb9==0 sprite-update gate opens.
   //
   // The hand-port covers:
   //   - the bounds-check + tile-pointer chain walk (hot)
@@ -291,9 +310,6 @@ export function installPainterBridge(heap, opts = {}) {
   // Cold fallback to runFunction (with clearEipHook recursion guard):
   //   - the [0x991f8c]&1 branch (multi-call rotation-painter loop at
   //     0x420e4c..0x420f17). Never fires on title (profile: f8c=0x900).
-  //
-  // Distinct region from Phase R+12 (444e08), R+12b (5ce7f8), R+11
-  // (421d2c), and any parallel agent-G hand-port of 0x431bb8.
   install420d9cHook(cpu, runFunction, setEipHook, heap);
 
   // Carve a private stack region from the top of memory. The translator
