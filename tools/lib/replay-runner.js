@@ -84,6 +84,18 @@ export async function bootAndHash({ tickSamples, maxTick, log }) {
   const sampleSet = new Set(tickSamples);
   log = log || (() => {});
 
+  // Determinism: monotonic-per-call clock so the fixture reproduces across
+  // Node sessions. Win32 shims read wall-clock at module load (kernel32
+  // _bootTime) and per-call (GetTickCount, message.time, dsound stats) and
+  // that flows into the hashed state. Frozen-constant deadlocks the harness
+  // (4385d8 spin-waits time advancement); monotonic-per-call exits those
+  // loops in a fixed iteration count. Must be installed BEFORE module
+  // imports below.
+  let _tick = 1700000000000;
+  Date.now = () => ++_tick;
+  if (typeof performance !== "undefined") {
+    performance.now = () => Date.now() - 1700000000000;
+  }
   globalThis._renderTrace = () => {};
 
   const { createRuntime, skipFadeIn } = await import("../../runtime/harness.js");
