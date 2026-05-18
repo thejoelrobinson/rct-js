@@ -1,0 +1,15 @@
+{
+  "description": "Frame-hash replay fixture. Boot sequence: createRuntime → runInit → runTick → skipFadeIn → N runTick(). FNV-1a 32-bit hash over the GAME-BACK 640x480 surface.",
+  "surface": {
+    "width": 640,
+    "height": 480,
+    "addrHint": "0x2428da0"
+  },
+  "capturedAt": "2026-05-18T01:15:57.831Z",
+  "ticks": {
+    "1": "0xcb5f8797",
+    "5": "0xb5ccc9f4",
+    "15": "0x3af021bc",
+    "30": "0xb980b862"
+  }
+}
