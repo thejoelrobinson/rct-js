@@ -5,19 +5,51 @@
 // sites via thin shims that delegate to dispatchSprite() /
 // dispatchSpriteWithRemap() / decodeBitmapRows() / decodeRleRows().
 //
-// STATUS (Phase S+C, 2026-05-17): module lands standalone — NOT yet
-// wired in. A first attempt to swap the shims caused a tick-1 hash
-// divergence in test/runtime/title_replay.test.js (expected 0xcb5f8797,
-// got 0x2a743eab). Pixel-count probe was sane (72.3k non-zero, 167
-// distinct palette indices) but pixels were not byte-equal. Per Phase
-// S+B workflow, the per-instructions response is to land the rewrite as
-// reference, leave the existing chain active, and let the user
-// adjudicate before flipping the shims + setEipHooks. Suspected
-// divergence: signed-vs-unsigned comparisons of clip-deltas after
-// `& 0xffff` (the existing 9b438b.js path A inherits this bug too but
-// is not exercised in the replay scenarios; my rewrite collapsed paths
-// and may now hit it from a different angle). LZ pre-pass and outer
-// dispatch were spot-checked against C source and asm.
+// STATUS (Phase S+E, 2026-05-17): module lands standalone — NOT yet
+// wired in. Phase S+C wiring attempt produced tick-1 hash divergence
+// (expected 0xcb5f8797 at the time, got 0x2a743eab). Phase S+E (this
+// commit) audited the four `* sprite_w` clip-math sites against the C
+// source at decompiled/c/9b438b.c and applied one in-file typo fix.
+//
+// REMAINING WIRE-BLOCKER (do not flip the shims until resolved):
+// `_blitZoom0Bitmap` and `_blitZoom1Bitmap` multiply `sprite_w *
+// (-topDelta)` per the C source (9b438b.c line 125 / line 304:
+// `(uVar3 & 0xffff) * (uint)(ushort)-uVar7 & 0xffff`). The existing
+// ported/auto/9b438b.js and 9b4457.js translator output dropped the
+// multiplication — the JS expression `(uVar3 & 0xffff) * (0 >>> 0) - uVar7
+// & 0xffff` parses as `((W*0) - uVar7) & 0xffff` = `-uVar7 & 0xffff`,
+// missing the `* W`. Both port-paths (path B → 9b4660 bitmap and path D
+// → 9b64ea zoom-1 bitmap) carry the same translator bug. decoder.js is
+// correct-vs-C-source; the existing chain is buggy-but-shipped. Flipping
+// the wiring will change pixels for any sprite with negative topDelta in
+// the bitmap branch (sprite anchor clipped off the top edge of viewport).
+//
+// REPLAY GATE: as of Phase S+E commit, test/runtime/title_replay.test.js
+// is RED on main HEAD against the committed 0x4b521f2e / 0x551fa044
+// fixture; current chain produces 0xb6005dc5 across all 4 sampled ticks.
+// Pixel-probe reports 0 non-zero pixels at the sampled viewport (probe-
+// pixels-now.js), so the title-state-machine isn't currently rendering
+// content past the first runtime-tick. Until those baseline regressions
+// from R+12 / R+12b are diagnosed, the byte-equality gate the wiring
+// needs cannot be evaluated. Next agent: either (a) make decoder.js
+// bug-compat with 9b438b at the two flagged sites and ship the wiring
+// as byte-equal to the buggy baseline, or (b) wait for the baseline
+// regression to be fixed and re-capture the fixture.
+//
+// SECONDARY FINDING (also fixed in S+E): `_blitZoom1Bitmap` previously
+// used `(sprFlags & 0xffff) * (...)` where the C source multiplies by
+// `(uVar3 & 0xffff)` (the whPack dword, = H<<16|W). sprFlags is the
+// 0x9a201c dword, completely unrelated to sprite width — this was a
+// pure typo distinct from the path-B/D bug above (changed to srcW).
+//
+// DIFF-SUBSYSTEM (`node tools/diff-subsystem.js
+// --manifest=lifter/sprite-subsystem.json`): all 4 captured scenarios
+// for 0x9b438b fail vs. the x86 interpreter. The first divergence in
+// every case is at 0x9a202c..0x9a202e (DAT_ROW_COUNT / DAT_COL_SKIP_B)
+// where the interpreter writes the negative-clip count and the JS port
+// writes 0. This is consistent with the negative-topDelta missing
+// `* sprite_w` bug above leaking into row-count math, but not yet
+// pinpointed to a single line in the existing chain.
 //
 // The reference for the wire format is `harness/csg.js` (the standalone
 // csg1.dat decoder); semantic intent for the in-game dispatch + clip math
@@ -635,7 +667,13 @@ function _blitZoom1Bitmap(heap, dpiPtr, sprYOff) {
     heap.setU32(DAT_ROW_COUNT, (sVar2 + topDelta) >>> 0);
     if (heap.u32(DAT_ROW_COUNT) < 0) return uVar3;
     if (heap.u32(DAT_ROW_COUNT) === 0) return uVar3;
-    uVar3 = (((sprFlags & 0xffff) * ((0 >>> 0) - topDelta)) & 0xffff) >>> 0;
+    // Phase S+E typo fix: was `sprFlags & 0xffff` — the C source (9b438b.c
+    // line 304) uses `uVar3 & 0xffff` where uVar3 is the whPack dword
+    // (= H<<16|W). `sprFlags & 0xffff` would multiply by the low half of
+    // the sprite-flags dword (bits 0x1/2/4/0x10/0x20/0x10000), unrelated.
+    // The right operand is sprite_w from DAT_SRC_W_I16, matching the
+    // _srcYOff_D line immediately below.
+    uVar3 = (((srcW & 0xffff) * ((0 >>> 0) - topDelta)) & 0xffff) >>> 0;
     _srcYOff_D = ((heap.u32(DAT_SRC_W_I16) & 0xffff) * ((-((topDelta << 16) >> 16)) & 0xffff)) & 0xffff;
     topDelta = 0;
   } else {
