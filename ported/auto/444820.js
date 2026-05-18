@@ -79,8 +79,30 @@ export function FUN_00444820(heap) {
       // (&DAT_00743ba2)[uVar3 * 0x80] = u16 at sprite_desc+0xe (= world offset)
       heap.setU32(0x00991f70, heap.u16(0x00743ba2 + uVar3 * 0x100) >>> 0);
       heap.setU32(0x00991f74, heap.u16(0x00743ba4 + uVar3 * 0x100) >>> 0);
-      // Dispatch via jumptable PTR_LAB_006309a0 indexed by sprite type (u8 at sprite_desc+0).
-      const spriteType = heap.u8(heap.u32(0x00991f80));
+      // Register setup before sprite-class dispatch. The C decompile elides
+      // this; the binary asm (0x4448b2..0x4448e3) sets up:
+      //   ESI = sprite_desc                (preserved from outer loop)
+      //   EBP = sprite type byte at [ESI]  (also used as call index)
+      //   EAX = u16 [ESI+0x0e]             (sprite world Y mirror)
+      //   ECX = u16 [ESI+0x10]             (sprite world X mirror)
+      //   EDX = u16 [ESI+0x12]             (sprite world Z mirror)
+      //   EBX = ((DAT_00991f88 << 3) & 0x1f) + low-byte add [ESI+0x1e]
+      // The peep painter at 0x5d7503 begins with `push esi; test [esi+0xc],0x80`
+      // and reads ESI throughout (esi+0x31, +0x1f, +0xb5, etc). Without ESI
+      // set here, the painter shim picks up whatever regs.esi was last left
+      // at (often a tile-map pointer in DATASEG, e.g. 0x006f8cd0), and the
+      // jumptable at 0x65da40 reads out of bounds (byte at esi+0x31 = 0x8f),
+      // lands in the SHIM_BASE range, and triggers the painter-bridge wild-
+      // CALL swallow added at Phase R+8c. Setting the register state at the
+      // call site removes the wild call at root.
+      const spriteType = heap.u8(spriteDesc);
+      regs.esi = spriteDesc;
+      regs.ebp = spriteType;
+      regs.eax = heap.u16(spriteDesc + 0x0e);
+      regs.ecx = heap.u16(spriteDesc + 0x10);
+      regs.edx = heap.u16(spriteDesc + 0x12);
+      const ebxLow = (((heap.u32(0x00991f88) << 3) >>> 0) + heap.u8(spriteDesc + 0x1e)) & 0xff;
+      regs.ebx = ebxLow & 0x1f;  // asm: shl ebx,3 ; add bl,[esi+0x1e] ; and ebx,0x1f
       regs.eax = callIndirect(heap, heap.u32(0x006309a0 + spriteType * 4));
       pbVar2 = heap.u32(0x00991f80) >>> 0;
     }
