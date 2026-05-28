@@ -161,7 +161,16 @@ export function FUN_009b438b(heap) {
       if (heap.u32(0x009a202c) == 0) {
         return uVar4;
       }
-      uVar4 = (((uVar3 & 0xffff) * ((0) >>> 0) - uVar7 & 0xffff) >>> 0);
+      // Phase S+E-prep: JS operator-precedence fix. C source 9b438b.c:125
+      // reads `(uVar3 & 0xffff) * (uint)(ushort)-uVar7 & 0xffff`, which in
+      // C binds as `((W & 0xffff) * ((-uVar7) & 0xffff)) & 0xffff` because
+      // `*` has higher precedence than `&`. The translator emitted
+      // `(W & 0xffff) * (0 >>> 0) - uVar7 & 0xffff`, which in JS parses
+      // as `((W * 0) - uVar7) & 0xffff` = `-uVar7 & 0xffff` — the `* W`
+      // factor silently dropped. Affects zoom-0 bitmap path for sprites
+      // clipped above the viewport top (uVar7 sign-extends negative);
+      // the value is the source-byte-row skip (W * top-clip-rows).
+      uVar4 = ((((uVar3 & 0xffff) * (((((0) >>> 0) - uVar7) & 0xffff) >>> 0)) & 0xffff) >>> 0);
       // asm 0x9b44e8-0x9b44fa: neg dx; ax = [0x9a2014]; mul dx; movzx eax,ax; add esi,eax
       _srcYOff = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar7 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar7 = ((0) & 0xffff);
@@ -391,7 +400,12 @@ export function FUN_009b438b(heap) {
       if (heap.u32(0x009a202c) == 0) {
         return uVar4;
       }
-      uVar4 = (((uVar3 & 0xffff) * ((0) >>> 0) - uVar7 & 0xffff) >>> 0);
+      // Phase S+E-prep: JS operator-precedence fix. C source 9b438b.c:304
+      // mirrors the line 125 expression for the zoom-1 bitmap path. Same
+      // bug class: `(W & 0xffff) * (0 >>> 0) - uVar7 & 0xffff` in JS is
+      // `(W*0) - (uVar7 & 0xffff)`, missing the `* W` multiply that the
+      // C intends — `((W & 0xffff) * ((-uVar7) & 0xffff)) & 0xffff`.
+      uVar4 = ((((uVar3 & 0xffff) * (((((0) >>> 0) - uVar7) & 0xffff) >>> 0)) & 0xffff) >>> 0);
       // asm 0x9b6373-0x9b6385: neg dx; ax = [0x9a2014]; mul dx; movzx eax,ax; add esi, eax
       _srcYOff_D = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar7 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar7 = ((0) & 0xffff);

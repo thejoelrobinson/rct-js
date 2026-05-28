@@ -145,7 +145,15 @@ export function FUN_009b4457(heap) {
       if (heap.u32(0x009a202c) == 0) {
         return uVar3;
       }
-      uVar3 = (((uVar7 & 0xffff) * ((0) >>> 0) - uVar6 & 0xffff) >>> 0);
+      // Phase S+E-prep: JS operator-precedence fix. C source 9b4457.c:101
+      // reads `(uVar7 & 0xffff) * (uint)(ushort)-uVar6 & 0xffff`. In C, `*`
+      // has higher precedence than `&`, so this is
+      // `((W & 0xffff) * ((-topDelta) & 0xffff)) & 0xffff`. Translator
+      // emitted `(W & 0xffff) * (0 >>> 0) - uVar6 & 0xffff`, which in JS
+      // parses as `((W * 0) - uVar6) & 0xffff` = `-uVar6 & 0xffff` and
+      // drops the `* W` multiply. Affects zoom-0 remap bitmap blits for
+      // sprites clipped above the viewport top (uVar6 sign-negative).
+      uVar3 = ((((uVar7 & 0xffff) * (((((0) >>> 0) - uVar6) & 0xffff) >>> 0)) & 0xffff) >>> 0);
       _srcYOff = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar6 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar6 = ((0) & 0xffff);
     } else {
@@ -361,7 +369,12 @@ export function FUN_009b4457(heap) {
       if (heap.u32(0x009a202c) == 0) {
         return uVar3;
       }
-      uVar3 = (((uVar7 & 0xffff) * ((0) >>> 0) - uVar6 & 0xffff) >>> 0);
+      // Phase S+E-prep: JS operator-precedence fix. C source 9b4457.c:280
+      // mirrors line 101 for the zoom-1 remap bitmap path. Same bug class:
+      // `(W & 0xffff) * (0 >>> 0) - uVar6 & 0xffff` parses in JS as
+      // `(W*0) - (uVar6 & 0xffff)`, missing the `* W` multiply. C intends
+      // `((W & 0xffff) * ((-uVar6) & 0xffff)) & 0xffff`.
+      uVar3 = ((((uVar7 & 0xffff) * (((((0) >>> 0) - uVar6) & 0xffff) >>> 0)) & 0xffff) >>> 0);
       _srcYOff_D = (((heap.u32(0x009a2014) & 0xffff) * ((-((uVar6 << 16) >> 16)) & 0xffff)) & 0xffff) >>> 0;
       uVar6 = ((0) & 0xffff);
     } else {
