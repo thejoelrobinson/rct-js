@@ -34,6 +34,8 @@ import { install431bb8Hooks } from "../ported/auto/extra_paint_431bb8.js";
 // Phase R+14b: hand-port for palette-swizzle helper #1 of 4 called from
 // the tail of 0x421d2c (terrain painter).
 import { install420d9cHook } from "../ported/auto/extra_paint_420d9c.js";
+// Phase R+14d: hand-port for palette-swizzle helper #3 of 4 (0x420502).
+import { install420502Hook } from "../ported/auto/extra_paint_420502.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -311,6 +313,26 @@ export function installPainterBridge(heap, opts = {}) {
   //   - the [0x991f8c]&1 branch (multi-call rotation-painter loop at
   //     0x420e4c..0x420f17). Never fires on title (profile: f8c=0x900).
   install420d9cHook(cpu, runFunction, setEipHook, heap);
+
+  // ######################################################################
+  // Phase R+14d region — palette-swizzle helper #3 of 4 (0x420502).
+  // ######################################################################
+  // FUN_extra_paint_420502 is the third of four CODESEG-only helpers
+  // dispatched at 0x4225c0..0x4225cf in FUN_extra_paint_421d2c's tail
+  // (the palette-swizzle block). Sibling helpers cover #1 (0x420d9c,
+  // R+14b — shipped) and #2 (0x420f4c, R+14c) and #4 (0x42094b, R+14e).
+  //
+  // The hand-port covers:
+  //   - the bounds-check + tile-pointer chain walk (hot)
+  //   - the al/ah/cl/ch compare → early-return path at 0x420943
+  //     (hot — title scene with f8c=0x900 takes this exit dominantly)
+  //
+  // Cold fallback to runFunction (with clearEipHook recursion guard):
+  //   - the queue-rotate + rotation-painter dispatch loop at 0x4205a3+
+  //     (when the compare fails — every element extending past the
+  //     thresholds enters here). The fallback preserves byte-equality
+  //     for correctness while leaving the hot exit fast.
+  install420502Hook(cpu, runFunction, setEipHook, heap);
 
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
