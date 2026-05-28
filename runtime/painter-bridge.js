@@ -39,6 +39,9 @@ import { install420d9cHook } from "../ported/auto/extra_paint_420d9c.js";
 import { install420f4cHook } from "../ported/auto/extra_paint_420f4c.js";
 // Phase R+14d: hand-port for palette-swizzle helper #3 of 4 (0x420502).
 import { install420502Hook } from "../ported/auto/extra_paint_420502.js";
+// Phase R+14e: hand-port for palette-swizzle helper #4 of 4 (0x42094b) —
+// sibling of 0x420d9c with role-swapped EBX/EDI table indexing.
+import { install42094bHook } from "../ported/auto/extra_paint_42094b.js";
 
 // Node-only fs/path/url accessors. Top-level-await dynamic imports so the
 // browser (which has no `node:` scheme) can still load this module — the
@@ -336,6 +339,38 @@ export function installPainterBridge(heap, opts = {}) {
   // Cold fallback: queue-rotate + rotation-painter dispatch loop at
   // 0x4205a3+. Preserves byte-equality.
   install420502Hook(cpu, runFunction, setEipHook, heap);
+
+  // ######################################################################
+  // Phase R+14e region — palette-swizzle helper #4 of 4 (0x42094b).
+  // ######################################################################
+  // FUN_extra_paint_42094b is the fourth and final palette-swizzle helper
+  // dispatched at 0x4225c0..0x4225cf in FUN_extra_paint_421d2c's tail. With
+  // this hook installed, ALL 5 CODESEG callees of 0x421d2c (the rotation
+  // sub-painter 0x431bb8 plus the four palette-swizzle helpers 0x420d9c /
+  // 0x420f4c / 0x420502 / 0x42094b) are JS-native — closing the perf cluster
+  // that opens when the cb9==0 sprite-update gate fires.
+  //
+  // Body skeleton is sibling-identical to 0x420d9c (entry CL/DL/EBX, bounds
+  // check on (ax,bp) against 0x1000, tile-pointer chain walk on
+  // [0x971ef4+4*idx], al/ah/cl/ch compare against entry DL/DH plus per-EBX
+  // / per-EDI table adds), but two specifics differ:
+  //   - per-rotation X/Y offset tables: 0x5f4674 / 0x5f4676 (not 0x5f4684 /
+  //     0x5f4686 which 420d9c uses)
+  //   - tail table-indexing role-swap: this helper indexes EBX into the
+  //     A4/04 tables and EDI into the C4/E4 tables (opposite of 420d9c).
+  //
+  // The hand-port covers:
+  //   - the bounds-check + tile-pointer chain walk (hot)
+  //   - the al/ah/cl/ch compare → early-return path at 0x420d94 (hot —
+  //     title scene with f8c=0x900 takes this exit dominantly)
+  //
+  // Cold fallback to runFunction (with clearEipHook recursion guard):
+  //   - the al>ah || cl>ch branch (multi-call paint-dispatch loop at
+  //     0x4209ec..0x420d92 — dispatches via [4*rot+0x431bb8] AND
+  //     [4*rot+0x432204] while rotating the DAT_999fdc..DAT_99a01c scratch
+  //     ring on each iteration; modeling the ring rotation in JS is more
+  //     work than the rest of the body combined, so fall back for safety).
+  install42094bHook(cpu, runFunction, setEipHook, heap);
 
   // Carve a private stack region from the top of memory. The translator
   // uses heap.allocFrame() which decrements heap.sp from memory.byteLength
