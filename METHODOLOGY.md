@@ -70,7 +70,7 @@ method work on binaries that have *nothing* else to compare against.
 |--------|-------|--------|
 | Decompiled functions | **1,214** | `decompiled/c/*.c` |
 | Auto-translated + wired | **1,227** in dispatch | `ported/auto/_dispatch.js` |
-| Hand-fixed (`@manual`) over translator bugs | **181** (~15%) | `grep '^// @manual'` |
+| Hand-fixed (`@manual`) over translator bugs | **178** (~15%) | `grep -l '^// @manual' ported/auto/*.js` |
 | Auto-translation oracle pass-rate (testable leaf fns) | **52.3%** (34/65), 98.5% consistent | `tools/bulk-diff-report.json` |
 | Indirect-call sites invisible to static analysis | **277** | `grep callIndirect` |
 | Indirect calls captured in one title-tick trace | **6,381** | `tools/dynamic-callgraph.json` |
