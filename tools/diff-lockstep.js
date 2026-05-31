@@ -57,7 +57,8 @@ async function loadPorted() {
   ({ createRuntime, skipFadeIn } = await import("../runtime/harness.js"));
   heapMod = await import("../runtime/heap.js");
   const dispMod = await import("../ported/auto/_dispatch.js");
-  portedMap = new Map(dispMod.portedDispatch.map(([a, f]) => [a >>> 0, f]));
+  // _dispatch.js exports `dispatch` as a Map<rva, fn>; normalize keys to >>> 0.
+  portedMap = new Map([...dispMod.dispatch].map(([a, f]) => [a >>> 0, f]));
   dataBin = readFileSync(resolve(ROOT, "decompiled/data.bin"));
 }
 
