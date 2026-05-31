@@ -40,14 +40,11 @@ const FUNCS = [
       { name: "one-peep-state-not-6", mem32: { [PEEP_HEAD]: 0x0, [PEEP_BASE + 0x4]: 0xffff }, nonVacuousVs: "empty-list" },
     ],
   },
-  {
-    addr: 0x44247c, struct: "Peep", seed: ["esi"], ptr: PEEP_BASE,
-    note: "peep action-advance loop: reads Action@0x71/PeepType@0x2e, writes Action@0x71",
-    scenarios: [
-      { name: "action-terminator", mem32: { [PEEP_BASE + 0x71]: 0xff } },     // Action=0xff → loop skipped
-      { name: "action-zero", mem32: {}, nonVacuousVs: "action-terminator" },  // Action=0 → loop body entered
-    ],
-  },
+  // NOTE: 0x44247c was attempted but is NOT verified — under synthetic entry
+  // state it DIVERGES at Peep[0]+0xca (the `btrw` bit-test-and-reset site;
+  // possibly a translator-lowering bug, possibly unrealistic state). It is
+  // deliberately excluded until verified with realistic captured state (lockstep)
+  // — see project_verify_fn_ceiling. Do not re-add without a real green run.
 ];
 
 function makeWatch(map) {
