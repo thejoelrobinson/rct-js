@@ -21,3 +21,14 @@ decompiled/ghidra-project/
 # OS / editor noise
 .DS_Store
 *.log
+
+# Generated analysis artifacts (regenerable from tools/; large)
+#   call graph: node tools/build-callgraph.js
+#   dynamic graph: node tools/trace-callgraph.js
+#   subsystem map: node tools/cluster-subsystems.js
+#   atlas: node tools/atlas-build.js --structs && --assemble && --match
+tools/callgraph.json
+tools/dynamic-callgraph.json
+tools/subsystems.json
+tools/struct-offsets.json
+tools/atlas.json

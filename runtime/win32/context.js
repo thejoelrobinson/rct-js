@@ -112,6 +112,12 @@ export function callIndirect(heap, fnAddr, ...args) {
   const a = fnAddr >>> 0;     // unsigned — addresses are positive
   if (a === 0) return 0;
   const fn = state.fnDispatch.get(a);
+  // Dynamic call-graph tracing (opt-in via globalThis.__indirectHook; zero-cost
+  // when off). EVERY indirect call funnels through here, so this captures the
+  // exact edges the static import graph misses. The hook derives the caller
+  // from its own JS stack (ported fns are named FUN_xxxxxxxx). See
+  // tools/trace-callgraph.js. resolved=true means a JS function was found.
+  if (globalThis.__indirectHook) globalThis.__indirectHook(a, typeof fn === "function");
   if (typeof fn === "function") return fn(heap, ...args);
   // Unresolved address — warn once per address and return 0. Common cases:
   //   - jump-table targets at non-function-start addresses (Ghidra couldn't

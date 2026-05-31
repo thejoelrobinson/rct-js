@@ -32,12 +32,41 @@ export function runOriginal({ funcAddr, init = {}, observe = [], limit, returnMe
   const image = getImage();
 
   // Allocate a buffer large enough to hold the image plus a stack region at
-  // the end. Memory is addressed by absolute virtual address.
+  // the end. Memory is addressed by absolute virtual address. `init.memSize`
+  // lets lockstep callers pad the image up to the runtime heap's full size
+  // (the runtime uses a ~64MB heap/stack far past the PE image; without this,
+  // any function touching addresses > image.totalSize throws mem32 OOB).
+  //
+  // We always carve STACK_SIZE of headroom ABOVE the requested stackTop. A
+  // cdecl callee reads its args at [esp+4..] which sit just above stackTop;
+  // without headroom those reads run off the buffer and throw. The runtime
+  // heap doesn't throw there (Heap.u32 returns 0 for OOB), so the interpreter
+  // must mirror that — the extra zeroed page makes those arg reads return 0,
+  // matching the runtime, instead of aborting.
   const stackBase = image.totalSize;
-  const totalSize = stackBase + STACK_SIZE;
+  const requestedTop = init.stackTop ?? (stackBase + STACK_SIZE);
+  const totalSize = Math.max(stackBase + STACK_SIZE, init.memSize || 0, requestedTop) + STACK_SIZE;
 
   const memory = new Uint8Array(totalSize);
   memory.set(image.memory, 0);
+
+  // Seed full entry-state dirty-page delta (from tools/capture-lockstep.js):
+  // every page the runtime had touched at the captured function's entry.
+  // Applied before mem32 so explicit scalar overrides still win. Each entry
+  // is { page, bytes } with `bytes` a base64 string (or array) up to one page.
+  if (init.pages) {
+    const PAGE = init.pageSize || 0x1000;
+    for (const { page, bytes } of init.pages) {
+      const base = (page >>> 0) * PAGE;
+      const buf = typeof bytes === "string"
+        ? Uint8Array.from(Buffer.from(bytes, "base64"))
+        : Uint8Array.from(bytes);
+      if (base + buf.length > memory.length) {
+        throw new Error(`init.pages: page 0x${page.toString(16)} (@0x${base.toString(16)}) past image end 0x${memory.length.toString(16)}`);
+      }
+      memory.set(buf, base);
+    }
+  }
 
   // Apply caller-supplied memory writes (scalar globals).
   if (init.mem32) {
@@ -55,7 +84,9 @@ export function runOriginal({ funcAddr, init = {}, observe = [], limit, returnMe
   // Apply caller-supplied registers.
   if (init.regs) Object.assign(cpu.regs, init.regs);
 
-  const stackTop = stackBase + STACK_SIZE;
+  // `init.stackTop` lets lockstep match the runtime/painter-bridge stack base
+  // (STACK_TOP = heap.byteLength) so captured stack addresses replay 1:1.
+  const stackTop = init.stackTop ?? (stackBase + STACK_SIZE);
   const steps = runFunction(cpu, funcAddr, { stackTop, ...(limit !== undefined ? { limit } : {}) });
 
   // Read back observed memory locations.
@@ -70,8 +101,12 @@ export function runOriginal({ funcAddr, init = {}, observe = [], limit, returnMe
     mem32: memOut,
     steps,
     // For void-function diffs: return the post-call memory image so the
-    // caller can compare with a baseline. Stack region is excluded — only
-    // the data sections matter for "did the function mutate globals".
-    memory: returnMemory ? memory.slice(0, stackBase) : undefined,
+    // caller can compare with a baseline. By default the stack region is
+    // excluded (only data sections matter for global mutations); lockstep
+    // callers that padded with init.memSize get the full padded image so
+    // heap-region writes (e.g. DDraw surfaces past the PE image) are visible.
+    memory: returnMemory
+      ? memory.slice(0, init.memSize ? totalSize - STACK_SIZE : stackBase)
+      : undefined,
   };
 }

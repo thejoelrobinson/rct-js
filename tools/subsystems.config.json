@@ -1,0 +1,20 @@
+{
+  "_comment": "Subsystem seeds for cluster-subsystems.js. `roots` are entry-point addresses; a function is owned by the highest-priority subsystem that can reach it (most-specific wins). `priority` 0 = shared infra (loses ownership ties), higher = more specific. `indirectEdges` supplements the static call graph for runtime jumptables; '$table:PTR_LAB_xxx' expands to the extra-entries.json group. Addresses for ride-sim/ui-windows are seeds to refine as the call graph is explored.",
+
+  "indirectEdges": {
+    "_comment_indirect": "dispatcher RVA -> list of targets or $table refs. Fill in real dispatcher addrs as they're confirmed via probe-* tracing.",
+    "0x444820": ["$table:PTR_LAB_006309a0"]
+  },
+
+  "subsystems": [
+    { "name": "tick-core",     "priority": 0,  "roots": ["0x4385d8", "0x402bef", "0x40179d"] },
+    { "name": "sprite-blit",   "priority": 5,  "roots": ["0x9b438b", "0x9b4457", "0x9b4660", "0x9b4911", "0x9b35fa"] },
+    { "name": "render-ingame", "priority": 10, "roots": ["0x431b6f", "0x436b2a", "0x4368d8", "0x421d2c", "0x444820", "0x42b079"] },
+    { "name": "peep-sim",      "priority": 20, "roots": ["0x5d94b6"] },
+    { "name": "input",         "priority": 25, "roots": ["0x403d79", "0x5e2225", "0x5e3ace", "0x42a830"] },
+    { "name": "ride-sim",      "priority": 30, "roots": [] },
+    { "name": "ui-windows",    "priority": 35, "roots": ["0x4298a0", "0x42b079"] },
+    { "name": "save-load",     "priority": 40, "roots": ["0x42f4be", "0x42f98e", "0x42f3a2"] },
+    { "name": "audio",         "priority": 50, "roots": ["0x452876", "0x452fce", "0x453f76", "0x4543bd"] }
+  ]
+}

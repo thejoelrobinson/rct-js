@@ -434,8 +434,19 @@ export function installPainterBridge(heap, opts = {}) {
         m[stackTop+4] = ax & 0xff; m[stackTop+5] = (ax>>>8)&0xff; m[stackTop+6] = (ax>>>16)&0xff; m[stackTop+7] = (ax>>>24)&0xff;
       }
       try {
-        runFunction(cpu, addr, { stackTop, limit: 50_000_000 });
+        const __steps = runFunction(cpu, addr, { stackTop, limit: globalThis.__painterStepLimit || 50_000_000 });
+        // Optional step accounting for the painter-ranking probe. Off unless a
+        // probe installs the accumulator map; zero cost in production.
+        if (globalThis.__painterSteps) {
+          const m = globalThis.__painterSteps;
+          const cur = m.get(addr) || { steps: 0, calls: 0 };
+          cur.steps += (__steps || 0); cur.calls += 1;
+          m.set(addr, cur);
+        }
       } catch (e) {
+        // Probe-controlled tick unwind (painter-ranking) must propagate, not
+        // be swallowed as a painter error.
+        if (e && e.__painterDone) throw e;
         // _wildShim is raised by the shim invoker above when a painter
         // computes a bogus CALL target into SHIM_BASE that doesn't match
         // any registered IAT/dynamic sentinel. The painter has already

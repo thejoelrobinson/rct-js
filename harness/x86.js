@@ -395,6 +395,20 @@ export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); _eipHooksSiz
 export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); _eipHooksSize = _eipHooks.size; }
 export function hasEipHook(eip) { return _eipHooks.has(eip >>> 0); }
 
+// Dynamic call-graph tracing (opt-in via `cpu.callEdges = new Map()` before a
+// run; zero-cost when absent — one truthiness check per CALL). Records raw
+// edges (callerInstrAddr → calleeTarget) deduped per call-site. The TOOL
+// (tools/trace-callgraph.js) maps each callerInstrAddr to its containing
+// function, so the interpreter stays dumb. `kind` is the CALL opcode (0xe8
+// direct / 0xff indirect) so the tool can flag the indirect edges the static
+// import graph cannot see. cpu.callEdges: Map<callerIp, Map<calleeTarget, kind>>.
+function recordCallEdge(cpu, callerIp, callee, kind) {
+  callerIp = callerIp >>> 0; callee = callee >>> 0;
+  let inner = cpu.callEdges.get(callerIp);
+  if (!inner) { inner = new Map(); cpu.callEdges.set(callerIp, inner); }
+  if (!inner.has(callee)) inner.set(callee, kind);
+}
+
 // Opcode histogram instrumentation (opt-in via _X86_OP_HIST = new Uint32Array(256)).
 // Enable by setting `globalThis._X86_OP_HIST = new Uint32Array(256)` before running.
 export function step(cpu) {
@@ -2304,6 +2318,7 @@ export function step(cpu) {
     write32(m, cpu.regs.esp, ret);
     cpu.regs.eip = (ret + (mem32(m, ip + 1) | 0)) >>> 0;
     cpu.callDepth++;
+    if (cpu.callEdges) recordCallEdge(cpu, ip, cpu.regs.eip, 0xe8);
     return true;
   }
   // Jcc rel8 (0x70..0x7f)
@@ -2751,6 +2766,9 @@ export function step(cpu) {
       write32(m, cpu.regs.esp, ret);
       cpu.regs.eip = target;
       cpu.callDepth++;
+      // 0xff /2 = indirect CALL through reg/mem — the function-pointer edges
+      // the static import graph cannot see (the ~277 callIndirect sites).
+      if (cpu.callEdges) recordCallEdge(cpu, ip, target, 0xff);
       return true;
     }
     if (subOp === 4) { // JMP r/m32
