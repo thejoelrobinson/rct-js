@@ -116,6 +116,10 @@ describe("ported gameplay functions are byte-equivalent to the binary", () => {
     describe(`0x${fnDef.addr.toString(16)} — ${fnDef.note}`, () => {
       const stepsByName = {};
       for (const sc of fnDef.scenarios) {
+        // 30s timeout: each scenario runs the x86 interpreter, which is
+        // CPU-heavy. It finishes in ~2s standalone but gets starved under the
+        // full suite's parallel load and timed out at the 5s default — a flake,
+        // not a regression. The diff itself is bounded by the interpreter step cap.
         it(`[${sc.name}] write-set + EAX match the interpreter`, async () => {
           const r = await diff(fnDef, sc);
           stepsByName[sc.name] = r.steps;
@@ -125,7 +129,7 @@ describe("ported gameplay functions are byte-equivalent to the binary", () => {
             expect(r.steps, `step count differs from ${sc.nonVacuousVs} (path exercised)`)
               .not.toBe(stepsByName[sc.nonVacuousVs]);
           }
-        });
+        }, 30_000);
       }
     });
   }

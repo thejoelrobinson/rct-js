@@ -8,7 +8,10 @@ generated/
 
 # Run-time snapshots / debug artifacts
 frames/
-sprites/
+# Root-only: the decoded-sprite PNG dump. Anchored with a leading slash so it
+# does NOT also swallow runtime/native/sprites/ (tracked source — new files
+# there were silently invisible to git until this was anchored).
+/sprites/
 
 # Diff-test reports — regenerable via tools/bulk-diff-test.js
 tools/bulk-diff-report.json
@@ -32,3 +35,7 @@ tools/dynamic-callgraph.json
 tools/subsystems.json
 tools/struct-offsets.json
 tools/atlas.json
+
+# Per-agent git worktrees — never collected by tests or committed
+.claude/worktrees/
+.claude/scratch/
