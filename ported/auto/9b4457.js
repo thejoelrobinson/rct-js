@@ -66,14 +66,17 @@ export function FUN_009b4457(heap) {
     heap.setU32(0x009a201c, (heap.u32((0x008dc0c0 + iVar8))) >>> 0);
     sVar4 = (((((heap.u32(0x009a2018) >>> 0x10)) << 16 >> 16)) & 0xffff);
     heap.setU32(0x009a2014, (((uVar7) << 16 >> 16)) >>> 0);
-    heap.setU32(0x009a2016, ((((uVar7 >>> 0x10)) << 16 >> 16)) >>> 0);
+    heap.setU16(0x009a2016, ((((uVar7 >>> 0x10)) << 16 >> 16)) & 0xffff);
     heap.setU32(0x009a2010, (pbVar9) >>> 0);
     heap.setU32(0x009a2014, (uVar7) >>> 0);
     if ((heap.u32(0x009a201c) & 4) != 0) {
+      // HAND-FIX (β2, dst-Y truncation): full 32-bit dst row-offset, before the
+      // CONCAT22 below truncates uVar3 to 16 bits. Same bug/fix as 9b438b.js.
+      let _dstYBytes = 0;
       uVar3 = ((CONCAT22(sVar4, heap.u32(0x009a2016))) >>> 0);
       heap.setU32(0x009a2020, (0) >>> 0);
       heap.setU32(0x009a202c, (heap.u32(0x009a2016)) >>> 0);
-      sVar4 = (((in_DX + sVar4) - heap.i16((unaff_EDI + 6))) & 0xffff);
+      sVar4 = (((in_DX + sVar4) - heap.i16((unaff_EDI + 6))) << 16 >> 16);
       if (sVar4 < 0) {
         heap.setU32(0x009a202c, (heap.u32(0x009a2016) + sVar4) >>> 0);
         if (heap.u32(0x009a202c) < 0) {
@@ -88,6 +91,7 @@ export function FUN_009b4457(heap) {
         sVar4 = ((0) & 0xffff);
       } else {
         uVar3 = (((((((heap.i16((unaff_EDI + 8)) + heap.i16((unaff_EDI + 0xc)))) << 16 >> 16)) | 0) * ((sVar4) | 0)) >>> 0);
+        _dstYBytes = uVar3 >>> 0;
       }
       sVar2 = ((heap.u32(0x009a202c)) & 0xffff);
       sVar5 = (((sVar4 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
@@ -95,7 +99,7 @@ export function FUN_009b4457(heap) {
         uVar3 = ((CONCAT22((((uVar3 >>> 0x10)) << 16 >> 16), heap.u32(0x009a2014))) >>> 0);
         heap.setU32(0x009a2024, (0) >>> 0);
         heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
-        sVar4 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) & 0xffff);
+        sVar4 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) << 16 >> 16);
         if (sVar4 < 0) {
           heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar4) >>> 0);
           if (heap.u32(0x009a2028) < 0) {
@@ -119,7 +123,7 @@ export function FUN_009b4457(heap) {
           //  after possible zeroing at line 110.)
           regs.ebp = unaff_EDI >>> 0;
           regs.esi = heap.u32(0x009a2010) >>> 0;
-          regs.edi = (heap.u32(unaff_EDI) + uVar3 + (sVar4 << 16 >> 16)) >>> 0;
+          regs.edi = (heap.u32(unaff_EDI) + _dstYBytes + (sVar4 << 16 >> 16)) >>> 0;
           uVar3 = (((regs.eax = FUN_009b4911(heap))) >>> 0);
           regs.edi = unaff_EDI >>> 0;
           uVar7 = ((heap.u32(0x009a2014)) >>> 0);
@@ -158,16 +162,19 @@ export function FUN_009b4457(heap) {
       uVar6 = ((0) & 0xffff);
     } else {
       uVar3 = ((((heap.i16((unaff_EDI + 8)) + heap.i16((unaff_EDI + 0xc))) >>> 0) * ((uVar6) >>> 0)) >>> 0);
-      _dstYOff = uVar3 & 0xffff;
+      _dstYOff = uVar3 >>> 0;  // β2: full 32-bit y-offset (was truncated)
     }
     sVar4 = ((heap.u32(0x009a202c)) & 0xffff);
     sVar2 = (((uVar6 + heap.u32(0x009a202c)) - heap.i16((unaff_EDI + 10))) & 0xffff);
     if ((sVar2 == 0 || (((uVar6 + heap.u32(0x009a202c))) << 16 >> 16) < heap.i16((unaff_EDI + 10))) || (heap.setU32(0x009a202c, (heap.u32(0x009a202c) - sVar2) >>> 0), heap.u32(0x009a202c) != 0 && sVar2 <= sVar4)) {
       heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
-      heap.setU32(0x009a2030, ((heap.i16((unaff_EDI + 8)) - heap.u32(0x009a2014)) + heap.i16((unaff_EDI + 0xc))) >>> 0);
+      // HAND-FIX (β2, u16-as-u32): sprite WIDTH is a 16-bit load; reading the
+      // full WH dword underflowed ROW_STRIDE, collapsing bitmap sprites. Same
+      // as 9b438b.js. Verified vs the interpreter.
+      heap.setU32(0x009a2030, ((heap.i16((unaff_EDI + 8)) - (heap.u32(0x009a2014) & 0xffff)) + heap.i16((unaff_EDI + 0xc))) >>> 0);
       uVar3 = ((CONCAT22((((uVar3 >>> 0x10)) << 16 >> 16), heap.u32(0x009a2030))) >>> 0);
       heap.setU32(0x009a202e, (0) >>> 0);
-      sVar4 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) & 0xffff);
+      sVar4 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) << 16 >> 16);
       if (sVar4 < 0) {
         heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar4) >>> 0);
         if (heap.u32(0x009a2028) < 0) {
@@ -277,7 +284,7 @@ export function FUN_009b4457(heap) {
   heap.setU32(0x009a201c, (heap.u32((0x008dc0c0 + iVar8))) >>> 0);
   sVar4 = (((((heap.u32(0x009a2018) >>> 0x10)) << 16 >> 16)) & 0xffff);
   heap.setU32(0x009a2014, (((uVar7) << 16 >> 16)) >>> 0);
-  heap.setU32(0x009a2016, ((((uVar7 >>> 0x10)) << 16 >> 16)) >>> 0);
+  heap.setU16(0x009a2016, ((((uVar7 >>> 0x10)) << 16 >> 16)) & 0xffff);
   heap.setU32(0x009a2010, (pbVar9) >>> 0);
   heap.setU32(0x009a2014, (uVar7) >>> 0);
   if ((heap.u32(0x009a201c) & 4) != 0) {
