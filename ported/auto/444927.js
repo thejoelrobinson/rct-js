@@ -95,7 +95,13 @@ export function FUN_00444927(heap) {
     heap.setU16(puVar4, heap.u16(esi + 2));
     LOCK();
     const uVar1 = heap.u16(0x00991f8e + uVar2 * 2);
-    heap.setU16(0x00991f8e + uVar2 * 2, heap.u16(esi + 2));
+    // HAND-FIX: C is `(&DAT_00991f8e)[uVar2] = *(undefined2*)(unaff_ESI + 10)` —
+    // the new chain head becomes the sprite's OWN index (sprite_index lives at
+    // esi+0xa), inserting esi at the head. The prior hand-port read esi+2 (the
+    // sprite's NEXT pointer) instead, so esi was never inserted → the tile-grid
+    // chain corrupted and a later walk (lines above) couldn't find its sprite and
+    // span forever (the tick-~21 gameplay hang).
+    heap.setU16(0x00991f8e + uVar2 * 2, heap.u16(esi + 0xa));
     UNLOCK();
     heap.setU16(esi + 2, uVar1);
   }
