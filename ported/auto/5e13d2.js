@@ -124,8 +124,16 @@ export function FUN_005e13d2(heap) {
     heap.setU32(0x0099fb90, (sVar3) >>> 0);
     heap.setU32(0x0099fb94, (sVar5) >>> 0);
     heap.setU32(0x0099fb98, (sVar7) >>> 0);
-    if (sVar9 == 0 || in_AX < sVar3) {
-      LAB_005e1566: sVar9 = ((heap.u32(0x0099fb94)) & 0xffff);
+    // HAND-FIX (goto-as-return): C has `goto LAB_005e1566` from the else-branch
+    // (re-clip with the advanced x-window). The translator emitted `return 0`,
+    // leaving the clip incomplete → the caller looped forever calling 5e13d2
+    // (gameplay hang after ~150 ticks). Restructure the if/else as a labeled
+    // while so the goto becomes `continue LAB_005e1566`; the clip body and its
+    // `break LAB_005e1637` (which exits to the inner do-while) are unchanged.
+    let _doClip = (sVar9 == 0 || in_AX < sVar3);
+    LAB_005e1566: while (true) {
+     if (_doClip) {
+      sVar9 = ((heap.u32(0x0099fb94)) & 0xffff);
       sVar8 = (((heap.u32(0x0099fb90) + heap.u32(0x0099fb94)) - in_DX) & 0xffff);
       if (sVar8 != 0 && in_DX <= (((heap.u32(0x0099fb90) + heap.u32(0x0099fb94))) << 16 >> 16)) {
         heap.setU32(0x0099fb94, (heap.u32(0x0099fb94) - sVar8) >>> 0);
@@ -152,14 +160,17 @@ export function FUN_005e13d2(heap) {
         (regs.eax = callIndirect(heap, heap.u32(unaff_ESI)));
         (regs.eax = callIndirect(heap, heap.u32(unaff_ESI)));
       }
-    } else {
+      break;
+     } else {
       heap.setU32(0x0099fb90, (sVar3 + sVar9) >>> 0);
       heap.setU32(0x0099fb94, (sVar5 - sVar9) >>> 0);
       if (heap.u32(0x0099fb94) != 0 && sVar9 <= sVar5) {
         heap.setU32(0x0099fb98, (sVar7 + sVar9) >>> 0);
         heap.setU32(0x0099fb8c, (iVar2 + sVar9) >>> 0);
-        /* goto LAB_005e1566 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_005e13d2/LAB_005e1566"); return 0;
+        _doClip = true; continue LAB_005e1566;  // C: goto LAB_005e1566
       }
+      break;
+     }
     }
     }
     do {
