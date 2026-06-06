@@ -173,19 +173,22 @@ export function FUN_009b4457(heap) {
       // as 9b438b.js. Verified vs the interpreter.
       heap.setU32(0x009a2030, ((heap.i16((unaff_EDI + 8)) - (heap.u32(0x009a2014) & 0xffff)) + heap.i16((unaff_EDI + 0xc))) >>> 0);
       uVar3 = ((CONCAT22((((uVar3 >>> 0x10)) << 16 >> 16), heap.u32(0x009a2030))) >>> 0);
-      heap.setU32(0x009a202e, (0) >>> 0);
+      // HAND-FIX (β2, COL_SKIP_B clobber): binary writes COL_SKIP_B as a
+      // 16-bit word; setU32 overwrote the adjacent ROW_STRIDE (0x9a2030) with
+      // 0 right after it was set, collapsing bitmap sprites into streaks.
+      heap.setU16(0x009a202e, (0) >>> 0);
       sVar4 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) << 16 >> 16);
       if (sVar4 < 0) {
         heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar4) >>> 0);
         if (heap.u32(0x009a2028) < 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar3;
         }
         if (heap.u32(0x009a2028) == 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar3;
         }
-        heap.setU32(0x009a202e, (-sVar4) >>> 0);
+        heap.setU16(0x009a202e, (-sVar4) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) - sVar4) >>> 0);
         _srcXSkip = (-((sVar4 << 16) >> 16)) & 0xffff;
         sVar4 = ((0) & 0xffff);
@@ -197,7 +200,7 @@ export function FUN_009b4457(heap) {
         if (heap.u32(0x009a2028) == 0 || sVar2 < sVar5) {
           return uVar3;
         }
-        heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar5) >>> 0);
+        heap.setU16(0x009a202e, (heap.u32(0x009a202e) + sVar5) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) + sVar5) >>> 0);
       }
       const _dpiPtr = (heap.u32(unaff_EDI) + _dstYOff + (sVar4 & 0xffff)) >>> 0;
@@ -395,19 +398,19 @@ export function FUN_009b4457(heap) {
       heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
       heap.setU32(0x009a2030, ((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc))) >>> 0);
       uVar3 = ((CONCAT22((((uVar3 >>> 0x10)) << 16 >> 16), heap.u32(0x009a2030))) >>> 0);
-      heap.setU32(0x009a202e, (0) >>> 0);
+      heap.setU16(0x009a202e, (0) >>> 0);
       sVar4 = (((in_CX + heap.u32(0x009a2018) & 0xfffe) - heap.i16((unaff_EDI + 4))) & 0xffff);
       if (sVar4 < 0) {
         heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar4) >>> 0);
         if (heap.u32(0x009a2028) < 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar3;
         }
         if (heap.u32(0x009a2028) == 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar3;
         }
-        heap.setU32(0x009a202e, (-sVar4) >>> 0);
+        heap.setU16(0x009a202e, (-sVar4) >>> 0);
         _srcXSkip_D = (-((sVar4 << 16) >> 16)) & 0xffff;
         sVar4 = ((0) & 0xffff);
       }
@@ -418,7 +421,7 @@ export function FUN_009b4457(heap) {
         if (heap.u32(0x009a2028) == 0 || sVar2 < sVar5) {
           return uVar3;
         }
-        heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar5) >>> 0);
+        heap.setU16(0x009a202e, (heap.u32(0x009a202e) + sVar5) >>> 0);
       }
       const _dstXOff_D = ((sVar4 & 0xffff) >>> 1);
       const _dpiPtr_D = (heap.u32(unaff_EDI) + _dstYOff_D + _dstXOff_D) >>> 0;

@@ -203,19 +203,22 @@ export function FUN_009b438b(heap) {
       // bitmap sprites vertically. Mask to 16-bit W. Verified vs the interpreter.
       heap.setU32(0x009a2030, ((heap.i16((unaff_EDI + 8)) - (heap.u32(0x009a2014) & 0xffff)) + heap.i16((unaff_EDI + 0xc))) >>> 0);
       uVar4 = ((CONCAT22((((uVar4 >>> 0x10)) << 16 >> 16), heap.u32(0x009a2030))) >>> 0);
-      heap.setU32(0x009a202e, (0) >>> 0);
+      // HAND-FIX (β2, COL_SKIP_B clobber): binary writes COL_SKIP_B as a
+      // 16-bit word; setU32 overwrote the adjacent ROW_STRIDE (0x9a2030) with
+      // 0 right after it was set, collapsing bitmap sprites into streaks.
+      heap.setU16(0x009a202e, (0) >>> 0);
       sVar5 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) << 16 >> 16);
       if (sVar5 < 0) {
         heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar5) >>> 0);
         if (heap.u32(0x009a2028) < 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar4;
         }
         if (heap.u32(0x009a2028) == 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar4;
         }
-        heap.setU32(0x009a202e, (-sVar5) >>> 0);
+        heap.setU16(0x009a202e, (-sVar5) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) - sVar5) >>> 0);
         // asm 0x9b4578: sub esi, ecx (with ecx<0 → esi += |ecx|)
         _srcXSkip = (-((sVar5 << 16) >> 16)) & 0xffff;
@@ -228,7 +231,7 @@ export function FUN_009b438b(heap) {
         if (heap.u32(0x009a2028) == 0 || sVar2 < sVar6) {
           return uVar4;
         }
-        heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar6) >>> 0);
+        heap.setU16(0x009a202e, (heap.u32(0x009a202e) + sVar6) >>> 0);
         heap.setU32(0x009a2030, (heap.u32(0x009a2030) + sVar6) >>> 0);
       }
       // HAND-FIX: precompute regs setup for 9b4660 calls (asm 0x9b45cc area).
@@ -439,19 +442,19 @@ export function FUN_009b438b(heap) {
       heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
       heap.setU32(0x009a2030, ((heap.u16((unaff_EDI + 8)) >>> 1) + heap.i16((unaff_EDI + 0xc))) >>> 0);
       uVar4 = ((CONCAT22((((uVar4 >>> 0x10)) << 16 >> 16), heap.u32(0x009a2030))) >>> 0);
-      heap.setU32(0x009a202e, (0) >>> 0);
+      heap.setU16(0x009a202e, (0) >>> 0);
       sVar5 = (((in_CX + heap.u32(0x009a2018) & 0xfffe) - heap.i16((unaff_EDI + 4))) & 0xffff);
       if (sVar5 < 0) {
         heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar5) >>> 0);
         if (heap.u32(0x009a2028) < 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar4;
         }
         if (heap.u32(0x009a2028) == 0) {
-          heap.setU32(0x009a202e, (0) >>> 0);
+          heap.setU16(0x009a202e, (0) >>> 0);
           return uVar4;
         }
-        heap.setU32(0x009a202e, (-sVar5) >>> 0);
+        heap.setU16(0x009a202e, (-sVar5) >>> 0);
         // asm 0x9b6409: sub esi, ecx (ecx<0 → esi += |ecx|)
         _srcXSkip_D = (-((sVar5 << 16) >> 16)) & 0xffff;
         sVar5 = ((0) & 0xffff);
@@ -463,7 +466,7 @@ export function FUN_009b438b(heap) {
         if (heap.u32(0x009a2028) == 0 || sVar2 < sVar6) {
           return uVar4;
         }
-        heap.setU32(0x009a202e, (heap.u32(0x009a202e) + sVar6) >>> 0);
+        heap.setU16(0x009a202e, (heap.u32(0x009a202e) + sVar6) >>> 0);
       }
       // HAND-FIX: precompute regs setup for 9b64ea calls.
       //   edi = *DPI + dst_y + (dst_x>>1)
