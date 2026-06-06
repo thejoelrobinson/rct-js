@@ -452,10 +452,20 @@ export function step(cpu) {
   // Threshold = 0x401000 (start of rct.exe's .text section). Anything
   // below that is data/heap, never code. Also bail on the sentinel above
   // SHIM_BASE, which is handled separately.
-  if (cpu.bailOnWildJump && (cpu.regs.eip >>> 0) < 0x00401000) {
-    cpu.regs.eip = RET_SENTINEL;
-    cpu.callDepth = 0;
-    return false;
+  // rct.exe's executable code lives in .text [0x401000,0x41b200) and CODESEG
+  // [0x41c000,0x5e6e00). The original guard only bailed BELOW .text; a painter
+  // that ran off the rails UPWARD into the heap (profiled buckets reached
+  // 0x4ac0000) was NOT caught and ground through up to 50M zero/garbage bytes
+  // (each `add [eax],al` advances 2 bytes) — the dominant gameplay-tick time
+  // sink. Bail to the sentinel whenever EIP is outside the executable span.
+  if (cpu.bailOnWildJump) {
+    const _eip = cpu.regs.eip >>> 0;
+    if ((_eip < 0x00401000 || _eip >= 0x005e6e00) && _eip !== RET_SENTINEL) {
+      cpu.regs.eip = RET_SENTINEL;
+      cpu.callDepth = 0;
+      if (globalThis.__wildBails) globalThis.__wildBails.n = (globalThis.__wildBails.n || 0) + 1;
+      return false;
+    }
   }
   const m = cpu.memory;
   const mLen = m.length;
