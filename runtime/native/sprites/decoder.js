@@ -5,51 +5,37 @@
 // sites via thin shims that delegate to dispatchSprite() /
 // dispatchSpriteWithRemap() / decodeBitmapRows() / decodeRleRows().
 //
-// STATUS (Phase S+E, 2026-05-17): module lands standalone — NOT yet
-// wired in. Phase S+C wiring attempt produced tick-1 hash divergence
-// (expected 0xcb5f8797 at the time, got 0x2a743eab). Phase S+E (this
-// commit) audited the four `* sprite_w` clip-math sites against the C
-// source at decompiled/c/9b438b.c and applied one in-file typo fix.
+// STATUS (Phase S+E 2026-05-17 → updated 2026-06-06): module lands
+// standalone — NOT yet wired in, and it is NOT the current priority.
+// The @manual blit chain (9b438b → 9b4457 / 9b4660 / 9b4911) has been
+// driven from a shattered baseline to ~96% colour byte-accuracy vs the
+// original binary via 10 oracle-gated fixes (live figure: MAX_DIVERGENCE
+// in test/runtime/title_accuracy.test.js, a ratchet → 0). decoder.js is
+// correct-vs-C-source but ~5x MORE divergent than that fixed @manual chain,
+// so the correct order is: (1) finish the @manual chain to byte-exact
+// FIRST, then (2) refactor to decoder.js as a behaviour-preserving step
+// (replay gate green gates both). See runtime/native/sprites/ORACLE-FINDINGS.md.
 //
-// REMAINING WIRE-BLOCKER (do not flip the shims until resolved):
-// `_blitZoom0Bitmap` and `_blitZoom1Bitmap` multiply `sprite_w *
-// (-topDelta)` per the C source (9b438b.c line 125 / line 304:
-// `(uVar3 & 0xffff) * (uint)(ushort)-uVar7 & 0xffff`). The existing
-// ported/auto/9b438b.js and 9b4457.js translator output dropped the
-// multiplication — the JS expression `(uVar3 & 0xffff) * (0 >>> 0) - uVar7
-// & 0xffff` parses as `((W*0) - uVar7) & 0xffff` = `-uVar7 & 0xffff`,
-// missing the `* W`. Both port-paths (path B → 9b4660 bitmap and path D
-// → 9b64ea zoom-1 bitmap) carry the same translator bug. decoder.js is
-// correct-vs-C-source; the existing chain is buggy-but-shipped. Flipping
-// the wiring will change pixels for any sprite with negative topDelta in
-// the bitmap branch (sprite anchor clipped off the top edge of viewport).
+// VALIDATION GATES (2026-06-06):
+//   - TRUE-ACCURACY (test/runtime/title_accuracy.test.js): byte-diff of the
+//     JS render vs the BINARY's actual tick-1 surface (fixture
+//     test/fixtures/title-truth-surface-tick1.bin, FNV 0x027d52ab, captured
+//     by tools/capture-truth-surface.js). This is the CORRECTNESS gate.
+//   - REPLAY-HASH (test/runtime/title_replay.test.js): GREEN — re-captured
+//     for the improved render, backed by true-accuracy evidence per the
+//     two-step rule. Proves NEUTRALITY (byte-equality to the current chain),
+//     not correctness.
 //
-// REPLAY GATE: as of Phase S+E commit, test/runtime/title_replay.test.js
-// is RED on main HEAD against the committed 0x4b521f2e / 0x551fa044
-// fixture; current chain produces 0xb6005dc5 across all 4 sampled ticks.
-// Pixel-probe reports 0 non-zero pixels at the sampled viewport (probe-
-// pixels-now.js), so the title-state-machine isn't currently rendering
-// content past the first runtime-tick. Until those baseline regressions
-// from R+12 / R+12b are diagnosed, the byte-equality gate the wiring
-// needs cannot be evaluated. Next agent: either (a) make decoder.js
-// bug-compat with 9b438b at the two flagged sites and ship the wiring
-// as byte-equal to the buggy baseline, or (b) wait for the baseline
-// regression to be fixed and re-capture the fixture.
-//
-// SECONDARY FINDING (also fixed in S+E): `_blitZoom1Bitmap` previously
-// used `(sprFlags & 0xffff) * (...)` where the C source multiplies by
-// `(uVar3 & 0xffff)` (the whPack dword, = H<<16|W). sprFlags is the
-// 0x9a201c dword, completely unrelated to sprite width — this was a
-// pure typo distinct from the path-B/D bug above (changed to srcW).
-//
-// DIFF-SUBSYSTEM (`node tools/diff-subsystem.js
-// --manifest=lifter/sprite-subsystem.json`): all 4 captured scenarios
-// for 0x9b438b fail vs. the x86 interpreter. The first divergence in
-// every case is at 0x9a202c..0x9a202e (DAT_ROW_COUNT / DAT_COL_SKIP_B)
-// where the interpreter writes the negative-clip count and the JS port
-// writes 0. This is consistent with the negative-topDelta missing
-// `* sprite_w` bug above leaking into row-count math, but not yet
-// pinpointed to a single line in the existing chain.
+// REMAINING WORK (isolated via oracle, do not re-derive): the entire residual
+// gap is in the RLE inner 9b4911 — proven by A/B bisection in
+// tools/_beta2-isolate.js (keep the JS outer, route one inner through the
+// interpreter: the outer 9b438b and the bitmap inner 9b4660 are byte-exact;
+// only 9b4911 diverges). Two blockers: (a) Ghidra C decompiled/c/9b4911.c
+// appears inconsistent with the binary — its clip logic byte-matches the JS
+// yet the interpreter draws runs the JS skips (carries _DAT overlap warnings)
+// → needs ASM-level disassembly, do not trust the C here; (b) _beta2-isolate.js
+// is confounded for small OVERLAPPING sprites (replays on the accumulated
+// surface) → needs a blank-surface variant for plain/remap sprites.
 //
 // The reference for the wire format is `harness/csg.js` (the standalone
 // csg1.dat decoder); semantic intent for the in-game dispatch + clip math

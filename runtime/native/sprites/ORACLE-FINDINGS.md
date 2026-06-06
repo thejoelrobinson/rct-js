@@ -2,25 +2,33 @@
 
 ## TL;DR
 
-The in-game sprite-blit chain (`9b438b → 9b4457 / 9b4660 / 9b4911`) is **badly
-broken in JavaScript** — in BOTH the shipped translated chain AND the
-`decoder.js` rewrite. The original `rct.exe` blit code renders the title screen
-**correctly**; routing those four entrypoints through the x86 interpreter (same
-JS callers, same inputs) **fixes the whole image**. So the bug lives inside the
-JS blit implementation, and `decoder.js` inherited it.
+The in-game sprite-blit chain (`9b438b → 9b4457 / 9b4660 / 9b4911`) was **badly
+broken in JavaScript** at the start of this work (both the shipped chain and the
+`decoder.js` rewrite). It has since been driven to **~96% colour byte-accuracy vs
+the binary** via 10 oracle-gated fixes — see the "Session update" section at the
+end for the catalogue. The original `rct.exe` blit code renders the title screen
+correctly, and the interpreter's output is the ground-truth fixture
+(`0x027d52ab`); A/B bisection now shows the OUTER (`9b438b`/`9b4457`) and the
+BITMAP inner (`9b4660`) are byte-exact JS, with the entire residual gap isolated
+to the RLE inner `9b4911`.
 
-**β2 ("wire decoder.js as the more-correct rewrite") is invalid.** decoder.js is
-not more correct than the buggy chain — measured against the binary it is
-*marginally worse*. Do not ship it as a correctness win, and do not re-capture
-the replay fixture to bless its pixels.
+**β2 ("wire decoder.js as the more-correct rewrite") was invalid and stays
+unwired.** Against the *fixed* @manual chain, decoder.js is ~5x MORE divergent;
+it is a future behaviour-preserving refactor target (after `9b4911` is byte-exact),
+not a correctness win. Do not ship it; do not re-capture the replay fixture to
+bless its pixels.
 
 ## How this was established
 
 The replay-hash gate proves pixel-*neutrality*, not correctness. `diff-subsystem`
-cannot adjudicate either: its scenario captures don't seed full global state, so
-the OLD chain and decoder.js fail its 4 sprite scenarios **identically** (same
-`eax` divergence `0x15f920` vs `0x0`, same `0x9a202e` mismatch). It is a broken
-oracle for these functions.
+could not adjudicate either: its scenario captures don't seed full global state, so
+the OLD chain and decoder.js failed its 4 sprite scenarios **identically** (same
+`eax` divergence `0x15f920` vs `0x0`, same `0x9a202e` mismatch) — brittle for
+these functions. The working oracles that replaced it: (1) the whole-frame
+**true-accuracy gate** (byte-diff vs the binary's surface, `test/runtime/title_accuracy.test.js`),
+and (2) the **single-sprite isolation harness** (`tools/_beta2-isolate.js`) with
+**A/B bisection** — both shown clean below (the A/B bisection is not confounded by
+surface accumulation and isolated the residual to `9b4911`).
 
 The working oracle: route the four blit entrypoints through the x86 interpreter
 running the original `rct.exe` code (already overlaid on `heap.bytes` by

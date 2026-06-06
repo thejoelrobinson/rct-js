@@ -17,9 +17,8 @@
 |---|---|
 | `test/sib.test.js` | SIB addressing across 3 synthetic encodings (`[i*4+disp32]`, `[base+i*4]`, LEA `[i*2+base+disp8]`). |
 | `test/sib_invivo.test.js` | Executes a fragment of `FUN_004314c5` (`movzx`/SIB-load/`sar`) directly from the binary's bytes by overlaying a `ret` after the SIB load. Proves SIB decoding works on Sawyer's actual code, not just synthetic encodings. |
-| `test/coord_xform_invivo.test.js` | First 7 instructions of `FUN_0041fa6f` (a 245-byte coordinate-transform function): `xor`/`xor`/`xor`/`movsx`/`imul`/`shr`/`add`. Validates the harness against a real, non-trivial Sawyer code path with controlled struct-field input. Matches a JS port across all 65,536 possible 16-bit inputs. |
 
-The in-vivo technique — **overlay a `ret` byte to bound execution to a fragment of a real function** — is the methodological breakthrough of Phases 4–5. It lets us validate the interpreter on fragments of arbitrarily large functions without committing to a full function port. The coord-transform test demonstrates the methodology scales to game-logic-sized code.
+The in-vivo technique — **overlay a `ret` byte to bound execution to a fragment of a real function** — is the methodological breakthrough of Phases 4–5. It lets us validate the interpreter on fragments of arbitrarily large functions without committing to a full function port. `test/sib_invivo.test.js` (a fragment of the real `FUN_004314c5`) demonstrates it on Sawyer's actual code.
 
 ## Methodology recap
 
@@ -53,7 +52,6 @@ The `0x66` operand-size prefix is parsed but only changes width on a few opcodes
 
 ## Known deferred
 
-- `FUN_0041fa6f` etc. — turned out to be 245-byte 3D coordinate-transform functions (3 accumulators, multiple struct field reads, magic-number multiplications). Now portable in principle but a substantial undertaking; defer until we want a peep/sprite rendering subsystem.
 - `FUN_005e43de` (called 73×) — uses 16-bit operand prefix on `mov`/`add` and tail-calls into another function. Need 16-bit operand-size support on more instructions to port cleanly.
 - Floating point / SSE — not yet attempted (likely needed for ride physics).
 - 16-bit operand-size prefix (`0x66`) is parsed but most opcodes don't yet branch on it. Affects `mov word ptr ...`, `add ax, ...`, etc. — common in CODESEG.

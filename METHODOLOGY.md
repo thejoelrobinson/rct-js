@@ -128,6 +128,27 @@ names, which you supply yourself as you go.
 
 ## The verification techniques (stage 5, concretely)
 
+- **Whole-frame true-accuracy gate** (`test/runtime/title_accuracy.test.js`,
+  `tools/capture-truth-surface.js`) — the strongest correctness oracle for a
+  *rendering* subsystem. Render the full back-buffer through the JS chain; render
+  it through the x86 interpreter on the raw binary (route the subsystem's entry
+  functions through the interp); assert byte-equality of the 8bpp palette-index
+  surface. The fixture (`test/fixtures/title-truth-surface-tick1.bin`, FNV
+  `0x027d52ab`) is the BINARY'S ACTUAL OUTPUT, not a self-referential hash of the
+  JS chain. `MAX_DIVERGENCE` is a ratchet that only goes DOWN (goal 0). This is
+  the methodological upgrade that closes the gap between *neutrality* (byte-equal
+  to your own chain, bugs and all) and *correctness* (byte-equal to the binary).
+- **Single-sprite isolation oracle** (`tools/_beta2-isolate.js`): capture every
+  blit's exact entry state (regs + scratch globals + per-strip DPI struct) during
+  a real boot, then replay each sprite through JS vs the interpreter from
+  *identical* state and byte-diff the outputs — pinpoints which sprite/path
+  diverges. (Caveat: it replays on the JS-accumulated surface, so overlapping
+  sprites' crops mix in prior blits; a blank-surface variant is the clean upgrade.)
+- **A/B component bisection**: to localize a multi-stage chain's bug, keep the
+  fixed JS outer and route exactly ONE inner through the interpreter; 0 divergence
+  ⇒ that inner is the cause. This is *not* confounded by surface accumulation and
+  proved an entire rendering tail lived in one function while two upstream stages
+  were already byte-exact.
 - **Synthetic-entry-state diff** (`tools/verify-fn.js`): build a valid struct
   instance from the atlas layout, seed registers + a few globals, run the function
   on both the interpreter and the port, compare. No full program run needed.
@@ -145,6 +166,21 @@ names, which you supply yourself as you go.
   cover the parent end-to-end instead.
 
 ---
+
+### Worked example: localizing a rendering bug to one function
+
+The whole-frame gate + A/B bisection compose into a fast localization loop. The
+in-game blit chain (`9b438b` → `9b4660` bitmap / `9b4911` RLE / `9b4457` remap)
+rendered the title screen as garbage; the true-accuracy gate measured it against
+the binary's actual tick-1 surface (`0x027d52ab`) and drove a shattered baseline
+to ~96% byte-accuracy through oracle-gated fixes (the live figure is the
+`MAX_DIVERGENCE` ratchet in `title_accuracy.test.js`). To find the *remaining*
+gap, A/B bisection — keep the JS outer, route one inner through the interpreter —
+gave a clean verdict: with the bitmap inner JS and the RLE inner interpreted,
+divergence dropped to **0/806 blits**, proving the outer and the bitmap inner are
+byte-exact JS and the *entire* residual lives in the RLE inner. That is the value
+of the method: not "the render is ~96% right" but "every remaining wrong pixel is
+in this one function," with the binary as the arbiter at every step.
 
 ## The per-function rewrite loop (stage 7)
 
@@ -168,7 +204,10 @@ interpreter; OS-calling functions are sub-divided or covered end-to-end.
 - **Program-tick performance wall.** Driving the binary into deep runtime state
   (full gameplay) is slow because unrecovered painter functions fall back to the
   interpreter. This blocks *whole-program* capture (lockstep, gameplay fixtures),
-  but **not** the per-function method — synthetic entry state sidesteps it.
+  but **not** the per-function method (synthetic entry state sidesteps it) **nor
+  the rendering oracle** — the latter works around the wall via the *static*
+  post-fade title: after `skipFadeIn`, a single deterministic tick-1 is fast
+  enough to capture and byte-compare a whole frame against the binary.
 - **Auto-translator bug classes** (catalogued in project memory): byte-store
   emitted as `setU32`, `int3` mis-cast, dropped register-init at call sites,
   `goto` lowered as `return 0`, u16-read-as-u32. These are the ~15% that need
@@ -181,6 +220,14 @@ interpreter; OS-calling functions are sub-divided or covered end-to-end.
 - **Never claim or commit a test as passing without reading a real run that shows
   it pass; never hand-write expected values.** Differential tests assert
   port == oracle (observed), never hand-computed constants.
+- **A test "truly validates accuracy" only if it compares against the BINARY,
+  never a self-referential baseline of your own chain.** A frame-hash gate against
+  a fixture captured *from your own output* proves NEUTRALITY (it preserves the
+  bugs you had); it goes red precisely when a fix makes the code more correct, and
+  that red is EXPECTED, not a failure. Only the binary-truth gate proves
+  CORRECTNESS. Re-capture a neutrality fixture only once the change is backed by
+  binary-truth (true-accuracy gate / interpreter diff) evidence — re-capturing on
+  faith just blesses whatever pixels you produced.
 - **Don't sink-cost into an unbounded rabbit hole** (e.g. a perf wall); record it
   and route around it.
 - **A partial file view is not corruption** — read more, don't panic-revert.
