@@ -169,6 +169,38 @@ Diagnostic tools added this round: `tools/_beta2-edi.js` (dst pointer per blit),
 9b4911 writes via heap.bytes[] directly, so the _heapWatch tools undercount RLE),
 `tools/_beta2-allblits.js`, plus a raw-index dump in `tools/_beta2-probe.js`.
 
+## Round 3 (2026-06-06) — single-sprite isolation harness; colour bug isolated
+
+Built `tools/_beta2-isolate.js` — the clean per-sprite oracle the earlier
+confounds demanded. It captures each blit's exact entry state (regs + the
+scratch-global block + the per-strip DPI struct, which evolves in 0x5f96xx and
+must be restored), then replays each blit through JS and through the x86
+interpreter on the REAL accumulating surface, and diffs the two sprite outputs.
+No overdraw, no segmentation, no convention mismatch. (Capture needs a thin
+wrapper splitting 9b438b.js → 9b438b_impl.js; recreate it the same way.)
+
+Findings on the remaining ~9% (wrong-COLOUR pixels), now definitive:
+- It is **NOT** remap-table and **NOT** position (best (dx,dy) shift is 0,0).
+- The divergent fence/path sprites are **REMAP_CLASS=0 (plain copy)** — both RLE
+  and bitmap. JS reads the **wrong source data**: the spatial crop shows the
+  interpreter drawing a clean 34/35 shading dither while JS draws garbage /
+  transparent (it reads source 0 and skips, where the binary reads a real
+  pixel). So the bug is a wrong source pointer/stride in 9b438b's outer
+  source-offset math (common to both inners — swapping in decoder.js's inner did
+  NOT help; 52335→59053 px).
+- Confirmed-but-NOT-title bugs found along the way (fix when those paths run):
+  the remap branch in 9b4660 reads pixel-0 source as `heap.u32(unaff_ESI)`
+  instead of `heap.u8` (lines ~96/117); and `goto-as-return` in 9b4660:219 /
+  9b64ea:84 / 9b6863 (×4). NOTE: naively "fixing" 9b4660:219 (goto→continue)
+  REGRESSED the full render 90.9%→88.9%, so the binary's control flow there is
+  subtler than a simple loop-back — do not reapply without the interpreter
+  confirming the target.
+
+Next: in `_beta2-isolate.js`, capture the regs.esi the JS outer passes to the
+inner for a divergent plain-copy blit (e.g. #76) and compare to the true sprite
+source base — the outer's bitmap/RLE source-offset (`_srcYOff`/`_srcXSkip` /
+COL_SKIP) is the prime suspect for reading shifted/garbage source.
+
 ## Recommended next step
 
 The interpreter oracle is now the tool to fix this properly: single-sprite
