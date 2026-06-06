@@ -183,7 +183,7 @@ export function FUN_009b4660(heap) {
       } while (bVar3 != 0);
       return;
     }
-    LAB_009b4732: do {
+    LAB_009b4732: while (true) {
       iVar2 = ((in_EAX) >>> 0);
       if (heap.u8(unaff_ESI) != 0) {
         heap.setU8(unaff_EDI, (heap.u8(unaff_ESI)) & 0xff);
@@ -220,7 +220,10 @@ export function FUN_009b4660(heap) {
             pbVar9 = ((unaff_ESI) >>> 0);
             pbVar10 = ((unaff_EDI) >>> 0);
             if (uVar4 != 0) {
-              /* goto LAB_009b4732 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009b4660/LAB_009b4732"); return 0;
+              // HAND-FIX (β2, goto-as-return): loop back to draw the next 4-col
+              // group of this row; translator lowered the goto as `return 0`,
+              // so wide transparent (bit0=1) sprites drew <=4 px then returned.
+              continue LAB_009b4732;
             }
           }
         }
@@ -230,7 +233,8 @@ export function FUN_009b4660(heap) {
       bVar3 = (((((((iVar2) >>> 0) >>> 8)) << 24 >> 24) - 1) & 0xff);
       in_EAX = ((((bVar3) >>> 0) << 8) >>> 0);
       uVar4 = ((uVar1) & 0xffff);
-    } while (bVar3 != 0);
+      if (bVar3 === 0) break;
+    }
   } else {
     if ((heap.u32(0x009a201c) & 1) != 0) {
     iVar7 = ((((bVar3 - 1) >>> 0) << 0x10) >>> 0);
