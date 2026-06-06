@@ -60,6 +60,10 @@ import { int3 } from "../../runtime/win32.js";
 import { CONCAT22, CONCAT31 } from "../../runtime/ghidra-builtins.js";
 import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
+// HAND-FIX (β2, remap u32-as-u8): the remap branches read the pixel-0 source
+// byte via heap.u32(esi) (4 bytes) instead of heap.u8 — remap[src] was looked
+// up at a garbage address, so every 4th pixel of palette-remapped sprites
+// (fences/paths) drew wrong/transparent. The other 3 lanes already used u8.
 export function FUN_009b4660(heap) {
   let uVar1 = 0;
   let bVar3 = 0;
@@ -93,8 +97,8 @@ export function FUN_009b4660(heap) {
     iVar7 = ((((bVar3 - 1) >>> 0) << 0x10) >>> 0);
     if (heap.u32(0x009a2028) == 4) {
       do {
-        if (heap.u8((heap.u32(unaff_ESI) + iVar2)) != 0) {
-          heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xff);
+        if (heap.u8((heap.u8(unaff_ESI) + iVar2)) != 0) {
+          heap.setU8(unaff_EDI, (heap.u8((heap.u8(unaff_ESI) + iVar2))) & 0xff);
         }
         if (heap.u8((((heap.u8(unaff_ESI + (1))) >>> 0) + iVar2)) != 0) {
           heap.setU8((unaff_EDI + (1)), (heap.u8((((heap.u8(unaff_ESI + (1))) >>> 0) + iVar2))) & 0xff);
@@ -114,8 +118,8 @@ export function FUN_009b4660(heap) {
     do {
       iVar7 = ((CONCAT22((((((iVar7) >>> 0) >>> 0x10)) << 16 >> 16), heap.u32(0x009a2028))) >>> 0);
       do {
-        if (heap.u8((heap.u32(unaff_ESI) + iVar2)) != 0) {
-          heap.setU8(unaff_EDI, (heap.u8((heap.u32(unaff_ESI) + iVar2))) & 0xff);
+        if (heap.u8((heap.u8(unaff_ESI) + iVar2)) != 0) {
+          heap.setU8(unaff_EDI, (heap.u8((heap.u8(unaff_ESI) + iVar2))) & 0xff);
         }
         sVar5 = ((((iVar7) << 16 >> 16)) & 0xffff);
         uVar8 = ((((((iVar7) >>> 0) >>> 0x10) & 0xffff)) & 0xffff);
@@ -146,7 +150,7 @@ export function FUN_009b4660(heap) {
           break;
         }
         unaff_ESI = ((unaff_ESI + 4) >>> 0);
-        bVar3 = ((heap.u8((heap.u32(pbVar9) + iVar2))) & 0xff);
+        bVar3 = ((heap.u8((heap.u8(pbVar9) + iVar2))) & 0xff);
         if (bVar3 != 0) {
           heap.setU8((unaff_EDI + (3)), (bVar3) & 0xff);
         }
