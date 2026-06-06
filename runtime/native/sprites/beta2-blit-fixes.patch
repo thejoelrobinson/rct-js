@@ -1,5 +1,5 @@
 diff --git a/ported/auto/9b438b.js b/ported/auto/9b438b.js
-index 691c0e6..a35d118 100644
+index 691c0e6..ad1462b 100644
 --- a/ported/auto/9b438b.js
 +++ b/ported/auto/9b438b.js
 @@ -68,14 +68,22 @@ export function FUN_009b438b(heap) {
@@ -119,6 +119,15 @@ index 691c0e6..a35d118 100644
          heap.setU32(0x009a2030, (heap.u32(0x009a2030) + sVar6) >>> 0);
        }
        // HAND-FIX: precompute regs setup for 9b4660 calls (asm 0x9b45cc area).
+@@ -219,7 +240,7 @@ export function FUN_009b438b(heap) {
+       // (For the RLE-decode branch, esi gets repointed to scratch buffer
+       //  0x9a2032 + same offset.)
+       const _dpiPtr = (heap.u32(unaff_EDI) + _dstYOff + (sVar5 & 0xffff)) >>> 0;
+-      const _srcOff = ((_srcYOff - _srcXSkip) | 0) & 0xffffffff;
++      const _srcOff = ((_srcYOff + _srcXSkip) | 0) & 0xffffffff;  // HAND-FIX (β2): binary does `sub esi,ecx` (ecx=leftDelta<0) = advance esi PAST the clipped source cols; was `- _srcXSkip` (retreat) → read garbage/swapped source.
+       const _srcPtr = (heap.u32(0x009a2010) + _srcOff) >>> 0;
+       const _setupRegs = () => {
+         regs.ebp = (heap.i16(0x009a2030)) >>> 0; // movsx ebp, [0x9a2030]
 @@ -299,7 +320,7 @@ export function FUN_009b438b(heap) {
    heap.setU32(0x009a201c, (heap.u32((0x008dc0c0 + iVar8))) >>> 0);
    sVar5 = (((((heap.u32(0x009a2018) >>> 0x10)) << 16 >> 16)) & 0xffff);

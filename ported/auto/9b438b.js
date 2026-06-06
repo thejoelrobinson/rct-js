@@ -240,7 +240,7 @@ export function FUN_009b438b(heap) {
       // (For the RLE-decode branch, esi gets repointed to scratch buffer
       //  0x9a2032 + same offset.)
       const _dpiPtr = (heap.u32(unaff_EDI) + _dstYOff + (sVar5 & 0xffff)) >>> 0;
-      const _srcOff = ((_srcYOff - _srcXSkip) | 0) & 0xffffffff;
+      const _srcOff = ((_srcYOff + _srcXSkip) | 0) & 0xffffffff;  // HAND-FIX (β2): binary does `sub esi,ecx` (ecx=leftDelta<0) = advance esi PAST the clipped source cols; was `- _srcXSkip` (retreat) → read garbage/swapped source.
       const _srcPtr = (heap.u32(0x009a2010) + _srcOff) >>> 0;
       const _setupRegs = () => {
         regs.ebp = (heap.i16(0x009a2030)) >>> 0; // movsx ebp, [0x9a2030]
