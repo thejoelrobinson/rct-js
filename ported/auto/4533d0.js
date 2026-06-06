@@ -96,13 +96,19 @@ export function FUN_004533d0(heap) {
     // AND on the goto from inside the do-while.
     LAB_004534d1: {
       heap.setU32(0x00632408, (0x0063240c) >>> 0);
-      for (uVar9 = ((heap.u32(0x0087c396)) & 0xffff); uVar13 = ((heap.u32(0x0087c396)) & 0xffff), uVar9 != 0xffff; uVar9 = (((heap.u32((0x00743b98) + (((uVar9) >>> 0) * 0x80) * 4)) & 0xffff)) >>> 0) {
+      // HAND-FIX (u16-as-u32 stride): C is `(&DAT_00743b98)[uVar9 * 0x80]` where
+      // DAT_00743b98 is a ushort array → byte offset uVar9*0x80*2 = uVar9*0x100,
+      // read as u16 (the sprite "next index" field; sprite stride 0x100). The
+      // translator read u32 with *4 (= uVar9*0x200), doubling the stride → it read
+      // the WRONG sprite's next index → the linked-list walk never terminated and
+      // spun millions of times per gameplay tick (49% of the tick was this loop).
+      for (uVar9 = ((heap.u32(0x0087c396)) & 0xffff); uVar13 = ((heap.u32(0x0087c396)) & 0xffff), uVar9 != 0xffff; uVar9 = ((heap.u16((0x00743b98) + (((uVar9) >>> 0) * 0x80) * 2))) >>> 0) {
         if (((heap.i16((0x00743bd2 + ((uVar9) >>> 0) * 0x100)) | 0) != -1) && ((regs.eax = FUN_004531f6(heap)), in_ECX = ((extraout_ECX) >>> 0), 0x632447 < heap.u32(0x00632408))) {
           break LAB_004534d1;
         }
       }
       while (uVar13 != 0xffff && (((heap.i16((0x00743bd2 + ((uVar13) >>> 0) * 0x100)) | 0) != -1 || ((regs.eax = FUN_004531f6(heap)), in_ECX = ((extraout_ECX_00) >>> 0), heap.u32(0x00632408) < 0x00632448)))) {
-        uVar13 = ((heap.u32((0x00743b98) + (((uVar13) >>> 0) * 0x80) * 4)) & 0xffff);
+        uVar13 = ((heap.u16((0x00743b98) + (((uVar13) >>> 0) * 0x80) * 2)));
       }
     }
     puVar19 = ((0x00632448) >>> 0);
