@@ -211,3 +211,51 @@ end-to-end validation of the rewrite-gated-by-oracle loop on a rendering
 subsystem. (Whether to invest here depends on project goals: the stated TRUE
 PURPOSE is the methodology, not a playable game — and the reusable methodology
 deliverable here is the whole-frame interpreter oracle itself.)
+
+---
+
+## Session update — colour to 96.10%, remaining tail isolated to 9b4911
+
+Built on the oracle above. Two more oracle-gated fixes landed (full catalogue in
+git log b57e043..HEAD):
+
+- **source-skip sign (9b438b bitmap left-clip).** `_srcOff = _srcYOff - _srcXSkip`
+  retreated esi instead of advancing past the clipped source columns (the binary
+  does `sub esi,ecx` with ecx=leftDelta<0 = advance). Fixed to `+`. 91.48→91.91%.
+- **goto-as-return (9b4660 plain-copy slow path).** The `goto LAB_009b4732`
+  lowered as `return 0`, so wide transparent sprites drew ≤4 px of their first
+  row then bailed. Restructured the do-while as `while(true)` + `continue`. This
+  REGRESSED earlier only because the source-skip bug was still feeding garbage;
+  with that fixed it is a **−16.7k px win**: 91.91→**96.10%** colour
+  (95.25% raw palette-index vs the binary).
+
+### TRUE accuracy gate (test/runtime/title_accuracy.test.js)
+Replaces faith in the self-referential replay hash: compares the JS tick-1 render
+byte-for-byte against the BINARY's actual output (test/fixtures/
+title-truth-surface-tick1.bin, regenerate with `node tools/capture-truth-surface.js`,
+FNV 0x027d52ab). MAX_DIVERGENCE is a ratchet → 0; currently 14606/307200.
+
+### Remaining tail is ENTIRELY in 9b4911 (RLE inner) — proven
+Clean A/B bisection in `_beta2-isolate.js`: keep the fixed JS outer, route the
+**inner** blitters through the interpreter.
+- JS outer + JS bitmap (9b4660) + **interp** RLE (9b4911) → **0 / 806 divergent**.
+- JS outer + **interp** bitmap + JS RLE → **451 / 22989 px** (the whole tail).
+So the OUTER (9b438b) and the BITMAP inner (9b4660) are byte-exact JS; 100% of
+the remaining gap is the JS RLE decoder 9b4911.
+
+### Why 9b4911 wasn't cracked here — two compounding blockers for the next pass
+1. **The Ghidra C (decompiled/c/9b4911.c) appears inconsistent with the binary.**
+   The plain-branch clip (xOff − DAT_009a2024, len = runLen + iVar9, skip if
+   len≤0) is byte-identical to the JS rewrite, yet the interpreter (running the
+   real asm) draws runs the C/JS skip. The function carries Ghidra `_DAT` overlap
+   warnings — a decompiler-artifact signal. **Disassemble the actual x86 of
+   9b4911's clip; do not trust the C here.**
+2. **_beta2-isolate.js is confounded for small overlapping sprites.** It replays
+   each sprite on the JS-*accumulated* surface, so the per-pixel crop mixes prior
+   (96%-correct) blits into the comparison — pixel traces of e.g. blit #158
+   contradicted themselves for this reason. **Build a blank-surface variant for
+   plain/remap sprites** (keep accumulated only for tint/translucent) to get a
+   clean per-sprite JS-vs-binary diff before re-attempting the 9b4911 fix.
+
+The controlled A/B bisection (above) is NOT confounded — it's a relative JS-vs-
+interp comparison with identical before-state — so "the tail is 9b4911" is solid.
