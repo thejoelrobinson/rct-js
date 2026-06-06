@@ -68,8 +68,10 @@ const aggPairs = {};
 for (let n = 0; n < N; n++) {
   const before = bytes.slice(surf, surf + NPX);  // real pre-N surface
   // JS replay
+  globalThis.__capEsi = (n===ONLY)?0:undefined; globalThis.__capRle = (n===ONLY)?0:undefined;
   restoreState(n); setRegs(regs, regsArr[n]); try { jsImpl(r.heap); } catch {}
   const jsSurf = bytes.slice(surf, surf + NPX);
+  const jsPalRemap = (bytes[0x9a200c]|bytes[0x9a200d]<<8|bytes[0x9a200e]<<16|bytes[0x9a200f]<<24)>>>0;
   // interp replay from the same pre-state
   bytes.set(before, surf); restoreState(n);
   setRegs(cpu.regs, regsArr[n]);
@@ -83,6 +85,11 @@ for (let n = 0; n < N; n++) {
     const sc=scratchArr[n]; const rc=(sc[0]|sc[1]<<8|sc[2]<<16|sc[3]<<24)>>>0; const fl=(sc[0x1c]|sc[0x1d]<<8|sc[0x1e]<<16|sc[0x1f]<<24)>>>0;
     console.log(`blit #${n}: ${d}px  REMAP_CLASS=0x${rc.toString(16)} FLAGS=0x${fl.toString(16)} (bit2/RLE=${(fl&4)?1:0}) entry=[${regsArr[n].map(x=>"0x"+x.toString(16)).join(" ")}]`);
     console.log("  JS_idx->IP_idx:", Object.entries(pairs).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([k,v])=>`${k}(${v})`).join(" "));
+    const ipPalRemap = (bytes[0x9a200c]|bytes[0x9a200d]<<8|bytes[0x9a200e]<<16|bytes[0x9a200f]<<24)>>>0;
+    const srcBase=(bytes[0x9a2010]|bytes[0x9a2011]<<8|bytes[0x9a2012]<<16|bytes[0x9a2013]<<24)>>>0;
+    console.log(`  inner-esi=0x${(globalThis.__capEsi>>>0).toString(16)} DAT_SRC_BASE=0x${srcBase.toString(16)} (esi-srcBase=${(globalThis.__capEsi>>>0)-srcBase})`);
+    console.log(`  RLE-inner: ${globalThis.__capRle===0?"NOT CALLED (outer rejected)":JSON.stringify(globalThis.__capRle)}`);
+    console.log(`  DAT_PAL_REMAP: JS=0x${jsPalRemap.toString(16)} IP=0x${ipPalRemap.toString(16)} (delta ${jsPalRemap-ipPalRemap})`);
     // Is the diff explained by a small (dx,dy) shift of JS vs interp?
     const ip = bytes.slice(surf, surf+NPX);
     let best=null;
