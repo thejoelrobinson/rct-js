@@ -132,6 +132,43 @@ the x-offset rounding at the dst pointer, the zoom-1 dst-Y sites (9b438b
 title uses zoom-1 sub-sprites), and the inner-blitter remap/tint branches.
 Use `BLIT=<n> tools/_beta2-blit0.js` to compare a specific edge sprite's writes.
 
+## Round 2 (2026-06-05 later) — 88.9% → 90.9%, remaining is COLOUR not position
+
+5th fix: **COL_SKIP_B clobber.** The binary writes COL_SKIP_B (0x9a202e) as a
+16-bit word; the translator used setU32, whose 2 trailing bytes overwrote the
+adjacent ROW_STRIDE (0x9a2030) with 0 right after it was set — bitmap dst stride
+came out 32 instead of 639, collapsing bitmap sprites into the background
+streaks. Fix: setU16 on all 20 COL_SKIP_B writes. After this, **all clip params
+(COL_SKIP/COL_COUNT/COL_SKIP_B/ROW_STRIDE) match across all 806 title blits.**
+
+Pixel-match → **90.9%**. Crucially, a category breakdown of the remaining diff:
+- 14 px MISSING (JS bg where binary draws content)
+- 767 px EXTRA
+- **27,086 px WRONG COLOUR** (both draw content, different index)
+
+So the sprites are **positioned correctly** — the remaining error is almost
+entirely wrong colour, concentrated on the **fence / path-edge sprites** (mapped
+via `tools/_beta2-probe.js` raw-index dump: JS draws flat index 1 where the
+binary draws shaded ramps 10-15 / 34-39 / 221-223).
+
+**Localised, not yet fixed.** It's a palette-REMAP bug, not the dispatcher:
+- 9b4457 is never called (routing it through the interpreter changes 0 pixels).
+- DAT_REMAP_CLASS (0x9a2000) matches across all blits.
+- **DAT_PAL_REMAP (0x9a200c, the remap TABLE pointer) diverges in 114 blits** —
+  the interpreter writes a real table ptr (0x179a9f2 / 0x9aa144) per row, JS
+  leaves it stale. The interpreter's per-row alternating writes (src ptr, const
+  table) point at a remap loop in a *different* function than 9b438b's single
+  setU32 — find which painter/helper writes 0x9a200c in a per-row loop and is
+  mis-ported (candidates: the multi-write 0x9a200c functions — 9b8aa9, 9b6863,
+  9bafe6, 9ba943). NOTE: the per-blit param segmentation is unreliable for this
+  because 9b438b writes 0x9a2000 *before* 0x9a2010, so a sprite's REMAP_CLASS
+  lands in the previous segment — account for that when diffing.
+
+Diagnostic tools added this round: `tools/_beta2-edi.js` (dst pointer per blit),
+`tools/_beta2-blitdiff.js` (method-agnostic per-blit snapshot footprint — note
+9b4911 writes via heap.bytes[] directly, so the _heapWatch tools undercount RLE),
+`tools/_beta2-allblits.js`, plus a raw-index dump in `tools/_beta2-probe.js`.
+
 ## Recommended next step
 
 The interpreter oracle is now the tool to fix this properly: single-sprite

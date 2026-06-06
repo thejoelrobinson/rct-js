@@ -32,6 +32,11 @@ export function interpBlit(heap, addr) {
   const cpu = _cpu;
   stats.calls++;
   stats.byAddr[addr] = (stats.byAddr[addr] || 0) + 1;
+  // Diagnostic: log the dst pointer (regs.edi) the JS outer passed to an inner
+  // blitter, keyed by blit index (incremented externally on SRC_BASE writes).
+  if (globalThis.__ediLog && (addr === 0x9b4660 || addr === 0x9b4911)) {
+    globalThis.__ediLog.push([(globalThis.__blitN | 0), regs.edi >>> 0]);
+  }
   // One-shot entry dump for the first 0x9b438b call (β2 clip-bug diagnosis).
   if (addr === 0x9b438b && globalThis.__dumpBlit0 && !stats._dumped) {
     stats._dumped = true;

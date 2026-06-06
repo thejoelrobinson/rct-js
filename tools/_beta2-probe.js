@@ -65,6 +65,10 @@ for (let i = 0; i < N; i++) {
 }
 const ppmPath = `/tmp/beta2-${LABEL}.ppm`;
 writeFileSync(ppmPath, Buffer.concat([Buffer.from(`P6\n${W} ${H}\n255\n`, "ascii"), px]));
+// Also dump the raw 8bpp palette-index surface (for index-level diffs).
+const raw = Buffer.alloc(N);
+for (let i = 0; i < N; i++) raw[i] = heap.u8(surf + i);
+writeFileSync(`/tmp/beta2-raw-${LABEL}.bin`, raw);
 console.log(`wrote ${ppmPath}`);
 if (globalThis.__interpBlitStats) {
   const s = globalThis.__interpBlitStats;
