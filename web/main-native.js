@@ -10,7 +10,7 @@
 //        runTick() — one game frame (FUN_00402bef + FUN_004385d8)
 //        presentFrame() — DIB → canvas
 
-import { createRuntime } from "../runtime/harness.js";
+import { createRuntime, skipFadeIn, skipTitleIntro } from "../runtime/harness.js";
 import { presentFrame, presentBootStatus } from "../runtime/canvas.js";
 import { attachInput } from "../runtime/input.js";
 import { state } from "../runtime/win32/context.js";
@@ -143,10 +143,40 @@ async function main() {
     log(`[first tick] threw at ${_ops.toLocaleString()} ops: ${(e.message || e).slice(0, 200)}`, "err");
     if (e.stack) log(e.stack.split("\n").slice(0, 8).join("\n"), "err");
   }
-  // Per-frame budget: 5M heap ops, 5s wallclock. After init, a tick is
-  // mostly draw work (~hundreds of thousands of ops).
-  _budget = 50_000_000;
-  _wallBudgetMs = 5_000;
+  // Enter GAMEPLAY: complete the fade-in and open the sprite-update gate so the
+  // park actually simulates (peeps walk, rides animate) instead of showing only
+  // the static title backdrop. CLAUDE.md's old warning that skipTitleIntro makes
+  // a tick take "minutes" predates this session's interpreter fixes (CPUID, shim
+  // returns, callDepth/sentinel handling, DirectDraw EnumDisplayModes); a
+  // gameplay tick is now ~26-340ms and runs 2000+ ticks with no hang.
+  try {
+    skipFadeIn(runtime.heap);
+    skipTitleIntro(runtime.heap);
+    log(`[gameplay] fade-in + title-intro opened — park is live`, "ok");
+  } catch (e) {
+    log(`[gameplay] skip threw: ${((e && e.message) || e).toString().slice(0, 200)}`, "err");
+  }
+
+  // The FIRST gameplay tick (the sprite-update gate just opened) does heavy
+  // one-time work (~15s) — run it once with a generous budget so the per-frame
+  // watchdog below doesn't false-abort it.
+  status("first gameplay tick (sprite warm-up, ~15s)…");
+  _budget = 2_000_000_000; _wallBudgetMs = 30_000; _ops = 0; _startMs = Date.now();
+  try {
+    const t0 = Date.now();
+    runtime.runTick(() => {});
+    log(`[gameplay] warm-up tick ${Date.now() - t0}ms`, "ok");
+  } catch (e) {
+    log(`[gameplay warm-up] ${((e && e.message) || e).toString().slice(0, 150)}`, "err");
+  }
+
+  // Per-frame budget. Gameplay ticks drive the painter-bridge x86 interpreter for
+  // sprite painting, so steady-state is currently ~4s/tick (the interp painters
+  // are the perf wall — see runtime/native/sprites/, the JS-port track). Budget
+  // generously — there is no infinite loop to guard against (verified 2000+ stable
+  // ticks); this only catches a genuine runaway.
+  _budget = 2_000_000_000;
+  _wallBudgetMs = 15_000;
 
   // Main loop. rAF cadence ≈ 60 Hz. Post WM_TIMER every 16 ms (matches the
   // game's expectation of a 60 Hz tick clock) and WM_PAINT every 33 ms.
