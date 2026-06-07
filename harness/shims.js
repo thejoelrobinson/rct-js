@@ -772,21 +772,30 @@ const IDDRAW_METHODS = [
   { name: "IDirectDraw::CreateSurface",        argCount: 3 },
   { name: "IDirectDraw::DuplicateSurface",     argCount: 2 },
   { name: "IDirectDraw::EnumDisplayModes", argCount: 4, handler: (cpu, [thisPtr, dwFlags, lpDDSurfaceDesc, lpContext, lpEnumModesCallback]) => {
-    // Build a DDSURFACEDESC (108 bytes) describing one mode: 800x600x8
+    // Enumerate every display mode RCT's FUN_00405fe2 searches for. It matches on
+    // (width@0xc, height@8, bpp@0x54) against the DDSURFACEDESC each callback gets,
+    // and the boot's FUN_00401220 requests 640x480x8 (mode 3) on the windowed path
+    // that FUN_009bb4b4 takes — so 640x480x8 MUST be enumerated or the display
+    // validation FUN_009bb6af fails and the boot quits. The old shim only offered
+    // 800x600x8, so that search never matched.
+    const MODES = [[640,480,8],[800,600,8],[1024,768,8],[1152,864,8],[1280,1024,8],[640,480,16],[800,600,16]];
     const desc = heapAlloc(108);
-    for (let i = 0; i < 108; i++) cpu.memory[desc + i] = 0;
     const writeU32 = (off, v) => { cpu.memory[desc+off]=v&0xff; cpu.memory[desc+off+1]=(v>>>8)&0xff; cpu.memory[desc+off+2]=(v>>>16)&0xff; cpu.memory[desc+off+3]=(v>>>24)&0xff; };
-    writeU32(0,    108);                 // dwSize
-    writeU32(4,    0x00000007);          // dwFlags = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH (we'll be loose)
-    writeU32(8,    600);                 // dwHeight
-    writeU32(12,   800);                 // dwWidth
-    writeU32(16,   800);                 // dwPitch
-    writeU32(72,   32);                  // ddpfPixelFormat.dwSize
-    writeU32(72+4, 0x40);                // dwFlags = DDPF_PALETTEINDEXED8
-    writeU32(72+12, 8);                  // dwRGBBitCount = 8
-    // Invoke the binary's callback. Standard DDraw callback signature:
-    //   HRESULT CALLBACK Cb(LPDDSURFACEDESC, LPVOID lpContext)
-    callIntoBinary(cpu, lpEnumModesCallback, [desc, lpContext]);
+    for (const [w, h, bpp] of MODES) {
+      for (let i = 0; i < 108; i++) cpu.memory[desc + i] = 0;
+      writeU32(0,     108);                // dwSize
+      writeU32(4,     0x00000007);         // dwFlags = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH
+      writeU32(8,     h);                  // dwHeight
+      writeU32(12,    w);                  // dwWidth
+      writeU32(16,    w * (bpp >> 3));     // dwPitch
+      writeU32(72,    32);                 // ddpfPixelFormat.dwSize
+      writeU32(72+4,  bpp === 8 ? 0x20 : 0x40); // DDPF_PALETTEINDEXED8 / DDPF_RGB
+      writeU32(72+12, bpp);                // dwRGBBitCount (offset 0x54)
+      // Standard DDraw callback: HRESULT CALLBACK Cb(LPDDSURFACEDESC, LPVOID ctx).
+      // Returns DDENUMRET_OK(1) to continue / DDENUMRET_CANCEL(0) to stop.
+      const ret = callIntoBinary(cpu, lpEnumModesCallback, [desc, lpContext]);
+      if ((ret & 0xff) === 0) break;
+    }
     return 0; // S_OK
   } },
   { name: "IDirectDraw::EnumSurfaces",         argCount: 4, handler: () => 0 },
