@@ -33,6 +33,22 @@ export function FUN_005e12eb(heap) {
   heap.setU16(0x0099fb92, (unaff_BX) & 0xffff);                                                       // clipY (u16)
   for (puVar2 = ((0x009a013c) >>> 0); puVar2 < heap.u32(0x009a1164); puVar2 = (((puVar2 + 0x178) >>> 0)) >>> 0) {
     if (((((heap.u16((puVar2 + 0x32)) & 0x10) == 0) && (heap.i16((puVar2 + 0x20)) < in_DX)) && (heap.i16((puVar2 + 0x22)) < unaff_BP)) && ((in_AX < (((heap.i16((puVar2 + 0x20)) + heap.i16((puVar2 + 0x24)))) << 16 >> 16) && (((uVar1) << 16 >> 16) < (((heap.i16((puVar2 + 0x22)) + heap.i16((puVar2 + 0x26)))) << 16 >> 16))))) {
+      // HAND-FIX (wrong register-init at call site — the catalogued translator
+      // bug class): the binary at 0x5e13b2 does `push ax/bx/dx/bp; push esi`
+      // before `call 0x5e13d2`, passing the sprite clip-rect (ax/bx/dx/bp) and
+      // the CURRENT window pointer (esi=puVar2) in registers. The translator
+      // dropped this setup, so FUN_005e13d2 read a stale regs.esi (a kernel32
+      // heap ptr ~0x744194) and walked ~6584 garbage window slots — recursing
+      // ~112k× per call, ~20.5M iterations/tick (~47% of gameplay-tick JS time),
+      // and PAINTING NOTHING (its paint callbacks never fired). Restore the
+      // register setup so 5e13d2 walks the real 3-4-window pool from the current
+      // window. Mirrors the in-function recursion fix already in 5e13d2.js's
+      // @manual header; the entry from here was missed.
+      regs.eax = in_AX & 0xffff;
+      regs.edx = in_DX & 0xffff;
+      regs.ebx = unaff_BX & 0xffff;
+      regs.ebp = unaff_BP & 0xffff;
+      regs.esi = (puVar2) >>> 0;
       (regs.eax = FUN_005e13d2(heap));
       uVar1 = ((uVar1 & 0xffff) >>> 0);
     }
