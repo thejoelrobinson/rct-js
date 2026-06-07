@@ -118,6 +118,11 @@ export function installPainterBridge(heap, opts = {}) {
   // vtable like 0x628a94[15]=0) should bail cleanly instead of executing
   // 70 000+ zero-byte instructions before some downstream OOB aborts the tick.
   cpu.bailOnWildJump = true;
+  // Expose the fully-equipped bridge cpu (shim-invoker + eip-hooks installed
+  // below) so diagnostics can run whole binary functions faithfully through the
+  // interpreter — e.g. tools/oracle-diff-tick.js oracle-diffs the gameplay sim
+  // (FUN_004385d8) vs the JS port to find the first divergent tick.
+  state.__painterCpu = cpu;
 
   // Register a shim invoker for the bridge cpu. When the interpreter's EIP
   // lands in SHIM_BASE (>= 0xF0000000), it dispatches to this function. We
