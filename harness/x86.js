@@ -416,7 +416,15 @@ export function step(cpu) {
   if ((cpu.regs.eip >>> 0) >= SHIM_BASE) {
     if (!_shimInvoker) throw new Error(`shim invoked but no invoker registered (eip=0x${cpu.regs.eip.toString(16)})`);
     _shimInvoker(cpu, cpu.regs.eip >>> 0);
-    return true;
+    // The `call [iat_slot]` that reached this shim incremented callDepth; the
+    // shim's stdcall epilogue (inside the invoker) already popped its return
+    // address, so balance the counter here — otherwise every Win32 call drifts
+    // callDepth up by one and the function's final `ret` sails past the
+    // RET_SENTINEL (callDepth>0 ⇒ the ret handler doesn't recognise it),
+    // fetching an instruction at 0xdeadbeef. Then stop the run if the shim
+    // returned straight to our caller (a tail-called import → eip == sentinel).
+    if (cpu.callDepth > 0) cpu.callDepth--;
+    return (cpu.regs.eip >>> 0) !== RET_SENTINEL;
   }
   // JS hand-port trap: if eip matches a registered hook, invoke the JS port
   // and simulate a ret. The hook is responsible for syncing regs in/out via
@@ -452,15 +460,23 @@ export function step(cpu) {
   // Threshold = 0x401000 (start of rct.exe's .text section). Anything
   // below that is data/heap, never code. Also bail on the sentinel above
   // SHIM_BASE, which is handled separately.
-  // rct.exe's executable code lives in .text [0x401000,0x41b200) and CODESEG
-  // [0x41c000,0x5e6e00). The original guard only bailed BELOW .text; a painter
-  // that ran off the rails UPWARD into the heap (profiled buckets reached
-  // 0x4ac0000) was NOT caught and ground through up to 50M zero/garbage bytes
-  // (each `add [eax],al` advances 2 bytes) — the dominant gameplay-tick time
-  // sink. Bail to the sentinel whenever EIP is outside the executable span.
+  // rct.exe's executable code lives in TWO spans: the low one — .text
+  // [0x401000,0x41b200) + CODESEG [0x41c000,0x5e6e00) — and a SECOND segment
+  // "CodeSeg" [0x9b3000,0x9bc600) at the top of the image (the PE marks it
+  // non-exec, but Ghidra recovered real functions there: the sprite blit chain
+  // 0x9b438b/0x9b4911 and per-tick sim helpers like FUN_009bb9f5 that 0x4385d8
+  // calls directly). The original guard only bailed BELOW .text; a painter that
+  // ran off the rails UPWARD into the heap (profiled buckets reached 0x4ac0000)
+  // was NOT caught and ground through up to 50M zero/garbage bytes. Bail to the
+  // sentinel whenever EIP is outside BOTH executable spans — but the earlier
+  // single-bound form (>= 0x5e6e00) wrongly bailed on the CodeSeg span too,
+  // which breaks running a whole binary function (e.g. the gameplay-sim oracle
+  // diff) through the interpreter when it calls into CodeSeg.
   if (cpu.bailOnWildJump) {
     const _eip = cpu.regs.eip >>> 0;
-    if ((_eip < 0x00401000 || _eip >= 0x005e6e00) && _eip !== RET_SENTINEL) {
+    const _inLow  = _eip >= 0x00401000 && _eip < 0x005e6e00;
+    const _inHigh = _eip >= 0x009b3000 && _eip < 0x009bc600;
+    if (!_inLow && !_inHigh && _eip !== RET_SENTINEL) {
       cpu.regs.eip = RET_SENTINEL;
       cpu.callDepth = 0;
       if (globalThis.__wildBails) globalThis.__wildBails.n = (globalThis.__wildBails.n || 0) + 1;
@@ -1542,8 +1558,9 @@ export function step(cpu) {
     if (opcode === 0xcb) cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;        // RETF pops segment word too (4 bytes in 32-bit prot mode)
     if (opcode === 0xcf) cpu.regs.esp = (cpu.regs.esp + 4 + 4) >>> 0;   // IRET pops cs + eflags
     cpu.regs.eip = target >>> 0;
-    if (cpu.callDepth > 0) { cpu.callDepth--; return true; }
-    return target !== RET_SENTINEL;
+    if (target === RET_SENTINEL) return false;  // magic addr (0xdeadbeef) — never a real
+    if (cpu.callDepth > 0) cpu.callDepth--;      // return target, so stop regardless of any
+    return true;                                 // callDepth drift (SEH frames, indirect calls)
   }
   // RETF imm16 (0xca) — same as RETF but additionally adds imm16 to esp.
   if (opcode === 0xca) {
@@ -1551,8 +1568,9 @@ export function step(cpu) {
     const imm16 = mem16(m, ip + 1);
     cpu.regs.esp = (cpu.regs.esp + 4 + 4 + imm16) >>> 0; // pop eip, pop cs-equiv, then adjust
     cpu.regs.eip = target >>> 0;
-    if (cpu.callDepth > 0) { cpu.callDepth--; return true; }
-    return target !== RET_SENTINEL;
+    if (target === RET_SENTINEL) return false;  // magic addr (0xdeadbeef) — never a real
+    if (cpu.callDepth > 0) cpu.callDepth--;      // return target, so stop regardless of any
+    return true;                                 // callDepth drift (SEH frames, indirect calls)
   }
   // IN al, imm8 / IN ax, imm8 / IN al, dx / IN ax, dx — port I/O. No real ports
   // in our model; return 0.
@@ -1757,16 +1775,18 @@ export function step(cpu) {
     const popExtra = mem16(m, ip + 1);
     cpu.regs.esp = (cpu.regs.esp + 4 + popExtra) >>> 0;
     cpu.regs.eip = target >>> 0;
-    if (cpu.callDepth > 0) { cpu.callDepth--; return true; }
-    return target !== RET_SENTINEL;
+    if (target === RET_SENTINEL) return false;  // magic addr (0xdeadbeef) — never a real
+    if (cpu.callDepth > 0) cpu.callDepth--;      // return target, so stop regardless of any
+    return true;                                 // callDepth drift (SEH frames, indirect calls)
   }
   // RET (0xc3)
   if (opcode === 0xc3) {
     const target = mem32(m, cpu.regs.esp);
     cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
     cpu.regs.eip = target >>> 0;
-    if (cpu.callDepth > 0) { cpu.callDepth--; return true; }
-    return target !== RET_SENTINEL;
+    if (target === RET_SENTINEL) return false;  // magic addr (0xdeadbeef) — never a real
+    if (cpu.callDepth > 0) cpu.callDepth--;      // return target, so stop regardless of any
+    return true;                                 // callDepth drift (SEH frames, indirect calls)
   }
   // LEAVE (0xc9)
   if (opcode === 0xc9) {
@@ -2346,6 +2366,25 @@ export function step(cpu) {
     if (op2 === 0x00) {
       const { len } = decodeModrm(cpu, ip + 2);
       cpu.regs.eip = (ip + 2 + len) >>> 0; return true;
+    }
+    // 0x0f 0xa2 — CPUID. The binary's boot (FUN_00404752 system detection) runs
+    // it; the painters never do. Report a plain Pentium (family 5), vendor
+    // "GenuineIntel", and a conservative feature set WITHOUT MMX (bit 23) so the
+    // binary picks the FPU/integer code paths the interpreter fully supports.
+    if (op2 === 0xa2) {
+      const fn = cpu.regs.eax >>> 0;
+      if (fn === 0) {
+        cpu.regs.eax = 1;            // max standard leaf
+        cpu.regs.ebx = 0x756e6547;   // "Genu"
+        cpu.regs.edx = 0x49656e69;   // "ineI"
+        cpu.regs.ecx = 0x6c65746e;   // "ntel"
+      } else {
+        cpu.regs.eax = 0x000005c2;   // family 5 (Pentium), model 0xc, stepping 2
+        cpu.regs.ebx = 0;
+        cpu.regs.ecx = 0;
+        cpu.regs.edx = 0x000001bf;   // FPU,VME,DE,PSE,TSC,MSR,MCE,CX8 (no MMX/CMOV)
+      }
+      cpu.regs.eip = (ip + 2) >>> 0; return true;
     }
     // Jcc rel32
     if (op2 >= 0x80 && op2 <= 0x8f) {
