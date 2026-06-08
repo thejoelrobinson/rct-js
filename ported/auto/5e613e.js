@@ -181,7 +181,18 @@ export function FUN_005e613e(heap) {
       in_EAX = ((((uVar2) >>> 0)) >>> 0);
       sVar13 = (((heap.u32(0x0099fdf2) - heap.i16((pbVar11 + 6)) << (heap.u8(pbVar11 + (0x10)) & 0x1f)) + heap.i16((pbVar11 + 10))) & 0xffff);
       unaff_EBP = ((CONCAT22((((((unaff_EBP) >>> 0) >>> 0x10)) << 16 >> 16), 0xffff)) >>> 0);
-      for (uVar17 = ((heap.u32(0x0087c398)) & 0xffff); uVar17 != 0xffff; uVar17 = (((heap.u32((0x00743b98) + (((uVar17) >>> 0) * 0x80) * 4)) & 0xffff)) >>> 0) {
+      // HAND-FIX (u16-as-u32 stride; same class as 4533d0/444927): the C is
+      // `uVar17 = (&DAT_00743b98)[(uint)uVar17 * 0x80]` where DAT_00743b98 is a
+      // ushort array → byte offset uVar17*0x80*2 = uVar17*0x100, read as u16 (the
+      // sprite "next index" field; sprite stride is 0x100 — confirmed by the very
+      // next C line `iVar18 = (uint)uVar17 * 0x100`). The translator emitted
+      // heap.u32 with `* 4` → byte offset uVar17*0x200 (DOUBLE the 0x100 stride)
+      // AND read 4 bytes — so the walk read the WRONG sprite's next index and the
+      // sprite-list scan never reached the 0xffff terminator. This is the
+      // "find nearest sprite under cursor" loop on the input/cursor-type-12 path
+      // (5e6078), run on every viewport mouse event — so ANY viewport click spun
+      // for millions of iterations (minutes). Fix: u16 at the 0x100 stride.
+      for (uVar17 = ((heap.u32(0x0087c398)) & 0xffff); uVar17 != 0xffff; uVar17 = ((heap.u16((0x00743b98) + (((uVar17) >>> 0) * 0x80) * 2))) >>> 0) {
         iVar18 = ((((uVar17) >>> 0) * 0x100) >>> 0);
         if (heap.i16((0x00743baa + iVar18)) != -0x8000) {
           sVar7 = ((((((heap.i16((0x00743baa + iVar18)) + heap.i16((0x00743bae + iVar18)))) << 16 >> 16) >>> 1) - uVar2) & 0xffff);
