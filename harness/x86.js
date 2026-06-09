@@ -1797,12 +1797,24 @@ export function step(cpu) {
   }
 
   // ---- MOV with absolute address (no ModR/M) ----
-  if (opcode === 0xa1) { // mov eax, [imm32]
-    cpu.regs.eax = mem32(m, mem32(m, ip + 1));
+  if (opcode === 0xa1) { // mov eax, [imm32]  (or mov ax, [imm32] with 0x66)
+    const addr = mem32(m, ip + 1);
+    if (prefixOperandSize) {
+      // 16-bit load: only AX changes, upper 16 of EAX preserved.
+      cpu.regs.eax = ((cpu.regs.eax & 0xffff0000) | mem16(m, addr)) >>> 0;
+    } else {
+      cpu.regs.eax = mem32(m, addr);
+    }
     cpu.regs.eip = (ip + 5) >>> 0; return true;
   }
-  if (opcode === 0xa3) { // mov [imm32], eax
-    write32(m, mem32(m, ip + 1), cpu.regs.eax);
+  if (opcode === 0xa3) { // mov [imm32], eax  (or mov [imm32], ax with 0x66)
+    const addr = mem32(m, ip + 1);
+    // The 0x66 operand-size prefix makes this a 16-bit store (mov [imm32], ax).
+    // Without the width check the handler wrote 4 bytes and clobbered the two
+    // bytes following the target — e.g. setActiveTool's `mov [0x991f58], ax`
+    // (66 a3 ..) wiped the adjacent tool-identity globals 0x991f5a/0x991f5b.
+    if (prefixOperandSize) write16(m, addr, cpu.regs.eax & 0xffff);
+    else                   write32(m, addr, cpu.regs.eax);
     cpu.regs.eip = (ip + 5) >>> 0; return true;
   }
   // MOV r32, imm32 (0xb8+r), or MOV r16, imm16 with 0x66 prefix
