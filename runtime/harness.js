@@ -592,3 +592,30 @@ export function skipTitleIntro(heap) {
     }
   }
 }
+
+/**
+ * Enter genuine SCENARIO-PLAY (vs the title-demo backdrop), so the world
+ * simulates and the input/cursor-pick path resolves clicked tiles — the
+ * prerequisite for interactive building.
+ *
+ * The binary's "play a scenario" flow is 42eae0(menu) -> 42f4be(scenario LOAD)
+ * -> 438a1f(play-init). The harness's runInit runs only the LOAD (FUN_0042f4be),
+ * which fills the world AND clears the play-mode bit (0x99a500 &= 0xfffe at
+ * 42f4be.js:104) — leaving the world loaded but frozen and non-interactive.
+ *
+ * We do NOT call the full FUN_00438a1f: its chain calls FUN_00444a79, which
+ * wipes the sprite pool to an empty free-list (the binary runs 438a1f BEFORE
+ * the load and the load repopulates; the harness inverted that order, so a
+ * post-load 438a1f would DESTROY the loaded world — the exact failure 42f4be.js
+ * documents avoiding). Instead enter play surgically: set the play-mode bit and
+ * open the sprite-update gate (skipTitleIntro). The loaded world — sprites, the
+ * sprite tile-grid at 0x991f8e, and the terrain tile-pointers at 0x971ef4 — is
+ * preserved (verified: the 0x991f8e bucket count is unchanged, owned terrain
+ * tiles still resolve, and the sprite array animates over ticks).
+ *
+ * @param {Heap} heap  runtime heap (from createRuntime().heap)
+ */
+export function enterScenarioPlay(heap) {
+  heap.setU32(0x0099a500, (heap.u32(0x0099a500) | 1) >>> 0); // play-mode bit
+  skipTitleIntro(heap); // open the sprite-update gate (cb9=0) + intro cleanup
+}
