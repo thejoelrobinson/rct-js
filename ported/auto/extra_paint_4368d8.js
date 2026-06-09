@@ -303,9 +303,44 @@ function paintTileBody(heap, cpu, runFunction, ax, cx, dx) {
 //
 // Called once from painter-bridge.js after the bridge cpu is created.
 export function install4368d8Hooks(cpu, runFunction, setEipHook, heap) {
+  // The painter at 0x4368d8 (+ siblings) is reached two ways, and the binary's
+  // body unwinds the SAME `pop ecx; pop eax; ret` epilogue in both:
+  //
+  //  (A) fnDispatch / painter-bridge entry. The bridge shim runs runFunction
+  //      with NEEDS_PRE_PUSH, so the stack is
+  //        [esp]   = RET_SENTINEL (0xdeadbeef)
+  //        [esp+4] = saved_ecx
+  //        [esp+8] = saved_eax
+  //      step()'s built-in 1-pop ret pops RET_SENTINEL and exits runFunction;
+  //      we only need to restore ecx/eax from [esp+4]/[esp+8].
+  //
+  //  (B) In-binary jmp-dispatcher entry. When a WHOLE function runs through
+  //      the interpreter (e.g. the oracle running 0x431510 directly for the
+  //      cursor-pick), 0x4367cb's tail reaches the dispatcher at 0x4368c0:
+  //        push eax; push ecx; jmp [edx*4 + 0x4368c8]
+  //      so the stack on hook entry is
+  //        [esp]   = saved_ecx
+  //        [esp+4] = saved_eax
+  //        [esp+8] = the REAL return address
+  //      The binary body's `pop ecx; pop eax; ret` pops all three. step()'s
+  //      built-in 1-pop ret only pops one, so without help it would return to
+  //      saved_ecx (a tiny scratch value) and wild-jump. Detect this layout
+  //      (top-of-stack != RET_SENTINEL) and pre-pop the two saved dwords so
+  //      step()'s ret lands on the real return address.
+  const RET_SENTINEL = 0xdeadbeef >>> 0;
   const restoreCallerRegs = (cpu) => {
-    const esp = cpu.regs.esp;
     const m = cpu.memory;
+    let esp = cpu.regs.esp >>> 0;
+    const top = (m[esp] | (m[esp+1]<<8) | (m[esp+2]<<16) | (m[esp+3]<<24)) >>> 0;
+    if (top !== RET_SENTINEL) {
+      // Layout (B): pop ecx; pop eax — leaving the real return at [esp] for
+      // step()'s built-in ret. Mirrors the binary's `pop ecx; pop eax; ret`.
+      cpu.regs.ecx = top;
+      cpu.regs.eax = (m[esp+4] | (m[esp+5]<<8) | (m[esp+6]<<16) | (m[esp+7]<<24)) >>> 0;
+      cpu.regs.esp = (esp + 8) >>> 0;
+      return;
+    }
+    // Layout (A): the saved regs sit above the sentinel.
     cpu.regs.ecx = (m[esp+4] | (m[esp+5]<<8) | (m[esp+6]<<16) | (m[esp+7]<<24)) >>> 0;
     cpu.regs.eax = (m[esp+8] | (m[esp+9]<<8) | (m[esp+10]<<16) | (m[esp+11]<<24)) >>> 0;
   };

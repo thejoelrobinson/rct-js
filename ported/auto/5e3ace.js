@@ -84,6 +84,15 @@ export function FUN_005e3ace(heap) {
       if (_calleeEsiNonZero) {
         // asm 0x5e3b27: `ret` with ESI = slot_ptr (restored by popa).
         regs.esi = puVar3 >>> 0;
+        // The binary preserves the entry registers across the inner
+        // `pusha ... call [esi+4] ... popa` (asm 0x5e3b1a..0x5e3b24), so on
+        // this hit `ret` EAX == the entry screen-X (in_EAX). The translator
+        // returned `undefined` here, which the caller 0x431510 read as EAX=0,
+        // collapsing its clip-world-X math to the viewport origin and so the
+        // 1x1 cursor-pick landed off the tile. Restore EAX = in_EAX.
+        // Oracle: 0x5e3ace via the interpreter returns AX = input AX on a hit.
+        regs.eax = in_EAX >>> 0;
+        return in_EAX >>> 0;
       } else {
         // asm 0x5e3b25: `jz LAB_005e3ace` — callee says not a real hit,
         // loop again to the next slot. Don't return yet; reset puVar1 to
