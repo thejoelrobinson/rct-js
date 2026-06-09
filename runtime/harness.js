@@ -380,6 +380,32 @@ export function createRuntime(opts) {
       // pages and never reach the visible back-buffer surface.
       heap.setU16(0x0099fb80, 0);  // clipX (will be overwritten per slot below)
       heap.setU16(0x0099fb82, 0);  // clipY (will be overwritten per slot below)
+      // Protect the land/construction TOOL drag rect (0x99a020..0x99a02c)
+      // across the synthetic paint pump below.
+      //
+      // The active tool resolves the cursor tile into this rect during the
+      // per-tick input dispatch (FUN_005e38f5 -> 5e6044 -> the land tool's
+      // 0x42aa65 -> 0x43424f/0x434efd write [0x99a020] bit0 + the tile rect at
+      // +2..+0xa). The build issuer (0x42aeb7 on LMB-down, 0x42abe0 on drag)
+      // reads that rect on the NEXT tick's input pass — so it must survive the
+      // intervening paint.
+      //
+      // BUT: the binary's selection-highlight marker collector
+      // (FUN_004363f1 -> FUN_005e5562 -> the 0x447c06 rotation case) appends
+      // vertices to the marker buffer at 0x999fdc and bumps the byte counter
+      // [0x99c166]. That buffer sits IMMEDIATELY below the tool rect
+      // (0x999fdc + [0x99c166]*2; 0x99a020 - 0x999fdc = 0x44 = 34 entries).
+      // The binary collects markers ONCE per frame; our synthetic pump re-runs
+      // every window's wndProc (and thus the selection-highlight collector)
+      // many times per tick WITHOUT the binary's per-frame marker reset, so
+      // the counter runs past 34 and the marker writes SPILL into the tool
+      // rect — clearing [0x99a020] bit0 and overwriting the resolved tile with
+      // marker coords (observed: rect -> tile 80, valid bit cleared). That is
+      // a pure artifact of the multi-pass pump; the binary's single-pass paint
+      // never overflows. Snapshot the 12 rect bytes here and restore them after
+      // the pump so the resolved drag rect reaches the next input tick intact.
+      const _toolRect = new Uint8Array(0x0c);
+      for (let i = 0; i < 0x0c; i++) _toolRect[i] = heap.u8(0x0099a020 + i);
       if (poolEnd > POOL_START && poolEnd < 0x009a013c + 256 * SLOT_STRIDE) {
         for (let slot = POOL_START; slot < poolEnd; slot += SLOT_STRIDE) {
           const wndProcAddr = heap.u32(slot) >>> 0;
@@ -470,6 +496,14 @@ export function createRuntime(opts) {
           regs.ecx = 640; regs.edx = 480;
           try { fn(heap); } catch (e) { /* per-window paint errors are non-fatal */ }
         }
+      }
+      // Restore the tool drag rect clobbered by the multi-pass marker overflow
+      // (see the _toolRect snapshot comment above). Only restore when a tool is
+      // actually armed AND the snapshot held a valid rect — otherwise leave the
+      // pump's writes alone (no tool means nothing to protect, and the marker
+      // buffer legitimately owns that memory).
+      if ((heap.u32(0x00991f30) >>> 3 & 1) !== 0 && (_toolRect[0] & 1) !== 0) {
+        for (let i = 0; i < 0x0c; i++) heap.setU8(0x0099a020 + i, _toolRect[i]);
       }
 
       // Phase J: drive the back→front DirtyCopy after the synthetic paint

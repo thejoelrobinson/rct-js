@@ -64,6 +64,32 @@ export function FUN_005e38f5(heap) {
         heap.setU8(0x00628cb9, (-2) & 0xff);
       }
     }
+    // HAND-FIX: pick up the LIVE cursor Y that 0x5e1fdd left in EBX.
+    // DISASM 0x5e2030/0x5e209d-0x5e20a2: in the no-event path 0x5e1fdd does
+    // `mov eax, [0x99fdf4]` (cursor X) AND `mov ebx, [0x99fdf8]` (cursor Y),
+    // then returns cx=0 so this loop breaks. The binary then uses the live EBX
+    // at 0x5e3964 onward (the clamp `or ebx,ebx ... cmp bx,[0x971ed8]` and the
+    // `push ebx` before 5e2225/5e6078/5e6044). Ghidra typed EBX as
+    // `unaff_EBX` (captured at entry) and the translator never refreshed it
+    // from the 0x5e1fdd result — so the cursor Y handed to the tool-update was
+    // the STALE entry EBX (garbage from the previous call), and the armed land
+    // tool's per-tick auto-resolve (5e6044 -> 0x42aa65 -> 0x43424f) picked at
+    // (x, garbageY) -> off the owned map. The ported 5e1fdd.js already writes
+    // regs.ebx in the no-event branch; mirror the binary by reading it back.
+    //
+    // SCOPE: refresh the y ONLY for the 5e6044 tool-update call (the armed
+    // path, bit3 set, which dispatches to the land tile-resolve). The 5e2225
+    // hit-test and 5e6078 hover-pick are deliberately left on the original
+    // stale-EBX value: the JS ports of that UNARMED hover chain (5e6078 ->
+    // 5e613e) carry compensating Ghidra-typing quirks, and feeding them the
+    // corrected y makes the JS divergence surface as a 0x99fdf4 cursor-cache
+    // wipe (the binary leaves it at the true x; verified via the bridge oracle).
+    // The armed auto-resolve never enters that hover branch (5e6078 line 46
+    // `if (bit3==0)` is false), so scoping the refresh to 5e6044 keeps the
+    // unarmed cursor cache byte-faithful while fixing the armed pick. The live
+    // cursor Y that 5e6044 needs is exactly regs.ebx (= [0x99fdf8]); capture it
+    // here before the 5e2225/5e6078 calls below clobber the register.
+    const liveCursorY = regs.ebx >>> 0;
     if ((heap.u32(0x00991f30) >>> 5 & 1) != 0) {
       (regs.eax = FUN_005e2225(heap, unaff_EBX));
       return in_EAX;
@@ -82,23 +108,31 @@ export function FUN_005e38f5(heap) {
         unaff_EBX = ((((heap.u32(0x00971ed8) - 1) >>> 0)) >>> 0);
       }
       // DISASM 0x5e39a4-0x5e39b6 (capstone): the clamped x (EAX=in_EAX) and y
-      // (EBX=unaff_EBX) are LIVE registers across BOTH calls —
-      //   push eax; push ebx; call 0x5e2225; pop ebx; pop eax;   ; hit-test
-      //   push eax; push ebx; call 0x5e6078; pop ebx; pop eax;   ; hover-pick
-      //   call 0x5e6044                                          ; tool-update
-      // i.e. 5e2225 and 5e6078 read the cursor x in EAX and y in EBX. The
-      // Ghidra C lowered the register args as positional JS params
-      // (FUN_005e6078(unaff_EBX, in_EAX)), which the ported fns ignore — they
-      // read regs.eax / regs.ebx. Worse, 5e2225 clobbers regs.eax, so by the
-      // time 5e6078 ran, regs.eax held 0 (not the cursor x) and the live
-      // cursor-pick 5e613e resolved at (0, y) — off the map — so a viewport
-      // drag never picked a tile. FIX: mirror the asm by loading regs.eax=
-      // in_EAX, regs.ebx=unaff_EBX before EACH call (the push/pop pair keeps
-      // the same x,y live across the intervening call).
+      // (EBX=unaff_EBX) are LIVE registers across ALL THREE calls —
+      //   0x5e39a4 push eax; push ebx; call 0x5e2225; pop ebx; pop eax  ; hit-test
+      //   0x5e39ad push eax; push ebx; call 0x5e6078; pop ebx; pop eax  ; hover-pick
+      //   0x5e39b6 call 0x5e6044                                        ; tool-update
+      // i.e. 5e2225, 5e6078 AND 5e6044 read the cursor x in EAX and y in EBX.
+      // The push/pop pairs keep x,y live across 5e2225 and 5e6078; after the
+      // last `pop ebx; pop eax` (0x5e39b4-b5) eax/ebx STILL hold the cursor when
+      // `call 0x5e6044` (0x5e39b6) runs — 5e6044's tool-update dispatches to the
+      // armed land tool's resolve (0x42aa65 -> single-tile 0x43424f / area
+      // 0x434efd), which reads the cursor x in EAX and y in EBX to drive the
+      // pick FUN_00431510. The Ghidra C lowered the register args as positional
+      // JS params (FUN_005e6078(unaff_EBX, in_EAX)), which the ported fns ignore
+      // — they read regs.eax / regs.ebx. Worse, the intervening calls clobber
+      // regs.eax/regs.ebx, so without restoring them the live cursor-pick
+      // resolved at (0, y) — off the map — and a viewport drag never picked a
+      // tile. FIX: mirror the asm by loading regs.eax=in_EAX, regs.ebx=unaff_EBX
+      // before EACH of the THREE calls. (The 5e6044 restore on line 102 below
+      // was the missing one — 5e2225/5e6078 were already restored, but 5e6044
+      // got the stale post-5e6078 registers, so the armed land tool's per-tick
+      // auto-resolve never populated the drag rect at [0x99a020].)
       regs.eax = in_EAX >>> 0; regs.ebx = unaff_EBX >>> 0;
       (regs.eax = FUN_005e2225(heap, unaff_EBX, in_EAX));
       regs.eax = in_EAX >>> 0; regs.ebx = unaff_EBX >>> 0;
       (regs.eax = FUN_005e6078(heap, unaff_EBX, in_EAX));
+      regs.eax = in_EAX >>> 0; regs.ebx = liveCursorY >>> 0;
       in_EAX = (((regs.eax = FUN_005e6044(heap))) >>> 0);
     }
   }

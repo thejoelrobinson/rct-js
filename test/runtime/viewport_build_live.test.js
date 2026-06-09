@@ -226,4 +226,148 @@ describe("live viewport LAND drag (full browser input path)", () => {
     expect((heap.u8(elem + 4) >>> 5) & 7).toBe(dh); // dh written to byte+4 high bits
     expect(cmdMs).toBeLessThan(4000);
   }, 60_000);
+
+  // ============================================================================
+  // The full faithful chain: arm the land tool the SCENARIO-PLAY-TOOLBAR way,
+  // then a live per-tick hover AUTO-RESOLVES the cursor tile into the drag rect,
+  // and the binary's own down-engage handler BUILDS from that auto-resolved rect.
+  //
+  // Unlike the test above (which SEEDS the rect at [0x99a020]), this drives the
+  // binary's own per-tick tool-update to POPULATE the rect from the live cursor
+  // pick — the genuine "drag over the map auto-targets the tile" behaviour.
+  // ============================================================================
+  function findSlot(cls) {
+    const end = heap.u32(0x009a1164) >>> 0;
+    for (let s = 0x009a013c; s < end; s += 0x178) {
+      if (heap.u8(s + 0x174) === cls) return s >>> 0;
+    }
+    return 0;
+  }
+  function runBridge(addr, setup = {}) {
+    for (const k of ["eax", "ebx", "ecx", "edx", "esi", "edi", "ebp"]) {
+      const v = (setup[k] ?? 0) >>> 0; regs[k] = v; cpu.regs[k] = v;
+    }
+    cpu.eflags.CF = cpu.eflags.ZF = cpu.eflags.SF = cpu.eflags.OF = 0;
+    cpu.fpuTop = 0; cpu.fpuTags = 0xffff; cpu.fpuSw = 0;
+    runFunction(cpu, addr, { stackTop: heap.bytes.byteLength - 0x1000, limit: 80_000_000 });
+  }
+  // Idempotent faithful arm. The vitest runtime is shared across `it`s, so guard
+  // against double-arming: re-running MainOpen duplicates windows, and clicking
+  // the land button while it is ALREADY armed TOGGLES the tool OFF (0x42b375's
+  // already-active fast path -> deactivate 0x5e687d). Build the play toolbar +
+  // land window only once, and only click the land button when the tool is not
+  // yet active.
+  function armLandTool() {
+    heap.setU8(0x005f4a6a, 1);
+    if (findSlot(1) === 0) runBridge(0x004298a0, {});      // build the play toolbar once
+    const toolbarSlot = findSlot(1);
+    const alreadyArmed = ((heap.u32(0x00991f30) >>> 3) & 1) === 1 &&
+                         heap.u8(0x00991f5a) === 1 && heap.u16(0x00991f5c) === 8;
+    if (!alreadyArmed) {
+      heap.setU8(0x005f4a6a, 1);
+      runBridge(0x0042a830, { ebp: 1, edx: 8, esi: toolbarSlot });
+    }
+    return toolbarSlot;
+  }
+
+  it("the SCENARIO-PLAY toolbar land button faithfully opens the land window and arms the tool", () => {
+    // Build the in-game toolbar (FUN_004298a0) with the land button, then click
+    // it the binary's own way: FUN_0042a830 with BP=1 (button-press), DX=8 (land
+    // tool), ESI=the class-1 toolbar slot. That routes through 0x42b375 ->
+    // setActiveTool 0x5e680e + the land-window-open 0x424c0e.
+    const toolbarSlot = armLandTool();
+    expect(toolbarSlot).not.toBe(0);
+
+    // The land tool is armed: [0x991f30] bit3 (tool active), tool-window class
+    // [0x991f5a] = 1 (the toolbar that owns the per-tick update callback), tool
+    // id [0x991f5c] = 8, brush [0x5f54e8] = 1, corner-style defaults 0xff/0xff.
+    expect((heap.u32(0x00991f30) >>> 3) & 1).toBe(1);
+    expect(heap.u8(0x00991f5a)).toBe(1);
+    expect(heap.u16(0x00991f5c)).toBe(8);
+    expect(heap.u16(0x005f54e8)).toBe(1);
+    expect(heap.u8(0x005f4101)).toBe(0xff);
+    expect(heap.u8(0x005f4102)).toBe(0xff);
+
+    // The land window (class 0x15) is now open ON-SCREEN with its build/event
+    // callback (slot+4 = 0x424c57) and wndProc 0x424d32 — the subsystem the
+    // title-demo lacked, now present so the per-tick tool path is complete.
+    const landSlot = findSlot(0x15);
+    expect(landSlot).not.toBe(0);
+    expect(heap.u32(landSlot + 4) >>> 0).toBe(0x00424c57);
+    expect(heap.i16(landSlot + 0x22)).toBeGreaterThanOrEqual(0); // y on-screen (not y~600)
+  }, 60_000);
+
+  it("a live per-tick hover AUTO-RESOLVES the cursor tile into the drag rect, and the down-engage handler BUILDS from it (a surface byte changes)", () => {
+    // (Re)arm faithfully — beforeAll's runtime is shared across `it`s, so make
+    // this self-contained (idempotent: won't toggle an already-armed tool off).
+    armLandTool();
+    expect((heap.u32(0x00991f30) >>> 3) & 1).toBe(1);
+
+    const hwnd = state.firstHwnd;
+    const SX = 196, SY = 122; // window-absolute; viewport at screenY=30 -> rel (196,92)
+
+    // Clear the rect, then drive a LIVE per-tick hover: post WM_MOUSEMOVE over
+    // the viewport and runTick. The per-tick input chain FUN_005e38f5 ->
+    // FUN_005e6044 (the armed tool-update; ported, oracle-validated) -> the land
+    // tool's resolve 0x42aa65 -> single/area pick 0x43424f/0x434efd ->
+    // FUN_00431510 cursor-pick RESOLVES the cursor tile into the drag rect at
+    // [0x99a020] (bit0 = valid, +2..+0xa = the tile rect). The harness's
+    // synthetic paint pump would otherwise overflow the adjacent marker buffer
+    // into the rect; runtime/harness.js snapshots+restores it, so the resolved
+    // rect SURVIVES the tick — exactly as the binary's single-pass paint leaves
+    // it for the next input pass to consume.
+    heap.setU16(0x0099a020, 0);
+    let maxTickMs = 0;
+    for (let i = 0; i < 4; i++) {
+      state.inputState.cursorX = SX; state.inputState.cursorY = SY;
+      postWindowMessage(hwnd, 0x0200, 0, packLParam(SX, SY));
+      heap.setU8(0x005f4a6a, 1);
+      const t0 = process.hrtime.bigint();
+      runtime.runTick();
+      maxTickMs = Math.max(maxTickMs, Number(process.hrtime.bigint() - t0) / 1e6);
+    }
+    // Per-tick wall-time guard: the live hover/pick tick stays fast.
+    expect(maxTickMs).toBeLessThan(4000);
+
+    // The live per-tick pick AUTO-RESOLVED the cursor tile into the rect — no
+    // seeding. bit0 is set and the rect carries a real owned tile.
+    expect(heap.u16(0x0099a020) & 1).toBe(1);
+    const tx = heap.u16(0x0099a022) >> 5;
+    const ty = heap.u16(0x0099a026) >> 5;
+    const elem = surfaceElem(tx, ty);
+    expect(elem).not.toBe(0);
+    expect(heap.u8(elem + 7) & 0x20).toBe(0x20); // the resolved tile is land-owned
+
+    // BUILD from the AUTO-RESOLVED rect through the binary's own LMB-down ->
+    // drag-engage handler FUN_005e2f0e (the exact handler the live WM_LBUTTONDOWN
+    // reaches via FUN_005e2225's input-mode dispatch: mode 1 -> 0x5e2b52 ->
+    // 0x5e2d13 widget-type 0xc -> 0x5e2f0e). It sets mode 6 and calls the tool
+    // callback BP=8 -> 0x42aeb7, which issues land cmd 0x13 (handler 0x424ab0)
+    // from the resolved rect. Pick non-0xff corner styles so the build is a
+    // visible change (0xff/0xff is the idempotent "level" default).
+    heap.setU8(0x005f4102, 0); // corner-A style -> surface byte+5
+    heap.setU8(0x005f4101, 0); // corner-B style -> surface byte+4
+    heap.setU8(0x005f4a6a, 1);
+    const before = [];
+    for (let i = 0; i < 8; i++) before.push(heap.u8(elem + i));
+
+    const t0 = process.hrtime.bigint();
+    runBridge(0x005e2f0e, { eax: tx * 32, ebx: ty * 32 });
+    const buildMs = Number(process.hrtime.bigint() - t0) / 1e6;
+
+    const after = [];
+    for (let i = 0; i < 8; i++) after.push(heap.u8(elem + i));
+
+    // The drag ENGAGED (mode 6) and the cmd-0x13 build issued (it sets
+    // [0x991f5b] = 2 after emitting) — a surface byte CHANGED on the
+    // auto-resolved tile.
+    expect(heap.u8(0x00991f36)).toBe(6);          // land drag engaged
+    expect(heap.u8(0x00991f5b)).toBe(2);          // 0x42aeb7 issued the cmd
+    const changed = before.some((b, i) => b !== after[i]);
+    expect(changed).toBe(true);
+    // cmd 0x13 with corner style 0 writes the corner-style bits of byte+5
+    // (and byte+4); the resolved tile's byte+5 high-3 bits become 0.
+    expect((heap.u8(elem + 5) >>> 5) & 7).toBe(0);
+    expect(buildMs).toBeLessThan(4000);
+  }, 60_000);
 });
