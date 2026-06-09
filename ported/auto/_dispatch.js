@@ -602,6 +602,7 @@ import { FUN_004238b4 } from "./4238b4.js";
 import { FUN_00423c54 } from "./423c54.js";
 import { FUN_00423ffd } from "./423ffd.js";
 import { FUN_004243eb } from "./4243eb.js";
+import { FUN_00424ab0 } from "./424ab0.js";
 import { FUN_00424c0e } from "./424c0e.js";
 import { FUN_00424db7 } from "./424db7.js";
 import { FUN_00424de2 } from "./424de2.js";
@@ -1831,6 +1832,7 @@ export const dispatch = new Map([
   [0x423c54, FUN_00423c54],
   [0x423ffd, FUN_00423ffd],
   [0x4243eb, FUN_004243eb],
+  [0x424ab0, FUN_00424ab0],
   [0x424c0e, FUN_00424c0e],
   [0x424db7, FUN_00424db7],
   [0x424de2, FUN_00424de2],
@@ -2462,4 +2464,4 @@ export const dispatch = new Map([
   [0x9bc184, FUN_009bc184],
 ]);
 
-export const dispatchSize = 1227;
+export const dispatchSize = 1228;

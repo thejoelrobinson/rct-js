@@ -148,12 +148,24 @@ function aluR8Op(cpu, m, ip, opc) {
   }
   b = regField < 4 ? cpu.regs[REG32[regField]] & 0xff : (cpu.regs[REG32[regField - 4]] >>> 8) & 0xff;
 
+  // Direction: the reverse-direction forms (0x02 ADD, 0x0a OR, 0x22 AND,
+  // 0x2a SUB — bit1 set) are `op r8, r/m8`, so the DESTINATION is the reg
+  // field (b) and the SOURCE is the r/m operand (a). The forward forms
+  // (0x00/0x08/0x20/0x28/0x30/0x38) are `op r/m8, r8` → dest = r/m (a),
+  // src = reg (b). For commutative ops the value is identical either way,
+  // but SUB is non-commutative and the carry/sign flags are direction-
+  // sensitive, so compute dst/src explicitly. (Bug fix: `sub al, dl` was
+  // computing dl - al instead of al - dl.)
+  const reverseDir = (opc === 0x02 || opc === 0x0a || opc === 0x22 || opc === 0x2a);
+  const dst = reverseDir ? b : a;
+  const src = reverseDir ? a : b;
+
   let r = a, write = true, isSub = false;
   switch (opc) {
     case 0x00: case 0x02: r = (a + b) & 0xff; break;
     case 0x08: case 0x0a: r = (a | b) & 0xff; break;
     case 0x20: case 0x22: r = (a & b) & 0xff; break;
-    case 0x28: case 0x2a: r = (a - b) & 0xff; isSub = true; break;
+    case 0x28: case 0x2a: r = (dst - src) & 0xff; isSub = true; break;
     case 0x30: r = (a ^ b) & 0xff; break;
     case 0x38: r = (a - b) & 0xff; write = false; isSub = true; break;
     case 0x84: r = (a & b) & 0xff; write = false; break;
@@ -178,7 +190,8 @@ function aluR8Op(cpu, m, ip, opc) {
   }
   cpu.eflags.ZF = (r === 0) ? 1 : 0;
   cpu.eflags.SF = (r >>> 7) & 1;
-  cpu.eflags.CF = isSub ? ((a < b) ? 1 : 0) : 0;
+  // For SUB/CMP, borrow is dst < src (0x38 CMP is a forward form: dst=a, src=b).
+  cpu.eflags.CF = isSub ? ((dst < src) ? 1 : 0) : 0;
   cpu.eflags.OF = 0;
   cpu.regs.eip = (ip + 1 + len) >>> 0;
 }

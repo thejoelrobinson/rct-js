@@ -167,22 +167,23 @@ function paintTileBody(heap, cpu, runFunction, ax, cx, dx) {
 
   // ---- 0x436a23: re-store tile coords + zero scratch ----
   //
-  // BUG-COMPATIBILITY NOTE for [0x991f70]: the binary's
-  //   66 a3 70 1f 99 00  mov word ptr [0x991f70], ax
-  // is a 2-byte store, but the interpreter's 0xa3 handler
-  // (harness/x86.js line 1760) ignores prefixOperandSize and writes 4 bytes
-  // unconditionally (the bug). The bridge cpu therefore zeros out
-  // [991f72..991f73] every time this body runs, which downstream per-elem
-  // painters depend on (FUN_00421d2c et al. read [991f72] as a u32 'selected
-  // tile coord' flag where upper word == 0 means no overlay). A strictly-
-  // correct u16 store would leave [991f72..991f73] populated by 4367cb's
-  // earlier setU32(0x991f72, in_AX), and terrain renders as dirt instead
-  // of grass. Replicate the bridge's buggy 4-byte store here for output
-  // parity. TODO(harness/x86.js): fix the 0xa3 handler to respect 0x66.
+  // The binary's
+  //   0x436a23  66 a3 70 1f 99 00  mov word ptr [0x991f70], ax
+  //   0x436a29  66 89 0d 74 1f 99 00  mov word ptr [0x991f74], cx
+  //   0x436a30  66 c7 05 84 1f 99 00 0000  mov word ptr [0x991f84], 0
+  // are all 2-byte stores (disasm-cited above). This is a CORRECT u16 store.
   //
-  // The sibling [0x991f74] write uses 0x89 (which the interpreter handles
-  // correctly), so we use setU16 there.
-  heap.setU32(0x00991f70, ax & 0xffff);
+  // HISTORY: this line previously did setU32(0x991f70, ax) on purpose, to
+  // mirror a bug in harness/x86.js's 0xa3 handler that ignored the 0x66
+  // operand-size prefix and wrote 4 bytes — which zeroed [991f72..991f73]
+  // (the tile-X coord that 4367cb wrote at 0x991f72), making terrain render
+  // as dirt. That interpreter bug was FIXED (commit ebf743e: the 0xa1/0xa3
+  // mov-moffs handler now respects 0x66 → write16). The binary's faithful
+  // terrain truth (interpreter-rendered) now does the correct 2-byte store
+  // and leaves [991f72] = tile-X intact (grass). So the buggy setU32 here is
+  // STALE: it corrupts [991f72..991f73] vs the binary. Fixed to setU16 to
+  // match — collapses the title_accuracy water/grass palette divergence.
+  heap.setU16(0x00991f70, ax);
   heap.setU16(0x00991f74, cx);
   heap.setU16(0x00991f84, 0);
 

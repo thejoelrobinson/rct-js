@@ -203,8 +203,13 @@ function paintBody420f4c(heap, cpu) {
   //   sub al, dl
   //   inc cl
   //   movzx ebx, cl
-  //   add ebx, [0x5f4778]
-  //   add ebx, 3
+  //   add ebx, [0x5f4778]      ; NOTE: 0x420f4c does NOT have the extra
+  //                            ;   `add ebx, 3` that 0x420d9c has at 0x420f2c.
+  //                            ;   Disasm 0x4210d3 → 0x4210d9 is movzx cx,al
+  //                            ;   directly (no +3). The earlier copy of this
+  //                            ;   body from 0x420d9c spuriously kept the +3,
+  //                            ;   biasing the paint-ring slot pointer by 3 and
+  //                            ;   recoloring water tiles (±2 shade swaps).
   //   movzx cx, al
   //   shl cx, 4
   //   neg cx
@@ -213,7 +218,7 @@ function paintBody420f4c(heap, cpu) {
   const subCl = (cl - al) & 0xff;
   const subAl = (al - dl) & 0xff;
   const incCl = (subCl + 1) & 0xff;
-  const ebxArg = ((incCl >>> 0) + heap.u32(DAT_5F4778) + 3) >>> 0;
+  const ebxArg = ((incCl >>> 0) + heap.u32(DAT_5F4778)) >>> 0;
   let cxArg = (subAl & 0xff) << 4;          // movzx cx, al; shl cx, 4
   cxArg = ((-cxArg) & 0xffff) >>> 0;        // neg cx
   const axArg = 0;

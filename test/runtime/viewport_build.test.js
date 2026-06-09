@@ -13,15 +13,19 @@
 // faithful, oracle-equal path the runtime uses to paint terrain. The pick
 // resolves the clicked tile into 0x628918 (tile-element ptr) + 0x628910.
 //
-// REMAINING BROWSER GAP (documented, NOT exercised here): the *pure-JS* port of
-// FUN_00431510 (web/main-native.js per-tick input path) draws the 1x1 pick
-// pixel (the EBP-into-431b6f fix landed) but the JS painter chain drops one
-// terrain paint slot under the cold bridge cpu, so 433bae's list-head clobbers
-// the surface entry and the JS-only pick resolves no tile. See the project
-// memory (project-track-c-viewport-build) for the precise localization.
+// PURE-JS PARITY (now landed): the *pure-JS* port of FUN_00431510
+// (web/main-native.js per-tick input path) resolves the SAME tile as the
+// bridge/interpreter path. The prior "drops one terrain paint slot" gap was
+// the `sar si,1` drop in extra_paint_431bb8 (the base-tile painter): the
+// dropped signed-/2 left the bbox-Y2 doubled, so the 1x1 pick clip over-culled
+// the surface slot. With `sar si,1` restored (commit landing this fixture
+// update), pick-harness --interp=none-purejs resolves (196,92) -> 0x6f6498,
+// byte-identical to the all-native binary oracle.
 //
-// KNOWN-GOOD: screen (196,92) -> world (896,2048) -> tile (28,64), surface
-// element 0x6f4168, owned (byte7 & 0x20), height 84.
+// KNOWN-GOOD (binary-correct, oracle-verified): screen (196,92) ->
+// world (896,2048) -> tile (35,72), surface element 0x6f6498, owned
+// (byte7 & 0x20), height 88. (The prior (28,64)/0x6f4168/height 84 constants
+// were BUG-CALIBRATED to the pre-sar1 doubled bbox; see the project memory.)
 
 import { describe, it, expect, beforeAll } from "vitest";
 import { readFileSync } from "node:fs";
@@ -118,12 +122,13 @@ describe("viewport click-to-build (cursor-pick resolves a tile, then build write
     expect(heap.u8(elem + 7) & 0x20).toBe(0x20);      // land-owned
     expect(pickMs).toBeLessThan(4000);                // pick is not a runaway
 
-    // The resolved tile must be at the documented location (28,64) / 0x6f4168.
-    const surfAt2864 = surfaceElem(28, 64);
-    expect(surfAt2864).toBe(elem);
+    // The resolved tile must be at the binary-correct location (35,72) / 0x6f6498.
+    expect(elem).toBe(0x6f6498);
+    const surfAt3572 = surfaceElem(35, 72);
+    expect(surfAt3572).toBe(elem);
 
     // 2) Build: lower this tile one step via LAND set-height (cmd 1, atomic).
-    const tx = 28, ty = 64;
+    const tx = 35, ty = 72;
     const before = heap.u8(elem + 3);                 // surface base height
     expect(before).toBeGreaterThanOrEqual(8);         // room to lower
     const after = before - 4;

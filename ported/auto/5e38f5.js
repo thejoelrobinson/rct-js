@@ -15,6 +15,13 @@
 //
 // Confirmed against disassembly at 0x5e205b-0x5e2186 (capstone) and the
 // caller in 5e38f5 at 0x5e3920 onward.
+//
+// SECOND FIX (live cursor-pick): the dispatch tail at 0x5e39a4-0x5e39b6 keeps
+// the clamped cursor x in EAX and y in EBX live across the 5e2225/5e6078 calls
+// (push eax; push ebx; call; pop ebx; pop eax — twice). Ghidra lowered these
+// register args as ignored positional JS params, and 5e2225 clobbers regs.eax,
+// so the hover-pick (5e6078 -> 5e613e) saw eax=0 and resolved at (0, y) — off
+// the map. Restore regs.eax/regs.ebx before EACH call (see the inline note).
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -74,7 +81,23 @@ export function FUN_005e38f5(heap) {
       if (heap.u32(0x00971ed8) <= ((unaff_EBX) & 0xffff)) {
         unaff_EBX = ((((heap.u32(0x00971ed8) - 1) >>> 0)) >>> 0);
       }
+      // DISASM 0x5e39a4-0x5e39b6 (capstone): the clamped x (EAX=in_EAX) and y
+      // (EBX=unaff_EBX) are LIVE registers across BOTH calls —
+      //   push eax; push ebx; call 0x5e2225; pop ebx; pop eax;   ; hit-test
+      //   push eax; push ebx; call 0x5e6078; pop ebx; pop eax;   ; hover-pick
+      //   call 0x5e6044                                          ; tool-update
+      // i.e. 5e2225 and 5e6078 read the cursor x in EAX and y in EBX. The
+      // Ghidra C lowered the register args as positional JS params
+      // (FUN_005e6078(unaff_EBX, in_EAX)), which the ported fns ignore — they
+      // read regs.eax / regs.ebx. Worse, 5e2225 clobbers regs.eax, so by the
+      // time 5e6078 ran, regs.eax held 0 (not the cursor x) and the live
+      // cursor-pick 5e613e resolved at (0, y) — off the map — so a viewport
+      // drag never picked a tile. FIX: mirror the asm by loading regs.eax=
+      // in_EAX, regs.ebx=unaff_EBX before EACH call (the push/pop pair keeps
+      // the same x,y live across the intervening call).
+      regs.eax = in_EAX >>> 0; regs.ebx = unaff_EBX >>> 0;
       (regs.eax = FUN_005e2225(heap, unaff_EBX, in_EAX));
+      regs.eax = in_EAX >>> 0; regs.ebx = unaff_EBX >>> 0;
       (regs.eax = FUN_005e6078(heap, unaff_EBX, in_EAX));
       in_EAX = (((regs.eax = FUN_005e6044(heap))) >>> 0);
     }

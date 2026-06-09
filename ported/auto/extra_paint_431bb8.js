@@ -153,21 +153,27 @@ function paintBody431bb8(heap, cpu, rotation) {
   // === 0x431bc8 / 0x431d4b / 0x431edc / 0x43206f: preamble (identical) ===
   heap.setU32(PTR_PARENT, 0);                 // mov [0x628928], 0
 
-  // Pack new dx:
-  //   movsx bp, ah         ; bp = sign-extend(ah)
-  //   add   bp, dx         ; bp += dx (low 16)
-  //   shl   edx, 0x10      ; edx = (old_dx_low) << 16
-  //   mov   dx, bp         ; edx low 16 = bp
-  //   ror   edx, 0x10      ; swap halves → high=bp, low=old_dx_low
-  // Net: edx = (bp << 16) | (old_dx_low). But wait — after `shl edx, 0x10`
-  // the LOW 16 is 0. Then `mov dx, bp` makes low = bp. Then `ror edx, 0x10`
-  // swaps halves: high = old_low_pre_shift, low = bp.
-  // i.e. edx = (old_dx_low << 16) | bp.
+  // Pack new dx (DISASM 0x431bd2..0x431bdf):
+  //   660fbeec  movsx bp, ah     ; bp = sign-extend(ah)
+  //   6603ea    add   bp, dx     ; bp += dx (low 16)
+  //   c1e210    shl   edx, 0x10  ; edx = old_dx_low << 16, low 16 = 0
+  //   668bd5    mov   dx, bp     ; edx low 16 = bp  → edx = (old_dx_low<<16)|bp
+  //   c1ca10    ror   edx, 0x10  ; rotate-right 16 = swap halves
+  // After the ror, the halves SWAP: the value that was in bits 16-31
+  // (old_dx_low) moves to bits 0-15, and the value in bits 0-15 (bp) moves to
+  // bits 16-31. Net: edx = (bp << 16) | old_dx_low.
+  //
+  // BUGFIX: the prior port wrote (old_dx_low << 16) | bp — the halves the
+  // WRONG way round (it dropped the ror's swap). When ah != 0 (the 421d2c
+  // setup passes ah=0xff → bp = dx_low - 1), this made slot[+0x08] (the packed
+  // z-depth, read by the paint sort) differ from the binary, mis-ordering
+  // overlapping terrain slots → a water/dirt palette recolor in specific
+  // bands. Verified vs the interpreter: binary = (bp<<16)|dx_low.
   const edx0 = cpu.regs.edx >>> 0;
   const ah0 = (cpu.regs.eax >>> 8) & 0xff;
   const dxLow0 = edx0 & 0xffff;
   const bp16 = (sx8to16(ah0) + dxLow0) & 0xffff;
-  const edxPacked = (((dxLow0 << 16) >>> 0) | bp16) >>> 0;
+  const edxPacked = (((bp16 << 16) >>> 0) | dxLow0) >>> 0;
 
   // === 0x431be2/d65/ef6/089: ebp = DAT_005f96e8 (paint head) ===
   const slotPtr = heap.u32(PTR_PAINT_HEAD) >>> 0;
@@ -238,7 +244,7 @@ function paintBody431bb8(heap, cpu, rotation) {
 
   // === Now compute bbox bottom-right (di, si) for slot[0x10/0x12]. ===
   // The asm re-derives a copy: `mov di,ax; mov si,cx` then push ax;
-  // applies rotation-specific transform; sar si, 0 (no-op); sub si, dx.
+  // applies rotation-specific transform; sar si, 1 (signed /2); sub si, dx.
   // Note: at this point the asm reuses (di, si) as scratch — they're
   // NOT the bbox top-left anymore (which we've already written above).
   let xdi = ax & 0xffff;
@@ -247,7 +253,7 @@ function paintBody431bb8(heap, cpu, rotation) {
 
   if (rotation === 0) {
     // 0x431c33: mov ax, di; neg di; add di, si; add si, ax
-    //         (then sar si,0; sub si, dx — common tail)
+    //         (then sar si,1; sub si, dx — common tail)
     ax = xdi;
     xdi = (-xdi) & 0xffff;
     xdi = (xdi + xsi) & 0xffff;
@@ -271,7 +277,21 @@ function paintBody431bb8(heap, cpu, rotation) {
     xsi = (-xsi) & 0xffff;
     xsi = (xsi + ax) & 0xffff;
   }
-  // Common tail in this block: `sar si, 0` (no-op — shift by 0); `sub si, dx`.
+  // Common tail in this block: `sar si, 1` (signed /2); `sub si, dx`.
+  // DISASM (CODESEG, VA-0x401a00): the four rotation BR blocks each end with
+  //   0x431c3f `66 d1 fe`  sar si,1        (rot 0)
+  //   0x431dcb `66 d1 fe`  sar si,1        (rot 1)
+  //   0x431f5b `66 d1 fe`  sar si,1        (rot 2)
+  //   0x4320ef `66 d1 fe`  sar si,1        (rot 3)
+  // sitting between the rotation-specific BR add and `sub si,dx`. The earlier
+  // port dropped this shift (commented it "sar si,0 (no-op)"), leaving the
+  // bbox-Y2 value DOUBLED. Result: the sprite anchor [0x6288fe] + bbox-Y2
+  // overshoot makes the 1x1 pick clip over-cull the surface slot, AND the
+  // terrain renders at the wrong vertical position. `sar si,1` = arithmetic
+  // (signed) shift-right by 1 on the 16-bit si — sign-extend, >>1, re-mask.
+  // (Validated 63/63 vs the binary across all rot-0 431bc8 entries; the all-
+  // native oracle resolves (196,92)->0x6f6498.)
+  xsi = (sx16to32(xsi) >> 1) & 0xffff;     // sar si, 1
   // dx here is the LOW 16 bits of the packed edxPacked computed above — i.e.
   // the ORIGINAL dx_low (we stored old_dx_low in the low half, bp in high).
   // So subtract edxPacked & 0xffff = dxLow0.
@@ -296,7 +316,7 @@ function paintBody431bb8(heap, cpu, rotation) {
   //   mov si, cx            ; reset si = cx
   //   push ax
   //   ... rotation-specific bbox-X2/Y2 calc ...
-  //   sar si, 0
+  //   sar si, 1            ; 0x431c3f/dcb/f5b/0ef `66 d1 fe` — signed /2
   //   sub si, dx
   //   pop ax
   //   mov [ebp+0x10], di    ; bbox X2 — but di here is the SCRATCH di

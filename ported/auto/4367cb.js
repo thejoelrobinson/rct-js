@@ -77,9 +77,16 @@ export function FUN_004367cb(heap) {
     heap.setU8(0x00999fdc, 0xff);
     heap.setU32(0x0099a01e, 0xff);
 
-    // Store X/Y for the painter to read.
-    heap.setU32(0x00991f72, in_AX);
-    heap.setU32(0x00991f76, in_CX);
+    // Store X/Y for the painter to read. The binary at 0x436880/0x436886 does
+    //   66 a3 72 1f 99 00     mov word ptr [0x991f72], ax   (2 bytes)
+    //   66 89 0d 76 1f 99 00  mov word ptr [0x991f76], cx   (2 bytes)
+    // — both u16 stores (disasm-cited). The earlier setU32 here overran into
+    // [0x991f74]/[0x991f78]; with the harness/x86.js 0x66 mov-moffs bug fixed,
+    // the binary's faithful render keeps these as distinct u16 tile-coord
+    // fields, so we must match (setU16). [0x991f74] is then rewritten by
+    // 4368d8 anyway, but [0x991f72]/[0x991f76]/[0x991f78] parity matters.
+    heap.setU16(0x00991f72, in_AX);
+    heap.setU16(0x00991f76, in_CX);
     heap.setU16(0x00991f7c, in_AX);
     heap.setU16(0x00991f7c + 2, in_CX);
 

@@ -47,10 +47,14 @@ describe("native boot regression", () => {
   });
 
   it("dispatch table is fully populated", () => {
-    expect(dispatch.size).toBe(1227);
+    // 1228 = 1227 baseline + FUN_00424ab0 (the cmd-0x13 LAND-area handler, a
+    // jumptable target Ghidra never recovered — its JS port lets the live land
+    // drag's cmd 0x13 write the world instead of callIndirect returning 0).
+    expect(dispatch.size).toBe(1228);
     // Sanity: FUN_00401000 is at the top
     expect(dispatch.has(0x401000)).toBe(true);
     expect(dispatch.has(0x4385d8)).toBe(true);
     expect(dispatch.has(0x5df40c)).toBe(true);
+    expect(dispatch.has(0x424ab0)).toBe(true);
   });
 });
