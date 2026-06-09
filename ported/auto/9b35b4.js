@@ -21,6 +21,8 @@ import { FUN_009b38bc } from "./9b38bc.js";
 import { FUN_009b3bf1 } from "./9b3bf1.js";
 import { FUN_009b3d13 } from "./9b3d13.js";
 import { FUN_009b3e87 } from "./9b3e87.js";
+// 16-bit sign-extend (the asm clip math is all 16-bit signed ops)
+function s16v(x) { return ((x & 0xffff) << 16) >> 16; }
 export function FUN_009b35b4(heap) {
   let bVar1 = 0;
   let sVar2 = 0;
@@ -53,59 +55,60 @@ export function FUN_009b35b4(heap) {
     heap.setU32(0x009a2018, (heap.u32((0x008dc0bc + iVar8))) >>> 0);
     heap.setU32(0x009a201c, (heap.u32((0x008dc0c0 + iVar8))) >>> 0);
     sVar5 = (((((heap.u32(0x009a2018) >>> 0x10)) << 16 >> 16)) & 0xffff);
-    heap.setU32(0x009a2014, (((uVar7) << 16 >> 16)) >>> 0);
-    heap.setU32(0x009a2016, ((((uVar7 >>> 0x10)) << 16 >> 16)) >>> 0);
+    // @manual (Phase Track-C pick-blit): identical fix to the 9b35fa entry-point body
+    // (0x9b35fa is a LABEL inside this same function 0x9b35b4; Ghidra split them). The
+    // setU32 at [0x9a2016] (a 16-bit (short) store) clobbered the low word of [0x9a2018]
+    // (the X-offset 9b38bc's X-clip reads) -> setU16. See 9b35fa.js for the full rationale.
+    heap.setU16(0x009a2014, ((uVar7) << 16 >> 16) & 0xffff);
+    heap.setU16(0x009a2016, (((uVar7 >>> 0x10)) << 16 >> 16) & 0xffff);
     heap.setU32(0x009a2010, (pbVar9) >>> 0);
     heap.setU32(0x009a2014, (uVar7) >>> 0);
     if ((heap.u32(0x009a201c) & 4) != 0) {
+      // @manual (Phase Track-C pick-blit): signed-16-bit clip rewrite + esi register-init,
+      // ported from asm 0x9b380f..0x9b38b5 (shared with 9b35fa). The translator masked the
+      // clip math with `& 0xffff` (never-negative) and dropped esi=[0x9a2010] before the
+      // RLE leaf call -> the BROWSER pure-JS pick missed every clipped tile.
       uVar3 = ((CONCAT22(sVar5, heap.u32(0x009a2016))) >>> 0);
-      heap.setU32(0x009a2020, (0) >>> 0);
-      heap.setU32(0x009a202c, (heap.u32(0x009a2016)) >>> 0);
-      sVar2 = (((in_DX + sVar5) - heap.i16((unaff_EDI + 6))) & 0xffff);
-      if (sVar2 < 0) {
-        heap.setU32(0x009a202c, (heap.u32(0x009a2016) + sVar2) >>> 0);
-        if (heap.u32(0x009a202c) < 0) {
-          heap.setU8(0x0099c164, (0) & 0xff);
-          heap.setU32(0x009a2020, (0) >>> 0);
-          return uVar3;
-        }
-        if (heap.u32(0x009a202c) == 0) {
-          heap.setU8(0x0099c164, (0) & 0xff);
-          heap.setU32(0x009a2020, (0) >>> 0);
-          return uVar3;
-        }
-        heap.setU32(0x009a2020, (-sVar2) >>> 0);
-        sVar2 = ((0) & 0xffff);
+      regs.esi = heap.u32(0x009a2010) >>> 0;                 // 0x9b3812 esi = image data
+      let dxv = s16v(in_DX + heap.i16(0x009a201a));          // 0x9b3818 add dx, [0x9a201a]
+      heap.setU16(0x009a2020, 0);                            // 0x9b3825
+      heap.setU16(0x009a202c, heap.u16(0x009a2016));         // 0x9b382e
+      dxv = s16v(dxv - heap.i16(unaff_EDI + 6));             // 0x9b3834
+      if (dxv < 0) {                                         // 0x9b3838 jns
+        heap.setU16(0x009a202c, s16v(heap.i16(0x009a202c) + dxv) & 0xffff); // 0x9b383a
+        if (heap.i16(0x009a202c) < 0) { heap.setU16(0x009a2014, uVar7 & 0xffff); return uVar3; } // 0x9b3841
+        if (heap.i16(0x009a202c) === 0) { heap.setU16(0x009a2014, uVar7 & 0xffff); return uVar3; } // 0x9b3843
+        heap.setU16(0x009a2020, s16v(heap.i16(0x009a2020) - dxv) & 0xffff); // 0x9b3845
+        dxv = 0;                                             // 0x9b384c
       }
-      sVar6 = ((heap.u32(0x009a202c)) & 0xffff);
-      sVar4 = ((sVar2 + heap.u32(0x009a202c) + -1) & 0xffff);
-      if ((sVar4 == 0 || (((sVar2 + heap.u32(0x009a202c))) << 16 >> 16) < 1) || (heap.setU32(0x009a202c, (heap.u32(0x009a202c) - sVar4) >>> 0), heap.u32(0x009a202c) != 0 && sVar4 <= sVar6)) {
-        uVar3 = ((CONCAT22(sVar5, heap.u32(0x009a2014))) >>> 0);
-        heap.setU32(0x009a2024, (0) >>> 0);
-        heap.setU32(0x009a2028, (heap.u32(0x009a2014)) >>> 0);
-        sVar5 = (((in_CX + heap.u32(0x009a2018)) - heap.i16((unaff_EDI + 4))) & 0xffff);
-        if (sVar5 < 0) {
-          heap.setU32(0x009a2028, (heap.u32(0x009a2014) + sVar5) >>> 0);
-          if (heap.u32(0x009a2028) < 0) {
-            heap.setU8(0x0099c164, (0) & 0xff);
-            heap.setU32(0x009a2024, (0) >>> 0);
-            return uVar3;
-          }
-          if (heap.u32(0x009a2028) == 0) {
-            heap.setU8(0x0099c164, (0) & 0xff);
-            heap.setU32(0x009a2024, (0) >>> 0);
-            return uVar3;
-          }
-          heap.setU32(0x009a2024, (-((sVar5) | 0)) >>> 0);
-          sVar5 = ((0) & 0xffff);
-        }
-        sVar2 = ((heap.u32(0x009a2028)) & 0xffff);
-        sVar6 = ((sVar5 + heap.u32(0x009a2028) + -1) & 0xffff);
-        if ((sVar6 == 0 || (((sVar5 + heap.u32(0x009a2028))) << 16 >> 16) < 1) || (heap.setU32(0x009a2028, (heap.u32(0x009a2028) - sVar6) >>> 0), heap.u32(0x009a2028) != 0 && sVar6 <= sVar2)) {
-          uVar3 = (((regs.eax = FUN_009b38bc(heap))) >>> 0);
-          uVar7 = ((heap.u32(0x009a2014)) >>> 0);
-        }
+      dxv = s16v(dxv + heap.i16(0x009a202c));                // 0x9b384f
+      dxv = s16v(dxv - 1);                                   // 0x9b3856
+      if (dxv > 0) {                                         // 0x9b385a jle
+        heap.setU16(0x009a202c, s16v(heap.i16(0x009a202c) - dxv) & 0xffff); // 0x9b385c
+        if (heap.i16(0x009a202c) <= 0) { heap.setU16(0x009a2014, uVar7 & 0xffff); return uVar3; } // 0x9b3863
       }
+      // X-clip (0x9b3865)
+      uVar3 = ((CONCAT22(sVar5, heap.u32(0x009a2014))) >>> 0);
+      heap.setU32(0x009a2024, 0);                            // 0x9b386b DWORD
+      heap.setU16(0x009a2028, heap.u16(0x009a2014));         // 0x9b3875
+      let cxv = s16v(in_CX + heap.i16(0x009a2018));          // 0x9b387b add cx, word[0x9a2018]
+      cxv = s16v(cxv - heap.i16(unaff_EDI + 4));             // 0x9b3882
+      if (cxv < 0) {                                         // 0x9b3886 jns
+        heap.setU16(0x009a2028, s16v(heap.i16(0x009a2028) + cxv) & 0xffff); // 0x9b3888
+        if (heap.i16(0x009a2028) < 0) { heap.setU16(0x009a2014, uVar7 & 0xffff); return uVar3; } // 0x9b388f
+        if (heap.i16(0x009a2028) === 0) { heap.setU16(0x009a2014, uVar7 & 0xffff); return uVar3; } // 0x9b3891
+        heap.setU32(0x009a2024, (heap.u32(0x009a2024) - (cxv | 0)) >>> 0); // 0x9b3893 movsx; sub dword
+        cxv = 0;                                             // 0x9b389c
+      }
+      cxv = s16v(cxv + heap.i16(0x009a2028));                // 0x9b389f
+      cxv = s16v(cxv - 1);                                   // 0x9b38a6
+      if (cxv > 0) {                                         // 0x9b38aa jle
+        heap.setU16(0x009a2028, s16v(heap.i16(0x009a2028) - cxv) & 0xffff); // 0x9b38ac
+        if (heap.i16(0x009a2028) <= 0) { heap.setU16(0x009a2014, uVar7 & 0xffff); return uVar3; } // 0x9b38b3
+      }
+      regs.esi = heap.u32(0x009a2010) >>> 0;                 // before call (esi unchanged)
+      uVar3 = (((regs.eax = FUN_009b38bc(heap))) >>> 0);     // 0x9b38b5 call 9b38bc
+      uVar7 = ((heap.u32(0x009a2014)) >>> 0);
       heap.setU32(0x009a2014, (uVar7) >>> 0);
       return uVar3;
     }

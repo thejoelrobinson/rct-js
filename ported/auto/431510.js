@@ -71,6 +71,16 @@ export function FUN_00431510(heap) {
       heap.setU16(0x005f96d8, 1);
       heap.setU16(0x005f96da, 1);
       heap.setU16(0x005f96de, heap.u16(0x005f96ce));
+      // @manual: the binary (0x4315e0 `mov ebp, 0x5f96ec`) loads the paint-slot
+      // ARENA BASE into EBP right before `call 0x431b6f`; 431b6f then stores that
+      // EBP into the alloc cursor 0x5f96e8 (`mov [0x5f96e8], ebp`). The translator
+      // dropped this register-init at the call site (same class as 429aff/433f20),
+      // so 431b6f stored a stale EBP, the paint arena started at a garbage address,
+      // and the 1x1 pick paint-list (built by 436b2a) never covered the cursor →
+      // no pixel → the cursor-pick resolved nothing in the pure-JS browser path.
+      // Oracle: 0x431b6f via the interpreter receives EBP=0x5f96ec and writes
+      // 0x5f96e8=0x5f96ec; the JS now matches it.
+      regs.ebp = 0x005f96ec;
       (regs.eax = FUN_00431b6f(heap, psVar2));
       (regs.eax = FUN_00436b2a(heap));
       (regs.eax = FUN_00433bae(heap));

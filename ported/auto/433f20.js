@@ -34,6 +34,11 @@ export function FUN_00433f20(heap) {
       regs.edx = ((regs.edx & 0xffff0000) | heap.u16(iVar3 + 0x12)) >>> 0;
       regs.ebx = heap.u32(iVar3) >>> 0;
       (regs.eax = FUN_009b35b4(heap));
+      // @manual: 433f8b reads the hit element from [ebp+0x24/0x28/0x2c] where the asm has
+      // ebp = the paint entry (iVar3) at the call (0x433f33 push ebp; ...; 0x433f45 pop ebp;
+      // 0x433f46 call 433f8b). The translator dropped that EBP=entry setup, so the JS
+      // recorder read garbage and never wrote 0x628918 in the pure-JS browser path.
+      regs.ebp = iVar3 >>> 0;
       (regs.eax = FUN_00433f8b(heap));
       if (heap.i32((iVar3 + 0x1c)) == 0) {
         break;
@@ -46,6 +51,9 @@ export function FUN_00433f20(heap) {
       regs.edx = ((regs.edx & 0xffff0000) | ((heap.u16(iVar1 + 6) + heap.u16(iVar3 + 0x12)) & 0xffff)) >>> 0;
       regs.ebx = heap.u32(iVar1) >>> 0;
       (regs.eax = FUN_009b35b4(heap, iVar3));
+      // @manual: same EBP=paint-entry setup before the recorder (asm 0x433f7a pop ebp;
+      // 0x433f7c call 433f8b -> ebp = iVar3).
+      regs.ebp = iVar3 >>> 0;
       (regs.eax = FUN_00433f8b(heap));
     }
   }
