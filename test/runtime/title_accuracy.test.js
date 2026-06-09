@@ -22,9 +22,20 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 
 // Current known gap between the pure-JS blit chain and the binary, in diverging
 // palette-index pixels out of 307200. Goal: 0.  History: shattered(~150k) →
-// 14606 (96.10% colour) after 10 oracle-gated fixes. Remaining tail is isolated
-// entirely to the RLE inner blitter ported/auto/9b4911.js.
-const MAX_DIVERGENCE = 14606;
+// 14606 (96.10% colour) after 10 oracle-gated fixes → 0 (BYTE-EXACT). The final
+// 14606-px tail was NOT a 9b4911-port bug: the JS RLE inner was already doing
+// the correct full-length plain-copy. The divergence was two bugs in the x86
+// interpreter (harness/x86.js) that fed the truth fixture:
+//   (1) `shr/shl/sar/rol/ror r/m32,1` (opcode 0xd1) never updated CF, so the
+//       canonical `shr ecx,1; jae; movsb; shr ecx,1; jae; movsw; rep movsd`
+//       copy-tail at 0x9b4983 mis-took its conditional branches and truncated
+//       every odd-length run down to a multiple of 4.
+//   (2) the bare (non-rep) `66 a5` movsw at 0x9b498c ignored the 0x66
+//       operand-size prefix and copied a dword (4 B) instead of a word (2 B),
+//       overrunning every odd-width run by 2 px.
+// With both interpreter bugs fixed and the fixture re-captured, the JS render is
+// byte-identical to the binary across all 639 title RLE blits.
+const MAX_DIVERGENCE = 0;
 
 describe("title-screen accuracy vs original binary", () => {
   it("JS tick-1 render matches the interpreter ground truth (ratchet → 0)", async () => {

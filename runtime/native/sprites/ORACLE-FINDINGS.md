@@ -267,3 +267,39 @@ the remaining gap is the JS RLE decoder 9b4911.
 
 The controlled A/B bisection (above) is NOT confounded — it's a relative JS-vs-
 interp comparison with identical before-state — so "the tail is 9b4911" is solid.
+
+---
+
+## RESOLVED (2026-06-09) — title_accuracy 14606 → 0, BYTE-EXACT
+
+The blank-surface harness (/tmp/blank-isolate-9b4911.js, captures each title
+9b4911 entry state + scratch globals, zeroes the surface, runs JS vs interp from
+identical state) localised the gap to the plain-copy tail and proved the JS RLE
+port (9b4911.js) was **already correct** — it does the full-length plain copy.
+The 14606-px tail was **two bugs in the x86 interpreter** (harness/x86.js) that
+generated the truth fixture, NOT a 9b4911-port bug:
+
+1. **`0xd1` (shift/rotate r/m32 by 1) never set CF.** The handler computed the
+   result and set ZF/SF but left CF stale. The plain-copy tail at 0x9b4983 is the
+   classic byte-copy unroll `shr ecx,1; jae +; movsb; shr ecx,1; jae +; movsw;
+   rep movsd`. With CF never updated, both `jae`s mis-branched and every
+   odd-length run was truncated to a multiple of 4. Fixed: CF = old bit0 for
+   SHR/SAR/ROR, old bit31 for SHL/ROL (count==1).
+2. **Bare (non-rep) `66 a5` movsw copied 4 bytes, not 2.** The bare string-op
+   path called `doStringStep` (always dword) and ignored the 0x66 operand-size
+   prefix; 0x9b498c emits a bare `66 a5` as the 2-byte tail of the unroll, so
+   each odd-width run overran by 2 px. Fixed: bare path now uses `wordStringStep`
+   when `prefixOperandSize`.
+
+Both fixes make the interpreter match a real x86 CPU. After them + a truth-fixture
+recapture (`node tools/capture-truth-surface.js`, tick-1 hash now 0xeba3c63a),
+the blank-surface harness shows **0/639 divergent blits, 0 diff px**, and
+title_accuracy.test.js reports **0/307200 divergent (100.000%)** — MAX_DIVERGENCE
+ratcheted 14606 → 0.
+
+NEUTRALITY: the browser JS chain was not touched, so title_replay stays GREEN and
+needs no re-capture — the committed fixture hashes are byte-identical (verified;
+only `capturedAt` would change). Notably the tick-1 replay hash 0xeba3c63a now
+EQUALS the truth-surface hash: the JS render and the binary's render are the same
+bytes. The earlier "Ghidra C inconsistent with the binary" blocker is explained:
+the C was fine; the *interpreter* (the supposed oracle) was the inconsistent one.

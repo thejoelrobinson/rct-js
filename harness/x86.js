@@ -1399,9 +1399,13 @@ export function step(cpu) {
       default: throw new Error(`not a string op: 0x${op.toString(16)}`);
     }
   };
-  // Bare string ops (no rep)
+  // Bare string ops (no rep). A leading 0x66 operand-size prefix turns the
+  // dword "d" variants into word ops — e.g. the RLE blit FUN_009b4911 emits a
+  // bare `66 a5` (movsw) at 0x9b498c as the 2-byte tail of its byte-copy
+  // unroll. The original handler always ran the dword step, copying 4 bytes
+  // instead of 2 and overrunning every odd-width run by 2 px.
   if (_STRING_OPCODES[opcode]) {
-    doStringStep(opcode);
+    (prefixOperandSize ? wordStringStep : doStringStep)(opcode);
     cpu.regs.eip = (ip + 1) >>> 0; return true;
   }
 
@@ -2272,11 +2276,16 @@ export function step(cpu) {
     const a = read32op(cpu, operand);
     let r;
     switch (regField) {
-      case 0: r = rol32(a, 1); break;
-      case 1: r = ror32(a, 1); break;
-      case 4: r = shl32(a, 1); break;
-      case 5: r = shr32(a, 1); break;
-      case 7: r = sar32(a, 1); break;
+      // CF for count==1: ROL/SHL carry out the old MSB (bit31); ROR/SHR/SAR
+      // carry out the old LSB (bit0). The original handler computed the result
+      // but left CF stale — that broke the canonical `shr ecx,1; jae; movsb;
+      // shr ecx,1; jae; movsw; rep movsd` byte-copy tail used by the RLE blit
+      // FUN_009b4911 (0x9b4983), truncating every odd-length plain-copy run.
+      case 0: r = rol32(a, 1); cpu.eflags.CF = (a >>> 31) & 1; break; // ROL
+      case 1: r = ror32(a, 1); cpu.eflags.CF = a & 1; break;          // ROR
+      case 4: r = shl32(a, 1); cpu.eflags.CF = (a >>> 31) & 1; break; // SHL
+      case 5: r = shr32(a, 1); cpu.eflags.CF = a & 1; break;          // SHR
+      case 7: r = sar32(a, 1); cpu.eflags.CF = a & 1; break;          // SAR
       default: throw new Error(`unsupported 0xd1 /${regField}`);
     }
     write32op(cpu, operand, r);
