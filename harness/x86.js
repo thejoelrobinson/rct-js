@@ -23,7 +23,7 @@ for (const o of [0xa4, 0xa5, 0xa6, 0xa7, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf]) _S
 export function makeCpu(memory) {
   return {
     regs: { eax:0, ebx:0, ecx:0, edx:0, esi:0, edi:0, esp:0, ebp:0, eip:0 },
-    eflags: { CF:0, ZF:0, SF:0, OF:0 },
+    eflags: { CF:0, ZF:0, SF:0, OF:0, DF:0 },
     memory,
     callDepth: 0,
     // x87 FPU: 8-slot stack stored bottom-up, with rotating TOP pointer.
@@ -1175,7 +1175,12 @@ export function step(cpu) {
   if (opcode === 0xf5) { cpu.eflags.CF = cpu.eflags.CF ^ 1; cpu.regs.eip = (ip + 1) >>> 0; return true; }
   if (opcode === 0xf8) { cpu.eflags.CF = 0; cpu.regs.eip = (ip + 1) >>> 0; return true; }
   if (opcode === 0xf9) { cpu.eflags.CF = 1; cpu.regs.eip = (ip + 1) >>> 0; return true; }
-  if (opcode === 0xfc || opcode === 0xfd) { cpu.regs.eip = (ip + 1) >>> 0; return true; } // CLD/STD — DF unused
+  // CLD (0xfc) / STD (0xfd) — direction flag, honoured by the string ops.
+  // The CRT memmove's backward-overlap path (0x413a83: std; rep movsd; cld)
+  // depends on DF; treating STD as a no-op made overlapping copies run
+  // forward and smear the source.
+  if (opcode === 0xfc) { cpu.eflags.DF = 0; cpu.regs.eip = (ip + 1) >>> 0; return true; }
+  if (opcode === 0xfd) { cpu.eflags.DF = 1; cpu.regs.eip = (ip + 1) >>> 0; return true; }
   // 0xf1 — INT 1 / ICEBP. Never legitimate in user code; appearing means we jumped to
   // bogus memory. Bail back to the RET sentinel so the painter exits cleanly instead of
   // throwing and aborting the whole tick.
@@ -1413,20 +1418,23 @@ export function step(cpu) {
   if (opcode === 0xd0) { shift8Op(1); return true; }
   if (opcode === 0xd2) { shift8Op(cpu.regs.ecx & 0xff); return true; }
 
-  // String ops (forward-direction only; we assume CLD)
-  // Step size: 1 for "b" variants, 4 for "d" variants. Repeat with rep/repne handled below.
+  // String ops. Direction follows cpu.eflags.DF (CLD/STD): +size forward,
+  // -size backward. Step size: 1 for "b" variants, 4 for "d" variants.
+  // Repeat with rep/repne handled below.
   const doStringStep = (op) => {
+    const d1 = cpu.eflags.DF ? -1 : 1;
+    const d4 = cpu.eflags.DF ? -4 : 4;
     switch (op) {
-      case 0xa4: { write8(m, cpu.regs.edi, mem8(m, cpu.regs.esi)); cpu.regs.esi = (cpu.regs.esi + 1) >>> 0; cpu.regs.edi = (cpu.regs.edi + 1) >>> 0; break; } // movsb
-      case 0xa5: { write32(m, cpu.regs.edi, mem32(m, cpu.regs.esi)); cpu.regs.esi = (cpu.regs.esi + 4) >>> 0; cpu.regs.edi = (cpu.regs.edi + 4) >>> 0; break; } // movsd
-      case 0xaa: { write8(m, cpu.regs.edi, read8reg(cpu, 0)); cpu.regs.edi = (cpu.regs.edi + 1) >>> 0; break; } // stosb
-      case 0xab: { write32(m, cpu.regs.edi, cpu.regs.eax); cpu.regs.edi = (cpu.regs.edi + 4) >>> 0; break; } // stosd
-      case 0xac: { write8reg(cpu, 0, mem8(m, cpu.regs.esi)); cpu.regs.esi = (cpu.regs.esi + 1) >>> 0; break; } // lodsb
-      case 0xad: { cpu.regs.eax = mem32(m, cpu.regs.esi); cpu.regs.esi = (cpu.regs.esi + 4) >>> 0; break; } // lodsd
-      case 0xae: { setSubFlags(cpu, read8reg(cpu, 0), mem8(m, cpu.regs.edi)); cpu.regs.edi = (cpu.regs.edi + 1) >>> 0; break; } // scasb
-      case 0xaf: { setSubFlags(cpu, cpu.regs.eax >>> 0, mem32(m, cpu.regs.edi)); cpu.regs.edi = (cpu.regs.edi + 4) >>> 0; break; } // scasd
-      case 0xa6: { setSubFlags(cpu, mem8(m, cpu.regs.esi), mem8(m, cpu.regs.edi)); cpu.regs.esi = (cpu.regs.esi + 1) >>> 0; cpu.regs.edi = (cpu.regs.edi + 1) >>> 0; break; } // cmpsb
-      case 0xa7: { setSubFlags(cpu, mem32(m, cpu.regs.esi), mem32(m, cpu.regs.edi)); cpu.regs.esi = (cpu.regs.esi + 4) >>> 0; cpu.regs.edi = (cpu.regs.edi + 4) >>> 0; break; } // cmpsd
+      case 0xa4: { write8(m, cpu.regs.edi, mem8(m, cpu.regs.esi)); cpu.regs.esi = (cpu.regs.esi + d1) >>> 0; cpu.regs.edi = (cpu.regs.edi + d1) >>> 0; break; } // movsb
+      case 0xa5: { write32(m, cpu.regs.edi, mem32(m, cpu.regs.esi)); cpu.regs.esi = (cpu.regs.esi + d4) >>> 0; cpu.regs.edi = (cpu.regs.edi + d4) >>> 0; break; } // movsd
+      case 0xaa: { write8(m, cpu.regs.edi, read8reg(cpu, 0)); cpu.regs.edi = (cpu.regs.edi + d1) >>> 0; break; } // stosb
+      case 0xab: { write32(m, cpu.regs.edi, cpu.regs.eax); cpu.regs.edi = (cpu.regs.edi + d4) >>> 0; break; } // stosd
+      case 0xac: { write8reg(cpu, 0, mem8(m, cpu.regs.esi)); cpu.regs.esi = (cpu.regs.esi + d1) >>> 0; break; } // lodsb
+      case 0xad: { cpu.regs.eax = mem32(m, cpu.regs.esi); cpu.regs.esi = (cpu.regs.esi + d4) >>> 0; break; } // lodsd
+      case 0xae: { setSubFlags(cpu, read8reg(cpu, 0), mem8(m, cpu.regs.edi)); cpu.regs.edi = (cpu.regs.edi + d1) >>> 0; break; } // scasb
+      case 0xaf: { setSubFlags(cpu, cpu.regs.eax >>> 0, mem32(m, cpu.regs.edi)); cpu.regs.edi = (cpu.regs.edi + d4) >>> 0; break; } // scasd
+      case 0xa6: { setSubFlags(cpu, mem8(m, cpu.regs.esi), mem8(m, cpu.regs.edi)); cpu.regs.esi = (cpu.regs.esi + d1) >>> 0; cpu.regs.edi = (cpu.regs.edi + d1) >>> 0; break; } // cmpsb
+      case 0xa7: { setSubFlags(cpu, mem32(m, cpu.regs.esi), mem32(m, cpu.regs.edi)); cpu.regs.esi = (cpu.regs.esi + d4) >>> 0; cpu.regs.edi = (cpu.regs.edi + d4) >>> 0; break; } // cmpsd
       default: throw new Error(`not a string op: 0x${op.toString(16)}`);
     }
   };
@@ -1466,17 +1474,18 @@ export function step(cpu) {
   }
   // 16-bit-override variants of string ops (executed by rep handler above)
   function wordStringStep(op) {
+    const d2 = cpu.eflags.DF ? -2 : 2;
     switch (op) {
       case 0xa5: write16(m, cpu.regs.edi, mem16(m, cpu.regs.esi));
-                 cpu.regs.esi = (cpu.regs.esi + 2) >>> 0; cpu.regs.edi = (cpu.regs.edi + 2) >>> 0; break;
+                 cpu.regs.esi = (cpu.regs.esi + d2) >>> 0; cpu.regs.edi = (cpu.regs.edi + d2) >>> 0; break;
       case 0xab: write16(m, cpu.regs.edi, cpu.regs.eax & 0xffff);
-                 cpu.regs.edi = (cpu.regs.edi + 2) >>> 0; break;
+                 cpu.regs.edi = (cpu.regs.edi + d2) >>> 0; break;
       case 0xad: cpu.regs.eax = ((cpu.regs.eax & 0xffff0000) | mem16(m, cpu.regs.esi)) >>> 0;
-                 cpu.regs.esi = (cpu.regs.esi + 2) >>> 0; break;
+                 cpu.regs.esi = (cpu.regs.esi + d2) >>> 0; break;
       case 0xa7: setSubFlags(cpu, mem16(m, cpu.regs.esi), mem16(m, cpu.regs.edi));
-                 cpu.regs.esi = (cpu.regs.esi + 2) >>> 0; cpu.regs.edi = (cpu.regs.edi + 2) >>> 0; break;
+                 cpu.regs.esi = (cpu.regs.esi + d2) >>> 0; cpu.regs.edi = (cpu.regs.edi + d2) >>> 0; break;
       case 0xaf: setSubFlags(cpu, cpu.regs.eax & 0xffff, mem16(m, cpu.regs.edi));
-                 cpu.regs.edi = (cpu.regs.edi + 2) >>> 0; break;
+                 cpu.regs.edi = (cpu.regs.edi + d2) >>> 0; break;
       default: doStringStep(op); break;
     }
   }

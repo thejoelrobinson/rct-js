@@ -519,5 +519,58 @@ export function installPainterBridge(heap, opts = {}) {
     });
     bridged++;
   }
+
+  // Generic native call with STACK arguments (cdecl, caller-cleans) —
+  // for delegating translated functions that take JS stack params (the
+  // plain _paintShim only covers regs-based conventions). Args are
+  // written at [stackTop], [stackTop+4], ... and runFunction puts
+  // RET_SENTINEL at [stackTop-4], exactly the layout a `push args; call`
+  // sequence leaves. Caller-cleanup means nothing to pop afterwards —
+  // the wrapper's stack is discarded wholesale.
+  _callNativeImpl = (addr, args) => {
+    cpu.regs.eax = regs.eax >>> 0;
+    cpu.regs.ecx = regs.ecx >>> 0;
+    cpu.regs.edx = regs.edx >>> 0;
+    cpu.regs.ebx = regs.ebx >>> 0;
+    cpu.regs.esi = regs.esi >>> 0;
+    cpu.regs.edi = regs.edi >>> 0;
+    cpu.regs.ebp = regs.ebp >>> 0;
+    cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
+    cpu.fpuTop = 0; cpu.fpuTags = 0xffff; cpu.fpuSw = 0;
+    const stackTop = (STACK_TOP - 0x40) >>> 0; // room for args + slack
+    for (let i = 0; i < args.length; i++) {
+      const v = args[i] >>> 0, a = stackTop + i * 4;
+      memory[a] = v & 0xff; memory[a + 1] = (v >>> 8) & 0xff;
+      memory[a + 2] = (v >>> 16) & 0xff; memory[a + 3] = (v >>> 24) & 0xff;
+    }
+    try {
+      runFunction(cpu, addr >>> 0, { stackTop, limit: globalThis.__painterStepLimit || 50_000_000 });
+    } catch (e) {
+      if (e && e.__painterDone) throw e;
+      if (!(e && e._wildShim) && typeof console !== "undefined") {
+        console.warn(`[painter-bridge] callNative 0x${(addr >>> 0).toString(16)}: ${(e.message || e).slice(0, 160)} @eip=0x${(cpu.regs.eip >>> 0).toString(16)}`);
+      }
+    }
+    regs.eax = cpu.regs.eax >>> 0;
+    regs.ecx = cpu.regs.ecx >>> 0;
+    regs.edx = cpu.regs.edx >>> 0;
+    regs.ebx = cpu.regs.ebx >>> 0;
+    regs.esi = cpu.regs.esi >>> 0;
+    regs.edi = cpu.regs.edi >>> 0;
+    regs.ebp = cpu.regs.ebp >>> 0;
+    return regs.eax;
+  };
+
   return bridged;
+}
+
+// callNative(addr, args) — run a CODESEG function through the bridge
+// interpreter with cdecl STACK arguments. Available after
+// installPainterBridge has run (i.e. after createRuntime).
+let _callNativeImpl = null;
+export function callNative(addr, args = []) {
+  if (!_callNativeImpl) {
+    throw new Error("painter-bridge callNative: bridge not installed (createRuntime first)");
+  }
+  return _callNativeImpl(addr, args);
 }
