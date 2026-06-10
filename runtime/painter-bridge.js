@@ -31,6 +31,11 @@ import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
 import { install5ce7f8Hook } from "../ported/auto/extra_paint_5ce7f8.js";
 // Phase R+14: hand-port for base-tile rotation sub-painter (PTR_LAB_00431bb8).
 import { install431bb8Hooks } from "../ported/auto/extra_paint_431bb8.js";
+// Workstream A1 (2026-06-10): hand-port for the SECOND rotation paint-slot
+// allocator table (PTR_LAB_00432204) — called inline from the interpreter
+// bodies of 0x5dff38 (fence), 0x444e08 (wall), the 42094b/420502 cold
+// tails, and the small-scenery sub-painters. See extra_paint_432204.js.
+import { install432204Hooks } from "../ported/auto/extra_paint_432204.js";
 // Phase R+14b: hand-port for palette-swizzle helper #1 of 4 called from
 // the tail of 0x421d2c (terrain painter).
 import { install420d9cHook } from "../ported/auto/extra_paint_420d9c.js";
@@ -348,6 +353,19 @@ export function installPainterBridge(heap, opts = {}) {
   // fall back to interp (the only "abort" is allocator-full, which we
   // mirror silently).
   install431bb8Hooks(cpu, runFunction, setEipHook, heap);
+
+  // ######################################################################
+  // Workstream A1 (2026-06-10) — second rotation paint-slot allocator
+  // (PTR_LAB_00432204: 0x432214 / 0x4323b8 / 0x43256d / 0x432727).
+  // ######################################################################
+  // Sibling of 431bb8, but invoked from per-element painters that still run
+  // in the bridge interpreter (0x5dff38 fence ×4/call, 0x444e08 wall,
+  // 42094b/420502 cold tails). The 2026-06-10 scenario soak ranked those
+  // callers as 4 of the top-5 interpreter step consumers; this table's
+  // ~65-insn body executed inline is the bulk of their cost. Full-path
+  // port (no cold fallback); register write-back per exit path because the
+  // interpreter callers resume on cpu.regs after the auto-ret.
+  install432204Hooks(cpu, runFunction, setEipHook, heap);
 
   // ######################################################################
   // Phase R+14b region — palette-swizzle helper #1 of 4 (0x421d2c tail).
