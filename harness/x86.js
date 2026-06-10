@@ -2453,7 +2453,12 @@ export function step(cpu) {
       const taken = jccTaken(op2 & 0xf, cpu.eflags);
       cpu.regs.eip = ((ip + 6) + (taken ? rel : 0)) >>> 0; return true;
     }
-    // MOVZX r32, r/m8 (0x0f b6) and r/m16 (0x0f b7)
+    // MOVZX r32, r/m8 (0x0f b6) and r/m16 (0x0f b7).
+    // With the 0x66 operand-size prefix the destination is r16 (movzx
+    // ax, bl / movzx di, byte [..]) — the high 16 bits of the destination
+    // register are PRESERVED. The pre-fix handler always wrote 32 bits,
+    // zeroing the high half — same bug class as the 0xa1/0xa3 fix in
+    // commit ebf743e (CODESEG painters use 66-prefixed forms heavily).
     if (op2 === 0xb6 || op2 === 0xb7) {
       const { operand, regField, len } = decodeModrm(cpu, ip + 2);
       let v;
@@ -2462,7 +2467,12 @@ export function step(cpu) {
       } else {
         v = operand.kind === "reg" ? (cpu.regs[REG32[operand.reg]] & 0xffff) : mem16(m, operand.addr);
       }
-      cpu.regs[REG32[regField]] = v >>> 0;
+      if (prefixOperandSize) {
+        const rn = REG32[regField];
+        cpu.regs[rn] = ((cpu.regs[rn] & 0xffff0000) | (v & 0xffff)) >>> 0;
+      } else {
+        cpu.regs[REG32[regField]] = v >>> 0;
+      }
       cpu.regs.eip = (ip + 2 + len) >>> 0; return true;
     }
     // SETcc r/m8 (0x0f 90..9f): set byte to 1 if condition true, else 0
@@ -2560,7 +2570,10 @@ export function step(cpu) {
       }
       cpu.regs.eip = (ip + 2 + len + 1) >>> 0; return true;
     }
-    // MOVSX r32, r/m8 (0x0f be) and r/m16 (0x0f bf)
+    // MOVSX r32, r/m8 (0x0f be) and r/m16 (0x0f bf).
+    // With the 0x66 prefix the destination is r16 (movsx ax, al — pervasive
+    // in the 432204/431bb8 paint-slot allocators) and the destination's high
+    // 16 bits are PRESERVED. See the MOVZX note above (same fix class).
     if (op2 === 0xbe || op2 === 0xbf) {
       const { operand, regField, len } = decodeModrm(cpu, ip + 2);
       let v;
@@ -2571,7 +2584,12 @@ export function step(cpu) {
         const w = operand.kind === "reg" ? (cpu.regs[REG32[operand.reg]] & 0xffff) : mem16(m, operand.addr);
         v = signExtend16(w);
       }
-      cpu.regs[REG32[regField]] = v >>> 0;
+      if (prefixOperandSize) {
+        const rn = REG32[regField];
+        cpu.regs[rn] = ((cpu.regs[rn] & 0xffff0000) | (v & 0xffff)) >>> 0;
+      } else {
+        cpu.regs[REG32[regField]] = v >>> 0;
+      }
       cpu.regs.eip = (ip + 2 + len) >>> 0; return true;
     }
     throw new Error(`unsupported 0x0f ${op2.toString(16)} at eip 0x${ip.toString(16)}`);
@@ -2924,6 +2942,20 @@ export function runFunction(cpu, funcAddr, opts) {
   let steps = 0;
   while (_step(cpu)) {
     if (++steps > limit) throw new Error(`instruction limit (${limit}) exceeded at eip 0x${cpu.regs.eip.toString(16)}`);
+  }
+  // Optional per-funcAddr step accounting (painter-ranking probes). Unlike
+  // painter-bridge's __painterSteps (which only tallies top-level _paintShim
+  // entries), this counts EVERY runFunction invocation — including the
+  // per-element painter sub-calls the extra_paint_* eip hooks make — keyed
+  // by the entry address. Off unless a probe installs the Map; one global
+  // property check per runFunction call otherwise. Note: nested runFunction
+  // calls are tallied under their own funcAddr, NOT folded into the outer
+  // entry (the outer loop counts an eip-hook crossing as a single step).
+  if (globalThis.__fnSteps) {
+    const fm = globalThis.__fnSteps;
+    const cur = fm.get(funcAddr >>> 0);
+    if (cur) { cur.steps += steps + 1; cur.calls += 1; }
+    else fm.set(funcAddr >>> 0, { steps: steps + 1, calls: 1 });
   }
   return steps + 1;
 }

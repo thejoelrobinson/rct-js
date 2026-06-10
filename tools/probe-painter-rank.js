@@ -1,60 +1,38 @@
 #!/usr/bin/env node
-// Rank the interpreter-fallback painters by INTERPRETER STEPS consumed during
-// a gameplay tick — the true cost driver behind the slow tick. (Wall-time
-// under a step cap is misleading: capping painters to near-nothing removes the
-// very signal we want.) We run with the FULL 50M step budget but bound total
-// work by capping the number of ticks AND installing a global step accumulator
-// (globalThis.__painterSteps) that painter-bridge fills per painter address.
+// Painter-ranking soak: boots into genuine scenario play (enterScenarioPlay),
+// installs the per-funcAddr runFunction step accounting (globalThis.__fnSteps
+// in harness/x86.js), runs TICKS gameplay ticks, and ranks every interpreter
+// entry address by steps consumed.
 //
-// To keep the run bounded even with the full budget, we cap each painter via
-// __painterStepLimit at a value high enough to let cheap painters finish but
-// bounded so one runaway painter can't hang the probe; painters that hit the
-// cap are exactly the expensive ones we want to port (reported as capped).
+// Unlike __painterSteps (which painter-bridge fills only for top-level
+// _paintShim entries), __fnSteps counts EVERY runFunction call — including
+// the per-element painter sub-calls made inside the extra_paint_* eip hooks
+// (install4368d8Hooks dispatches per-element painters via runFunction;
+// ~17.8k crossings/tick). This is the ranking that drives Workstream A
+// item 1 (hand-port the hottest painters).
 //
-// Usage: node tools/probe-painter-rank.js [--limit=2000000] [--ticks=1]
+//   TICKS=8 OUT=/tmp/painter-rank.json node tools/probe-painter-rank.js
+//
+// Output JSON (flushed after every tick so a wall-clock kill still leaves
+// usable data): { ticks, totalMs, perTickMs, tickMs, rank: [{addr, steps,
+// calls, stepsPerTick}] }
 
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..");
 
-let stepLimit = 2_000_000, ticks = 1, sampleBudget = 600;
-for (const a of process.argv.slice(2)) {
-  if (a.startsWith("--limit=")) stepLimit = parseInt(a.slice(8), 10);
-  else if (a.startsWith("--ticks=")) ticks = parseInt(a.slice(8), 10);
-  else if (a.startsWith("--samples=")) sampleBudget = parseInt(a.slice(10), 10);
-}
-globalThis.__painterStepLimit = stepLimit;
-globalThis.__painterSteps = new Map();
-globalThis.__painterSampleBudget = sampleBudget; // unwind tick after N painter calls
-
-// The gameplay tick may never return within a sane wall-budget (that's the
-// whole problem we're measuring). Dump the accumulated ranking on SIGTERM so
-// `kill <pid>` after N seconds yields real partial data instead of nothing.
-function dumpRanking(reason) {
-  const rows = [...globalThis.__painterSteps.entries()]
-    .map(([addr, v]) => ({ addr, steps: v.steps, calls: v.calls }))
-    .sort((a, b) => b.steps - a.steps)
-    .slice(0, 30);
-  console.log(`\n[rank dump: ${reason}]`);
-  console.log("  addr        total_steps    calls  steps/call");
-  console.log("  " + "-".repeat(48));
-  for (const row of rows) {
-    console.log(`  0x${row.addr.toString(16).padEnd(8)} ${String(row.steps).padStart(12)} ${String(row.calls).padStart(6)} ${String(Math.round(row.steps / Math.max(1, row.calls))).padStart(11)}`);
-  }
-  console.log(`  total painter steps measured: ${rows.reduce((a, r) => a + r.steps, 0)}`);
-}
-process.on("SIGTERM", () => { dumpRanking("SIGTERM"); process.exit(0); });
-process.on("SIGINT", () => { dumpRanking("SIGINT"); process.exit(0); });
-
+// Deterministic fake clock for the binary's timing reads (same as
+// tools/probe-gameplay.js); real wall time via hrtime below.
 let _t = 1700000000000;
 Date.now = () => ++_t;
 if (typeof performance !== "undefined") performance.now = () => Date.now() - 1700000000000;
 globalThis._renderTrace = () => {};
+const realMs = () => Number(process.hrtime.bigint() / 1000n) / 1000;
 
-const { createRuntime, skipFadeIn, skipTitleIntro } = await import("../runtime/harness.js");
+const { createRuntime, skipFadeIn, enterScenarioPlay } = await import("../runtime/harness.js");
 
 const VFS_FILES = [
   "csg1.dat", "csg1i.dat", "game.cfg", "kanji.dat", "tutorial.dat", "mp.dat",
@@ -67,23 +45,38 @@ for (const n of VFS_FILES) { try { vfs.set(n.toLowerCase(), readFileSync(resolve
 for (const n of ["css10.dat", "css12.dat", "css16.dat", "tutl.dat"]) vfs.set(n.toLowerCase(), new Uint8Array(0));
 
 const dataBin = readFileSync(resolve(ROOT, "decompiled/data.bin"));
-process.stderr.write(`[rank] booting (painter step cap = ${stepLimit})...\n`);
+const TICKS = parseInt(process.env.TICKS || "8", 10);
+const OUT = process.env.OUT || "/tmp/painter-rank.json";
+
+const t0 = realMs();
 const r = createRuntime({ dataBin, vfs });
 try { r.runInit(); } catch (e) { process.stderr.write(`runInit: ${e.message}\n`); }
-try { r.runTick(); } catch (e) { process.stderr.write(`warmup: ${e.message}\n`); }
+try { r.runTick(); } catch (e) { process.stderr.write(`tick0: ${e.message}\n`); }
 skipFadeIn(r.heap);
-skipTitleIntro(r.heap);
-globalThis.__painterSteps.clear(); // ignore init/warmup; measure gameplay ticks only
+enterScenarioPlay(r.heap);
+process.stderr.write(`[rank] boot done in ${(realMs() - t0) | 0}ms real\n`);
 
-process.stderr.write(`[rank] running gameplay tick(s); will unwind after ${sampleBudget} painter calls...\n`);
-const t0 = Date.now();
-for (let i = 0; i < ticks; i++) {
-  try { r.runTick(); }
-  catch (e) {
-    if (e && e.__painterDone) { process.stderr.write(`[rank] sample budget reached on tick ${i}; unwound.\n`); break; }
-    process.stderr.write(`tick ${i}: ${e.message}\n`);
-  }
+// Warm one tick (gate-open transients) without accounting, then measure.
+try { r.runTick(); } catch (e) { process.stderr.write(`warm tick: ${e.message}\n`); }
+
+globalThis.__fnSteps = new Map();
+const tickMs = [];
+for (let i = 0; i < TICKS; i++) {
+  const t = realMs();
+  try { r.runTick(); } catch (e) { process.stderr.write(`tick ${i} ERR ${e.message}\n`); }
+  tickMs.push(realMs() - t);
+  process.stderr.write(`tick ${i}: ${tickMs[i] | 0}ms\n`);
+  // Flush incrementally so a wall-clock kill still leaves usable output.
+  const rank = [...globalThis.__fnSteps.entries()]
+    .map(([addr, v]) => ({ addr: "0x" + addr.toString(16), steps: v.steps, calls: v.calls, stepsPerTick: Math.round(v.steps / (i + 1)) }))
+    .sort((a, b) => b.steps - a.steps);
+  const total = tickMs.reduce((a, b) => a + b, 0);
+  writeFileSync(OUT, JSON.stringify({ ticks: i + 1, totalMs: total, perTickMs: total / (i + 1), tickMs, rank }, null, 1));
 }
-process.stderr.write(`[rank] done in ${Date.now() - t0} virtual-ms; ${globalThis.__painterSampleCount || 0} painter calls sampled\n`);
-
-dumpRanking("clean end-of-tick");
+const total = tickMs.reduce((a, b) => a + b, 0);
+process.stderr.write(`DONE ${TICKS} ticks, avg ${(total / TICKS) | 0}ms/tick; rank written to ${OUT}\n`);
+console.log("addr        total_steps    calls  steps/call  steps/tick");
+console.log("-".repeat(60));
+for (const [addr, v] of [...globalThis.__fnSteps.entries()].sort((a, b) => b[1].steps - a[1].steps).slice(0, 25)) {
+  console.log(`0x${addr.toString(16).padEnd(8)} ${String(v.steps).padStart(12)} ${String(v.calls).padStart(8)} ${String(Math.round(v.steps / Math.max(1, v.calls))).padStart(11)} ${String(Math.round(v.steps / TICKS)).padStart(11)}`);
+}
