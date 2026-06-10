@@ -95,3 +95,20 @@ b52618e peep ride-queue subsystem: 4 corrupting ports + runaway unlink
 f3acc80 4138d0 = CRT memmove (UI text was copying 0 bytes); DF support
 48d3a48 window-find fidelity + tooltip stale-ESI derefs
 2b8523b bridge 0x43e831 (live-browser dispatcher target)
+
+## ADDENDUM — steady-state CPU profile (supersedes step-count read)
+
+Sampling only the steady-state tick window (60 scenario ticks,
+--cpu-prof, last-40% samples): runFunction 51.9% + step 32.3% +
+decodeModrm 0.9% ≈ **85% of tick time IS the x86 interpreter** — the
+earlier 60k-steps/tick figure undercounted because `__painterSteps`
+only tallies _paintShim entries, not the runFunction sub-calls made by
+the setEipHook painters (install4368d8Hooks dispatches per-ELEMENT
+painters through runFunction; 17,766 crossings/tick). JS-ported
+paintBody5ce7f8 at 5.0% shows the payoff per ported painter.
+
+So Workstream A's true order: (1) hand-port the remaining per-element
+PAINTERS in the render path (extend the step accounting to count
+eip-hook runFunction calls to rank them; the extra_paint_* hand-port
+pattern is established), (2) then the peep-state handlers (439b86
+et al), (3) then the tooltip/input-chain and window-scroll passes.
