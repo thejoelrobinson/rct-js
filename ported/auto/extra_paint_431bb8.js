@@ -149,7 +149,7 @@ function sx16to32(v) { return ((v << 16) >> 16) | 0; }
  * Returns true (always — the painter never "fails" in a way the caller
  * observes; the only abort is "allocator full" which is silent and benign).
  */
-function paintBody431bb8(heap, cpu, rotation) {
+export function paintBody431bb8(heap, cpu, rotation) {
   // === 0x431bc8 / 0x431d4b / 0x431edc / 0x43206f: preamble (identical) ===
   heap.setU32(PTR_PARENT, 0);                 // mov [0x628928], 0
 
