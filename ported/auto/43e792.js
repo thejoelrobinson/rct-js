@@ -1,31 +1,59 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/43e792.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Hand-port replaces auto-translation. See decompiled/c/43e792.c.
+// Source disasm: binary 0x43e792..0x43e7ee (capstone).
+//
+// Unlinks a peep from its ride/station queue bucket: decrements the
+// per-station byte count at [0x88747a + ride*0x260 + station], then
+// either repoints the bucket head (u16 sprite index at
+// [0x887472 + ride*0x260 + station*2]) or walks the +0x74 next-index
+// chain through the sprite records (0x743b94 + idx*0x100) and splices.
+//
+// The auto-translation had the catalogued translator bug classes:
+// - ride index `movzx edi, byte [esi+0x68]` and station index
+//   `movzx ebx, byte [esi+0x69]` both read as u32 (garbage indices);
+// - `dec byte ptr [ebx+edi+0x88747a]` emitted as a setU32 RMW at
+//   `0x88747a + (off)*4` — byte op widened to 4 bytes at a
+//   quadruple-scaled address, stomping the ride-record region.
+// Those stomps corrupted the very bucket lists this function walks,
+// which made the interpreter-bridged callers (peep state handlers
+// 0x43a5f8 et al) run away for 50M steps inside this loop at
+// 0x43e7ca. Byte-equality vs the interpreter: tools/_diff-43e792.mjs.
+//
+// All four touched registers are push/popped by the binary — no
+// register effects survive the call.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { CONCAT44 } from "../../runtime/ghidra-builtins.js";
 import { regs } from "../../runtime/regs.js";
+
 export function FUN_0043e792(heap) {
-  let uVar1 = 0;
-  let in_EAX = regs.eax >>> 0;
-  let uVar2 = 0;
-  let in_EDX = regs.edx >>> 0;
-  let uVar3 = 0;
-  let unaff_ESI = regs.esi >>> 0;
-  let iVar4 = 0;
-  iVar4 = ((heap.u32((unaff_ESI + 0x68)) * 0x260) >>> 0);
-  uVar3 = ((heap.u32((unaff_ESI + 0x69))) >>> 0);
-  uVar1 = ((heap.u16((unaff_ESI + 10))) & 0xffff);
-  heap.setU32(((0x0088747a) + (iVar4 + uVar3) * 4), (heap.u32((0x0088747a) + (iVar4 + uVar3) * 4) + -1) & 0xffffffff);
-  uVar2 = ((heap.u16((0x00887472 + uVar3 * 2 + iVar4))) & 0xffff);
-  if (uVar1 == uVar2) {
-    heap.setU16((0x00887472 + uVar3 * 2 + iVar4), (heap.u16((unaff_ESI + 0x74))) & 0xffff);
-  } else {
-    while (iVar4 = ((((uVar2) >>> 0) * 0x100) >>> 0), uVar1 != heap.u16((0x00743c08 + iVar4))) {
-      uVar2 = ((heap.u16((0x00743c08 + iVar4))) & 0xffff);
-    }
-    heap.setU16((0x00743c08 + iVar4), (heap.u16((unaff_ESI + 0x74))) & 0xffff);
+  const esi = regs.esi >>> 0;
+  const ride = heap.u8((esi + 0x68) >>> 0);
+  const station = heap.u8((esi + 0x69) >>> 0);
+  const rideOff = ride * 0x260;
+  const own = heap.u16((esi + 0xa) >>> 0);
+
+  // dec byte [ebx + edi + 0x88747a] — per-station queue count.
+  const cntAddr = (0x0088747a + rideOff + station) >>> 0;
+  heap.setU8(cntAddr, (heap.u8(cntAddr) - 1) & 0xff);
+
+  // Bucket head: u16 at [edi + ebx*2 + 0x887472].
+  const headAddr = (0x00887472 + rideOff + station * 2) >>> 0;
+  const next = heap.u16((esi + 0x74) >>> 0);
+  let cur = heap.u16(headAddr);
+  if (cur === own) {
+    heap.setU16(headAddr, next);
+    return;
   }
-  return 1;
+  // Walk sprite records' +0x74 next-index chain until the record whose
+  // next == own, then splice. Faithful to the binary: no cycle guard.
+  for (;;) {
+    const rec = (0x00743b94 + cur * 0x100) >>> 0;
+    const n = heap.u16((rec + 0x74) >>> 0);
+    if (n === own) {
+      heap.setU16((rec + 0x74) >>> 0, next);
+      return;
+    }
+    cur = n;
+  }
 }

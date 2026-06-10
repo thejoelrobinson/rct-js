@@ -197,6 +197,48 @@ export function installPainterBridge(heap, opts = {}) {
     cpu.regs.ebp = regs.ebp >>> 0;
   });
 
+  // Install a JS hook for FUN_0043e792 (peep queue-bucket unlink) — same
+  // divergence class as the 0x444927 hook above, but for the ride-queue
+  // chains (head u16 at [0x887472 + ride*0x260 + station*2], next at
+  // sprite+0x74). When a bridged peep-state handler (0x43a5f8 et al)
+  // CALLs 0x43e792 natively and the victim sprite is not on its bucket's
+  // chain (bridge-cpu state observed mid-update, or queue membership
+  // de-synced by a JS-side caller), the native walk at 0x43e7ca spins
+  // until the 50M step cap — multi-second wasted ticks. The JS hand-port
+  // (ported/auto/43e792.js, byte-equal per tools/_diff-43e792.mjs) runs
+  // the same logic; here we bound the walk and skip the splice when the
+  // chain is provably corrupt (the binary would hang on such state, so
+  // bounding only changes behaviour where the baseline is already lost).
+  setEipHook(0x43e792, (cpu) => {
+    const esi = cpu.regs.esi >>> 0;
+    const ride = heap.u8((esi + 0x68) >>> 0);
+    const station = heap.u8((esi + 0x69) >>> 0);
+    const rideOff = ride * 0x260;
+    const own = heap.u16((esi + 0xa) >>> 0);
+    const cntAddr = (0x0088747a + rideOff + station) >>> 0;
+    heap.setU8(cntAddr, (heap.u8(cntAddr) - 1) & 0xff);
+    const headAddr = (0x00887472 + rideOff + station * 2) >>> 0;
+    const next = heap.u16((esi + 0x74) >>> 0);
+    let cur = heap.u16(headAddr);
+    if (cur === own) {
+      heap.setU16(headAddr, next);
+      return;
+    }
+    for (let steps = 0; cur !== 0xffff && steps < 5000; steps++) {
+      const rec = (0x00743b94 + cur * 0x100) >>> 0;
+      const n = heap.u16((rec + 0x74) >>> 0);
+      if (n === own) {
+        heap.setU16((rec + 0x74) >>> 0, next);
+        return;
+      }
+      cur = n;
+    }
+    if (typeof console !== "undefined" && !globalThis.__q792warned) {
+      globalThis.__q792warned = true;
+      console.warn(`[painter-bridge] 43e792-hook: sprite ${own} not on ride ${ride} st ${station} queue chain — splice skipped (corrupt chain; warn-once)`);
+    }
+  });
+
   // Install JS hooks for the per-tile surface painters at PTR_LAB_004368c8
   // (0x4368d8 / 0x4368e0 / 0x4368ec / 0x4368ff). The native body throws
   // `mem8 OOB: 0xa200460` warnings when the tile-element chain walk at

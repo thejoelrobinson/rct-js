@@ -172,5 +172,9 @@
   {"_table": "data-pointer", "name": "FUN_extra_gameplay_42682d", "addr": "0x42682d", "section": "CODESEG"},
   {"_table": "data-pointer", "name": "FUN_extra_gameplay_449178", "addr": "0x449178", "section": "CODESEG"},
   {"_table": "data-pointer", "name": "FUN_extra_gameplay_429560", "addr": "0x429560", "section": "CODESEG"},
-  {"_table": "data-pointer", "name": "FUN_extra_gameplay_4501b0", "addr": "0x4501b0", "section": "CODESEG"}
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_4501b0", "addr": "0x4501b0", "section": "CODESEG"},
+
+  {"_comment": "Peep queue-join / ride-entry decision fn. Ghidra mistyped the ride-record byte fields as int arrays (quadruple-scaled u32 accesses) and a goto was lowered as early-return, so the JS module (ported/auto/43e304.js) delegates to this interpreter shim. Hand-port when hot."},
+
+  {"_table": "delegated-module", "name": "FUN_extra_queuejoin_43e304", "addr": "0x43e304", "section": "CODESEG"}
 ]
