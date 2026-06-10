@@ -182,5 +182,9 @@
 
   {"_table": "delegated-module", "name": "FUN_extra_gotofix_5d94b6", "addr": "0x5d94b6", "section": "CODESEG"},
   {"_table": "delegated-module", "name": "FUN_extra_gotofix_424e0f", "addr": "0x424e0f", "section": "CODESEG"},
-  {"_table": "delegated-module", "name": "FUN_extra_gotofix_4499cc", "addr": "0x4499cc", "section": "CODESEG"}
+  {"_table": "delegated-module", "name": "FUN_extra_gotofix_4499cc", "addr": "0x4499cc", "section": "CODESEG"},
+
+  {"_comment": "Window-event dispatcher jump target (jmp 0x43ed87 thunk) hit via callIndirect during live browser gameplay; not in the Ghidra corpus."},
+
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_43e831", "addr": "0x43e831", "section": "CODESEG"}
 ]
