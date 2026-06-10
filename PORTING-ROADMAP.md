@@ -168,3 +168,67 @@ title gates green throughout (no fixture recaptures):
 After 0x444e08, painters stop being the story (~29k steps/tick left,
 mostly gameplay handlers): re-profile the JS side with --cpu-prof
 before choosing the next slice.
+
+## ADDENDUM 3 (2026-06-10) — painter-port campaign, session 2 results
+
+**Scenario tick: 72.5 ms → 46 ms avg (sandbox; Mac ≈2-3x faster).
+Interpreter steps: ~77k → ~36k per tick.** Two ports, both
+lockstep + dual-soak oracle-gated, all gates green throughout,
+no fixture recaptures:
+
+- `ce8654f` **0x444e08 wall painter → JS** (was 48,368 steps/tick — the
+  top consumer; now 2,676, which is fallback banners + 1-step hook
+  crossings). Full main body + door-case-0 sub-dispatcher 0x44635d +
+  common tail 0x447bcc. The four slope-case block tables were
+  MACHINE-EXTRACTED from the binary with a python/capstone walker (no
+  manual transcription of the ~80 stamped-out 432204 call blocks).
+  Cold paths fall back to the interpreter, decided at entry before any
+  side effect: door cases 1..13 ([esi+5]&0xf), banner walls
+  ([esi+4]&8), shade-overlay mode ([0x991f8c]&0x40 @ zoom 0). Supports
+  painter 0x4238b4 runs via runFunction (now separately visible in the
+  ranking). Oracle: `tools/_lockstep-444e08.mjs` TICKS=10 → calls=2300
+  memMis=0 regMis=0 flagMis=0; dual soak byte-identical.
+- `214fe8b` **0x439b86 peep walk handler → JS** (was 9,170 steps/tick;
+  the handler itself is now 0 — its cost was ~95% the untranslated
+  walking core 0x43c751, which the port delegates via callNative and
+  which now shows up honestly in the ranking). fnDispatch override in
+  harness.js wins over the bridge shim; `__forceInterp439b86` keeps the
+  interpreter reachable. Register dataflow into 0x43c751 is tracked
+  binary-exactly (it consumes caller ebx/ebp). Oracle:
+  `tools/_lockstep-439b86.mjs` (whole-heap per-call compare) TICKS=8 →
+  calls=151 memMis=0; eaxMis=5 proven-benign dead tail register
+  evolution (see the tool header — DIAG2 + AB_CONTROL evidence);
+  dual soak byte-identical.
+
+**Translator-bug finds (NOT yet fixed — shipping translations, need a
+dedicated oracle pass before changing; their other callers are
+affected):**
+- `ported/auto/442816.js`: `dec byte [esi+0xc6]` lowered as
+  `heap.setU32` → corrupts [esi+0xc7..0xc9] with sign-extension bytes
+  (CLAUDE.md bug class #1); ALSO drops the `mov al,0x17; mov
+  ah,[esi+0xc5]` staging before FUN_00440fe3 and the `mov bx,[esi+0xa];
+  mov ax,0xc97` staging before FUN_005e5301 (sound event gets garbage
+  ids).
+- `ported/auto/442867.js`: drops the al=0x1b/ah=0xff staging before
+  440fe3 and the full 42c711 staging block.
+- `ported/auto/4428d6.js`: reads the word-sized guest-count gate
+  [0x87d7a0] as u32 (`cmp word [0x87d7a0],2` in the binary); drops the
+  440fe3 staging.
+- `ported/auto/43c751.js` is a parse-fail throw stub (707-line Ghidra
+  C never translated) — currently fine because every caller path goes
+  through interpreter delegation, but it MUST NOT be called as JS.
+
+**Remaining ranking (8-tick soak, steps/tick, avg 46 ms/tick):**
+
+| addr | steps/tick | what / next move |
+|---|---|---|
+| 0x43c751 | 8,674 | peep walking-movement core (434 steps/call) — THE gameplay target now. 707 lines of Ghidra C exist (decompiled/c/43c751.c) but the translation parse-fails; hand-port with a lockstep oracle (the 439b86 port already stages binary-exact entry registers for it). Its inner indirect table PTR 0x62d3fc (per-peep-type motion handlers) needs the same treatment. |
+| 0x4238b4 | 6,924 | supports painter, 30 steps/call × 230/tick — called from the JS 444e08 port via runFunction. Auto-translation exists but has goto-truncation early-returns; port with a lockstep oracle (its 432204 sub-calls are already JS). |
+| 0x5d94b6 | 3,912 | sprite-sort goto-delegate — gameplay. |
+| 0x444e08 | 2,676 | residual: banner-wall fallbacks + hook crossings — shrink by porting the scrolling-text banner path (calls 458bcf/458a7c/45a95d, all JS-dispatched). |
+| 0x4368d8 | 1,974 | 1-step hook crossings — overhead, not work. |
+| 0x439178 / 0x42280c / 0x429560 / 0x5d7503 | 1.0-1.4k each | peep/paint helpers. |
+
+After 0x43c751 + 0x4238b4 (~16k steps/tick), the interpreter share is
+mostly 1-step hook-crossing overhead; the next wins move to the JS
+side (--cpu-prof per ADDENDUM 1).
