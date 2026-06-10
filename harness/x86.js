@@ -1087,14 +1087,32 @@ export function step(cpu) {
   }
   // NOP (0x90)
   if (opcode === 0x90) { cpu.regs.eip = (ip + 1) >>> 0; return true; }
-  // PUSH imm32 (0x68) / PUSH imm8 sign-ext (0x6a)
+  // PUSH imm32 (0x68) / PUSH imm8 sign-ext (0x6a).
+  // With 0x66: PUSH imm16 — 2 imm bytes, esp -= 2. Getting the width wrong
+  // is catastrophic, not cosmetic: `66 68 ff ff` decoded as imm32 reads 4
+  // imm bytes and advances eip by 5, so execution resumes MID-instruction
+  // (seen at 0x441727 → bogus eip 0x44172c inside FUN_004415e6's
+  // mixed-width push block: `inc dword [eax]` on a junk eax → mem32 OOB).
   if (opcode === 0x68) {
+    if (prefixOperandSize) {
+      const v = mem16(m, ip + 1);
+      cpu.regs.esp = (cpu.regs.esp - 2) >>> 0;
+      write16(m, cpu.regs.esp, v);
+      cpu.regs.eip = (ip + 3) >>> 0; return true;
+    }
     const v = mem32(m, ip + 1);
     cpu.regs.esp = (cpu.regs.esp - 4) >>> 0;
     write32(m, cpu.regs.esp, v);
     cpu.regs.eip = (ip + 5) >>> 0; return true;
   }
   if (opcode === 0x6a) {
+    if (prefixOperandSize) {
+      // PUSH imm8 sign-extended to 16 bits; esp -= 2.
+      const v = signExtend8(mem8(m, ip + 1)) & 0xffff;
+      cpu.regs.esp = (cpu.regs.esp - 2) >>> 0;
+      write16(m, cpu.regs.esp, v);
+      cpu.regs.eip = (ip + 2) >>> 0; return true;
+    }
     const v = signExtend8(mem8(m, ip + 1));
     cpu.regs.esp = (cpu.regs.esp - 4) >>> 0;
     write32(m, cpu.regs.esp, v);

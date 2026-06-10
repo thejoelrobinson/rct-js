@@ -459,7 +459,10 @@ export function installPainterBridge(heap, opts = {}) {
         if (e && e._wildShim) {
           // intentionally silent — see setShimInvoker comment above.
         } else if (typeof console !== "undefined") {
-          console.warn(`[painter-bridge] 0x${addr.toString(16)}: ${(e.message || e).slice(0, 160)}`);
+          // cpu.regs.eip still points at (or near) the faulting instruction
+          // when a mem* OOB unwinds — invaluable for localizing which
+          // instruction inside a bridged function went off the rails.
+          console.warn(`[painter-bridge] 0x${addr.toString(16)}: ${(e.message || e).slice(0, 160)} @eip=0x${(cpu.regs.eip >>> 0).toString(16)}`);
         }
       }
       // Sync back. eax holds the return value per Win32/cdecl.
