@@ -113,7 +113,7 @@ function cmp32FlagsStc(cpu, a, b) {
  * write order and register effects. Returns nothing; all state goes through
  * heap + cpu.regs/eflags.
  */
-export function paintBody432204(heap, cpu, rot) {
+export function paintBody432204(heap, cpu, rot, attach = false) {
   const eax0 = cpu.regs.eax >>> 0;
   const ecx0 = cpu.regs.ecx >>> 0;
   const edx0 = cpu.regs.edx >>> 0;
@@ -121,8 +121,13 @@ export function paintBody432204(heap, cpu, rot) {
   const edi0 = cpu.regs.edi >>> 0;
   const esi0 = cpu.regs.esi >>> 0;
 
-  // === prologue: [0x628928] = 0 ===
-  heap.setU32(PTR_PARENT, 0);
+  // === prologue ===
+  // Plain mode (PTR_LAB_00432204): [0x628928] = 0.
+  // Attach mode (PTR_LAB_00432e90, e.g. 0x432ea0 for rot 0): the caller
+  // has already checked [0x628928] != 0 (parent exists) and the prologue
+  // write is OMITTED — the slot is chained into the parent's +0x1c child
+  // link at the tail instead of the y-bucket table.
+  if (!attach) heap.setU32(PTR_PARENT, 0);
 
   // === bp = sx8(ah) + [0x99a4ec]; edx = (bp<<16) | entry_dx_low ===
   // (0x43221e movsx bp,ah; 0x432222 add bp,[0x99a4ec]; shl edx,16;
@@ -288,6 +293,28 @@ export function paintBody432204(heap, cpu, rot) {
   heap.setU16(slotPtr + 0x24, heap.u16(DAT_991F78));
   heap.setU32(slotPtr + 0x28, heap.u32(DAT_991F7C) >>> 0);
   heap.setU32(slotPtr + 0x2c, heap.u32(DAT_991F80) >>> 0);
+
+  if (attach) {
+    // === attach tail (0x432fee..0x433009 for rot 0): link into the
+    // parent's child chain instead of the y-bucket table. No [slot+0x14]
+    // write, no xchg, no bucket min/max. Exit edi = the OLD parent ptr
+    // (full 32-bit load); ebx stays = dpi from the clip block. ===
+    const parentOld = heap.u32(PTR_PARENT) >>> 0;
+    heap.setU32(parentOld + 0x1c, slotPtr);
+    heap.setU32(PTR_PAINT_HEAD, (slotPtr + 0x30) >>> 0);
+    heap.setU32(PTR_PARENT, slotPtr);
+    cpu.regs.eax = ((eax0 & 0xffff0000) | ax) >>> 0;
+    cpu.regs.ecx = ((ecx0 & 0xffff0000) | cx) >>> 0;
+    cpu.regs.esi = ((esi0 & 0xffff0000) | si) >>> 0;
+    cpu.regs.edi = parentOld >>> 0;
+    // ebx already = dpi; ebp already = slotPtr; edx already = edxPacked.
+    cpu.eflags.CF = 0;                 // and ax,ax clears CF/OF
+    cpu.eflags.OF = 0;
+    cpu.eflags.ZF = ax === 0 ? 1 : 0;
+    cpu.eflags.SF = (ax >>> 15) & 1;
+    return;
+  }
+
   heap.setU32(PTR_PARENT, slotPtr);
 
   // === bucket index (rotation-specific 16-bit formula) ===
@@ -341,6 +368,58 @@ export function paintBody432204(heap, cpu, rot) {
  * which routes through the recursion-safe clear/re-install dance so
  * tools/painter-port-oracle.mjs can A/B the port against the raw bytes.
  */
+/**
+ * Install setEipHooks for all four PTR_LAB_00432e90 entries — the ATTACH
+ * variant of this allocator (0x432ea0 / 0x43300a / 0x433180 / 0x4332f8,
+ * delegating to the matching plain entry when [0x628928] == 0, otherwise
+ * chaining the new slot into the parent's +0x1c child link). Called twice
+ * per wall paint from 0x444e08's interpreter body, and by other attach-
+ * style painters. Verified with the same lockstep + whole-heap oracles.
+ */
+export function install432e90Hooks(cpu, runFunction, setEipHook, heap) {
+  const variants = [
+    [0x00432ea0, 0],
+    [0x0043300a, 1],
+    [0x00433180, 2],
+    [0x004332f8, 3],
+  ];
+  for (const [addr, rot] of variants) {
+    const hookFn = (cpu) => {
+      if (typeof globalThis._renderTrace === "function") {
+        globalThis._renderTrace(`FUN_extra_paint_432e90[${rot}]`);
+      }
+      if (globalThis.__forceInterp432e90) {
+        const savedESP = cpu.regs.esp >>> 0;
+        const savedEIP = cpu.regs.eip >>> 0;
+        const savedCallDepth = cpu.callDepth;
+        clearEipHook(addr);
+        try {
+          runFunction(cpu, addr, { stackTop: savedESP, limit: 5_000_000 });
+        } catch (_) { /* matches bridge tolerance */ }
+        finally { _setEipHook(addr, hookFn); }
+        cpu.regs.esp = savedESP;
+        cpu.regs.eip = savedEIP;
+        cpu.callDepth = savedCallDepth;
+        return;
+      }
+      try {
+        // cmp [0x628928],0; je <plain rot entry> — the plain body re-zeroes
+        // the parent link, which the je target (0x432214 etc.) also does.
+        const attach = (heap.u32(PTR_PARENT) >>> 0) !== 0;
+        paintBody432204(heap, cpu, rot, attach);
+      } catch (e) {
+        if (!install432e90Hooks._warned) {
+          install432e90Hooks._warned = true;
+          if (typeof console !== "undefined") {
+            console.warn(`[432e90 port rot=${rot}] threw: ${(e.message || e).slice(0, 160)}`);
+          }
+        }
+      }
+    };
+    setEipHook(addr >>> 0, hookFn);
+  }
+}
+
 export function install432204Hooks(cpu, runFunction, setEipHook, heap) {
   const variants = [
     [0x00432214, 0],

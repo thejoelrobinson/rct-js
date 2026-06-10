@@ -35,7 +35,7 @@ import { install431bb8Hooks } from "../ported/auto/extra_paint_431bb8.js";
 // allocator table (PTR_LAB_00432204) — called inline from the interpreter
 // bodies of 0x5dff38 (fence), 0x444e08 (wall), the 42094b/420502 cold
 // tails, and the small-scenery sub-painters. See extra_paint_432204.js.
-import { install432204Hooks } from "../ported/auto/extra_paint_432204.js";
+import { install432204Hooks, install432e90Hooks } from "../ported/auto/extra_paint_432204.js";
 // Workstream A1 (2026-06-10): corner-fence per-element painter (vtable
 // slot 5 of PTR_LAB_00628a94) — ranked #3 in the painter soak.
 import { install5dff38Hook } from "../ported/auto/extra_paint_5dff38.js";
@@ -369,6 +369,9 @@ export function installPainterBridge(heap, opts = {}) {
   // port (no cold fallback); register write-back per exit path because the
   // interpreter callers resume on cpu.regs after the auto-ret.
   install432204Hooks(cpu, runFunction, setEipHook, heap);
+  // The ATTACH variant table (PTR_LAB_00432e90) — same body, parent-link
+  // tail; called twice per wall paint from 0x444e08's interpreter body.
+  install432e90Hooks(cpu, runFunction, setEipHook, heap);
 
   // Workstream A1 (2026-06-10) — corner-fence painter 0x5dff38 (vtable
   // slot 5). Full-path port; its four paint-slot dispatches go straight to
