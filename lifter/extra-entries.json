@@ -176,5 +176,11 @@
 
   {"_comment": "Peep queue-join / ride-entry decision fn. Ghidra mistyped the ride-record byte fields as int arrays (quadruple-scaled u32 accesses) and a goto was lowered as early-return, so the JS module (ported/auto/43e304.js) delegates to this interpreter shim. Hand-port when hot."},
 
-  {"_table": "delegated-module", "name": "FUN_extra_queuejoin_43e304", "addr": "0x43e304", "section": "CODESEG"}
+  {"_table": "delegated-module", "name": "FUN_extra_queuejoin_43e304", "addr": "0x43e304", "section": "CODESEG"},
+
+  {"_comment": "Auto-translations with goto LAB_* sites lowered as silent early-returns (mid-function truncation on live paths). Modules delegate to these interpreter shims; see each ported/auto/<addr>.js header."},
+
+  {"_table": "delegated-module", "name": "FUN_extra_gotofix_5d94b6", "addr": "0x5d94b6", "section": "CODESEG"},
+  {"_table": "delegated-module", "name": "FUN_extra_gotofix_424e0f", "addr": "0x424e0f", "section": "CODESEG"},
+  {"_table": "delegated-module", "name": "FUN_extra_gotofix_4499cc", "addr": "0x4499cc", "section": "CODESEG"}
 ]
