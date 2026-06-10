@@ -58,12 +58,12 @@ export function FUN_005e6044(heap) {
   // Find the tool's owning window by class [0x991f5a] / number [0x991f58].
   regs.ecx = heap.u8(0x00991f5a);
   regs.edx = heap.u16(0x00991f58);
-  FUN_005e3b2b(heap);               // -> regs.esi = found slot (pool-end if not found)
+  FUN_005e3b2b(heap);               // -> regs.esi = found slot (0 if not found)
   const slot = regs.esi >>> 0;
 
-  // Not found -> deactivate the tool (0x5e687d). 0x5e3b2b returns pool-end
-  // [0x9a1164] on miss (see 5e3b2b.js), so `slot >= pool-end` is "not found".
-  if (slot >= (heap.u32(0x009a1164) >>> 0)) {
+  // Not found -> deactivate the tool (0x5e687d). 0x5e3b2b returns ESI=0 /
+  // ZF=1 on miss (binary 0x5e3b55; see 5e3b2b.js second hand-fix).
+  if (slot === 0) {
     FUN_005e687d(heap);
     return 0;
   }
