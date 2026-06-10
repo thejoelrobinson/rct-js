@@ -144,5 +144,33 @@
   {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e226c", "addr": "0x5e226c", "section": "CODESEG"},
   {"_table": "PTR_LAB_005e2248", "name": "FUN_extra_input_5e2601", "addr": "0x5e2601", "section": "CODESEG"},
 
-  {"_comment": "Toolbar window's widget-event-handler proc (slot+4 callback). CODESEG-stripped from Ghidra; reached from FUN_005e3ace's hit-test indirect call. Dispatcher prologue jumps to 0x42af5a which switches on BP (event type) and DX (widget index). Bridging this unblocked all 20 toolbar widget clicks via the binary's own dispatch path, which retired the per-widget clickToolbar() shortcut that previously lived in runtime/input.js.", "name": "FUN_extra_widget_42a830", "addr": "0x42a830", "section": "CODESEG"}
+  {"_comment": "Toolbar window's widget-event-handler proc (slot+4 callback). CODESEG-stripped from Ghidra; reached from FUN_005e3ace's hit-test indirect call. Dispatcher prologue jumps to 0x42af5a which switches on BP (event type) and DX (widget index). Bridging this unblocked all 20 toolbar widget clicks via the binary's own dispatch path, which retired the per-widget clickToolbar() shortcut that previously lived in runtime/input.js.", "name": "FUN_extra_widget_42a830", "addr": "0x42a830", "section": "CODESEG"},
+
+  {"_comment": "Peep/sprite per-state update handlers: targets of jumptable PTR_0062d4ac (indexed by sprite state byte [esi+0x2b], dispatched from FUN_00439822 tail callIndirect), including the pair that re-dispatches through PTR_0062d50c ([esi+0x2c]). Ghidra never recovered these (jumptable-internal); without them gameplay sprite updates silently no-op (callIndirect returned 0). Bridged via interpreter like the painters."},
+
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_439912", "addr": "0x439912", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_439913", "addr": "0x439913", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_439b1e", "addr": "0x439b1e", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_439b86", "addr": "0x439b86", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a284", "addr": "0x43a284", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a3a8", "addr": "0x43a3a8", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a424", "addr": "0x43a424", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a482", "addr": "0x43a482", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a5f8", "addr": "0x43a5f8", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a73f", "addr": "0x43a73f", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a74a", "addr": "0x43a74a", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_43a74b", "addr": "0x43a74b", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_455eff", "addr": "0x455eff", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_45625a", "addr": "0x45625a", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_456337", "addr": "0x456337", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_45761f", "addr": "0x45761f", "section": "CODESEG"},
+  {"_table": "PTR_0062d4ac", "name": "FUN_extra_peepstate_4577c2", "addr": "0x4577c2", "section": "CODESEG"},
+
+  {"_comment": "Leaf helpers reached via data-pointer indirect calls during gameplay (callers FUN_00436508 / FUN_00429502 / FUN_00450188); not in the Ghidra corpus. The 4264f6/42682d/449178 trio share a rol/ror coordinate-scramble prologue."},
+
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_4264f6", "addr": "0x4264f6", "section": "CODESEG"},
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_42682d", "addr": "0x42682d", "section": "CODESEG"},
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_449178", "addr": "0x449178", "section": "CODESEG"},
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_429560", "addr": "0x429560", "section": "CODESEG"},
+  {"_table": "data-pointer", "name": "FUN_extra_gameplay_4501b0", "addr": "0x4501b0", "section": "CODESEG"}
 ]
