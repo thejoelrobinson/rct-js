@@ -36,6 +36,9 @@ import { install431bb8Hooks } from "../ported/auto/extra_paint_431bb8.js";
 // bodies of 0x5dff38 (fence), 0x444e08 (wall), the 42094b/420502 cold
 // tails, and the small-scenery sub-painters. See extra_paint_432204.js.
 import { install432204Hooks } from "../ported/auto/extra_paint_432204.js";
+// Workstream A1 (2026-06-10): corner-fence per-element painter (vtable
+// slot 5 of PTR_LAB_00628a94) — ranked #3 in the painter soak.
+import { install5dff38Hook } from "../ported/auto/extra_paint_5dff38.js";
 // Phase R+14b: hand-port for palette-swizzle helper #1 of 4 called from
 // the tail of 0x421d2c (terrain painter).
 import { install420d9cHook } from "../ported/auto/extra_paint_420d9c.js";
@@ -366,6 +369,12 @@ export function installPainterBridge(heap, opts = {}) {
   // port (no cold fallback); register write-back per exit path because the
   // interpreter callers resume on cpu.regs after the auto-ret.
   install432204Hooks(cpu, runFunction, setEipHook, heap);
+
+  // Workstream A1 (2026-06-10) — corner-fence painter 0x5dff38 (vtable
+  // slot 5). Full-path port; its four paint-slot dispatches go straight to
+  // the JS paintBody432204. See extra_paint_5dff38.js for the disasm map
+  // and oracle evidence.
+  install5dff38Hook(cpu, runFunction, setEipHook, heap);
 
   // ######################################################################
   // Phase R+14b region — palette-swizzle helper #1 of 4 (0x421d2c tail).
