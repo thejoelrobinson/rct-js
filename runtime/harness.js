@@ -20,6 +20,7 @@ import { defaultPalette } from "../harness/csg.js";
 import "./win32/ddraw.js";
 import { installPainterBridge } from "./painter-bridge.js";
 import { FUN_extra_paint_436b50 } from "../ported/auto/extra_436b50.js";
+import { FUN_extra_peepstate_439b86 } from "../ported/auto/extra_peepstate_439b86.js";
 
 /**
  * @param {object} opts
@@ -70,6 +71,21 @@ export function createRuntime(opts) {
   // and the painter reads DPI fields off EDI. The JS port reads DPI from
   // 0x981ef8 directly and calls into existing JS sub-painters.
   state.fnDispatch.set(0x436b50, FUN_extra_paint_436b50);
+
+  // Override the bridge shim for the hot peep-state walk handler 0x439b86
+  // (PTR_LAB_0062d4ac vtable target, dispatched from FUN_00439822's tail)
+  // with the JS hand-port. The interpreter shim stays reachable behind a
+  // force switch so tools/painter-port-oracle.mjs (FORCE_INTERP=439b86)
+  // and tools/_lockstep-439b86.mjs can A/B the port vs the original bytes.
+  {
+    const bridged439b86 = state.fnDispatch.get(0x439b86);
+    if (bridged439b86) {
+      state.fnDispatch.set(0x439b86, function FUN_439b86_dispatch(h) {
+        if (globalThis.__forceInterp439b86) return bridged439b86(h);
+        return FUN_extra_peepstate_439b86(h);
+      });
+    }
+  }
 
   // Wire browser-side resources (or stubs in node).
   setRuntimeContext({
