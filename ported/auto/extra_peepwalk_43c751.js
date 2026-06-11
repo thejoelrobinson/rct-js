@@ -103,76 +103,14 @@ function rand32(heap) {
   return (regs.eax = callPreserved(heap, FUN_005df40c) >>> 0) >>> 0;
 }
 
-// === inline 0x5e53ca — invalidate the sprite's screen bbox in every
-// visible window (pushal/popal in the binary: NO register effects).
-// NOT routed through ported/auto/5e53ca.js: that translation calls
-// FUN_005e117d without staging the rect registers it reads (in_AX /
-// unaff_BX / in_DX / unaff_BP = the clipped screen rect the binary
-// computes at 0x5e541c..0x5e547d), so it marks a stale rect. The
-// faithful sequence: for each window in the list at [0x9a121c] with
-// zoom < 2 whose view rect intersects the sprite bbox [esi+0x16..0x1c],
-// clamp, view→screen, then 0x5e117d clamps to the screen dims and
-// paints 0xff rows into the dirty grid at 0x99ad63.
-function mark5e117d(heap, ax, bx, dx, bp) {
-  if (ax < 0) ax = 0;
-  if (bx < 0) bx = 0;
-  const scrW = (heap.u16(0x971ed6) << 16) >> 16;
-  const scrH = (heap.u16(0x971ed8) << 16) >> 16;
-  if (dx > scrW) dx = scrW;
-  if (bp > scrH) bp = scrH;
-  if (ax >= dx) return;
-  if (bx >= bp) return;
-  dx = (dx - 1) & 0xffff;
-  bp = (bp - 1) & 0xffff;
-  const shx = heap.u8(0x971eee), shy = heap.u8(0x971eef);
-  ax = (ax & 0xffff) >>> shx;
-  dx = dx >>> shx;
-  bx = (bx & 0xffff) >>> shy;
-  bp = bp >>> shy;
-  let rows = (bp - bx + 1) & 0xffff;
-  const ecx0 = heap.u32(0x971ee6) >>> 0;                  // grid column count
-  let addr = (0x99ad63 + (((bx * (ecx0 & 0xffff)) + ax) & 0xffff)) >>> 0;
-  const cols = (dx - ax + 1) & 0xffff;
-  const skip = ((ecx0 & 0xffff0000) | ((ecx0 - cols) & 0xffff)) >>> 0;
-  while (rows--) {
-    for (let i = 0; i < cols; i++) heap.setU8(addr++, 0xff);
-    addr = (addr + skip) >>> 0;
-  }
-}
-
-function invalidateSprite(heap) {                         // binary 0x5e53ca
-  const spr = regs.esi >>> 0;
-  if (heap.u16(spr + 0x16) === 0x8000) return;
-  const L = (heap.u16(spr + 0x16) << 16) >> 16;
-  const T = (heap.u16(spr + 0x18) << 16) >> 16;
-  const R = (heap.u16(spr + 0x1a) << 16) >> 16;
-  const B = (heap.u16(spr + 0x1c) << 16) >> 16;
-  for (let pw = 0x9a121c; ; pw += 4) {
-    const w = heap.u32(pw) >>> 0;
-    if (w === 0) break;
-    if (heap.u8(w + 0x10) >= 2) continue;
-    const vx = (heap.u16(w + 8) << 16) >> 16;
-    const vy = (heap.u16(w + 0xa) << 16) >> 16;
-    if (!(R > vx)) continue;
-    if (!(B > vy)) continue;
-    const vr = ((vx + ((heap.u16(w + 0xc) << 16) >> 16)) << 16) >> 16;
-    if (!(L < vr)) continue;
-    let ax = L; if (ax < vx) ax = vx;
-    let dx = R; if (dx > vr) dx = vr;
-    const vb = ((vy + ((heap.u16(w + 0xe) << 16) >> 16)) << 16) >> 16;
-    if (!(T < vb)) continue;
-    let bx = T; if (bx < vy) bx = vy;
-    let bp = B; if (bp > vb) bp = vb;
-    const zoom = heap.u8(w + 0x10);
-    const sx = (heap.u16(w + 4) << 16) >> 16;
-    const sy = (heap.u16(w + 6) << 16) >> 16;
-    ax = ((((ax - vx) << 16) >> (16 + zoom)) + sx) << 16 >> 16;
-    bx = ((((bx - vy) << 16) >> (16 + zoom)) + sy) << 16 >> 16;
-    dx = ((((dx - vx) << 16) >> (16 + zoom)) + sx) << 16 >> 16;
-    bp = ((((bp - vy) << 16) >> (16 + zoom)) + sy) << 16 >> 16;
-    mark5e117d(heap, ax, bx, dx, bp);
-  }
-}
+// === 0x5e53ca — invalidate the sprite's screen bbox in every visible
+// window (pushal/popal in the binary: NO register effects). NOT routed
+// through ported/auto/5e53ca.js: that translation calls FUN_005e117d
+// without staging the rect registers it reads (the clipped screen rect
+// the binary computes at 0x5e541c..0x5e547d), so it marks a stale
+// dirty-grid rect. The faithful implementation lives in
+// extra_invalidate.js (shared with the 43c60b / 5e5301 hand-fixes).
+import { invalidateSpriteBbox as invalidateSprite } from "./extra_invalidate.js";
 
 // === inline 0x425432 — "can stand on surface at (ax,cx)?" CF=1 blocked.
 // Clobbers nothing (esi pushed/popped in binary); writes [0x991efc]=0x6a9
@@ -409,7 +347,7 @@ function perceptionBlock(heap, esi) {
       const sA = regs.eax >>> 0, sC = regs.ecx >>> 0;     // push eax, push ecx
       if ((rand32(heap) & 0xffff) <= 0x2aaa) {
         lo8("eax", 0x21); hi8("eax", 0xff);
-        callPreserved(heap, FUN_00440fe3);                // thought: vandalism
+        FUN_00440fe3(heap);                               // thought: vandalism (exit eax = displaced dword, like the binary)
         const v = heap.u8(esi + 0x3b);
         heap.setU8(esi + 0x3b, v < 0x11 ? 0 : v - 0x11);
       }
@@ -460,7 +398,7 @@ function perceptionBlock(heap, esi) {
   if ((regs.ecx >>> 0) >= 0xa0000 && heap.u8(esi + 0x2b) === 5) {
     if ((rand32(heap) & 0xffff) <= 0x5555) {
       lo8("eax", 0x20); hi8("eax", 0xff);
-      callPreserved(heap, FUN_00440fe3);                  // thought: crowded
+      FUN_00440fe3(heap);                                 // thought: crowded (exit eax = displaced dword)
       const v = heap.u8(esi + 0x3b);
       heap.setU8(esi + 0x3b, v < 0xe ? 0 : v - 0xe);
     }
@@ -490,7 +428,7 @@ function litterCounter(heap, esi, off, count, thoughtId) {
   if (sum >= 3) {
     if ((rand32(heap) & 0xffff) <= 0x2aaa) {
       lo8("eax", thoughtId); hi8("eax", 0xff);
-      callPreserved(heap, FUN_00440fe3);
+      FUN_00440fe3(heap);                                 // exit eax = displaced dword, like the binary
       const v = heap.u8(esi + 0x3b);
       heap.setU8(esi + 0x3b, v < 0x11 ? 0 : v - 0x11);
       heap.setU8(esi + off, heap.u8(esi + off) | 0xc0);

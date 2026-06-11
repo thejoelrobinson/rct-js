@@ -1,30 +1,51 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/43c60b.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: binary 0x43c60b..0x43c65d (capstone disasm); decompiled/c/43c60b.c
+// mistypes every table. Hand-port (2026-06-11) replacing the auto
+// translation, which read all three byte tables as int[] (u32 at
+// quadruple-scaled offsets — CLAUDE.md mistyped-array class):
+//   - the action→anim-group maps at 0x62d304 (by action [esi+0x71]) and
+//     0x62d301 (by sprite group [esi+0x6d]) were read as
+//     `u32(base + idx*4) & 0xff` — the wrong byte for every idx > 0, so
+//     [esi+0x6e] (anim group) got garbage;
+//   - the per-type anim-info pointer at [0x62d644 + [esi+0x2d]*8] was
+//     read with `u32(esi+0x2d) * 2 * 4` scaling — wrong width and wrong
+//     pointer, so the sprite extent bytes written to
+//     [esi+0x14]/[esi+9]/[esi+0x15] came from unrelated memory;
+//   - the 5e53ca invalidate pair routed through the translated
+//     5e53ca.js, which marks a stale dirty-grid rect (see
+//     extra_invalidate.js).
+//
+// FUN_0043c60b — refresh the peep's animation group after an action /
+// state change: pick the group byte ([esi+0x71] action, or the
+// [esi+0x6d] walk group when no action), and if it differs from
+// [esi+0x6e]: invalidate, store it, refresh the sprite extent triple
+// from the anim-info table, invalidate again. Preserves all GPRs in
+// the binary (push ebx + inner push eax/edx; 5e53ca is pushal/popal) —
+// this port touches no regs.
+//
+// Oracle: tools/_lockstep-statrio.mjs (the stat-trio thought paths run
+// this through 440fe3 with the interpreter kept live, SEED=1 coverage).
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { regs } from "../../runtime/regs.js";
-import { FUN_005e53ca } from "./5e53ca.js";
+import { invalidateSpriteBbox } from "./extra_invalidate.js";
+
 export function FUN_0043c60b(heap) {
-  let bVar1 = 0;
-  let puVar2 = 0;
-  let uVar3 = 0;
-  let unaff_ESI = regs.esi >>> 0;
-  if (heap.u8((unaff_ESI + 0x71)) < 0xfe) {
-    bVar1 = ((heap.u32((0x0062d304) + (heap.u8((unaff_ESI + 0x71))) * 4)) & 0xff);
+  const esi = regs.esi >>> 0;
+  const action = heap.u8(esi + 0x71);
+  let group;
+  if (action >= 0xfe) {
+    group = heap.u8(0x62d301 + heap.u8(esi + 0x6d));      // BYTE table
   } else {
-    bVar1 = ((heap.u32((0x0062d301) + (heap.u8((unaff_ESI + 0x6d))) * 4)) & 0xff);
+    group = heap.u8(0x62d304 + action);                   // BYTE table
   }
-  uVar3 = ((((bVar1) >>> 0)) >>> 0);
-  if (bVar1 != heap.u8((unaff_ESI + 0x6e))) {
-    (regs.eax = FUN_005e53ca(heap));
-    heap.setU8((unaff_ESI + 0x6e), (bVar1) & 0xff);
-    puVar2 = ((heap.u32((0x0062d644) + (heap.u32((unaff_ESI + 0x2d)) * 2) * 4)) >>> 0);
-    heap.setU8((unaff_ESI + 0x14), (heap.u8(puVar2 + (uVar3 * 4))) & 0xff);
-    heap.setU8((unaff_ESI + 9), (heap.u8(puVar2 + (uVar3 * 4 + 1))) & 0xff);
-    heap.setU8((unaff_ESI + 0x15), (heap.u8(puVar2 + (uVar3 * 4 + 2))) & 0xff);
-    (regs.eax = FUN_005e53ca(heap));
-  }
-  return;
+  if (group === heap.u8(esi + 0x6e)) return;
+  invalidateSpriteBbox(heap);
+  heap.setU8(esi + 0x6e, group);
+  const info = heap.u32(0x62d644 + heap.u8(esi + 0x2d) * 8) >>> 0;
+  heap.setU8(esi + 0x14, heap.u8(info + group * 4));
+  heap.setU8(esi + 9, heap.u8(info + group * 4 + 1));
+  heap.setU8(esi + 0x15, heap.u8(info + group * 4 + 2));
+  invalidateSpriteBbox(heap);
 }

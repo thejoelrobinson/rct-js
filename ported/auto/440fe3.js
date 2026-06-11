@@ -1,67 +1,73 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/440fe3.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: binary 0x440fe3..0x44106b (capstone disasm); decompiled/c/440fe3.c
+// mistypes the action-id table. Hand-port (2026-06-11) replacing the auto
+// translation, which carried two corruptions:
+//   - the action-id lookup `mov cl, byte [ecx*2 + 0x62d324]` (BYTE array,
+//     stride 2) was emitted as `heap.u32(0x62d324 + (al*2)*4)` — wrong
+//     width AND wrong scale (Ghidra typed the table as int[]), so the
+//     0xff "no action" compare almost never fired and [esi+0x71] got a
+//     byte from the wrong table row;
+//   - `in_EAX = (regs.eax = FUN_005e53ca(heap))` clobbered the thought id
+//     with 5e53ca's JS return value (binary preserves eax across both
+//     calls), so the dedup scan + head insert below used ax=1 instead of
+//     the (id | arg<<8) word whenever the action branch fired.
+//
+// FUN_00440fe3 — queue a "thought" on the peep: ax = thought id (al) |
+// argument (ah). If the action table row at [0x62d324 + id*2] is not
+// 0xff and no action is in progress ([esi+0x71] >= 0xfe), start that
+// action animation (43c60b refresh + 5e53ca invalidate — both via their
+// faithful hand-ports, which touch no regs). Then de-dup the 5-slot
+// thought queue at [esi+0xb0] (stride 4: u16 id+arg, u8 freshness pair)
+// and push the new thought at the head via the 5-step xchg shift.
+// EXIT EAX = the dword displaced off the END of the queue by the last
+// xchg (the binary's callers see that, not ax); all other GPRs
+// preserved.
+//
+// Oracle: tools/_lockstep-statrio.mjs SEED=1 exercises this through the
+// stat trio's thought paths (whole-heap per-call compare vs the
+// interpreter, kept live); the 43c751 / 439b86 lockstep tools cover the
+// litter/crowd/vandalism thought sites.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
-import { LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
 import { regs } from "../../runtime/regs.js";
 import { FUN_0043c60b } from "./43c60b.js";
-import { FUN_005e53ca } from "./5e53ca.js";
+import { invalidateSpriteBbox } from "./extra_invalidate.js";
+
 export function FUN_00440fe3(heap) {
-  let puVar1 = 0;
-  let uVar2 = 0;
-  let in_EAX = regs.eax >>> 0;
-  let uVar3 = 0;
-  let uVar4 = 0;
-  let unaff_ESI = regs.esi >>> 0;
-  if (((heap.u32((0x0062d324) + ((in_EAX & 0xff) * 2) * 4) | 0) != -1) && (0xfd < heap.u8((unaff_ESI + 0x71)))) {
-    heap.setU8((unaff_ESI + 0x71), (heap.u32((0x0062d324) + ((in_EAX & 0xff) * 2) * 4)) & 0xff);
-    heap.setU8((unaff_ESI + 0x72), (0) & 0xff);
-    heap.setU8((unaff_ESI + 0x70), (0) & 0xff);
-    (regs.eax = FUN_0043c60b(heap));
-    in_EAX = (((regs.eax = FUN_005e53ca(heap))) >>> 0);
+  const esi = regs.esi >>> 0;
+  const ax = regs.eax & 0xffff;
+  const act = heap.u8(0x62d324 + (ax & 0xff) * 2);        // BYTE, stride 2
+  if (act !== 0xff && heap.u8(esi + 0x71) >= 0xfe) {
+    heap.setU8(esi + 0x71, act);
+    heap.setU8(esi + 0x72, 0);
+    heap.setU8(esi + 0x70, 0);
+    FUN_0043c60b(heap);                                   // touches no regs
+    invalidateSpriteBbox(heap);                           // touches no regs
   }
-  uVar3 = ((0) >>> 0);
-  do {
-    while (true) {
-      if ((heap.i8((unaff_ESI + 0xb0 + uVar3 * 4)) | 0) == -1) {
-        uVar4 = ((0) >>> 0);
-        uVar3 = ((in_EAX & 0xffff) >>> 0);
-        do {
-          LOCK();
-          puVar1 = (((unaff_ESI + 0xb0 + uVar4 * 4)) >>> 0);
-          uVar2 = ((heap.u32(puVar1)) >>> 0);
-          heap.setU32(puVar1, (uVar3) & 0xffffffff);
-          UNLOCK();
-          uVar4 = ((uVar4 + 1) >>> 0);
-          uVar3 = ((uVar2) >>> 0);
-        } while (uVar4 < 5);
-        heap.setU8((unaff_ESI + 0x45), (heap.u8((unaff_ESI + 0x45)) | 1) & 0xff);
-        return;
+  // de-dup scan (0x441012): stop at the first empty slot (id byte 0xff);
+  // on a match, shift the tail up, free the last slot, re-check slot i.
+  let i = 0;
+  while (i < 5) {
+    if (heap.u8(esi + 0xb0 + i * 4) === 0xff) break;
+    if (ax === heap.u16(esi + 0xb0 + i * 4)) {
+      for (let k = i; k !== 4; k++) {
+        heap.setU32(esi + 0xb0 + k * 4, heap.u32(esi + 0xb4 + k * 4));
       }
-      uVar4 = ((uVar3) >>> 0);
-      if (((in_EAX) << 16 >> 16) != heap.i16((unaff_ESI + 0xb0 + uVar3 * 4))) {
-        break;
-      }
-      for (; uVar4 != 4; uVar4 = (((uVar4 + 1) >>> 0)) >>> 0) {
-        heap.setU32((unaff_ESI + 0xb0 + uVar4 * 4), (heap.u32((unaff_ESI + 0xb4 + uVar4 * 4))) & 0xffffffff);
-      }
-      heap.setU8((unaff_ESI + 0xc0), (0xff) & 0xff);
+      heap.setU8(esi + 0xc0, 0xff);
+      continue;                                           // jmp 0x441012
     }
-    uVar3 = ((uVar3 + 1) >>> 0);
-  } while (uVar3 < 5);
-  LAB_00441052: uVar4 = ((0) >>> 0);
-  uVar3 = ((in_EAX & 0xffff) >>> 0);
-  do {
-    LOCK();
-    puVar1 = (((unaff_ESI + 0xb0 + uVar4 * 4)) >>> 0);
-    uVar2 = ((heap.u32(puVar1)) >>> 0);
-    heap.setU32(puVar1, (uVar3) & 0xffffffff);
-    UNLOCK();
-    uVar4 = ((uVar4 + 1) >>> 0);
-    uVar3 = ((uVar2) >>> 0);
-  } while (uVar4 < 5);
-  heap.setU8((unaff_ESI + 0x45), (heap.u8((unaff_ESI + 0x45)) | 1) & 0xff);
-  return;
+    i++;
+  }
+  // head insert (0x441052): and eax,0xffff; 5× xchg shift-down. The last
+  // xchg's displaced dword is the exit eax.
+  let v = ax >>> 0;
+  for (let k = 0; k < 5; k++) {
+    const old = heap.u32(esi + 0xb0 + k * 4) >>> 0;
+    heap.setU32(esi + 0xb0 + k * 4, v);
+    v = old;
+  }
+  heap.setU8(esi + 0x45, heap.u8(esi + 0x45) | 1);
+  regs.eax = v >>> 0;
+  return regs.eax;
 }

@@ -49,6 +49,12 @@
 //     staging; dec-byte translated correctly there, gate values OK.
 //   - 4428d6: `cmp word [0x87d7a0],2` read as u32; dropped 440fe3
 //     staging (al=0x10/ah=0xff).
+// UPDATE 2026-06-11: the stat-trio translations (and the 440fe3
+// action-table read they route through) were hand-fixed — oracle:
+// tools/_lockstep-statrio.mjs — and the trio now runs as JS via
+// fnDispatch (interpreter reachable behind __forceInterpStatTrio).
+// 0x43c751 is now the JS hand-port extra_peepwalk_43c751.js, reached
+// via its fnDispatch entry (interpreter behind __forceInterp43c751).
 //
 // REGISTER FIDELITY: the walking core 0x43c751 consumes caller registers
 // (Ghidra: unaff_EBX/unaff_EBP live-in — sound-pan packing and the
@@ -77,7 +83,7 @@ import { callNative } from "../../runtime/painter-bridge.js";
 import { FUN_0044142c } from "./44142c.js";
 import { FUN_00441452 } from "./441452.js";
 import { FUN_005df40c } from "./5df40c.js";
-import { FUN_005e53ca } from "./5e53ca.js";
+import { invalidateSpriteBbox } from "./extra_invalidate.js";  // faithful 5e53ca (the translated 5e53ca.js marks a stale dirty-grid rect — see extra_invalidate.js)
 import { FUN_0043c60b } from "./43c60b.js";
 import { FUN_00444927 } from "./444927.js";
 import { FUN_005e59ec } from "./5e59ec.js";
@@ -166,12 +172,12 @@ export function FUN_extra_peepstate_439b86(heap) {
   const emote = (bit, actionId) => {
     if ((heap.u16(esi + 0xc8) & bit) !== 0 && heap.u8(esi + 0x71) >= 0xfe) {
       if ((rand32(heap) & 0xffff) <= 0x3a8) {
-        callPreserved(heap, FUN_005e53ca);
+        invalidateSpriteBbox(heap);
         heap.setU8(esi + 0x71, actionId);
         heap.setU8(esi + 0x72, 0);
         heap.setU8(esi + 0x70, 0);
         callPreserved(heap, FUN_0043c60b);
-        callPreserved(heap, FUN_005e53ca);
+        invalidateSpriteBbox(heap);
       }
     }
   };
@@ -224,11 +230,11 @@ export function FUN_extra_peepstate_439b86(heap) {
       lo16("eax", heap.u16(esi + 0x0e));
       lo16("ecx", heap.u16(esi + 0x10));
       lo16("edx", heap.u16(esi + 0x12));
-      callPreserved(heap, FUN_005e53ca);     // invalidate at old z (pushal/popal)
+      invalidateSpriteBbox(heap);             // invalidate at old z (binary 5e53ca: pushal/popal, no reg effects)
       // mov dl,[edi+5]; and dx,0x1f; shl dx,4 — new z from water level
       lo16("edx", ((heap.u8(surf + 5) & 0x1f) << 4) & 0xffff);
       callPreserved(heap, FUN_00444927);     // move sprite (reads ax/cx/dx)
-      callPreserved(heap, FUN_005e53ca);     // invalidate at new z
+      invalidateSpriteBbox(heap);             // invalidate at new z
       regs.eax = FUN_0044142c(heap) | 0;
       heap.setU8(esi + 0x2b, 0);
       regs.eax = FUN_00441452(heap) | 0;
@@ -236,10 +242,20 @@ export function FUN_extra_peepstate_439b86(heap) {
     }
   }
 
-  // === stat decay trio 0x439d58 — interpreter-delegated (see header) ===
-  callNative(0x4428d6, []);
-  callNative(0x442816, []);
-  callNative(0x442867, []);
+  // === stat decay trio 0x439d58 — JS (the translations' corruptions are
+  // fixed: see 442816/442867/4428d6.js headers + the 440fe3 action-table
+  // fix; oracle: tools/_lockstep-statrio.mjs). The interpreter stays
+  // reachable behind __forceInterpStatTrio for the oracles. Calls go
+  // through fnDispatch so the lockstep can wrap them per-call. ===
+  if (globalThis.__forceInterpStatTrio) {
+    callNative(0x4428d6, []);
+    callNative(0x442816, []);
+    callNative(0x442867, []);
+  } else {
+    state.fnDispatch.get(0x4428d6)(heap);
+    state.fnDispatch.get(0x442816)(heap);
+    state.fnDispatch.get(0x442867)(heap);
+  }
 
   // === bench-sit gate 0x439d67 ===
   let benchSeek = false;
