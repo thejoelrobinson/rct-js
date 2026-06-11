@@ -232,3 +232,82 @@ affected):**
 After 0x43c751 + 0x4238b4 (~16k steps/tick), the interpreter share is
 mostly 1-step hook-crossing overhead; the next wins move to the JS
 side (--cpu-prof per ADDENDUM 1).
+
+## ADDENDUM 4 (2026-06-11) — gameplay-port campaign, session 3 results
+
+**Scenario tick: 46 ms → 37 ms avg (sandbox; Mac ≈2-3x faster).
+Interpreter steps: ~36k → ~26k per tick.** Four commits, all
+lockstep + dual-soak oracle-gated, all gates green throughout
+(title_accuracy 0/307200, title_replay, playability/interactive/
+viewport_build_live 22/22), no fixture recaptures:
+
+- `b2d3b4a` **interpreter fix: 66-prefixed XCHG ran as 32-bit.** The
+  0x87 handler (and 0x91-0x97) dropped the operand-size prefix; the
+  queue-join `66 87` xchg at 0x43d0ad therefore swapped a DWORD —
+  zeroing the adjacent station's queue-head word and hauling it into
+  eax's high half. Found by the 43c751 lockstep's one-byte heap diff at
+  0x887474; attributed by the tool's single-step memory watch
+  (CALLN=n WATCHA=addr prints the exact EIP whose write flips a byte —
+  reusable microscope). Same prefix-drop class as 646ef9b / d92e8cb.
+  NOTE: the JS port was the CORRECT leg here — the "truth" interpreter
+  was wrong vs the real CPU. Lockstep mismatches deserve suspicion in
+  both directions.
+- `7365f98` **0x43c751 peep walking-movement core → JS** (was 8,674
+  steps/tick, the top gameplay consumer; now 0 — its remaining cost is
+  the delegated motion handlers, see ranking). Transcribed from the
+  capstone disasm (the Ghidra C is a 707-line parse-fail). 43c49e
+  (movement/anim step), 425432/42547b (walkability) inlined; motion
+  handlers PTR [0x62d3fc] (43d5a0 guest / 4565f8 staff), 43e304,
+  43d38b/423677, 42e062/452fce/42c711/4405f3 delegated via callNative
+  with CF read off state.__painterCpu. Oracle: _lockstep-43c751
+  TICKS=6 calls=115 memMis=0; dual soak byte-identical.
+- `80552f4` **0x4238b4 vertical-supports painter → JS** (was 6,924
+  steps/tick; now 230 = pure 1-step hook crossings). Slope pieces +
+  segment loop + top-piece table rows; all PTR 0x432204/0x431bb8
+  allocator calls go to the existing JS bodies; the cold attach
+  variant (PTR [0x4328e0+rot*4]) stays delegated. Wired via
+  setEipHook(0x4238b4). Oracle: _lockstep-4238b4 TICKS=8 calls=2064
+  memMis=0 regMis=0 flagMis=0; dual soak byte-identical.
+- `283a209` **stat trio 442816/442867/4428d6 fixed + delegations
+  retired** — the ADDENDUM 3 catalogue (dec-byte-as-setU32, dropped
+  AL/AH/BX staging, u32-for-u16 gate, a heap write lost to a
+  `unique0x...` Ghidra artifact), plus the CALLEE closure the seeded
+  oracle exposed: **440fe3** (action table read at quadruple scale;
+  thought id clobbered; exit eax = the dword displaced off the thought
+  queue), **43c60b** (all three anim tables mistyped int[] — garbage
+  anim group + extent triple on every action change), **5e5301**
+  (widget-invalidate path called 5e117d with unstaged rect regs;
+  class paths called 5e43de without esi=window), and a shared faithful
+  5e53ca/5e117d in **extra_invalidate.js**. Oracle:
+  _lockstep-statrio.mjs SEED=1 (branch-forcing coverage; an unseeded
+  soak leaves the fixed branches cold — fired=0) → 3× memMis=0.
+
+**Translator-bug pattern confirmed twice more: Ghidra typing byte
+tables as int[] (u32 read at quadruple-scaled offset). Grep candidates
+before trusting any translation that indexes a 0x62xxxx table.**
+
+**Known-but-unfixed (deliberate):** ported/auto/5e53ca.js still calls
+FUN_005e117d without staging the rect registers it reads — every
+TRANSLATED caller of 5e53ca therefore marks a stale dirty-grid rect.
+The hand-ports now route around it via extra_invalidate.js; fixing the
+translation itself needs an oracle pass over its remaining callers
+(same shape as this session's statrio pass).
+
+**Remaining ranking (8-tick soak, steps/tick, avg 37 ms/tick):**
+
+| addr | steps/tick | what / next move |
+|---|---|---|
+| 0x43d5a0 | 3,977 | guest motion handler (4,545 steps/call × ~1/tick) — picks the next walk target incl. pathfinding; now THE gameplay target. Delegated from the 43c751 port via callNative; same lockstep-first pattern (entry regs are the 43c49e CF=0 exit, already binary-exact). Staff sibling 0x4565f8 next to it. |
+| 0x5d94b6 | 3,912 | sprite-sort goto-delegate — gameplay. |
+| 0x444e08 | 2,616 | residual: banner-wall fallbacks + hook crossings. |
+| 0x4368d8 | 1,974 | 1-step hook crossings — overhead, not work. |
+| 0x439178 / 0x42280c / 0x429560 / 0x5d7503 | 1.0-1.4k | peep/paint helpers. |
+| 0x431bc8 ×6 group | 954 each | 1-step hook crossings (already JS). |
+| 0x424e0f | 890 | goto-delegated sim fn. |
+| 0x4254e0 | 604 | leaf helper (60 steps/call). |
+| 0x4238b4 / 0x43d38b | 230 / 217 | hook crossings + the 43c751 port's z-height delegation (43d38b/423677 — small, port to finish the file). |
+
+After 0x43d5a0 + 0x5d94b6 (~8k steps/tick), hook-crossing overhead
+(~6k steps/tick of 1-step entries) dominates the interpreter column —
+batch or inline those hooks, then re-profile the JS side with
+--cpu-prof (ADDENDUM 1) before choosing the next slice.
