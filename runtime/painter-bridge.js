@@ -27,6 +27,7 @@ import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 // Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
 import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
+import { install4238b4Hook } from "../ported/auto/extra_paint_4238b4.js";
 // Phase R+12b: hand-port for small-scenery per-element painter.
 import { install5ce7f8Hook } from "../ported/auto/extra_paint_5ce7f8.js";
 // Phase R+14: hand-port for base-tile rotation sub-painter (PTR_LAB_00431bb8).
@@ -317,6 +318,15 @@ export function installPainterBridge(heap, opts = {}) {
   // tail jumptable. Follow-up phase (R+12.next) will swap the stub for the
   // real port; the scaffold here lets that swap be a single-file change.
   install444e08Hook(cpu, runFunction, setEipHook, heap);
+
+  // FUN_extra_paint_4238b4 — vertical-supports painter, called per
+  // wall/track element (the JS 444e08 port reaches it via runFunction;
+  // the eip hook routes that — and any interpreter-resident caller —
+  // through the JS body). Ranked #2 interpreter consumer (6,924
+  // steps/tick) after the 444e08 port landed. Interpreter reachable
+  // behind __forceInterp4238b4 for the oracles
+  // (tools/_lockstep-4238b4.mjs, FORCE_INTERP=4238b4 dual soak).
+  install4238b4Hook(cpu, runFunction, setEipHook, heap);
 
   // ====================================================================
   // Phase R+12b region — small-scenery per-element painter hand-port.
