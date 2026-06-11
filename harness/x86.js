@@ -1793,10 +1793,28 @@ export function step(cpu) {
     }
     throw new Error(`unsupported 0x${opcode.toString(16)} /${regField}`);
   }
-  // XCHG r32, r/m32 (0x87) / XCHG eax, r32 (0x91-0x97)
+  // XCHG r32, r/m32 (0x87) / XCHG eax, r32 (0x91-0x97).
+  // With 0x66: 16-bit exchange (high halves untouched, mem write is 2
+  // bytes). Dropping the prefix on `66 87` corrupted the peep ride-queue
+  // heads: 0x43d0ad `xchg word [edi+ebx*2+0x887472], ax` became a 32-bit
+  // swap that zeroed the ADJACENT station's head word and hauled it into
+  // eax's high half (found by tools/_lockstep-43c751.mjs's single-step
+  // memory watch; same prefix-drop class as the 66-MOVSX/MOVZX fix).
   if (opcode === 0x87) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     const a = cpu.regs[REG32[regField]] >>> 0;
+    if (prefixOperandSize) {
+      if (operand.kind === "reg") {
+        const b = cpu.regs[REG32[operand.reg]] >>> 0;
+        cpu.regs[REG32[regField]] = ((a & 0xffff0000) | (b & 0xffff)) >>> 0;
+        cpu.regs[REG32[operand.reg]] = ((b & 0xffff0000) | (a & 0xffff)) >>> 0;
+      } else {
+        const b = mem16(m, operand.addr);
+        cpu.regs[REG32[regField]] = ((a & 0xffff0000) | (b & 0xffff)) >>> 0;
+        write16(m, operand.addr, a & 0xffff);
+      }
+      cpu.regs.eip = (ip + 1 + len) >>> 0; return true;
+    }
     if (operand.kind === "reg") {
       const b = cpu.regs[REG32[operand.reg]] >>> 0;
       cpu.regs[REG32[regField]] = b; cpu.regs[REG32[operand.reg]] = a;
@@ -1808,6 +1826,12 @@ export function step(cpu) {
   }
   if (opcode >= 0x91 && opcode <= 0x97) {
     const r = REG32[opcode - 0x90];
+    if (prefixOperandSize) {              // 66 9x — xchg ax, r16
+      const a = cpu.regs.eax >>> 0, b = cpu.regs[r] >>> 0;
+      cpu.regs.eax = ((a & 0xffff0000) | (b & 0xffff)) >>> 0;
+      cpu.regs[r] = ((b & 0xffff0000) | (a & 0xffff)) >>> 0;
+      cpu.regs.eip = (ip + 1) >>> 0; return true;
+    }
     const t = cpu.regs.eax >>> 0;
     cpu.regs.eax = cpu.regs[r] >>> 0;
     cpu.regs[r] = t;
