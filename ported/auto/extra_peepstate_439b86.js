@@ -72,6 +72,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { regs } from "../../runtime/regs.js";
+import { state } from "../../runtime/win32/context.js";
 import { callNative } from "../../runtime/painter-bridge.js";
 import { FUN_0044142c } from "./44142c.js";
 import { FUN_00441452 } from "./441452.js";
@@ -207,10 +208,11 @@ export function FUN_extra_peepstate_439b86(heap) {
     }
   }
 
-  // === call 0x43c751 (walking-movement core) — interpreter-delegated;
-  // entry registers are binary-exact per the tracking above (43c751
-  // consumes caller ebx/ebp). regs round-trip via callNative. ===
-  callNative(0x43c751, []);
+  // === call 0x43c751 (walking-movement core) — via the fnDispatch entry
+  // (JS hand-port extra_peepwalk_43c751.js; interpreter behind
+  // __forceInterp43c751). Entry registers are binary-exact per the
+  // tracking above (43c751 consumes caller ebx/ebp). ===
+  state.fnDispatch.get(0x43c751)(heap);
   if ((heap.u16(0x62d3f4) & 1) === 0) return regs.eax;
 
   // === water-float block 0x439ce6 ([esi+0x29]&0x18 == 8) ===

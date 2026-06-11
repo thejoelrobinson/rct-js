@@ -18,9 +18,10 @@ import { defaultPalette } from "../harness/csg.js";
 // LoadLibraryA + GetProcAddress, so they're not directly imported by
 // any ported function but still need to be evaluated.
 import "./win32/ddraw.js";
-import { installPainterBridge } from "./painter-bridge.js";
+import { installPainterBridge, callNative } from "./painter-bridge.js";
 import { FUN_extra_paint_436b50 } from "../ported/auto/extra_436b50.js";
 import { FUN_extra_peepstate_439b86 } from "../ported/auto/extra_peepstate_439b86.js";
+import { FUN_extra_peepwalk_43c751 } from "../ported/auto/extra_peepwalk_43c751.js";
 
 /**
  * @param {object} opts
@@ -86,6 +87,16 @@ export function createRuntime(opts) {
       });
     }
   }
+
+  // Override the dispatch entry for the peep walking-movement core
+  // 0x43c751 (the auto entry is a parse-fail throw stub) with the JS
+  // hand-port. The 439b86 port calls through this entry; the interpreter
+  // stays reachable behind a force switch for the oracles
+  // (tools/_lockstep-43c751.mjs, FORCE_INTERP=43c751 dual soak).
+  state.fnDispatch.set(0x43c751, function FUN_43c751_dispatch(h) {
+    if (globalThis.__forceInterp43c751) return callNative(0x43c751, []);
+    return FUN_extra_peepwalk_43c751(h);
+  });
 
   // Wire browser-side resources (or stubs in node).
   setRuntimeContext({
