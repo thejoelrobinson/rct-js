@@ -2960,6 +2960,38 @@ export function runFunction(cpu, funcAddr, opts) {
   cpu.regs.eip = funcAddr >>> 0;
   cpu.callDepth = 0;
 
+  // Fast path for 1-step hook crossings: when `funcAddr` itself carries an
+  // eip hook (a JS-ported painter/handler), the first step() would do
+  // nothing but dispatch the hook and simulate its `ret` to the sentinel
+  // we just pushed. Several thousand calls per gameplay tick are exactly
+  // this shape (the per-element painter dispatch in extra_paint_4368d8 and
+  // the surface-strip sub-calls in extra_paint_421d2c), so dispatch the
+  // hook directly and skip the step loop. Semantically identical to the
+  // loop below: same hook invocation, same simulated ret (pop + callDepth
+  // decrement), same accounting (a crossing counts as 1 step). If the hook
+  // leaves a non-sentinel return address on top of the stack (it never
+  // does for function-entry hooks started on a fresh sentinel frame, but
+  // stay faithful to step()'s contract), fall through to the loop.
+  if (_eipHooksSize > 0) {
+    const hook = _eipHooks.get(funcAddr >>> 0);
+    if (hook) {
+      hook(cpu);
+      const ret = mem32(cpu.memory, cpu.regs.esp) >>> 0;
+      cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
+      cpu.regs.eip = ret;
+      if (cpu.callDepth > 0) cpu.callDepth--;
+      if (ret === RET_SENTINEL) {
+        if (globalThis.__fnSteps) {
+          const fm = globalThis.__fnSteps;
+          const cur = fm.get(funcAddr >>> 0);
+          if (cur) { cur.steps += 1; cur.calls += 1; }
+          else fm.set(funcAddr >>> 0, { steps: 1, calls: 1 });
+        }
+        return 1;
+      }
+    }
+  }
+
   // Cache step in a local so the loop body's call site is a direct slot load,
   // not a module-level lookup through the function environment each iteration.
   const _step = step;
