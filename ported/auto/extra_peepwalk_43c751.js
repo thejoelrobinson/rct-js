@@ -70,6 +70,7 @@ import { FUN_00444927 } from "./444927.js";
 import { FUN_0043e792 } from "./43e792.js";
 import { FUN_005e5301 } from "./5e5301.js";
 import { FUN_00440fe3 } from "./440fe3.js";
+import { FUN_extra_guestmotion_43d5a0 } from "./extra_guestmotion_43d5a0.js";
 
 function rol16(v, n) { n &= 15; return ((v << n) | (v >>> (16 - n))) & 0xffff; }
 function ror16(v, n) { n &= 15; return ((v >>> n) | (v << (16 - n))) & 0xffff; }
@@ -98,9 +99,19 @@ function callPreserved(heap, fn) {
   return ret;
 }
 
-// RNG: binary clobbers eax only (push ebx … pop ebx).
+// RNG: binary clobbers eax only (push ebx … pop ebx). FUN_005df40c
+// stages its result on regs.eax and has NO JS return value — the
+// original `regs.eax = callPreserved(...)` piped undefined into eax,
+// zeroing every RNG draw on the vomit/perception paths (latent: those
+// paths stayed cold in the 43c751 lockstep soak). Caught by the
+// 43d5a0 port's lockstep oracle, which draws RNG on every call.
 function rand32(heap) {
-  return (regs.eax = callPreserved(heap, FUN_005df40c) >>> 0) >>> 0;
+  const s = snapRegs();
+  FUN_005df40c(heap);
+  const v = regs.eax >>> 0;
+  restoreRegs(s);
+  regs.eax = v;
+  return v;
 }
 
 // === 0x5e53ca — invalidate the sprite's screen bbox in every visible
@@ -514,7 +525,15 @@ export function FUN_extra_peepwalk_43c751(heap) {
     heap.setU16(0x62d3f4, heap.u16(0x62d3f4) | 1);
     regs.ebx = heap.u8(esi + 0x2e);
     const handler = heap.u32(0x62d3fc + regs.ebx * 4) >>> 0;
-    callNative(handler, []);
+    if (handler === 0x43d5a0 && !globalThis.__forceInterp43d5a0) {
+      // guest motion handler — JS port (extra_guestmotion_43d5a0.js);
+      // sets CF on the painter cpu like the callNative path. The
+      // __lockstep43d5a0 seam is the per-call oracle wrap point
+      // (tools/_lockstep-43d5a0.mjs).
+      (globalThis.__lockstep43d5a0 || FUN_extra_guestmotion_43d5a0)(heap);
+    } else {
+      callNative(handler, []);
+    }
     if (cpuCF()) return regs.eax;                         // 43c898: stc; ret
     cf = step43c49e(heap);
     if (!cf) return regs.eax;                             // 43c898: stc; ret
