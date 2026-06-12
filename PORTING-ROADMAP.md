@@ -311,3 +311,30 @@ After 0x43d5a0 + 0x5d94b6 (~8k steps/tick), hook-crossing overhead
 (~6k steps/tick of 1-step entries) dominates the interpreter column —
 batch or inline those hooks, then re-profile the JS side with
 --cpu-prof (ADDENDUM 1) before choosing the next slice.
+
+## ADDENDUM 5 (2026-06-10) — session 4: gameplay render BYTE-EXACT
+
+Four commits (f22d064, c6c6c91, 6526a99, 2aa9491), all gates green,
+independently re-validated:
+
+- 0x43d5a0 guest motion handler → JS (lockstep-gated; was top consumer).
+- 0x5d94b6 = vehicle sound-params updater → JS (was the goto-delegated
+  module; #2 consumer).
+- runFunction now dispatches entry-address eip hooks directly — the
+  ~6k steps/tick of 1-step hook crossings are gone.
+- **Workstream B item 1 LANDED AND STARTS AT ZERO:
+  test/runtime/gameplay_accuracy.test.js — the enterScenarioPlay frame
+  is BYTE-EXACT vs the interpreter ground truth (0/307200, ratchet 0).**
+  Gameplay rendering is pixel-perfect, not just the title.
+
+Tick: 37 ms → 32 ms avg (sandbox; ≈12-16 ms on the dev Mac).
+Cumulative campaign: 190 → 32 ms (5.9x).
+
+Next: re-profile with --cpu-prof (interpreter share is now small —
+find the new JS-side hot spots); remaining roadmap items: input/hover
+chain pass (unblocks faithful 5e69bd + kills its per-tick body),
+window-scroll chain (9bb374 0-row underflow + 5e1653 esi enable),
+444e08 banner-fallback residual, Workstream C punch list (sprite-72
+load desync, 0x5e52a7, 43e304 hand-port, vitest worktrees exclude).
+Untracked ported/auto/*.truthbak files are session-4 scratch backups —
+delete when the mount allows unlink.
