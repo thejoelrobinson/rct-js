@@ -98,6 +98,15 @@ try {
   console.log(`wrote ${out}\n  ${N} bytes, FNV-1a hash=0x${(h >>> 0).toString(16).padStart(8, "0")}`);
   if (globalThis.__interpBlitStats) console.log(`  interp-router: ${globalThis.__interpBlitStats.calls} calls, ${globalThis.__interpBlitStats.errors} errors`);
 } finally {
-  for (const [p, bak] of backups) { if (existsSync(bak)) { copyFileSync(bak, p); unlinkSync(bak); } }
+  for (const [p, bak] of backups) {
+    if (existsSync(bak)) {
+      copyFileSync(bak, p);
+      // Some sandboxes deny unlink on the mounted repo. A failed unlink must
+      // NOT abort the loop (it would leave the remaining shims routed — that
+      // happened once and tainted a measurement); a stale .truthbak is
+      // harmless and gets overwritten on the next capture.
+      try { unlinkSync(bak); } catch { /* leave the backup file */ }
+    }
+  }
   console.log("restored original blit shims");
 }
