@@ -79,6 +79,11 @@ function drawCursorOverlay(imageData, palette, sprite, cx, cy) {
 
 let _imageData = null;     // cached ImageData reused frame-to-frame
 let _imageDataKey = "";    // dimensions key — reallocate on size change
+let _imageData32 = null;   // Uint32Array view over _imageData.data (same buffer)
+let _palLut = new Uint32Array(256);  // palette index → packed RGBA dword
+// ImageData bytes are RGBA in memory order; pack the dword to match the
+// host's endianness (every realistic target is little-endian, but be exact).
+const _isLE = new Uint8Array(new Uint32Array([1]).buffer)[0] === 1;
 
 // Draws a placeholder frame with status text. Used while the binary is
 // running but hasn't allocated a DIB section yet — gives visual confirmation
@@ -153,20 +158,31 @@ export function presentFrame(heap, canvas, ctx) {
   if (_imageDataKey !== key) {
     _imageData = ctx.createImageData(width, height);
     _imageDataKey = key;
+    // Word-sized view over the same backing buffer — lets the blit below
+    // write one packed RGBA dword per pixel instead of 4 byte stores.
+    _imageData32 = new Uint32Array(_imageData.data.buffer, _imageData.data.byteOffset, width * height);
   }
-  const out = _imageData.data;     // Uint8ClampedArray RGBA
+  // Rebuild the palette LUT each frame (256 entries — trivially cheap, and
+  // the palette can be animated by the game). Packs each entry as a
+  // little-endian RGBA dword: r | g<<8 | b<<16 | 0xff<<24.
+  const lut = _palLut;
+  if (_isLE) {
+    for (let i = 0, p = 0; i < 256; i++, p += 4) {
+      lut[i] = (palette[p] | (palette[p + 1] << 8) | (palette[p + 2] << 16) | 0xff000000) >>> 0;
+    }
+  } else {
+    for (let i = 0, p = 0; i < 256; i++, p += 4) {
+      lut[i] = ((palette[p] << 24) | (palette[p + 1] << 16) | (palette[p + 2] << 8) | 0xff) >>> 0;
+    }
+  }
+  const out32 = _imageData32;
   const src = heap.bytes;
   for (let y = 0; y < height; y++) {
     const srcRow = topDown ? y : (height - 1 - y);
     const srcOff = bufAddr + srcRow * stride;
-    const dstOff = y * width * 4;
-    for (let x = 0; x < width; x++) {
-      const idx = src[srcOff + x] * 4;
-      const dst = dstOff + x * 4;
-      out[dst    ] = palette[idx    ];
-      out[dst + 1] = palette[idx + 1];
-      out[dst + 2] = palette[idx + 2];
-      out[dst + 3] = 255;
+    let dst = y * width;
+    for (let x = 0; x < width; x++, dst++) {
+      out32[dst] = lut[src[srcOff + x]];
     }
   }
   // Cursor overlay — draw the in-game cursor sprite at the live cursor
