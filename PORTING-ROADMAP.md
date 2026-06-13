@@ -568,3 +568,34 @@ look at runtime/input.js DOM-event flooding next.
 Remaining perf tail (separate from the freeze): the periodic ~700ms
 sandbox hitch is the 421d2c terrain-painter slope-extra interpreter
 fallback (cold case, runBodyFrom 0x4225e9) — a normal next painter port.
+
+## ADDENDUM 10 (2026-06-13) — the 5-6s "short pause" = periodic full-viewport repaint
+
+After the audio fix (ADDENDUM 9) the user reports a SHORT pause every
+~5-6s. Root-caused with a precise node repro (/tmp/scrollstall.mjs):
+- Instrumented the 421d2c terrain-painter hook fire-count per frame.
+- NORMAL frame: 421d2c fires **~954** times (dirty-region terrain paint).
+- HITCH frame (every ~256 ticks ≈ 5-6s at 40fps): 421d2c fires **~4,623**
+  times — a FULL-viewport repaint. ~122ms in sandbox (~50ms on Mac).
+- NOT the slope-extra cold fallback (slopeFallback fires = 0). NOT scroll-
+  dependent (static viewport still hitches every 256 ticks). It's the
+  binary's own periodic invalidate-all (likely palette/animation tied).
+
+FIX (next, gated by gameplay_accuracy 0/307200 — full pixel oracle for
+this exact path): make the per-tile 421d2c paint cheaper. Each of the
+4623 tiles currently does, in paintBody421d2c (extra_paint_421d2c.js):
+  (a) a 5-dword copy + an 18-PAIR (36-dword) copy from palette scratch
+      rings [0x999f9a]/[0x999fdc] → [0x5f4104]/[0x5f4146] (~41 heap ops/tile
+      = ~190k ops on the hitch frame), and
+  (b) **4 palette-swizzle helper calls via the interpreter** — callBridge
+      to 0x420d9c / 0x420f4c / 0x420502 / 0x42094b (these ARE JS-ported
+      eip-hooks, but reached through runFunction CROSSINGS: 4×4623 ≈ 18.5k
+      crossings on the hitch frame).
+Levers, in order: (1) call the four palette helpers' JS bodies DIRECTLY
+(import paintBody420d9c etc.) instead of via callBridge/runFunction —
+removes 18.5k interpreter crossings/hitch-frame with zero behavior change
+(the hook already runs that JS). (2) Hoist the per-tile palette-ring copy
+if the source rings are invariant across the tile loop within one frame
+(prove with an oracle: snapshot [0x999f9a..]/[0x999fdc..] across the 4623
+calls — if constant, copy once per frame, not per tile). Both gated by
+gameplay_accuracy + a per-call lockstep on 421d2c.
