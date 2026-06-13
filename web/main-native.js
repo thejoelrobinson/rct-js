@@ -217,6 +217,11 @@ async function main() {
   globalThis._gotoWarn = (site) => { _gotoHits.set(site, (_gotoHits.get(site) || 0) + 1); };
   window._gotoHits = _gotoHits;
 
+  // FREEZE DIAGNOSTIC (ADDENDUM 7): a wedged renderer can't answer CDP,
+  // but the tab TITLE is browser-process state and stays readable. Write
+  // a heartbeat before the tick and the phase string during it — when
+  // the page freezes, the title names the exact frame + phase it died in.
+  globalThis.__painterStepLimit = 3_000_000; // interpreter runaways throw in ~seconds, not minutes
   function tick(t) {
     try {
       const hwnd = state.firstHwnd || 0;
@@ -225,8 +230,10 @@ async function main() {
       _ops = 0;
       _startMs = Date.now();
       let _lastPhase = "(none)";
+      document.title = `f${frameCount} pre-tick ${Date.now() % 100000}`;
       try {
         runtime.runTick((phase) => {
+          document.title = `f${frameCount} ${phase} ${Date.now() % 100000}`;
           // Only log on first tick to avoid spamming the log. Captures the
           // phase string in a closure so the catch handler below can report
           // which sub-call hung.

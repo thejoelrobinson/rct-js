@@ -497,3 +497,45 @@ tab TITLE — make tick() write a heartbeat (frame#, last phase string,
 Date.now) into document.title every frame; when it freezes, the title
 names the exact phase. Also set globalThis.__painterStepLimit low
 (2-5M) in main-native.js so interpreter runaways throw in seconds.
+
+## ADDENDUM 8 (2026-06-13) — frame-limiter busy-wait removed; freeze still browser-only
+
+**Landed (gated, both pixel gates byte-exact 0/307200):**
+- `ported/auto/4385d8.js`: removed the binary's 40fps frame-limiter
+  busy-wait (`do { timeGetTime } while now-[0x999f90] < 0x19` = 25ms).
+  --cpu-prof of the browser-mirrored loop showed GetTickCount = **25% of
+  ALL CPU** — pure spin. The loop has ZERO heap writes, so removal is
+  provably sim/pixel-neutral (gates confirm). Removes the 40fps cap AND
+  reclaims a quarter of the CPU; rAF now paces. Node browser-loop frames
+  529→785 /30s.
+
+**Diagnosis tools added this session (in /tmp, promote to tools/ if kept):**
+- browserloop-soak.mjs: REAL-clock soak that posts WM_TIMER(16ms)+
+  WM_PAINT(33ms) to the live hwnd each frame — mirrors main-native.js
+  exactly. This is the faithful repro the plain scenario soak wasn't.
+- web/main-native.js: document.title heartbeat (`f<n> <phase> <clock>`)
+  + __painterStepLimit=3_000_000 so interpreter runaways throw in
+  seconds. A frozen renderer still shows its tab title → the title names
+  the phase it died in. (Diagnostic; keep until the freeze is fixed.)
+
+**OPEN #1 — periodic ~700ms hitch (every ~5-6s):** time-sliced cpu-prof
+isolated it to the `421d2c` terrain-painter eip-hook FALLING BACK to the
+interpreter (`runFunction(..., limit 5_000_000)` at
+extra_paint_421d2c.js:467) for a cold scene case not yet ported to JS.
+Next: instrument callBridge's fnAddr on the slow frame (needs the full
+warm scene — fires every ~150 frames), port that sub-case to JS like the
+other painter cold-tails. Pure perf, pixel-gated.
+
+**OPEN #2 — hard renderer freeze (the actual user symptom):** NOT
+reproducible in node even with the faithful browser-loop soak (785
+frames/30s, no freeze, no msg-queue growth). Therefore tied to a
+BROWSER-ONLY subsystem the node harness stubs: (a) the WebAudio backend
+in runtime/win32/dsound.js actually instantiating AudioContext nodes
+(node path is inert), or (b) real DOM mouse/key events through
+attachInput (runtime/input.js) flooding the binary's input dispatch.
+Next session: use the on-page title heartbeat on a FOREGROUND tab (the
+agent's CDP probes are confounded by background-tab rAF throttling —
+hidden=true throttles to ~0, looks like a freeze). Have a human watch
+the foreground tab and report the last heartbeat phase, OR disable the
+WebAudio backend (stub IDS play to no-op) and the input attach
+independently to bisect which subsystem wedges the thread.

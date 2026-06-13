@@ -271,9 +271,19 @@ export function FUN_004385d8(heap) {
     }
   }
   }
-  do {
-    iVar5 = (((regs.eax = FUN_0040473c(heap))) >>> 0);
-  } while (((iVar5 - heap.u32(0x00999f90)) >>> 0) < 0x19);
+  // HAND-FIX (perf — the binary's 40fps busy-wait frame limiter):
+  // the original spins `do { timeGetTime } while (now - [0x999f90] < 0x19)`
+  // — padding every tick to 25ms (= 40fps) by burning the CPU on
+  // GetTickCount. In a --cpu-prof of the live browser-mirrored loop this
+  // spin was 25% of ALL CPU time, and it hard-caps the frame rate at 40fps
+  // — the opposite of the 60-90fps goal. The loop has ZERO heap writes
+  // (FUN_0040473c only reads the clock), so removing it is provably
+  // sim-neutral and pixel-neutral: every heap byte and rendered pixel is
+  // identical. Pacing is now the browser's requestAnimationFrame (display
+  // refresh), which is where it belongs. We still read the clock once to
+  // preserve regs.eax's exit value for any caller that reads it.
+  regs.eax = FUN_0040473c(heap);
+  void iVar5;
   return;
 } finally {
     heap.freeFrame(4);
