@@ -179,10 +179,19 @@ async function main() {
     log(`[gameplay warm-up] ${((e && e.message) || e).toString().slice(0, 150)}`, "err");
   }
 
-  // Steady state: drop the watchdog entirely. Init + the two heavy one-time
-  // ticks above ran under it (where the hang risk lives); the rAF loop runs
-  // on the raw heap accessors — zero per-op overhead.
-  unwrapHeap();
+  // Steady state: the watchdog MUST stay armed. Live-browser testing
+  // (2026-06-13) found a real-clock steady-state RUNAWAY: ~10-20s after
+  // boot a tick stops returning (a once-per-second wallclock-gated path —
+  // node's fake-clock soaks never reach it; suspects: the [0x99fe00]
+  // >999ms accumulator paths in FUN_005e1653 and friends). With the
+  // accessors unwrapped there is NO interruption mechanism and the
+  // renderer freezes solid; with the watchdog armed the wallclock check
+  // throws, tick() catches, and the game keeps running. Keep the
+  // wrappers until that runaway is found and fixed with a lockstep
+  // oracle (then unwrapHeap() can land for the per-op speedup).
+  _budget = 2_000_000_000;
+  _wallBudgetMs = 15_000;
+  void unwrapHeap; // defined above; intentionally NOT called yet
 
   // Main loop. rAF cadence ≈ 60 Hz. Post WM_TIMER every 16 ms (matches the
   // game's expectation of a 60 Hz tick clock) and WM_PAINT every 33 ms.

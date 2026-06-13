@@ -1,4 +1,4 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate. (One hand-fix: DSound start busy-wait skipped; see below.)
 // Source: decompiled/c/410d3d.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
 
@@ -41,10 +41,16 @@ export function FUN_00410d3d(heap, param_1) {
       heap.setU32(0x005ec160, (1) >>> 0);
       heap.setU32(0x005ec164, (0) >>> 0);
       (regs.eax = FUN_00413170(heap, 0x005f0300, __addr_local_5c));
+      // HAND-FIX (browser freeze): the binary busy-waits 300ms here for the
+      // DirectSound buffer to start playing (do { GetTickCount } while < +300).
+      // Our WebAudio-backed DSound shim starts playback synchronously, so the
+      // spin is pure wasted blocking — and it makes NO heap-accessor calls, so
+      // the main-thread watchdog cannot interrupt it: in the live browser this
+      // (re-triggered by diverged audio state) starved the rAF loop and froze
+      // the renderer ~15-30s after boot. Skip the wait; read the clock once to
+      // keep DVar3's register effect.
       DVar2 = ((GetTickCount(heap)) >>> 0);
-      do {
-        DVar3 = ((GetTickCount(heap)) >>> 0);
-      } while (DVar3 < DVar2 + 300);
+      DVar3 = ((DVar2 + 300) >>> 0);
       (regs.eax = FUN_004110f6(heap, 0));
       uVar4 = ((1) >>> 0);
     } else {

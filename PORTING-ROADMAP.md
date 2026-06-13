@@ -462,3 +462,38 @@ worthless. Do NOT chase it.
    an interpreter-diff oracle, not a translator fix.
 5. Workstream C punch list (sprite-72 load desync, 0x5e52a7, 43e304
    hand-port, vitest .claude/worktrees exclude).
+
+## ADDENDUM 7 (2026-06-13) — LIVE-BROWSER FREEZE: open, top priority
+
+Reproducible: page boots fine, runs, then the renderer wedges solid
+~15-40s after load (CDP Runtime.evaluate + screenshots time out 45s).
+Established by elimination, live in the user's Chrome:
+- NOT the session-5 commits (reproduces with d70374b+95bff71 fully
+  reverted on disk) — all earlier "stable" measurements simply finished
+  before the 15s mark.
+- IMMUNE to the per-op heap watchdog (restored, still froze) — so the
+  blocking loop makes NO heap-accessor calls (pure JS/regs loop, or
+  interpreter-context spin on a Win32 shim).
+- NOT reproducible in node REAL-CLOCK scenario soak (481 ticks/34s,
+  tools kept in /tmp/realclock-soak.mjs pattern: real Date.now, deadman
+  in heap accessors). Node DID expose: (a) periodic ~1.6s ticks every
+  ~145 ticks — GetTickCount 11% of profile; (b) FUN_00410d3d's 300ms
+  DSound-start busy-wait (FIXED this session — spin made no heap calls,
+  exactly the watchdog-immune class); (c) FUN_004385d8's tail pacing
+  loop (timeGetTime until [0x999f90]+0x19 — the binary's own 25ms/40fps
+  limiter; bounded, but caps fps at 40 and burns CPU: relevant to the
+  60-90fps goal — consider rAF-aligned virtual clock).
+Browser-only differences to investigate, in order:
+1. Interpreter-context Win32 timing shims: if a bridged/callNative path
+   calls IAT GetTickCount/timeGetTime and the shim result does not
+   reach the interpreter's eax, the binary's wait loops spin FOREVER
+   with zero heap-accessor calls — matches every observed symptom.
+   Audit harness/shims.js + the shim-invoker eax write-back.
+2. WM_TIMER/WM_PAINT flood + real input events (browser posts both
+   every frame; node soak posts neither).
+3. WebAudio-backed DSound state divergence retriggering sound starts.
+DIAGNOSTIC TRICK for next session: a frozen renderer still shows its
+tab TITLE — make tick() write a heartbeat (frame#, last phase string,
+Date.now) into document.title every frame; when it freezes, the title
+names the exact phase. Also set globalThis.__painterStepLimit low
+(2-5M) in main-native.js so interpreter runaways throw in seconds.
