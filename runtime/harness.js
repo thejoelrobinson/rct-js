@@ -22,6 +22,7 @@ import { installPainterBridge, callNative } from "./painter-bridge.js";
 import { FUN_extra_paint_436b50 } from "../ported/auto/extra_436b50.js";
 import { FUN_extra_peepstate_439b86 } from "../ported/auto/extra_peepstate_439b86.js";
 import { FUN_extra_peepwalk_43c751 } from "../ported/auto/extra_peepwalk_43c751.js";
+import { FUN_00424e0f_js } from "../ported/auto/extra_sim_424e0f.js";
 
 /**
  * @param {object} opts
@@ -97,6 +98,21 @@ export function createRuntime(opts) {
     if (globalThis.__forceInterp43c751) return callNative(0x43c751, []);
     return FUN_extra_peepwalk_43c751(h);
   });
+
+  // Override the dispatch entry for the periodic map-scan / fence+scenery
+  // aging sim helper 0x424e0f. installPainterBridge above overwrote the
+  // _dispatch.js entry (424e0f.js) with its interpreter _paintShim; re-set
+  // it to the JS hand-port (extra_sim_424e0f.js). The interpreter shim is
+  // still reachable behind __forceInterp424e0f for the oracle
+  // (tools/_lockstep-424e0f.mjs) and dual soak. The function's exit
+  // registers are dead (caller 0x4388c5 immediately `call`s the next fn).
+  {
+    const bridged424e0f = state.fnDispatch.get(0x424e0f);
+    state.fnDispatch.set(0x424e0f, function FUN_424e0f_dispatch(h) {
+      if (globalThis.__forceInterp424e0f && bridged424e0f) return bridged424e0f(h);
+      return FUN_00424e0f_js(h);
+    });
+  }
 
   // Wire browser-side resources (or stubs in node).
   setRuntimeContext({

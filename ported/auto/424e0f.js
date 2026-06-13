@@ -1,28 +1,34 @@
 // @manual — do not regenerate.
-// INTERPRETER-DELEGATED. See decompiled/c/424e0f.c for Ghidra's decompilation
-// and git history for the previous auto-translation.
 //
-// The auto-translation of FUN_00424e0f contained 5 `goto LAB_*` sites the
-// translator lowered as silent early-returns (goto-warn counters showed it
-// truncating mid-function on live gameplay ticks), so its behaviour
-// diverged from the binary wherever those paths fired. The module now
-// delegates to the painter-bridge interpreter shim registered for
-// 0x424e0f (lifter/extra-entries.json) — byte-true by construction. The
-// function is regs-based (no JS stack params), so the shim's register
-// sync covers the full calling convention. Hand-port properly when it
-// shows up hot in profiles.
+// FUN_00424e0f — periodic map-scan / fence+scenery aging sim helper, called
+// once per game tick from the per-tick sim dispatch chain at 0x4388c5
+// (`call 0x424e0f; call 0x439135; ...` — the next instruction is another
+// `call`, so this function's exit registers are DEAD). ~883 interp
+// steps/call. Previously interpreter-delegated because the auto-translation
+// lowered 5 `goto LAB_*` sites as silent early-returns; now hand-ported to
+// JS in extra_sim_424e0f.js (transcribed from the capstone disasm, all
+// callees delegated through callNative for byte-exact CX/AX/CF round-trip).
+//
+// This module is the dispatch indirection point: it routes through
+// state.fnDispatch.get(0x424e0f), which harness.js overrides to the JS port
+// (FUN_00424e0f_js) after installPainterBridge. The interpreter shim stays
+// reachable behind __forceInterp424e0f so the oracle
+// (tools/_lockstep-424e0f.mjs, whole-heap per-call compare: calls=N
+// memMis=0) and dual soak can A/B the port vs the original bytes. Keeping
+// the call routed through fnDispatch (rather than importing the port
+// directly) lets the oracle intercept every call by wrapping that entry.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { state } from "../../runtime/win32/context.js";
 
 export function FUN_00424e0f(heap) {
-  const bridged = state.fnDispatch.get(0x424e0f);
-  if (!bridged || bridged === FUN_00424e0f) {
+  const dispatched = state.fnDispatch.get(0x424e0f);
+  if (!dispatched || dispatched === FUN_00424e0f) {
     throw new Error(
-      "FUN_00424e0f requires the painter-bridge interpreter shim " +
-      "(installPainterBridge via createRuntime); no bridged entry found",
+      "FUN_00424e0f requires a dispatch entry (harness override or " +
+      "painter-bridge shim); none found",
     );
   }
-  return bridged(heap);
+  return dispatched(heap);
 }
