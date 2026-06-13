@@ -799,3 +799,91 @@ callNative for byte-exact register round-trip, and port the type/mode
 dispatch arms incrementally to calls=N memMis=0. The deep callees
 (0x5db339/446/5d7/eeb, 0x5ddcbe) can stay delegated indefinitely — only the
 0x5da274 dispatch body needs porting to capture the per-call win.
+
+## ADDENDUM 14 (2026-06-13) — session 9: 0x5da274 ride/vehicle update -> JS
+
+One commit (`56aa53e`), lockstep + synthetic-fuzz + dual-soak oracle-gated,
+all gates green throughout, no fixture recaptures.
+
+**`56aa53e` 0x5da274 ride/vehicle per-sprite update -> JS** (PTR_LAB_005d97b4
+vtable slot 4; ~315 interp steps/call × 8 calls/tick = **~2,524 interp
+steps/tick eliminated**, directly measured via a step-to-ret count on the
+forced-interp leg). The ADDENDUM 13 framing ("568+ instructions, no ret in
+the first 0x900 bytes, 9-callee subtree") was an over-count from a LINEAR
+read of the address range — a reachability walk from 0x5da274 (capstone,
+following branches not calls) gives the true shape: **EXACTLY 175
+instructions, a SINGLE exit (`ret` at 0x5db338), and 6 DIRECT callees.** The
+extra "callees" in the linear range (0x42deab/452fce/441452/44142c/5d89c0…)
+belong to the NEIGHBOURING vtable slots (0x5da4d0/0x5da799/…) that the linear
+disasm ran into past slot 4's last `jmp 0x5db338`; they are NOT reachable
+from 0x5da274 and were never in scope.
+
+- **Reached via an interpreter-internal `call [edi*4+0x5d97b4]`** at 0x5d952c
+  (edi = [esi+0x50] = 4), exactly like 0x429560's dispatcher jmp — so an
+  **eip hook at 0x5da274** (not an fnDispatch override) wins the crossing.
+  Entry regs from the dispatcher: esi = vehicle sprite, dl = [ride+0x887424]
+  (mode byte), dh = [esi+0x51] (sub-state). The body ends in a plain `ret`
+  (0x5db338) back to the dispatcher; the hook snapshots/restores esp around
+  the JS body (its callNatives reuse the bridge cpu) so the post-hook ret
+  pops the dispatcher's real return address.
+- **All 6 direct callees delegated via callNative** for byte-exact heap +
+  register round-trip — 0x5ddcbe (entry pre-update), 0x5dbeeb (mode-flag
+  query -> eax, the load-bearing one: its eax drives the whole 0x300/0x40/
+  0x80/0x20/0x10/8 mode-bit dispatch), 0x5db5d7 (state-transition helper),
+  0x5db339 / 0x5db446 (crash/explode arms), 0x5dbad0 (the 0x5dae71 tail).
+  esi (the binary's `this`) and edx (dl/dh) are re-staged into `regs` before
+  every callNative since a prior callee's exit can land in regs.esi/edx.
+- **No Ghidra C.** Transcribed instruction-by-instruction with every store
+  WIDTH taken from the disasm (word [esi+0xc0]/[esi+0x48]/[esi+0xb8], dword
+  [esi+0x28]/[esi+0x2c]/[esi+0x24], byte [esi+0x50]/[esi+0x51]/[esi+0x34..6])
+  to avoid the #1 translator bug class (byte/word store widened to setU32).
+  Signed dword compares (`jl`/`jge`/`jg` on [esi+0x28] vs 0xfffdfc9c etc.)
+  modelled with `v|0`. The dl==7/dh==1 station chain walk reuses the
+  rol/or/ror tile-index scramble shared with 424e0f.
+
+**ARMS PORTED vs DELEGATED.** ALL 175 reachable instructions are ported as
+JS (full dispatch body); the 6 deep callees stay in the interpreter via
+callNative (their physics subtree — 0x5db5d7 -> 0x5d89c0/44142c/441452/
+452fce etc. — is reached through those crossings and is NOT in scope, exactly
+as the addendum prescribed). Nothing in 0x5da274's own body is delegated.
+
+**ORACLE RESULTS.** The scenario soak only ever dispatches the **dl=8 / dh=1
+fast path** (eax has no mode bits set: through 0x5ddcbe + 0x5dbeeb, the early
+dispatch, and the LAB_5da335 tail to the ret) — 8 calls/tick, every tick:
+- `tools/_lockstep-5da274.mjs` (whole-heap per-call compare vs the live
+  interpreter, truth kept live): **calls=160 memMis=0** over 20 ticks;
+  `AB_CONTROL=1` interp-vs-interp control **memMis=0** (harness sound).
+  regMisInfo=160 is the dead void exit registers (the dispatcher reads
+  esi-relative state, not registers, after the call) — same as 429560/424e0f.
+- Because the soak can't reach the branchy arms, `tools/_fuzz-5da274.mjs`
+  drives the SAME hooked function from RANDOMIZED entry states (real live
+  vehicle sprites from the pool × all dl 0..31 × all dh 0..3; eax mode bits
+  come from the REAL per-sprite 0x5dbeeb, not fabricated) and byte-diffs JS
+  vs interpreter: **trials=3000 memMis=0**, every (dl,dh) cell exercised.
+  This proves the dl=2/4/5/7 specials, the dl=7/dh=1 station chain walk, the
+  dl=5 arm5daebd position-recompute, the dh=2 decrement, and every eax
+  mode-bit arm (call 0x5db339/5db446/5db5d7) byte-exact — the arms the
+  scenario will never trigger.
+- Dual whole-heap soak (`painter-port-oracle.mjs` JS vs FORCE_INTERP=5da274):
+  **byte-identical FNV-1a hash sequence over 6 ticks.**
+
+**Steps/tick.** ~315 interp steps/call removed × ~8 calls/tick (this
+scenario) = **~2,524 interp steps/tick eliminated** (measured by a direct
+step-to-ret count, the same technique ADDENDUM 13 used for 429560/424e0f
+since 0x5da274 is folded under its parent runFunction in the __fnSteps
+ranking). The two remaining big gameplay consumers from ADDENDUM 6 item 2
+(0x429560 award-scan and 0x424e0f sim helper) are already ported; the next
+interpreter levers are smaller per-call helpers (0x5d7503 paint-adjacent,
+0x439178/0x42280c peep helpers) or the 444e08 banner fallback.
+
+**Gates (all green, no fixture recaptures):** title_accuracy 0/307200,
+gameplay_accuracy ratchet 0, title_replay; playability/interactive/
+viewport_build_live 22/22.
+
+**Next priority.** With all three ADDENDUM 6 big consumers (429560, 424e0f,
+5da274) ported, the interpreter share is dominated by the per-element PAINTER
+sub-dispatch (the 421d2c/5ce7f8 hooks crossing into CODESEG scenery
+sub-painters via runFunction) and small gameplay helpers. Re-run the
+steady-state CPU profile (`tools/_cpuprof-steady.mjs`, ADDENDUM 6) to
+re-rank before the next slice — the remaining wins are likely on the JS side
+(painter algorithmic structure) rather than further interpreter ports.
