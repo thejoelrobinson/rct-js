@@ -539,3 +539,32 @@ hidden=true throttles to ~0, looks like a freeze). Have a human watch
 the foreground tab and report the last heartbeat phase, OR disable the
 WebAudio backend (stub IDS play to no-op) and the input attach
 independently to bisect which subsystem wedges the thread.
+
+## ADDENDUM 9 (2026-06-13) — the ~30s freeze is AUDIO (likely fixed)
+
+User confirmed a recurring freeze "~every 30s, then continues." Root
+cause identified by elimination + period:
+- The faithful node browser-loop soak (posts WM_TIMER/WM_PAINT to the
+  live hwnd, real clock) runs **1735 frames/40s, ZERO stalls** — node
+  has no AudioContext so startPlayback returns early. The freeze is in
+  the one subsystem node stubs: WebAudio.
+- ~30s period == a music-track length. RCT loops the SAME large music
+  buffer each track; startPlayback REBUILT the decoded AudioBuffer every
+  Play (pcmToFloat32 over ~1M+ samples + per-sample deinterleave + multi-
+  MB alloc, all synchronous on the UI thread).
+FIX (commit 2505ace): cache decoded AudioBuffers keyed by PCM region +
+cheap sampled signature — re-Play of identical audio (every loop, every
+repeated SFX) reuses the buffer. Plus ?noaudio=1 / __rctNoAudio toggle
+to bisect definitively.
+
+VERIFY ON REAL SCREEN (agent can't keep the tab foreground; CDP probes
+are confounded by background-tab rAF throttle): the tab TITLE is now a
+live heartbeat `f<frame> <phase> <clock>`. Reload plain — if the title
+keeps advancing past ~30s with no hitch, the cache fixed it. If it still
+hitches, load `?noaudio=1`: smooth ⇒ confirmed audio (dig into the SFX
+re-decode path / move decode off-thread); still hitches ⇒ NOT audio,
+look at runtime/input.js DOM-event flooding next.
+
+Remaining perf tail (separate from the freeze): the periodic ~700ms
+sandbox hitch is the 421d2c terrain-painter slope-extra interpreter
+fallback (cold case, runBodyFrom 0x4225e9) — a normal next painter port.
