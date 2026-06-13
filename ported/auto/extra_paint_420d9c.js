@@ -100,7 +100,7 @@ function runBodyFrom(heap, cpu, runFunction, addr) {
  * the JS body fully handled the call; false if a cold branch was detected
  * and the caller should fall back to runFunction.
  */
-function paintBody420d9c(heap, cpu) {
+export function paintBody420d9c(heap, cpu) {
   if (globalThis._420d9c_force_fallback) return false;
   // Entry register snapshot (the binary's `push ecx` at 0x420d9c saves
   // ecx for the eventual `pop ecx` at 0x420f19 → callee-preserved). We

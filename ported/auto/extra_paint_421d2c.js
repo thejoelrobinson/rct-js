@@ -78,6 +78,62 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { regs } from "../../runtime/regs.js";
+import { clearEipHook, setEipHook as _setEipHook, getEipHook } from "../../harness/x86.js";
+import { paintBody420d9c } from "./extra_paint_420d9c.js";
+import { paintBody420f4c } from "./extra_paint_420f4c.js";
+import { paintBody420502 } from "./extra_paint_420502.js";
+import { paintBody42094b } from "./extra_paint_42094b.js";
+
+// Map of the four palette-swizzle helpers' JS bodies, so the 421d2c tail can
+// invoke them DIRECTLY (no interpreter crossing) instead of via
+// callBridge → runFunction. Each body returns true when it fully handled the
+// call in JS, or false on a cold branch — in which case we fall back to the
+// binary body via the interpreter, EXACTLY as the helper's own eip-hook does
+// (clear the hook so runFunction decodes the real bytes, run, reinstall).
+// This is behavior-preserving by construction: the same JS runs either way;
+// only the dispatch mechanism (direct call vs runFunction prologue + Map
+// lookup + simulated ret) changes. On the periodic full-viewport repaint
+// frame (~4623 tiles) this removes ~18.5k interpreter crossings.
+// (The FUN_* address consts and the PALETTE_HELPERS table are defined below,
+// after the const block, to avoid a temporal-dead-zone reference.)
+
+/** Invoke one palette-swizzle helper's JS body directly. On a cold-branch
+ * fallback (body returns false), run the binary body via the interpreter the
+ * same recursion-safe way the helper's own hook does. Preserves esp/eip/
+ * callDepth across the call, matching the prior callBridge contract. */
+function callHelperDirect(heap, cpu, runFunction, addr, body) {
+  const entryESP = cpu.regs.esp >>> 0;
+  const entryEIP = cpu.regs.eip >>> 0;
+  const entryCallDepth = cpu.callDepth;
+  // The old callBridge cleared these flags before dispatching the helper via
+  // runFunction; preserve that to stay byte-identical (paintBody bodies don't
+  // read entry flags, but the binary fallback leg below does).
+  cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
+  let handled = false;
+  try {
+    handled = body(heap, cpu);
+  } catch (_) {
+    handled = false;
+  }
+  cpu.regs.esp = entryESP;
+  cpu.regs.eip = entryEIP;
+  cpu.callDepth = entryCallDepth;
+  if (!handled) {
+    const savedHook = getEipHook(addr);
+    clearEipHook(addr);
+    cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
+    try {
+      runFunction(cpu, addr, { stackTop: entryESP, limit: 5_000_000 });
+    } catch (_) {
+      // sub-painter errors non-fatal; matches bridge tolerance.
+    } finally {
+      if (savedHook) _setEipHook(addr, savedHook);
+    }
+    cpu.regs.esp = entryESP;
+    cpu.regs.eip = entryEIP;
+    cpu.callDepth = entryCallDepth;
+  }
+}
 
 // Sub-painter rotation tables. PTR_LAB_00431bb8 = base-tile shade paint;
 // PTR_LAB_00432204 = overlay sprite paint; PTR_LAB_00432e90 = unused on hot.
@@ -90,6 +146,15 @@ const FUN_420D9C = 0x00420d9c;
 const FUN_420F4C = 0x00420f4c;
 const FUN_420502 = 0x00420502;
 const FUN_42094B = 0x0042094b;
+
+// The four palette-swizzle helpers' (addr, JS body) pairs, invoked directly
+// from the 421d2c tail (see callHelperDirect above).
+const PALETTE_HELPERS = [
+  [FUN_420D9C, paintBody420d9c],
+  [FUN_420F4C, paintBody420f4c],
+  [FUN_420502, paintBody420502],
+  [FUN_42094B, paintBody42094b],
+];
 
 // Static data tables read by the function.
 const TBL_5F4644 = 0x005f4644;  // bl = [ebx + 0x5f4644] — palette swizzle byte
@@ -375,11 +440,14 @@ function paintBody421d2c(heap, cpu, runFunction) {
   //   call 0x420f4c (palette swizzle helper 2)
   //   call 0x420502 (palette swizzle helper 3)
   //   call 0x42094b (palette swizzle helper 4)
-  // These all live in CODESEG and have no JS hand-port; run through bridge.
-  callBridge(cpu, runFunction, FUN_420D9C);
-  callBridge(cpu, runFunction, FUN_420F4C);
-  callBridge(cpu, runFunction, FUN_420502);
-  callBridge(cpu, runFunction, FUN_42094B);
+  // These four are JS-ported eip hooks. Call their JS bodies DIRECTLY (no
+  // interpreter crossing); callHelperDirect falls back to the binary body
+  // only if a body reports a cold branch — byte-identical to the old
+  // callBridge → runFunction path (which dispatched the very same hook
+  // bodies through the interpreter), minus ~4 crossings per tile.
+  for (const [addr, body] of PALETTE_HELPERS) {
+    callHelperDirect(heap, cpu, runFunction, addr, body);
+  }
 
   // === 0x4225d4..0x4225d6: pop edx, pop esi, [0x5f472c] = 0 ===
   // edx restored from dxLocal (entry value pre-shift).
