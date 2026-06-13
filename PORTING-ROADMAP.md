@@ -729,3 +729,73 @@ gameplay functions (0x429560 guest-count park scan 1183 steps/call — an
 in-progress port exists in ported/auto/extra_award_429560.js + tools/
 _lockstep-429560.mjs; 0x424e0f sim helper 883/call; 0x5da274 vehicle/ride
 update 330/call), each a multi-hour lockstep + dual-soak port.
+
+## ADDENDUM 13 (2026-06-13) — session 8: two big gameplay ports landed
+
+Two commits, both lockstep + dual-soak oracle-gated, all gates green
+throughout (title_accuracy 0/307200, gameplay_accuracy 0/307200,
+title_replay; playability/interactive/viewport_build_live 22/22), no
+fixture recaptures.
+
+- `fb8d237` **0x429560 award-scan block 0 ("tidiest park") -> JS** (~1182
+  interp steps/call eliminated, measured; 1-2 calls/tick). The prior
+  session's uncommitted ports/auto/extra_award_429560.js was verified
+  byte-correct against a fresh lockstep and WIRED this session (it had never
+  been dispatched). The award dispatcher 0x429502 does `jmp [ebx*4+0x429544]`
+  INSIDE the interpreter; ebx=0 (the only soak-dispatched case) lands on
+  0x429560. An eip hook at 0x429560 now wins that crossing for the JS body.
+  The block ends in a plain `ret` to the dispatcher's caller (0x45abe4:
+  `call 0x429502; ret` — eax discarded), so the hook leaves the dispatcher
+  frame intact and the harness simulates the one ret; esp is snapshot/restored
+  around the body since its callees (0x42c711/0x5e5301) reuse this cpu via
+  callNative. The other 6 award blocks stay in the interpreter (unexercised).
+  Disasm confirmed the port byte-for-byte; the dispatcher entry is 0x429502
+  (NOT 0x429560 — 0x429560 is jump-table slot 0). Oracle
+  tools/_lockstep-429560.mjs calls=8/20 memMis=0; AB_CONTROL 0/0; dual soak
+  byte-identical 6 ticks. eaxMis is the void exit registers, provably dead.
+
+- `a222292` **0x424e0f periodic map-scan / fence+scenery aging sim helper ->
+  JS** (~894 interp steps/call eliminated, measured; 1 call/tick). Runs once
+  per tick from the sim dispatch chain at 0x4388c5 (next instruction is
+  another `call` -> exit registers DEAD). Was interpreter-delegated (the
+  auto-translation lowered 5 goto sites as silent early-returns). Hand-ported
+  from the capstone disasm (0x424e0f..0x42500d): a 10-iteration loop that
+  bit-scrambles the 14-bit counter [0x8d4228] into a tile index, walks the
+  element chain, ages fence/water [p+6] state, plus an epilogue news-item
+  scan. ALL 7 callees delegated through callNative so their CX/AX/CF exit
+  registers round-trip byte-exactly — the LAB_00424f60 recombine consumes the
+  last callee's CX/AX, so hand-modelling those was the load-bearing risk the
+  callNative round-trip removes. The Ghidra C was NOT trusted where it
+  disagrees with the asm (it conflates the `jb` after the 0x425432 call with a
+  pre-call compare — exactly the mistyping the method warns about). Wired via
+  a harness.js fnDispatch override after installPainterBridge (which had
+  overwritten the _dispatch.js entry with its _paintShim). Oracle
+  tools/_lockstep-424e0f.mjs calls=8/16 memMis=0; AB_CONTROL 0/0; dual soak
+  byte-identical 6 ticks.
+
+**Combined: ~2,076 interp steps/tick eliminated** (1182×~1 + 894×1). Both
+were folded under their parent runFunction's step loop (429560 inside the
+4385d8 tick chain via the dispatcher's interpreter jmp; 424e0f under its
+_paintShim), which is why the __fnSteps entry-address ranking never isolated
+them — direct step-loop instrumentation (clear hook, single-step the real
+bytes, count) measured them at 1182 / 894 per call exactly matching the
+ADDENDUM 6 estimates.
+
+**0x5da274 NOT attempted — documented as next, per the STOP-rather-than-ship
+rule.** Disasm structure captured: it is the ride/vehicle per-sprite update
+(PTR_LAB_005d97b4 slot), the LARGEST and branchiest of the three remaining
+big consumers — 568+ instructions with NO `ret` in the first 0x900 bytes
+(0x5da274..>0x5dab72), branching on vehicle type `dl`, mode bits in `eax`
+(test eax,0x300/0x40/0x80/0x20), and many esi-relative state fields, with a
+DEEP sub-call tree of 9 callees into the vehicle-physics subtree (0x5ddcbe,
+0x5dbeeb, 0x5db5d7, 0x5db446, 0x5db339, 0x5d89c0, 0x44142c, 0x441452,
+0x452fce). No Ghidra C exists. At ~330 steps/call × 48 calls/tick it is the
+top remaining interpreter consumer by TOTAL (≈16k steps/10t), but it is a
+genuine multi-hour port with real divergence risk in the physics subtree —
+budget a full session. Build tools/_lockstep-5da274.mjs first (copy
+_lockstep-424e0f.mjs; the PTR_LAB_005d97b4 slot is reached via the sprite
+update walk, so wrap its fnDispatch/eip entry), delegate the 9 callees via
+callNative for byte-exact register round-trip, and port the type/mode
+dispatch arms incrementally to calls=N memMis=0. The deep callees
+(0x5db339/446/5d7/eeb, 0x5ddcbe) can stay delegated indefinitely — only the
+0x5da274 dispatch body needs porting to capture the per-call win.
