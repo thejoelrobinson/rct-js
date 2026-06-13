@@ -407,6 +407,8 @@ export function enableOpcodeHist(on) { _X86_OP_HIST_ON = !!on; }
 export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); _eipHooksSize = _eipHooks.size; }
 export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); _eipHooksSize = _eipHooks.size; }
 export function hasEipHook(eip) { return _eipHooks.has(eip >>> 0); }
+// Diagnostic accessor (profiling probes wrap installed hooks to time them).
+export function getEipHook(eip) { return _eipHooks.get(eip >>> 0); }
 
 // Dynamic call-graph tracing (opt-in via `cpu.callEdges = new Map()` before a
 // run; zero-cost when absent — one truthiness check per CALL). Records raw

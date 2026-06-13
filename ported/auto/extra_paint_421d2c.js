@@ -531,10 +531,26 @@ function runBodyFrom(heap, cpu, runFunction, addr) {
   const savedEIP = cpu.regs.eip >>> 0;
   const savedCallDepth = cpu.callDepth;
   cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
+  // CRITICAL recursion guard: runFunction dispatches an entry-address eip hook
+  // DIRECTLY (harness/x86.js fast path) — so if `addr` itself carries a hook
+  // (the 0x421d2c fallback at install421d2cHook below runs runBodyFrom(0x421d2c)),
+  // calling runFunction(cpu, 0x421d2c) re-invokes the very hook we're falling
+  // back FROM, re-enters paintBody421d2c, fails again, and recurses until the
+  // step/recursion limit. On a corrupt tile-element pointer (esi=0x6f0020,
+  // a garbage element reached by the per-tile chain walk) this recursion ran
+  // ~1,500-3,700 levels deep — the "~5-6s repaint hitch". Clear the hook so the
+  // interpreter decodes the REAL bytes once (the binary's actual behaviour),
+  // then reinstall. Same pattern callHelperDirect already uses for the palette
+  // helpers. For the cold-tail addrs (0x4225e9 / 0x42280c) there is no hook, so
+  // getEipHook returns undefined and this is a no-op.
+  const savedHook = getEipHook(addr);
+  if (savedHook) clearEipHook(addr);
   try {
     runFunction(cpu, addr, { stackTop: savedESP, limit: 5_000_000 });
   } catch (_) {
     // tail-branch errors non-fatal.
+  } finally {
+    if (savedHook) _setEipHook(addr, savedHook);
   }
   cpu.regs.esp = savedESP;
   cpu.regs.eip = savedEIP;
