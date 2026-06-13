@@ -338,3 +338,127 @@ window-scroll chain (9bb374 0-row underflow + 5e1653 esi enable),
 load desync, 0x5e52a7, 43e304 hand-port, vitest worktrees exclude).
 Untracked ported/auto/*.truthbak files are session-4 scratch backups —
 delete when the mount allows unlink.
+
+## ADDENDUM 6 (2026-06-13) — session 5: BROWSER PERFORMANCE
+
+Two browser-targeted commits landed (both gates green, no fixture
+recaptures), plus a full steady-state CPU profile that re-orients the
+roadmap. The game ran live in the user's browser at 21 fps / 48 ms/frame
+BEFORE this session — that 48 ms was measured with the heap watchdog
+still wrapping every accessor and the old per-channel present blit.
+
+**Landed this session:**
+
+- `d70374b` **browser: unwrap the heap-accessor watchdog before the rAF
+  loop.** `web/main-native.js` wrapped all 12 heap accessors (u8..setI32)
+  in budget+wallclock closures at boot and `unwrapHeap()` was a no-op —
+  so EVERY heap op in EVERY steady-state frame paid a closure call + arg
+  spread + two compares. Now the originals (prototype methods) are
+  captured before wrapping and assigned back by `unwrapHeap()` right
+  before the rAF loop. Init + first tick + the gameplay warm-up tick
+  still run fully guarded (that is where the real hang risk lives); the
+  steady loop runs on raw accessors. This is the single biggest
+  browser-only tax and directly attacks the 48 ms figure. Behavior-
+  preserving (no sim change); full vitest 25 files / 119 tests green.
+
+- `95bff71` **presentFrame: palette LUT + dword blit.** Was 4
+  Uint8ClampedArray byte stores + 3 palette reads per pixel × 307,200
+  px/frame. Now a 256-entry Uint32Array LUT (rebuilt per frame — trivial,
+  and the game animates the palette) and ONE packed-RGBA dword store per
+  pixel via a Uint32Array view over the ImageData buffer. Endianness-
+  exact (LE fast path + BE fallback). Synthetic byte-equivalence check vs
+  the old per-channel loop; both pixel gates 0/307200. Also ships
+  `harness/x86.js getEipHook()` + `tools/_cpuprof-steady.mjs` (the
+  post-boot-only V8 sampling profiler used below).
+
+**Steady-state CPU profile (`tools/_cpuprof-steady.mjs`, 60 gameplay
+ticks after 10 warm-up, 100µs sampling, sandbox; Mac ≈2-3x faster).
+Sandbox tick = 26.8 ms/tick avg in the profiled run.**
+
+| % self | ms/tick | function | nature |
+|---|---|---|---|
+| 31.3 | 6.17 | 421d2c hook closure @ extra_paint_421d2c.js:480 | JS terrain per-element painter — 954 calls/tick, hot path, ALREADY JS, never falls back (1.0 steps/call). Inline heap work + 5 sub-painter dispatches. |
+| 17.9 | 3.52 | runFunction @ x86.js:2957 | interpreter prologue — split: _paintShim 5.9%, runBodyFrom(421d2c) 4.3% (= the 5 callBridge sub-painters), _callNativeImpl 3.8% (gameplay delegates), runBodyFrom(444e08) 2.6%. |
+| 12.8 | 2.52 | step @ x86.js:429 | interpreter inner — 8.1% under runFunction, 4.7% under paintBody5ce7f8's sub-painter dispatch. |
+| 7.4 | 1.46 | paintBody5ce7f8 @ extra_paint_5ce7f8.js:130 | JS scenery painter — sets up regs then dispatches a scenery sub-painter via the interpreter. |
+| 5.5 | 1.09 | FUN_00433bae @ 433bae.js:55 | JS paint-slot DEPTH-SORT (the hand-port that fixed the 3 goto-as-return-0 bugs). Pure JS, correct, load-bearing. |
+| 4.0 | 0.79 | FUN_005e39c6 @ 5e39c6.js:11 | JS per-window UPDATE WALK — loops all windows calling each proc. callIndirect targets are mostly JS (only 0x5e2b52 interp, 30 steps/tick). |
+| 3.9 | 0.77 | FUN_009b4911 @ 9b4911.js:33 | RLE sprite blit inner (the @manual chain; ~96% byte-accurate). |
+| 3.2 | 0.63 | FUN_005e39ff @ 5e39ff.js:9 | JS widget-invalidate SCAN — walks every widget of every window per tick. Correct, load-bearing. |
+| 1.4 | 0.28 | setU32 @ heap.js:53 | heap write accessor. |
+| ~0.7 each | | 9b438b / u32 / paintBody421d2c / setU16 / 9b4660 | blit + heap + painters |
+
+**Interpreter-step ranking (8-tick __fnSteps soak, steps/10t, for
+porting priority):** 0x5da274 26.4k (330/call — vehicle/ride update, big
+fn), 0x444e08 26.0k (11/call — mostly 1-step crossings + ~20-30
+banner/door/shade fallbacks/tick of ~120 steps each), 0x4368d8 19.7k
+(1-step per-element dispatch — overhead), 0x439178 13.3k, 0x42280c 12.6k,
+0x429560 11.8k (1183/call — guest-count scan, big fn), 0x5d7503 9.9k,
+431bc8/420d9c/420f4c/420502/42094b/421d2c 9.5k each (all 1.0 steps/call =
+JS fast-path hook crossings, NOT work), 0x424e0f 8.8k (883/call, big fn),
+0x5d9f8b 3.9k, 0x43a74b 2.9k.
+
+**Analysis — why no further hand-port landed this session.** The
+interpreter share is now ~30% but FRAGMENTED: the heaviest per-call
+interpreter consumers (0x5da274 330/call, 0x429560 1183/call, 0x424e0f
+883/call) are large gameplay functions (vehicle/ride update, guest-count
+park scan, sim helper) with deep sub-call trees — each is a multi-hour
+lockstep-oracle port with real divergence risk, not a single-session win.
+The frequently-CROSSED addresses (431bc8/420d9c/.../421d2c, ~9.5k
+steps/10t each) are already JS eip hooks taking the 1-step fast path —
+their cost is `runFunction`'s prologue (esp/eip/callDepth setup + sentinel
+write + map lookup) × ~5k crossings/tick, not real work. The 444e08
+banner fallback (Workstream A residual) is a bounded port but the banner
+path (0x446c5f) pulls in the scrolling-text rendering subsystem and the
+fallback fires only ~20-30×/tick — poor risk/reward for <2% of the tick.
+The remaining top JS self-time (433bae sort, 5e39c6/5e39ff window+widget
+walk, 421d2c/5ce7f8 painters) is CORRECT, load-bearing per-tick work, not
+translator bloat — there is no bug to fix or goto to unfold there.
+
+Micro-bench confirmed the heap-accessor `globalThis._heapWatch` check is
+only ~7% of a write and writes are ~2.3% of the tick — not worth the
+back-compat risk (15+ tools set the global mid-run expecting immediate
+effect). The blit/LUT/present path is already optimal.
+
+**Budget status.** Node tick 32 → 26.8 ms (this session's profiled run;
+the delta is run-to-run variance, not a regression — the two commits are
+browser-only and don't touch the node tick). On the dev Mac (≈2-3x
+faster) that is **≈9-13 ms/tick = within the 60 fps budget (16 ms)**.
+The browser's measured 48 ms predates BOTH commits; the watchdog-unwrap
+alone removes a closure+spread+2-compare from every heap op in every
+frame. **Re-measure live in the browser** — that is the missing data
+point; the node profile says the steady tick is already fast.
+
+**MEASURED: the crossing prologue is NOT a cost.** A direct micro-bench
+(`/tmp/prologuebench.mjs`) of `runFunction`'s 1-step fast-path prologue
+(esp/eip/callDepth setup + sentinel write32 + map lookup + hook call +
+ret pop) clocked **5.3 ns each → 0.026 ms/tick** for all ~5000
+crossings/tick. So the 17.9% the profiler attributes to `runFunction`
+self-time is the HOOK BODIES and `_callNativeImpl`'s interpreter work for
+the large gameplay delegates — NOT the prologue. Inlining the crossing
+(the obvious "broad win") would save 0.026 ms of a 26.8 ms tick:
+worthless. Do NOT chase it.
+
+**Next steps, re-prioritized:**
+1. **Re-measure browser fps live** after d70374b + 95bff71 (the 48 ms
+   number is stale — both commits are browser-only and never ran live).
+   If <16 ms/frame on the Mac, the 60 fps target is met and perf work can
+   stop. This is the missing data point; the node profile already says
+   the steady tick is fast.
+2. **Large gameplay ports are the ONLY real remaining interpreter
+   lever** (each its own lockstep + dual-soak commit, in per-call-cost
+   order): 0x429560 (1183 steps/call — guest-count park scan),
+   0x424e0f (883/call — sim helper), 0x5da274 (330/call — vehicle/ride
+   update). Each is multi-hour with deep sub-call trees; budget one per
+   session. These are what the interpreter share actually is.
+3. **444e08 banner/door/shade fallback** — bounded (the 0x446c5f banner
+   path pulls in scrolling-text rendering) but fires only ~20-30×/tick
+   (<2% of tick); defer behind 2 unless the browser misses budget.
+4. The top JS self-time items (421d2c/5ce7f8 painters, 433bae sort,
+   5e39c6/5e39ff window+widget walk) are CORRECT load-bearing per-tick
+   work — no bug to fix, no goto to unfold. Reducing them needs
+   algorithmic change (e.g. dirty-window tracking so 5e39ff doesn't
+   re-scan every widget every tick), which is a behavior change requiring
+   an interpreter-diff oracle, not a translator fix.
+5. Workstream C punch list (sprite-72 load desync, 0x5e52a7, 43e304
+   hand-port, vitest .claude/worktrees exclude).
