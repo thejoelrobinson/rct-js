@@ -16,13 +16,16 @@
 // 00431bb8 / 00432204 / 00434e98 / 00436b40 / 005e5874). Each table is
 // indexed by DAT_00991f88 (camera rotation, 0..3).
 
-import { makeCpu, runFunction, setEipHook, setShimInvoker } from "../harness/x86.js";
+import { makeCpu, runFunction, step, setEipHook, clearEipHook, getEipHook, setShimInvoker } from "../harness/x86.js";
 import { loadPEFromBytes } from "../harness/loader.js";
 import { getShim, invokeShim } from "../harness/shims.js";
 import { regs } from "./regs.js";
 import { state } from "./win32/context.js";
 import { FUN_00444927 } from "../ported/auto/444927.js";
 import { FUN_00452fce } from "../ported/auto/452fce.js";
+// Gameplay port: award block 0 ("tidiest park") of the award dispatcher
+// 0x429502 — reached via its internal `jmp [ebx*4+0x429544]` (ebx=0).
+import { FUN_extra_award_429560 } from "../ported/auto/extra_award_429560.js";
 import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 // Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
@@ -327,6 +330,69 @@ export function installPainterBridge(heap, opts = {}) {
   // behind __forceInterp4238b4 for the oracles
   // (tools/_lockstep-4238b4.mjs, FORCE_INTERP=4238b4 dual soak).
   install4238b4Hook(cpu, runFunction, setEipHook, heap);
+
+  // ====================================================================
+  // Gameplay port — award dispatcher block 0 ("tidiest park"), 0x429560.
+  // ====================================================================
+  // The award dispatcher 0x429502 selects an award index `ebx` and does
+  // `jmp [ebx*4+0x429544]` INSIDE the interpreter; for ebx=0 (the only
+  // case the scenario soak ever dispatches) that lands on 0x429560. An
+  // eip hook here lets the JS hand-port win over the interpreter for that
+  // crossing. The block ends in a plain `ret` (0x42989f) back to the
+  // dispatcher's caller (0x45abe4: `call 0x429502; ret`), so the
+  // dispatcher's call frame is intact on the stack when we arrive — the
+  // hook must NOT disturb it. The JS body delegates its two callees
+  // (0x42c711 award-news, 0x5e5301 sound/news) through callNative, which
+  // runs runFunction on THIS cpu and therefore clobbers cpu.regs.esp/eip;
+  // we snapshot/restore esp around the body so runFunction's post-hook
+  // `ret` simulation pops the dispatcher's real return address. The other
+  // six award blocks (0x4295e5..0x4297cb) stay in the interpreter (no
+  // hook) — unexercised by the soak. Oracle: tools/_lockstep-429560.mjs
+  // (calls=N memMis=0); interpreter reachable behind __forceInterp429560.
+  setEipHook(0x429560, (c) => {
+    if (globalThis.__forceInterp429560) {
+      // Re-run the real bytes once. We arrive here with c.regs.eip == 0x429560
+      // and the caller's frame (its return address) already on the stack — the
+      // harness will simulate exactly ONE `ret` after this hook returns. So we
+      // single-step the real block bytes but STOP at its own `ret` (0x42989f)
+      // without executing it, leaving the frame untouched: the harness's ret
+      // then consumes the caller's address, identical to the JS-body path.
+      // Clear+reinstall the hook so the step loop decodes the real 0x429560
+      // bytes instead of re-entering us.
+      const self = getEipHook(0x429560);
+      clearEipHook(0x429560);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      try {
+        c.regs.eip = 0x429560;
+        let n = 0;
+        while ((c.regs.eip >>> 0) !== 0x42989f) {
+          if (!step(c) || ++n > limit) break;
+        }
+      } finally {
+        setEipHook(0x429560, self);
+      }
+      return;
+    }
+    const savedEsp = c.regs.esp >>> 0;
+    regs.eax = c.regs.eax >>> 0;
+    regs.ecx = c.regs.ecx >>> 0;
+    regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0;
+    regs.esi = c.regs.esi >>> 0;
+    regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0;
+    try { FUN_extra_award_429560(heap); } catch (e) { /* hand-port errors are non-fatal */ }
+    // callNative inside the body reset cpu.esp/eip; restore the dispatcher
+    // frame so the post-hook ret simulation pops the right address.
+    c.regs.esp = savedEsp;
+    c.regs.eax = regs.eax >>> 0;
+    c.regs.ecx = regs.ecx >>> 0;
+    c.regs.edx = regs.edx >>> 0;
+    c.regs.ebx = regs.ebx >>> 0;
+    c.regs.esi = regs.esi >>> 0;
+    c.regs.edi = regs.edi >>> 0;
+    c.regs.ebp = regs.ebp >>> 0;
+  });
 
   // ====================================================================
   // Phase R+12b region — small-scenery per-element painter hand-port.
