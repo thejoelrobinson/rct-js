@@ -63,6 +63,16 @@ const WM_PAINT = 0x000F;
 const WM_TIMER = 0x0113;
 
 async function main() {
+  // Audio bisection toggle: ?noaudio=1 disables WebAudio playback (the DSound
+  // shim keeps its COM bookkeeping, so game logic is identical). Use it to
+  // confirm whether the audio path is responsible for a periodic stall.
+  try {
+    if (new URLSearchParams(location.search).get("noaudio") === "1") {
+      globalThis.__rctNoAudio = true;
+      log("[audio] disabled via ?noaudio=1", "info");
+    }
+  } catch (_) {}
+
   status("fetching decompiled/data.bin…");
   const dataBin = await fetchBytes("../decompiled/data.bin");
   log(`data.bin: ${(dataBin.length / 1e6).toFixed(2)} MB`, "ok");

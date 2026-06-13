@@ -441,27 +441,58 @@ function dbToLinear(hundredthsOfDb) {
   return Math.pow(10, hundredthsOfDb / 2000);
 }
 
+// Cache of decoded AudioBuffers, keyed by PCM region + content signature.
+const _abCache = new Map();
+// Cheap content signature: sample a few dozen bytes spread across the PCM so
+// an in-place re-lock that changes the audio busts the cache, without an
+// O(n) hash of multi-MB music. Collisions only cost a (rare) wrong-but-valid
+// reuse of audio; never a crash.
+function _pcmSignature(b) {
+  const bytes = _heap.bytes;
+  const base = b.pcmAddr, n = b.byteSize;
+  if (n <= 0) return 0;
+  let h = (n | 0) >>> 0;
+  const step = Math.max(1, (n / 32) | 0);
+  for (let i = 0; i < n; i += step) {
+    h = (Math.imul(h, 0x01000193) ^ bytes[base + i]) >>> 0;
+  }
+  return h;
+}
+
 function startPlayback(b, loop) {
+  // Bisection / opt-out: ?noaudio=1 or window.__rctNoAudio disables WebAudio
+  // playback entirely. COM bookkeeping above is untouched, so game logic is
+  // unaffected — use it to confirm whether an audio-path stall causes a freeze.
+  if (typeof globalThis !== "undefined" && globalThis.__rctNoAudio) return;
   const ac = getAudioCtx();
   if (!ac || typeof AudioBuffer === "undefined") return;     // Node — silent
-  // Build a Float32 sample array from the locked PCM bytes. We snapshot at
-  // Play() time (DirectSound semantics: buffer can be re-locked while
-  // playing; we don't model that, just keep the simple snapshot).
-  const samples = pcmToFloat32(b);
-  if (samples.length === 0) return;
   // Tear down any previous active source for this buffer (Play after Play
   // restarts on the real API).
   stopPlayback(b);
-  const ab = ac.createBuffer(b.format.channels, samples.length / b.format.channels,
-                             b.format.samplesPerSec);
-  if (b.format.channels === 1) {
-    ab.getChannelData(0).set(samples);
-  } else {
-    // Interleaved → deinterleave.
-    for (let ch = 0; ch < b.format.channels; ch++) {
-      const out = ab.getChannelData(ch);
-      for (let i = 0; i < out.length; i++) out[i] = samples[i * b.format.channels + ch];
+  // PERF (browser ~30s freeze): RCT loops the SAME large music buffer every
+  // track-length (~30s). Rebuilding the decoded AudioBuffer on every Play —
+  // pcmToFloat32 over ~1M+ samples + a per-sample deinterleave pass + a
+  // multi-MB allocation, all synchronous on the main thread — was a periodic
+  // multi-frame hitch. Cache the decoded buffer; a re-Play of identical audio
+  // (every music loop, every repeated SFX) reuses it for free.
+  const cacheKey = `${b.pcmAddr}:${b.byteSize}:${b.format.channels}:${b.format.samplesPerSec}:${_pcmSignature(b)}`;
+  let ab = _abCache.get(cacheKey);
+  if (!ab) {
+    const samples = pcmToFloat32(b);
+    if (samples.length === 0) return;
+    ab = ac.createBuffer(b.format.channels, samples.length / b.format.channels,
+                         b.format.samplesPerSec);
+    if (b.format.channels === 1) {
+      ab.getChannelData(0).set(samples);
+    } else {
+      // Interleaved → deinterleave.
+      for (let ch = 0; ch < b.format.channels; ch++) {
+        const out = ab.getChannelData(ch);
+        for (let i = 0; i < out.length; i++) out[i] = samples[i * b.format.channels + ch];
+      }
     }
+    if (_abCache.size > 64) _abCache.clear();
+    _abCache.set(cacheKey, ab);
   }
   const src = ac.createBufferSource();
   src.buffer = ab;
