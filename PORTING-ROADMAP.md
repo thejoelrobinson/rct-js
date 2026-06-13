@@ -658,3 +658,74 @@ sim helper 883/call, 0x5da274 vehicle/ride update 330/call) — each a
 multi-hour lockstep + dual-soak port (ADDENDUM 6 item 2). The repaint-hitch
 itself now needs the behavior-change invalidate-path work above if it is to
 shrink at all.
+
+## ADDENDUM 12 (2026-06-13) — session 7: the repaint-hitch was a RECURSION BUG, FIXED
+
+The ~5-6s "short pause" (ADDENDUM 10/11) is now ROOT-CAUSED and FIXED. The
+ADDENDUM 10/11 framing — "the binary's own periodic full-viewport invalidate-
+all, ~256 ticks, 4623 vs 954 terrain tiles" — was WRONG on every count. The
+hitch is neither periodic-256 nor a full-viewport repaint nor the binary's
+intent. Commit `0e70f7c`.
+
+**Trigger root-cause: INTENTIONAL-vs-ARTIFACT = ARTIFACT (our recursion bug).**
+Established by elimination + per-frame instrumentation (tools kept in tools/_*):
+- NOT a message-loop artifact: the hitch is byte-identical with WM_TIMER +
+  WM_PAINT posting on, only one of them, or NEITHER (MODE=none). It is driven
+  entirely by the binary's per-tick game update (runTick → 4385d8), internal.
+- NOT a larger dirty rect / full viewport: the per-tile painter 436b50 fires
+  EXACTLY 21x/tick on normal AND hitch frames; each session's DPI clip rect is
+  identical (640x416). The viewport-paint band does not grow.
+- NOT 4623 distinct tiles: on a hitch frame the painter draws the SAME ~503
+  distinct tile elements as a normal frame (1-2x each) PLUS one extra element
+  at a GARBAGE address (esi=0x6f0020, zero in data.bin, written `00 80 04 04 00
+  20 01 00`-repeating at runtime) ~1,500-3,700 times — and growing over time.
+- The garbage element is a corrupt tile-element pointer the per-tile chain walk
+  lands on. paintBody421d2c rejects it (cold branch) and the install421d2cHook
+  fallback called runBodyFrom(0x421d2c). runBodyFrom went through
+  runFunction(cpu, 0x421d2c) — which DISPATCHES AN ENTRY-ADDRESS EIP HOOK
+  DIRECTLY (harness/x86.js:2977 fast path), re-invoking the SAME hook,
+  re-entering paintBody421d2c, failing again, recursing. Measured re-entry
+  depth: **1,572 levels** on one hitch frame. That recursion IS the hitch.
+
+**Fix (behaviour change, gated by interpreter diff per the two-step rule):**
+runBodyFrom now clears the 421d2c eip hook before the fallback runFunction and
+reinstalls it after — the exact recursion-safe pattern callHelperDirect already
+uses for the palette helpers. The interpreter decodes the real 0x421d2c bytes
+ONCE (the binary's actual behaviour). For the cold-tail addrs (0x4225e9 /
+0x42280c, no hook) it is a no-op. Also exports harness/x86.js getEipHook, which
+the committed extra_paint_421d2c.js (8280f48) already imported but which was
+missing from the committed x86.js — folding it in makes the fix self-contained.
+
+**Oracle results (tools/_oracle-421hitch-interp.mjs — the gold-standard gate):**
+At the hitch frame, the JS-with-fix 640x480 GAME-BACK surface is BYTE-IDENTICAL
+to the pure x86 interpreter (all painter hooks cleared, rct.exe's own painters
+draw it): **0/307200 px diff, FNV 0xb220c2c8 on both sides.** So the recursion
+was redundantly redrawing the SAME final pixels — the fix is correct vs the
+binary, not merely different. 421d2c fires on the hitch frame: ~2,850/4,623 →
+954 (recursion gone). (tools/_oracle-421hitch.mjs confirms non-hitch frames are
+byte-identical before/after.)
+
+**Hitch ms, before vs after (tools/_scrollstall.mjs, 32s real-clock soak,
+sandbox; Mac ≈2-3x faster):** BEFORE = recurring ~135-145 ms hitches every ~3 s
+(8+ slow frames >120 ms, 4621-4623 fires each). AFTER = **0 slow frames** over
+32 s, steady 40 fps. On the dev Mac the ~140 ms sandbox hitch ≈ the user's
+reported 50-70 ms pause — eliminated.
+
+**Gates (all green, no fixture recaptures):** title_accuracy 0/307200,
+gameplay_accuracy ratchet 0, title_replay; playability/interactive/
+viewport_build_live 22/22.
+
+**Loose end (separate from the hitch, now harmless):** the underlying corrupt
+tile-element pointer (esi=0x6f0020) still occurs — gameplay writes a garbage
+chain entry that the per-tile walk reaches. Post-fix it costs one extra correct
+interpreter paint (the binary tolerates it identically), so it is no longer a
+perf problem, but it is a latent STATE-corruption bug worth a future pass:
+trace which gameplay write produces the 0x6f0020 chain entry (it grows over
+time, so it accumulates). Likely a tile-element insert/compact desync (cf. the
+edcc1a4 compactor fixes). Not urgent — the binary itself renders it cleanly.
+
+**Next priority:** the largest remaining interpreter consumers are the big
+gameplay functions (0x429560 guest-count park scan 1183 steps/call — an
+in-progress port exists in ported/auto/extra_award_429560.js + tools/
+_lockstep-429560.mjs; 0x424e0f sim helper 883/call; 0x5da274 vehicle/ride
+update 330/call), each a multi-hour lockstep + dual-soak port.
