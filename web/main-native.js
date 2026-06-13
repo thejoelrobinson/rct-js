@@ -100,7 +100,10 @@ async function main() {
   let _budget = 200_000_000; // init may exercise painter-bridge interpreter
   let _startMs = Date.now();
   let _wallBudgetMs = 60_000; // 60s for init (was 30s)
-  for (const name of ["u8","i8","u16","i16","u32","i32","setU8","setI8","setU16","setI16","setU32","setI32"]) {
+  const HEAP_FNS = ["u8","i8","u16","i16","u32","i32","setU8","setI8","setU16","setI16","setU32","setI32"];
+  const _origHeapFns = {}; // pre-wrap originals (prototype methods), restored by unwrapHeap
+  for (const name of HEAP_FNS) {
+    _origHeapFns[name] = runtime.heap[name];
     const orig = runtime.heap[name].bind(runtime.heap);
     runtime.heap[name] = (...args) => {
       if (++_ops > _budget) throw new Error(`heap-op budget (${_budget}) exceeded — likely infinite loop`);
@@ -111,7 +114,13 @@ async function main() {
       return orig(...args);
     };
   }
-  function unwrapHeap() { /* no-op — keep watchdog active for tick loop */ }
+  // Restore the unwrapped accessors. The watchdog wrappers cost a closure
+  // call + spread per heap op — measurable per-frame tax in the steady-state
+  // loop, where 2000+ stable ticks have shown there is no hang to guard.
+  // Assign the originals back (do NOT delete the instance properties).
+  function unwrapHeap() {
+    for (const name of HEAP_FNS) runtime.heap[name] = _origHeapFns[name];
+  }
 
   status("runInit() — registering window class + creating window…");
   try {
@@ -170,13 +179,10 @@ async function main() {
     log(`[gameplay warm-up] ${((e && e.message) || e).toString().slice(0, 150)}`, "err");
   }
 
-  // Per-frame budget. Gameplay ticks drive the painter-bridge x86 interpreter for
-  // sprite painting, so steady-state is currently ~4s/tick (the interp painters
-  // are the perf wall — see runtime/native/sprites/, the JS-port track). Budget
-  // generously — there is no infinite loop to guard against (verified 2000+ stable
-  // ticks); this only catches a genuine runaway.
-  _budget = 2_000_000_000;
-  _wallBudgetMs = 15_000;
+  // Steady state: drop the watchdog entirely. Init + the two heavy one-time
+  // ticks above ran under it (where the hang risk lives); the rAF loop runs
+  // on the raw heap accessors — zero per-op overhead.
+  unwrapHeap();
 
   // Main loop. rAF cadence ≈ 60 Hz. Post WM_TIMER every 16 ms (matches the
   // game's expectation of a 60 Hz tick clock) and WM_PAINT every 33 ms.
