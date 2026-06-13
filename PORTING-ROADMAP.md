@@ -599,3 +599,62 @@ if the source rings are invariant across the tile loop within one frame
 (prove with an oracle: snapshot [0x999f9a..]/[0x999fdc..] across the 4623
 calls — if constant, copy once per frame, not per tile). Both gated by
 gameplay_accuracy + a per-call lockstep on 421d2c.
+
+## ADDENDUM 11 (2026-06-13) — session 6: 5-6s repaint-hitch attack
+
+Two findings, both oracle-gated, all gates green throughout (title_accuracy
++ gameplay_accuracy 0/307200, title_replay, playability/interactive/
+viewport_build_live 22/22), no fixture recaptures.
+
+**Step 1 LANDED (`8280f48`): 421d2c calls its 4 palette helpers' JS bodies
+DIRECTLY** — `paintBody420d9c/420f4c/420502/42094b` imported and invoked
+instead of `callBridge → runFunction`. A body that reports a cold branch
+falls back to the binary via the interpreter exactly as the helper's own
+eip-hook does (clear hook, runFunction, reinstall); the hook installs stay
+for other callers. Removes ~18.5k interpreter crossings on the ~4623-tile
+repaint frame. Behavior-preserving by construction.
+- New oracle `tools/_lockstep-421d2c.mjs` (whole-heap per-call compare of the
+  421d2c JS hook vs the full binary body, interpreter kept live; MAXCALLS=N
+  caps the deep-checked window so the soak advances). **memMis=13 BEFORE and
+  AFTER** over the first 400 deep-checked calls — the 13 are PRE-EXISTING
+  cliff/corner-height divergences in the @manual chain (the documented ~96%
+  gap), unrelated to this change and unchanged by it.
+- New dual soak `tools/_dualsoak-421d2c.mjs` (JS-direct vs all-4-helpers-
+  forced-through-the-interpreter): byte-identical hash sequence over 6 ticks.
+
+**Step 2 SKIPPED with proof: the per-tile palette-ring copy is NOT
+hoistable.** New oracle `tools/_ringinvar-421d2c.mjs` snapshots the two
+SOURCE rings [0x999f9a..+0x48] / [0x999fdc..+0x48] at every 421d2c fire in a
+frame. Result: the LO ring differs from the frame's first-call value on
+~944/954 calls and the HI ring on 44–947 calls — the four palette helpers
+(esp. 42094b's 2-byte scratch-ring shift at 0x999fdc) MUTATE these rings
+inside the per-tile loop, so each tile's 36-dword copy snapshots live,
+per-tile state. Hoisting it once-per-frame would corrupt rendering. Skipped
+per the task's invariance guard.
+
+**Hitch-frame ms, before vs after (sandbox, /tmp/scrollstall.mjs, Mac ≈2-3x
+faster):** ~122–144 ms BEFORE → ~133–141 ms AFTER — i.e. UNCHANGED within
+measurement noise. Normal-frame 421d2c fires 954 (unchanged); ~40 fps
+(timer-paced, not CPU-bound on normal frames).
+
+**Honest conclusion — the hitch is NOT a crossing cost and has no
+behavior-preserving fix left.** ADDENDUM 6 already measured the crossing
+prologue at 5.3 ns each (`/tmp/prologuebench.mjs`); 18.5k crossings ≈ 0.1 ms
+of a ~130 ms hitch, so Step 1 was never going to move the ms — its value is
+removing the interpreter dependency (the four helpers no longer need the
+bridge for this caller) and a small constant. The hitch cost is genuine
+per-tile JS work: painting 4623 tiles (5× the normal-frame count) in one
+frame, each doing the (non-hoistable) 36-dword ring copy + 5 sub-painter
+dispatches + 4 helper bodies. Reducing it further is a BEHAVIOR CHANGE — the
+two real levers are (a) spread the periodic full-viewport invalidate-all
+across several frames, or (b) suppress/throttle the binary's own ~256-tick
+invalidate-all (likely palette/animation-tied) — both need an
+interpreter-diff oracle on the invalidate path, NOT a translator fix, and
+belong in a separate behavior-change commit per the two-step rule.
+
+**Next priority:** the largest remaining interpreter consumers are the big
+gameplay functions (0x429560 guest-count park scan 1183 steps/call, 0x424e0f
+sim helper 883/call, 0x5da274 vehicle/ride update 330/call) — each a
+multi-hour lockstep + dual-soak port (ADDENDUM 6 item 2). The repaint-hitch
+itself now needs the behavior-change invalidate-path work above if it is to
+shrink at all.
