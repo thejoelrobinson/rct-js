@@ -1403,18 +1403,21 @@ export function step(cpu) {
   const shift8Op = (cnt) => {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     const a = operand.kind === "reg" ? read8reg(cpu, operand.reg) : mem8(m, operand.addr);
-    let r;
+    let r, cf;
     const c = cnt & 0x1f;
     switch (regField) {
-      case 0: r = (((a << c) | (a >>> (8 - c))) & 0xff); break;        // ROL
-      case 1: r = (((a >>> c) | (a << (8 - c))) & 0xff); break;        // ROR
-      case 4: r = (a << c) & 0xff; break;                               // SHL
-      case 5: r = (a >>> c) & 0xff; break;                              // SHR
-      case 7: { const sa = (a & 0x80) ? (a | 0xffffff00) : a; r = (sa >> c) & 0xff; break; } // SAR
+      case 0: r = (((a << c) | (a >>> (8 - c))) & 0xff); cf = r & 1; break;                       // ROL: CF = new LSB
+      case 1: r = (((a >>> c) | (a << (8 - c))) & 0xff); cf = (r >>> 7) & 1; break;                // ROR: CF = new MSB
+      case 4: r = (a << c) & 0xff; cf = (c >= 1 && c <= 8) ? ((a >>> (8 - c)) & 1) : 0; break;      // SHL
+      case 5: r = (a >>> c) & 0xff; cf = (c >= 1) ? ((a >>> (c - 1)) & 1) : 0; break;               // SHR
+      case 7: { const sa = (a & 0x80) ? (a | 0xffffff00) : a; r = (sa >> c) & 0xff; cf = (c >= 1) ? ((sa >> (c - 1)) & 1) : 0; break; } // SAR
       default: throw new Error(`unsupported 8-bit shift /${regField}`);
     }
     if (operand.kind === "reg") write8reg(cpu, operand.reg, r); else write8(m, operand.addr, r);
-    if (c !== 0) { cpu.eflags.ZF = (r === 0) ? 1 : 0; cpu.eflags.SF = (r >>> 7) & 1; }
+    // CF was previously left STALE — the same bug class already fixed for the
+    // 32-bit 0xd1/0xd3 handlers (see the 0xd1 note re the RLE-blit `shr ecx,1;
+    // jae` tail). The 8-bit group (0xd0/0xd2) had the identical gap.
+    if (c !== 0) { cpu.eflags.CF = cf & 1; cpu.eflags.ZF = (r === 0) ? 1 : 0; cpu.eflags.SF = (r >>> 7) & 1; }
     cpu.regs.eip = (ip + 1 + len) >>> 0;
   };
   if (opcode === 0xd0) { shift8Op(1); return true; }
