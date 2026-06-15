@@ -29,6 +29,7 @@ import { FUN_extra_award_429560 } from "../ported/auto/extra_award_429560.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
+import { FUN_005dbeeb_js } from "../ported/auto/extra_vehicle_5dbeeb.js";
 import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 // Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
@@ -448,6 +449,44 @@ export function installPainterBridge(heap, opts = {}) {
     c.regs.ebx = regs.ebx >>> 0;
     c.regs.esi = regs.esi >>> 0;
     c.regs.edi = regs.edi >>> 0;
+    c.regs.ebp = regs.ebp >>> 0;
+  });
+
+  // FUN_005dbeeb — vehicle mode-flag query, callee of 0x5da274 (reached via
+  // callNative(0x5dbeeb) -> runFunction -> this eip hook). The JS body
+  // (extra_vehicle_5dbeeb.js) returns true if it fully handled the call in JS,
+  // or false to FALL BACK to the interpreter (it returns false BEFORE any side
+  // effect, so the fallback re-run is clean). __forceInterp5dbeeb forces the
+  // interp leg (oracle control). Single exit ret at 0x5dcd3f. STATUS: the JS
+  // body currently always falls back (the type-55 arm is still being
+  // transcribed) — so this is byte-neutral. Oracle: tools/_lockstep-5dbeeb.mjs.
+  const runInterp5dbeeb = (c) => {
+    const self = getEipHook(0x5dbeeb);
+    clearEipHook(0x5dbeeb);
+    const limit = globalThis.__painterStepLimit || 50_000_000;
+    try {
+      c.regs.eip = 0x5dbeeb;
+      let n = 0;
+      while ((c.regs.eip >>> 0) !== 0x5dcd3f) { if (!step(c) || ++n > limit) break; }
+    } finally { setEipHook(0x5dbeeb, self); }
+  };
+  setEipHook(0x5dbeeb, (c) => {
+    if (globalThis.__forceInterp5dbeeb) { runInterp5dbeeb(c); return; }
+    const savedEsp = c.regs.esp >>> 0;
+    regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0;
+    let handled = false;
+    try { handled = FUN_005dbeeb_js(heap); } catch (e) { handled = false; }
+    if (!handled) {
+      // The JS body returned false before any side effect — run the real bytes.
+      c.regs.esp = savedEsp;
+      runInterp5dbeeb(c);
+      return;
+    }
+    c.regs.esp = savedEsp;
+    c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
+    c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
     c.regs.ebp = regs.ebp >>> 0;
   });
 

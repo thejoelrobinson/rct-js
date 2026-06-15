@@ -887,3 +887,231 @@ sub-painters via runFunction) and small gameplay helpers. Re-run the
 steady-state CPU profile (`tools/_cpuprof-steady.mjs`, ADDENDUM 6) to
 re-rank before the next slice — the remaining wins are likely on the JS side
 (painter algorithmic structure) rather than further interpreter ports.
+
+## ADDENDUM 15 (2026-06-14) — session 10: fresh re-rank + tile-element "bug" RESOLVED (non-bug) + target triage
+
+No port landed this session by design (cf. ADDENDUM 6): the re-rank's top
+targets are poison pills, and the one clean target is a multi-hour byte-exact
+painter port that the two-step rule says not to rush unverified. What this
+session DID produce: the fresh re-rank, a rigorous disproof of the ADDENDUM 12
+"latent tile-element corruption" loose-end, and an evidence-backed triage that
+redirects the next slice. All gates re-verified green; NO source changed.
+
+**Fresh re-rank — steady-state CPU profile** (`tools/_cpuprof-steady.mjs`,
+TICKS=40, sandbox 24.7 ms/tick; Mac ≈2-3x faster):
+| % self | ms/tick | fn | nature |
+|---|---|---|---|
+| 19.5 | 2.41 | runFunction @ x86.js | interpreter prologue + sub-painter/callNative bodies |
+| 18.8 | 2.33 | step @ x86.js | interpreter inner |
+| 12.2 | 1.52 | paintBody5ce7f8 | JS scenery painter — **up from 7.4% (ADD.6)**, now top JS self-time; sets regs then dispatches a scenery sub-painter through the interpreter |
+| 9.4 | 1.16 | FUN_005e39c6 | JS per-window update walk |
+| 4.8 | 0.60 | FUN_009b4911 | RLE blit inner (@manual chain) |
+| 3.0 | 0.37 | FUN_005e39ff | JS widget-invalidate scan |
+| 1.4 | 0.17 | FUN_00433bae | JS depth-sort |
+Interpreter share ≈38% but FRAGMENTED across sub-painter dispatch + the
+remaining gameplay callNatives. No single dominant JS hot spot beyond
+paintBody5ce7f8 (and its 12.2% is the dispatch-into-interpreter, not pure JS).
+
+**Fresh re-rank — interpreter-step ranking** (`tools/probe-painter-rank.js`,
+8-tick __fnSteps soak, ~30 ms/tick):
+| addr | steps/tick | steps/call | what / verdict |
+|---|---|---|---|
+| 0x4415e6 | 3,791 | 30,326 (×~1/8t) | peep PATHFIND dispatcher — **POISON PILL, see below**. A periodic SPIKE (≈1 call per several ticks), not steady per-tick cost. |
+| 0x444e08 | 2,616 | 11 | banner-wall fallback residual (known, deferred). |
+| 0x5dbeeb | 2,433 | 304 (×8/t) | vehicle mode-flag query (5da274 callee, delegated) — 678-line branchy C w/ overlapping-symbol warnings; multi-hour risky. |
+| 0x4368d8 | 1,974 | 1 | per-element hook crossings — overhead, not work. |
+| 0x439178 / 0x42280c | 1,387 / 1,258 | 38 / 37 | peep helper / **421d2c cliff-corner cold-tail** (see triage). |
+| 0x5d7503 | 978 | 81 | paint-adjacent. |
+| 0x431bc8 / 0x421d2c | 954 each | 1 | JS eip-hook fast-path crossings — overhead. |
+
+**The ADDENDUM 12 loose-end is a NON-BUG. Proven, not asserted.** The
+"underlying corrupt tile-element pointer esi=0x6f0020 that grows over time
+(insert/compact desync)" does NOT exist. Evidence (`$HOME/_tilescan2.mjs` +
+`_tile6260.mjs`, scan of the whole 128×128 tile-pointer table):
+- Pool base = `DAT_006e3b90`; high-water `DAT_00981ef4` = **0x7048e0 (16,810
+  elems), FROZEN** across 500 scenario ticks AND 200 title-demo ticks.
+- Over those runs: **0 tile pointers below base, 0 above high-water, 0 broken
+  chains, max chain length 3.** The table is pristine and does NOT accumulate.
+- `TILE_PTRS[6260] = 0x6f0020` is a **normal flat-grass surface element**
+  (`00 80 04 04 00 20 01 00` = type 0 surface, last-flag 0x80 set, base 4 /
+  clearance 4), sitting MID-RUN in **64 identical** flat-tile elements; **493
+  tiles** point into that 0x6f0xxx pool page — i.e. a large flat grassy area
+  of the demo park, exactly as a loaded map looks.
+- That element is handled INLINE by paintBody421d2c: `[esi+5]&0x1f==0` and
+  `[esi+7]&0xf==0`, so it falls through to the ported corner-heights jumptable
+  and returns handled=true — **no fallback, no recursion**.
+- So ADDENDUM 12 conflated two already-fixed things: the real insert/compact
+  desync (fixed `edcc1a4`) and the runFunction fallback recursion (fixed
+  `0e70f7c`). The element it called "garbage" is faithful map data. Corroborated
+  by **gameplay_accuracy 0/307200** (byte-exact JS render vs interpreter on the
+  same heap). **No code fix needed; delete this from the punch list.**
+
+**Target triage for the next port (why 0x4415e6 is the wrong read of the
+re-rank):** 0x4415e6 tops the steps/tick column only because it's one huge
+call. Its own body is small; the 30,326 steps live in its callee **0x44189c**,
+the guest pathfinding FLOOD-FILL — a *recursive, register-convention* function
+(`unaff_EBP`/`unaff_DI` persist across the `FUN_0044189c(...)` self-call at
+C:93 and the `goto code_r0x0044189c` tail at C:107). BOTH the dispatcher
+(`ported/auto/4415e6.js:117`) and the flood-fill (`ported/auto/44189c.js:114`)
+carry goto-truncation `return 0` stubs; the auto-translation near-certainly
+mishandles the register dataflow through the recursion. Wiring it JS-direct is
+a multi-session, high-divergence port; it must stay interpreter-delegated
+(43d5a0's three `callNative(0x4415e6)` sites are correct as-is). And because
+it's a periodic spike, porting it wouldn't move the steady tick anyway.
+
+**THE clean next port = the 421d2c terrain cold-tails** `0x42280c`
+(cliff-corner, steady 1,258 steps/tick) and `0x4225e9` (slope-extra). Bounded
+`extra_paint_*` pattern, pixel-gateable. Disasm of 0x42280c (capstone, CODESEG
+off = va−0x41c000+0x1a600): **4 near-identical corner blocks** — each does
+`shr al,1; jae <next-corner>; push eax/ebx/ecx/edx/esi; <bit-test bl → sprite
+idx 0x9238..0x923d>; set corner-height words [0x99a4e8..0x99a4ec]; mov ebp,
+[0x991f88]; call [ebp*4+0x432204]` (the rotation paint-slot allocators, already
+JS via 432204); `pop…` — converging at the `0x422a90` rejoin (the
+corner-heights jumptable already ported inline in extra_paint_421d2c.js). Port
+it as a 4-corner loop with per-corner constant tables (mirror the existing
+`CORNER_CASES`). **Build `tools/_lockstep-42280c.mjs` first** — the
+gameplay_accuracy frame may not exercise the cliff path, so gate on the
+per-call interpreter diff (copy `_lockstep-444e08.mjs`), then the pixel gates.
+
+**Gates (re-verified green this session, no fixtures touched):**
+title_accuracy 0/307200, gameplay_accuracy 0/307200, title_replay;
+playability/interactive/viewport_build_live 22/22. Sandbox note: the accuracy
+tests exceed vitest's default 5 s testTimeout here (the diff is computed but
+the run is slow) — pass `--testTimeout=40000`; both pixel diffs are 0.
+
+## ADDENDUM 16 (2026-06-14) — session 10b: 0x42280c cliff-corner port attempt → TWO interlocking bugs found, REVERTED to baseline
+
+The 421d2c terrain cold-tail `0x42280c` (ADDENDUM 15's "clean next port") turned
+out NOT to be a clean target. The attempt was fully transcribed, oracle-gated,
+and then **reverted** — it is blocked by two interlocking bugs, and shipping a
+fix exposes a render regression the gates can't see. **No source landed; both
+`harness/x86.js` and `ported/auto/extra_paint_421d2c.js` restored to HEAD; all
+gates re-confirmed green** (title/gameplay 0/307200, title_replay, 23/23 sim).
+This addendum is the diagnosis so the follow-up is well-scoped.
+
+**What 0x42280c is.** The `[esi+7]&0xf != 0` branch of the surface painter
+(~34 cliff tiles/tick, 3.6%): up to 4 corner-edge "cliff" sprites, each
+`shr al,1; jae skip; <pick sprite 0x9238..0x923d from bl, maybe dx+=0x10>; gate
+on [0x991f8c]&0x80 || dx>=[0x5f472c]; write [0x99a4e8/ea/ec]; call
+[ebp*4+0x432204]`, converging at the 0x422a90 corner-heights jumptable. Full
+capstone disasm + the 4 selection trees + draw params were transcribed and
+verified (see this session's git history / the reverted drawCliffCorners).
+
+**BUG 1 — interpreter 8-bit-shift CF gap (the painter is DEAD CODE).** The
+single-step trace from the exact cliff-entry regs showed every corner's
+`shr al,1; jae` taking the skip — CF was always 0. Root cause:
+`shift8Op` (harness/x86.js, the 0xd0/0xd2 shift/rotate group) updates ZF/SF but
+**never sets CF**, and the cliff block's preceding `or al,ah` clears CF to 0. So
+the corner gate reads stale CF=0 and **no cliff corner ever draws** — the
+painter has been dead since forever. This is the SAME bug class already fixed
+for the 32-bit `0xd1` handler (whose own comment documents the RLE-blit
+`shr ecx,1; jae` tail it broke). A CF fix for shift8Op (CF = bit (c-1) for
+SHR/SAR, bit (8-c) for SHL, result LSB/MSB for ROL/ROR) is **validated
+pixel-neutral** (title_accuracy + gameplay_accuracy stay 0/307200 with the JS
+painter left no-draw) and **sim-neutral** (playability/interactive/viewport
+23/23) — its ONLY effect is un-suppressing the cliff corners.
+
+**BUG 2 — the 0x421d2c JS body's regs are desynced at the COLD cliff dispatch.**
+With the CF gate working, the corners render off whatever eax/ebx the body left.
+Measured: the hot-path JS body reaches the cliff dispatch with **eax=0x101**
+(al=1 → draws corner 1) while a from-entry interpreter run reaches 0x42280c with
+**eax=0x300** (al=0 → draws NO corner). **34 of 40 cliff tiles differ.** The body
+faithfully tracks only the registers the HOT path needs (its own header says
+"eax isn't meaningfully set by the body"); the cold cliff path reads eax/ebx the
+body never kept binary-exact. So both the prior `runBodyFrom(0x42280c)` and a
+faithful JS port feed the cliff block the body's WRONG regs — they match each
+other (the in-file __cliffSelfCheck neutrality oracle: drawCliffCorners vs
+runBodyFrom(0x42280c), 238 cliff calls, **memMis=0**) but NEITHER matches the
+pristine binary. So fixing CF would make the corners DRAW WRONG (off eax=0x101),
+which is arguably worse than the current "absent". And the gate frames
+(title/gameplay) have **no in-viewport cliff tiles**, so the wrong corners are
+gate-invisible — unvalidatable without real-RCT reference.
+
+**Why reverted, not shipped.** (a) The CF fix alone un-suppresses the corners on
+the existing runBodyFrom path → wrong corners. (b) A from-entry interp route for
+cliff tiles gives correct regs but re-runs the whole body in the interpreter
+(~7-17k steps/tick added for 34 tiles) — a big perf regression for a 3.6% path.
+(c) A correct JS port needs the body's eax/ebx made binary-exact at the cliff
+dispatch — a deeper 421d2c-body fidelity fix. None is a safe end-of-session
+change, and shipping an unvalidatable render change violates the two-step rule.
+The baseline `return runBodyFrom(0x42280c)` is forward-compatible (auto-adapts
+once the interp CF is fixed) and stays.
+
+**The clean follow-up (well-scoped now):** (1) land the `shift8Op` CF fix as its
+own commit, gated by the full pixel+sim suite (proven neutral here) — it is a
+genuine correctness fix regardless of the cliff work; (2) make the 0x421d2c body
+carry binary-exact eax/ebx into the cliff dispatch (or stage them from the known
+entry contract), gated by a from-entry interpreter diff on cliff tiles
+specifically; (3) THEN the drawCliffCorners port (transcription in git history)
+draws correct corners, gated by the from-entry interp + a re-captured
+gameplay fixture with cliff tiles panned into view. Until (2), 0x42280c is not a
+clean port.
+
+**Re-ranking note.** With 0x42280c shown to be a dead-code cold tail (not the
+clean win ADDENDUM 15 expected), the next real interpreter levers remain the
+big gameplay consumers' deeper callees (e.g. 0x5dbeeb the 5da274 vehicle
+mode-flag query, 304 steps/call × 8/tick) — each a bounded-but-careful port —
+rather than the painter cold tails, which are entangled with body-register
+fidelity. Gates green throughout; nothing shipped in the port attempt itself.
+
+**UPDATE — the `shift8Op` CF fix LANDED (follow-up step 1), corners kept
+suppressed.** The interpreter half of Bug 1 is a genuine standalone correctness
+fix, so it was landed on its own:
+- `harness/x86.js` `shift8Op` (0xd0/0xd2) now sets CF for ROL/ROR/SHL/SHR/SAR
+  (CF = bit (c-1) for SHR/SAR, bit (8-c) for SHL, result LSB/MSB for the
+  rotates) — matching the 32-bit 0xd1/0xd3 handlers. Closes the 8-bit gap of the
+  same bug class that broke the RLE-blit `shr ecx,1; jae` tail.
+- Because that CF fix would otherwise un-suppress the 0x42280c cliff corners
+  onto the body's desynced eax/ebx (Bug 2, still open), the 0x421d2c cliff
+  dispatch now explicitly keeps them suppressed — replicates only the block's
+  `[0x991f78]=8/=1` writes then the 0x422a90 jumptable, byte-identical to the
+  baseline's no-corner cliff path. So the render is UNCHANGED.
+- **Proven byte-neutral**: full-heap FNV after 12 scenario ticks is IDENTICAL to
+  pristine HEAD (0x9c535a3b == 0x9c535a3b) — no sim/scratch/render divergence.
+  All gates green: title_accuracy + gameplay_accuracy 0/307200, title_replay,
+  playability/interactive/viewport 23/23. The CF fix is a dormant latent-
+  correctness improvement in every gate-covered path; its only live consumer
+  (cliff corners) waits on the Bug 2 follow-up (give the 0x421d2c body
+  binary-exact eax/ebx at the cliff dispatch, then drop the suppression).
+
+## ADDENDUM 17 (2026-06-14) — session 10c: 0x5dbeeb port STARTED (foundation laid; multi-session)
+
+Picked up 0x5dbeeb (the 5da274 vehicle mode-flag callee, ~2,433 interp
+steps/tick — the top remaining steady interpreter consumer). The re-rank's
+"304 steps/call" undersold the size: a reachability walk gives **914 reachable
+instructions, 167 conditional branches, a single ret (0x5dcd3f), internal
+subroutines (call 0x5dc770/5dc983/5dca69/5dca6e within its own span), and 12
+external callees**. It does NOT use the entry dl/dh (reloads dx from [esi+0x3c]
+at 0x5dc1a8); it is type-gated via the per-type flag word [type*8 + 0x5f7104].
+**Coverage: the scenario exercises a SINGLE arm — vehicle type 55 — = 318 of
+the 914 instructions.** So it is a bounded single-arm port, but at ~2x the size
+of the 175-instruction 5da274 (which was a full session) it is genuinely
+multi-session.
+
+**Foundation landed this sub-session (all byte-neutral — the body still falls
+back, so zero behaviour change):**
+- `ported/auto/extra_vehicle_5dbeeb.js` — scaffold + the entry-block
+  transcription (0x5dbeeb..0x5dbfcf: the [0x65dc40] flag-0x800/0x1000 blocks,
+  the [esi+0x28]/[esi+0x2c] mode accumulate, [0x65dc30]/[0x65dc34]) in
+  `armType55`. `FUN_005dbeeb_js` returns false (falls back) until the arm is
+  COMPLETE — a partial transcription cannot mid-arm fall back (side effects
+  would double-fire), so it stays inactive until memMis=0.
+- `runtime/painter-bridge.js` — the eip hook at 0x5dbeeb (mirrors 5da274:
+  `__forceInterp5dbeeb` leg steps the real bytes to the 0x5dcd3f ret; the JS
+  leg falls back on a false return, which is clean because the body returns
+  false before any side effect).
+- `tools/_lockstep-5dbeeb.mjs` — per-call JS-vs-interp whole-heap + eax oracle.
+- **Verified byte-neutral**: oracle 54 calls memMis=0 eaxMis=0; full-heap FNV
+  after 12 ticks unchanged (0x9c535a3b); gameplay_accuracy 0/307200. So the
+  wired-but-falling-back hook ships safely.
+
+**Continuation (the focused next pass):** transcribe the rest of the type-55
+arm from 0x5dbfd4 onward (the [0x65dc30]<0 → [esi+0x3e] sprite-swap, then the
+big dx-reload region from 0x5dc1a8, the internal subroutines, the callees —
+delegate each external + internal call via callNative for byte-exact
+register/heap round-trip), drive `_lockstep-5dbeeb` to memMis=0 over the soak,
+add a `_fuzz-5dbeeb` harness (copy `_fuzz-5da274.mjs`) to cover the type-55
+field-value branches the static soak misses, then flip `FUN_005dbeeb_js` to
+call `armType55`. Disasm dump for the transcription is reproducible via the
+capstone walker (CODESEG off = va−0x41c000+0x1a600). Once live it removes
+~2,433 interp steps/tick — the single biggest remaining steady lever.
