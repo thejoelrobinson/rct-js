@@ -31,7 +31,7 @@ const ROOT = resolve(HERE, "..");
 let _t = 1700000000000;
 Date.now = () => ++_t;
 if (typeof performance !== "undefined") performance.now = () => Date.now() - 1700000000000;
-globalThis._renderTrace = () => {};
+globalThis._renderTrace = () => {}; globalThis.__enable5dbeeb = true;
 
 const { createRuntime, skipFadeIn, enterScenarioPlay } = await import("../runtime/harness.js");
 const { getEipHook, setEipHook } = await import("../harness/x86.js");

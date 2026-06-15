@@ -476,18 +476,26 @@ export function installPainterBridge(heap, opts = {}) {
     regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
     regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
     regs.ebp = c.regs.ebp >>> 0;
-    let handled = false;
-    try { handled = FUN_005dbeeb_js(heap); } catch (e) { handled = false; }
-    if (!handled) {
-      // The JS body returned false before any side effect — run the real bytes.
-      c.regs.esp = savedEsp;
-      runInterp5dbeeb(c);
-      return;
-    }
+    // FUN returns: false = fall back from 0x5dbeeb; true = fully handled in JS;
+    // a NUMBER X = HYBRID — the JS body ran the byte-exact prefix [0x5dbeeb,X)
+    // and left regs binary-exact at X; run the interpreter suffix [X,0x5dcd3f).
+    let result = false;
+    try { result = FUN_005dbeeb_js(heap); } catch (e) { result = false; }
+    if (result === false) { c.regs.esp = savedEsp; runInterp5dbeeb(c); return; }
     c.regs.esp = savedEsp;
     c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
     c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
     c.regs.ebp = regs.ebp >>> 0;
+    if (typeof result === "number") {
+      const self = getEipHook(0x5dbeeb);
+      clearEipHook(0x5dbeeb);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      try {
+        c.regs.eip = result >>> 0;
+        let n = 0;
+        while ((c.regs.eip >>> 0) !== 0x5dcd3f) { if (!step(c) || ++n > limit) break; }
+      } finally { setEipHook(0x5dbeeb, self); }
+    }
   });
 
   // ====================================================================

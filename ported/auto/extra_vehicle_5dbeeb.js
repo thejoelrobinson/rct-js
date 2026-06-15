@@ -44,11 +44,12 @@ const s32 = (v) => v | 0;
 export function FUN_005dbeeb_js(heap) {
   const esi = regs.esi >>> 0;
   const type = heap.u8(esi + 0x31);
-  // Only vehicle type 55 (the scenario-exercised arm) is being ported, and it
-  // is not yet COMPLETE — so always fall back for now. Flip to `armType55` once
-  // tools/_lockstep-5dbeeb.mjs reports memMis=0 over the soak + fuzz.
-  if (type !== 55) return false;
-  return false; // TODO: return armType55(heap, esi, type) once complete.
+  // Only vehicle type 55 (the scenario-exercised arm) is ported (HYBRID: a
+  // byte-exact JS prefix + an interpreter suffix from the returned checkpoint).
+  // Gated by __enable5dbeeb until the prefix is large enough to net a win;
+  // production falls back. Other types fall back. Oracle: _lockstep-5dbeeb.mjs.
+  if (type !== 55 || !globalThis.__enable5dbeeb) return false;
+  return armType55(heap, esi, type);
 }
 
 // === Type-55 arm transcription (IN PROGRESS) =============================
@@ -114,7 +115,21 @@ function armType55(heap, esi, type) {
   heap.setU32(DC30, eax >>> 0);                              // 0x5dbfc4
   heap.setU32(DC34, (Math.imul(eax >> 0xa, 0x2a)) | 0);     // 0x5dbfc9/cc/cf sar 0xa; imul 0x2a
 
-  // TODO: continue from 0x5dbfd4 (the [0x65dc30]<0 -> [esi+0x3e] sprite swap,
-  // then the big dx-reload region 0x5dc1a8+). Until then this arm is NOT used.
-  return false;
+  // 0x5dbfd4: cmp [0x65dc30],0 ; jge 0x5dbff5  — if the accumulate is negative,
+  // walk the sprite chain via [esi+0x3e] (next-sprite index) to the head.
+  if (s32(heap.u32(DC30)) < 0) {
+    for (;;) {
+      const ax = heap.u16(esi + 0x3e);                        // 0x5dbfdd mov ax,[esi+0x3e]
+      if (s16(ax) === -1) break;                              // 0x5dbfe1 cmp ax,-1; je 0x5dbff5
+      esi = (((ax & 0xffff) << 8) + 0x00743b94) >>> 0;        // 0x5dbfe7/ea/ed movzx/shl 8/add 0x743b94
+    }                                                          // 0x5dbff3 jmp 0x5dbfdd
+  }
+
+  // CHECKPOINT 0x5dbff5 — hand the suffix to the interpreter. esi = the (walked)
+  // sprite; eax/edi/ebx are overwritten by the suffix before being read.
+  regs.esi = esi;
+  return 0x005dbff5;
+  // TODO: extend past 0x5dbff5 — the [0x65dc28]=esi store, the flag-2/4/0x180
+  // dispatch (callNatives 0x5d870c/5d8623/5d849e), then the dx-reload region
+  // 0x5dc1a8+ — moving the checkpoint toward the 0x5dcd3f ret.
 }
