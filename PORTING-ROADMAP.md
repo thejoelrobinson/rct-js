@@ -1115,3 +1115,60 @@ field-value branches the static soak misses, then flip `FUN_005dbeeb_js` to
 call `armType55`. Disasm dump for the transcription is reproducible via the
 capstone walker (CODESEG off = va−0x41c000+0x1a600). Once live it removes
 ~2,433 interp steps/tick — the single biggest remaining steady lever.
+
+---
+
+## ADDENDUM 18 — team pass: 3 interpreter callees ported/validated (43d38b, 5ddcbe, 4314ed)
+
+A 3-agent fan-out at the functions the interpreter was still stepping during
+gameplay. Each agent owned one callee, drove its `_lockstep-<addr>.mjs` oracle
+(per-call JS-vs-interpreter whole-heap + register compare) to **memMis=0**, and
+left an `@manual` port transcribed from the capstone disasm (CODESEG off =
+va−0x41c000+0x1a600).
+
+- **0x43d38b** — peep tile z-height helper (callee of the 0x43c751 walking
+  core, ~217 interp steps/tick). The auto-translation (`decompiled/c/43d38b.c`)
+  was badly incomplete: Ghidra dropped the ENTIRE base-height computation
+  (`movzx dx,[esi+0x28]; shl dx,2`) and all four slope-arm jump-table cases
+  (degenerate `switch`, every case returns writing nothing). Rewritten
+  instruction-by-instruction; the `(bl&0x18)!=0` slope-LUT tail and the four
+  `[ebx*4+0x43d3b4]` arms are modelled, the 0x423677 tail-call delegated via
+  callNative. Oracle: **160 calls memMis=0 eaxMis=0 edxMis=0** (143 scratch-reg
+  diffs are info-only — eax/edx are the contract outputs and both match).
+- **0x5ddcbe** — vehicle entry pre-update / breakdown-eligibility (direct
+  callee of 0x5da274, ~64 interp steps/tick). Auto-translation carried stacked
+  translator bugs: ride-record accesses double-applied a `*4` byte multiply on
+  top of the already-byte `uVar3*0x260` index; `[0x887422]` read/written as u32
+  where the binary uses `test/or word` (u16); and the two final stores
+  (`mov dword [0x971e8c]` — Ghidra's dead `unique0x` local — and
+  `mov word [0x971e90]`) were dropped/mis-addressed. Rewritten from disasm.
+  Oracle: **64 calls memMis=0** (heap byte-exact). eaxMis=64 is a DEAD register:
+  the sole caller 0x5da274 treats 5ddcbe as void — it uses JS locals for
+  esi/dl/dh and overwrites eax via the next call (0x5dbeeb) before any read
+  (verified by reading the call site). memMis=0 is the gate for a heap-effect
+  function.
+- **0x4314ed** — popcount of [0x87c3dc]+[0x87c3e0]. Auto-translation was
+  already CORRECT; the agent's contribution was validation. Oracle:
+  **8 calls memMis=0 eaxMis=0** — fully clean, no change needed.
+
+**Why this is the integration, not an eip-hook job:** all three are already in
+`ported/auto/_dispatch.js`, so the production browser path (no x86 interpreter)
+already routes calls to them as JS. The interpreter only ran their ORIGINAL
+bytes inside the test harness's painter-bridge. So "porting them off the
+interpreter" = replacing the broken auto-translations with correct JS; no
+`installCalleeJsHook` / `__forceInterp` wiring is needed for production. Only
+43d38b.js + 5ddcbe.js changed (4314ed was already right).
+
+**Two-step-rule classification:** this is a BEHAVIOUR CHANGE (wrong JS → correct
+JS), so it is gated by the interpreter diff (the lockstep oracles, memMis=0) —
+NOT by the neutrality gates. As expected for sim callees that the title /
+gameplay-accuracy frame does not exercise, the neutrality gates stay green:
+gameplay_accuracy + title_accuracy **0/307200 divergent**, playability green.
+
+**Heap-hash caveat (supersedes ADDENDUM 17's 0x9c535a3b):** the 12-tick full-
+heap FNV proved environment-sensitive — it settled at a DIFFERENT stable value
+(0xdeb48001) for identical tracked files + assets + data.bin, deterministic on
+repeat. Do NOT treat the FNV as an absolute cross-session reference; it is at
+best a within-session relative check. The accuracy gates (byte-equality vs the
+binary's captured surface) and the lockstep oracles (vs the live interpreter)
+are the authoritative correctness signals.
