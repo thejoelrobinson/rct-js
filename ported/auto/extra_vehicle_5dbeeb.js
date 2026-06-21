@@ -28,8 +28,9 @@
 // HYBRID: armType55() runs a byte-exact JS prefix, then RETURNS a checkpoint
 // EIP; the painter-bridge hook continues the real bytes in the interpreter from
 // there (no re-run from 0x5dbeeb, so no double-fire of the JS-side stores).
-// Current checkpoints: 0x5dc60d / 0x5dca73 (branch exits) and 0x5dc16a (the
-// transcribed straight-line + cx-dispatch tail). false return = full fallback.
+// Current checkpoints: 0x5dc60d / 0x5dca73 (early branch exits), 0x5dc3b6 (the
+// dominant type-37 jb arm, after the image-table lookup) and 0x5dc1a8 (the
+// cx-rotate fall-through). false return = full fallback.
 // Gated by __enable5dbeeb (oracle-only); production uses FUN_005dbeeb in
 // 5dbeeb.js via _dispatch and is untouched.
 //
@@ -48,6 +49,7 @@ const DC70 = 0x0065dc70, E6B7 = 0x0065e6b7, A74A0 = 0x008874a0;
 // +0x22 = status word, +0x13c/+0x13d = sub-status bytes; +0x5f5b7f = type LUT.
 const A7420 = 0x00887420, A7422 = 0x00887422, A755C = 0x0088755c, A755D = 0x0088755d;
 const S5B7F = 0x005f5b7f;
+const AF10 = 0x0067af10, EF4 = 0x00971ef4;  // pointer tables: [0xcd]→base, [rotated]→entry
 
 const s8 = (v) => (v << 24) >> 24;
 const s16 = (v) => (v << 16) >> 16;
@@ -236,13 +238,43 @@ function armType55(heap, esi, type) {
     }
   }
 
-  // CHECKPOINT 0x5dc16a — esi + edi live: the suffix reads esi (mov ax,[esi+0x34],
-  // movzx ecx,[esi+0xcd]) and edi (mov edi,[ecx+edi*4] @0x5dc17e); eax/ecx are
-  // overwritten before read. edi = u16[esi+0x36] unchanged through the dispatch.
+  // === 0x5dc16a..0x5dc1a7 — image-table lookup + bound check + image-id rotate ===
+  // 0x5dc16a mov ax,[esi+0x34]; 0x5dc175 inc ax  → ax = (u16[esi+0x34]+1)&0xffff
+  const ax = (heap.u16(esi + 0x34) + 1) & 0xffff;
+  // 0x5dc16e movzx ecx,[esi+0xcd]; 0x5dc177 mov ecx,[ecx*4+0x67af10] (base ptr)
+  const ecxBase = heap.u32(AF10 + heap.u8(esi + 0xcd) * 4) >>> 0;
+  // 0x5dc17e mov edi,[ecx+edi*4]  (edi=edi36; entry ptr) ; 0x5dc181 cmp ax,[edi-2]
+  const ptr = heap.u32((ecxBase + edi36 * 4) >>> 0) >>> 0;
+  // 0x5dc185: jb 0x5dc3b6 — ax < u16[ptr-2] (unsigned). DOMINANT type-37 path
+  // (38/39 calls). Hand to the interpreter AT 0x5dc3b6 (skipping the 0x5dc16a..
+  // 0x5dc185 lookups for these calls) with the registers live there:
+  //   esi (sprite), eax (low16=ax; 0x5dc3b6 `mov [esi+0x34],ax` uses only ax —
+  //   eax high16 set 0, empirically dead), ecx=ecxBase (0x5dc177), edi=ptr
+  //   (0x5dc17e). edx/ebx/ebp are left at hook-entry values; the oracle confirms
+  //   they (and eax high16) are dead in the type-37 suffix (memMis=0).
+  if (ax < heap.u16((ptr - 2) >>> 0)) {
+    regs.esi = esi >>> 0; regs.eax = ax >>> 0; regs.ecx = ecxBase >>> 0; regs.edi = ptr >>> 0;
+    return 0x005dc3b6;
+  }
+
+  // 0x5dc18b..0x5dc1a1 — fall-through: build the image-id and look up its entry.
+  const a38 = heap.u16(esi + 0x38);            // 0x5dc18b mov ax,[esi+0x38]
+  let c = heap.u16(esi + 0x3a);                // 0x5dc18f mov cx,[esi+0x3a]
+  c = ((c << 7) | (c >>> 9)) & 0xffff;         // 0x5dc193 rol cx,7
+  c = (c | a38) & 0xffff;                       // 0x5dc197 or cx,ax
+  c = ((c >>> 5) | (c << 11)) & 0xffff;        // 0x5dc19a ror cx,5
+  const ediPtr = heap.u32(EF4 + c * 4) >>> 0;  // 0x5dc19e/a1 movzx edi,cx; mov edi,[edi*4+0x971ef4]
+
+  // CHECKPOINT 0x5dc1a8 — esi + edi live: the dx-reload suffix reads esi
+  // (mov dx,[esi+0x3c], movzx eax,[esi+0x36]) and walks edi (mov bl,[edi] @0x5dc1d1);
+  // dx/eax/ebx/ecx are all (re)written before read.
   regs.esi = esi >>> 0;
-  regs.edi = edi36 >>> 0;
-  return 0x005dc16a;
-  // TODO: extend past 0x5dc16a — the [esi+0xcd]→[0x67af10] table lookup + the
-  // [esi+0x34] bound check (jb 0x5dc3b6 branch-checkpoint), the cx-rotate
-  // (rol/or/ror → [0x971ef4] lookup), then the dx-reload region 0x5dc1a8+.
+  regs.edi = ediPtr >>> 0;
+  return 0x005dc1a8;
+  // TODO: the two dominant type-37 exits now checkpoint at 0x5dc3b6 (jb arm,
+  // 38/39 of the cx-dispatch calls) and 0x5dca73 (jl arm, 33/72 calls) — both
+  // still interp-suffixed. Best next win: transcribe the 0x5dc3b6 arm body (for
+  // type 37: store ax, skip the 0x2c/0x2d call-block → 0x5dc408 → [esi+1]/bx
+  // checks → 0x5dc450). The 0x5dc1a8 cx-rotate fall-through is rare (1/39); its
+  // dx-reload + [edi] scan loop (0x5dc1d1..0x5dc1ee) is lower priority.
 }

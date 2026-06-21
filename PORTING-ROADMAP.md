@@ -1278,3 +1278,38 @@ code ran AND matched," not just "matched."
 cx-rotate → [0x971ef4] lookup, the dx-reload region 0x5dc1a8+). Add `_fuzz-5dbeeb`
 to vary the type-37 field values so the cx=0x63/0x64/0x84 arms (unseen in the
 static soak) get covered before the eventual `__enable5dbeeb` flip.
+
+---
+
+## ADDENDUM 21 (2026-06-21) — 5dbeeb: image-table lookup + jb-arm checkpoint at 0x5dc3b6 (type 37's dominant exit)
+
+Transcribed 0x5dc16a..0x5dc1a7 and re-routed the post-cx-dispatch checkpoint.
+Branch-coverage instrumentation on type 37 showed where the calls actually go:
+of the 39 calls that reach the cx-dispatch, **38 take `jb 0x5dc3b6`** (the image-
+table bound-check miss) and only 1 falls through. (The other 33/72 took the
+earlier `jl 0x5dca73`.) So 0x5dc3b6 + 0x5dca73 are the two real type-37 hot
+exits.
+
+- `ported/auto/extra_vehicle_5dbeeb.js`: transcribed the 0x5dc16a image-table
+  lookup (`[esi+0xcd]→[0x67af10]` base, `[base + (u16[esi+0x36])*4]` entry), the
+  `cmp ax,[entry-2]` bound check, and the fall-through cx-rotate
+  (`rol/or/ror → [0x971ef4]`). Two new checkpoints:
+  - **jb taken → 0x5dc3b6** with esi, eax(low16=ax), ecx=base, edi=entry set.
+    This SKIPS the lookup instructions for the 38 hot calls (interp starts at
+    0x5dc3b6, not 0x5dc16a). The eax high16 and edx/ebx/ebp are left at
+    hook-entry values — **the oracle confirms they're dead in the type-37
+    suffix** (memMis=0); this empirical dead-register check is the same
+    instrument-then-trust discipline as ADDENDUM 20.
+  - **fall-through → 0x5dc1a8** (rare, 1/39) with esi + edi=the rotated entry ptr.
+
+- Avoided the partial-register hazard at 0x5dc3b6 (`mov [esi+0x34],ax` needs only
+  ax low16, which we have) by handing off AT 0x5dc3b6 rather than transcribing
+  into the arm.
+
+**Gate:** `tools/_lockstep-5dbeeb.mjs` memMis=0 over 72/108/144 calls (TICKS
+8/12/16); AB_CONTROL memMis=0. Production untouched (`__enable5dbeeb`-gated).
+
+**Next (best win):** transcribe the 0x5dc3b6 arm BODY (38 calls) — for type 37:
+store ax, skip the 0x2c/0x2d call-block (call 0x452fce) → 0x5dc408 → [esi+1] / bx
+(=u16[esi+0x36]>>2) checks → 0x5dc450 — to a clean checkpoint past 0x5dc450,
+removing the interp suffix for the dominant exit. Then the 0x5dca73 arm (33).
