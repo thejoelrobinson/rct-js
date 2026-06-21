@@ -265,12 +265,23 @@ function armType55(heap, esi, type) {
       regs.esi = esiF >>> 0; regs.ecx = ecx >>> 0; regs.ebp = sumBp >>> 0;
       return 0x005dcc28;
     }
-    // CHECKPOINT 0x5dcd0c (flag 8 clear, the type-37 path) — esi + ecx live: the
-    // 0x75-subtype tail (cmp bx,0x75 + [esi+0x34] range -> sub ecx,[esi+0x28]>>6),
-    // the final [esi+0x2c]=ecx store, and the eax=[DC40]/ebx=[DC44] ret loads are
-    // left to the interpreter.
-    regs.esi = esiF >>> 0; regs.ecx = ecx >>> 0;
-    return 0x005dcd0c;
+    // === 0x5dcd0c tail (flag-8-clear, type-37 path): the 0x75-subtype adjust +
+    // the final [esi+0x2c]=ecx store. ===
+    // 0x5dcd0c/10/14: bx=u16[esi+0x36]>>2; cmp bx,0x75; jne 0x5dcd31. 0x5dcd1a/21:
+    // [esi+0x34] in [0x30,0x80] (unsigned). 0x5dcd29/2c/2f: ecx -= [esi+0x28]>>6.
+    // (Not taken for type 37 — its subtype ∈ {0xa,0,0x3,0x1,0xf}, never 0x75.)
+    const sub2 = (heap.u16(esiF + 0x36) >>> 2) & 0xffff;
+    const t34 = heap.u16(esiF + 0x34);
+    if (sub2 === 0x75 && t34 >= 0x30 && t34 <= 0x80) {
+      ecx = (ecx - (s32(heap.u32(esiF + 0x28)) >> 6)) | 0;  // 0x5dcd29/2c/2f sar 6
+    }
+    heap.setU32(esiF + 0x2c, ecx >>> 0);                    // 0x5dcd31 mov [esi+0x2c],ecx
+
+    // CHECKPOINT 0x5dcd34 — the ret epilogue (`mov eax,[0x65dc40]; mov ebx,[0x65dc44];
+    // ret`). No register live-in: eax/ebx load from globals. The jl path's entire
+    // COMPUTATION is now JS; only this 2-instruction epilogue stays in the interpreter.
+    regs.esi = esiF >>> 0;
+    return 0x005dcd34;
   }
 
   // 0x5dc066: and word [esi+0xb8],0xfffd
@@ -419,11 +430,12 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   regs.edi = ediPtr >>> 0;
   return 0x005dc1a8;
-  // TODO: the jl arm now runs in JS through the 0x5dcbad final-accumulation pass
-  // (chain re-walk + 2 idivs) to checkpoint 0x5dcd0c (type-37, flag-8 clear) /
-  // 0x5dcc28 (flag-8 set, unexercised, audit-verified). Remaining for the jl path:
-  // the short 0x5dcd0c tail (0x75-subtype check + [esi+0x2c]=ecx store + the
-  // eax=[DC40]/ebx=[DC44] ret loads) and the flag-8 middle (0x5dcc28..0x5dcd0a).
-  // Other paths: the 0x5dc51c jb-arm tail ([esi+0x24]<0x368a → 0x5dca55, loop-back);
-  // the 0x5dc450 delta-block + 0x5dcd40 call path; the rare 0x5dc1a8 fall-through.
+  // TODO: the jl arm is now FULLY computed in JS — from entry through the
+  // 0x5dcbad final pass to checkpoint 0x5dcd34 (the 2-instruction ret epilogue).
+  // Remaining work is on the OTHER paths: the 0x5dc51c jb-arm tail
+  // ([esi+0x24]<0x368a → 0x5dca55, the 0x5dcd40-call path, the jmp-0x5dc086
+  // loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; the flag-8 middle
+  // (0x5dcc28..0x5dcd0a, unexercised); the rare 0x5dc1a8 cx-rotate fall-through.
+  // Then add `_fuzz-5dbeeb` (vary type-37 fields to cover the latent branches) and
+  // flip FUN_005dbeeb_js live (remove the __enable5dbeeb gate).
 }

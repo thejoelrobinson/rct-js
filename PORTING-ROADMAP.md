@@ -1455,3 +1455,33 @@ scenario never executes. The audit is not optional for hybrid checkpoints.
 
 **Continuation:** the short 0x5dcd0c tail (0x75-subtype + [esi+0x2c]=ecx store +
 ret loads) completes the jl path to the ret — the next, finishing win.
+
+---
+
+## ADDENDUM 26 (2026-06-21) — 5dbeeb: jl path COMPLETE to the ret (finished the 0x5dcd0c tail)
+
+Transcribed the 0x5dcd0c tail (0x5dcd0c..0x5dcd31): the 0x75-subtype adjust
+(`if subtype==0x75 && 0x30<=u16[esi+0x34]<=0x80: ecx -= [esi+0x28]>>6`) and the
+final `[esi+0x2c]=ecx` store, checkpointing at **0x5dcd34** — the ret epilogue
+(`mov eax,[0x65dc40]; mov ebx,[0x65dc44]; ret`), which needs no register live-in
+(eax/ebx load from globals; eax — the mode-flag contract output — rides on the
+heap correctness the oracle already gates).
+
+**MILESTONE: the jl 0x5dca73 path (the dominant type-37 exit, ~33/72 calls) is now
+FULLY computed in JS** — from the 0x5dbeeb entry, through the prefix, flag-dispatch,
+accumulate, the jl arm, the 0x5dcb60 sprite-chain join, and the 0x5dcbad final-
+accumulation pass (two idivs + the averaging math), to the ret. Only the
+2-instruction epilogue stays in the interpreter.
+
+**Verification:** lockstep memMis=0 over 72/108/144 calls (TICKS 8/12/16);
+AB_CONTROL memMis=0. Independent adversarial audit found NO divergence — it verified
+the tail instruction-by-instruction (logical vs arithmetic shifts, 16-bit vs 32-bit
+widths, the unsigned jb/ja range, inclusive bounds, the 32-bit wrap) INCLUDING the
+subtype-0x75 adjust branch that type 37 never exercises, and confirmed the 0x5dcd34
+epilogue needs no live-in. Production untouched (__enable5dbeeb-gated).
+
+**Remaining for full 5dbeeb (type 37):** the jb-arm tail past 0x5dc51c (the
+0x5dcd40-call path, the [esi+0x24]<0x368a → 0x5dca55 branch, the jmp-0x5dc086
+loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; the unexercised flag-8
+middle (0x5dcc28..0x5dcd0a) and the rare 0x5dc1a8 fall-through. Then `_fuzz-5dbeeb`
++ flip live.
