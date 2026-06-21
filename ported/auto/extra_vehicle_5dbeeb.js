@@ -367,12 +367,16 @@ function armType55(heap, esi, type) {
     heap.setU16(esi + 0x34, ax);                                        // 0x5dc3b6
 
     // The 0x5dc51c tail calls 0x5dcd40 (which reads ax/cx/dx = va/vc/vd) iff
-    // esi==[DC28] && [DC30]>=0 (0x5dc51c/24). Rather than carry va/vc/vd (and
-    // their dead-high16) into that checkpoint, hand the call path to the
-    // interpreter at the clean 0x5dc450 checkpoint (only esi live) — it redoes
-    // the delta block + call exactly. The common no-call path ([DC30]<0, the
-    // only path type 37 takes) keeps the JS delta block below, where ax/cx/dx
-    // are dead on the 0x5dc538 fall-through + jmp-0x5dc086 loop-back.
+    // esi==[DC28] && [DC30]>=0 (0x5dc51c/24). For now hand that call path to the
+    // interpreter at the clean 0x5dc450 checkpoint (only esi live) — it redoes the
+    // delta block + call exactly. MEASURED (ADDENDUM 27): type 37 takes this
+    // divert 38/38 of the time ([DC30] is always >=0 here, and esi==[DC28] always
+    // since esi isn't re-pointed after 0x5dbff5). So for type 37 the delta block
+    // below AND the 0x5dc538 no-call tail are NEVER exercised — they are
+    // audit-verified-correct but dormant. Accelerating the type-37 jb arm requires
+    // transcribing THIS path (delta block + delegated call 0x5dcd40), not the
+    // no-call path. (The earlier "[DC30]<0 is the only type-37 path" note was
+    // backwards.)
     if (heap.u32(DC28) === (esi >>> 0) && s32(heap.u32(DC30)) >= 0) {
       regs.esi = esi >>> 0; return 0x005dc450;
     }
@@ -407,13 +411,26 @@ function armType55(heap, esi, type) {
       heap.setU16(esi + 0x4e, 0);                                      // 0x5dc516
     }
 
-    // CHECKPOINT 0x5dc51c — esi + ebx live: 0x5dc545 `mov ebx,[ebx*4+0x65dc70]`
-    // reads ebx (= u8[recPtr+7]). The call path was diverted above, so the tail
-    // here is just the [esi+0x24]<0x368a branch (jl 0x5dca55) and the
-    // jmp-0x5dc086 loop-back — both left to the interpreter; neither reads
-    // ax/cx/dx, so eax/ecx/edx need not be set.
-    regs.esi = esi >>> 0; regs.ebx = b7 >>> 0;
-    return 0x005dc51c;
+    // === 0x5dc51c tail. The 0x5dc51c call path (esi==[DC28] && [DC30]>=0) was
+    // diverted to 0x5dc450 above, so the binary's `cmp esi,[DC28]; jne 0x5dc538`
+    // / `cmp [DC30],0; jl 0x5dc538` always reach 0x5dc538 here. ===
+    // 0x5dc538: cmp [esi+0x24],0x368a ; jl 0x5dca55
+    if (s32(heap.u32(esi + 0x24)) < 0x368a) {
+      // 0x5dca55: ax=[DC48]; cx=[DC4a]; dx=[DC4c]; call 0x444927; call 0x5e53ca; ...
+      // ax/cx/dx are loaded from globals there, so only esi is live-in. The two
+      // external calls + the rest are left to the interpreter.
+      regs.esi = esi >>> 0;
+      return 0x005dca55;
+    }
+    // 0x5dc545 ebx=[ebx*4+0x65dc70] (ebx=b7) ; 0x5dc54c add [esi+0x2c],ebx ;
+    // 0x5dc54f inc [0x65dc38]
+    heap.setU32(esi + 0x2c, (heap.u32(esi + 0x2c) + heap.u32(DC70 + b7 * 4)) >>> 0);
+    heap.setU32(DC38, (heap.u32(DC38) + 1) >>> 0);
+    // CHECKPOINT 0x5dc086 — 0x5dc555 jmp 0x5dc086, the frame-advance loop-back.
+    // Only esi live (edi reloaded via movzx edi,[esi+0x36]). The interpreter runs
+    // the remaining loop iterations (this JS handled the first frame).
+    regs.esi = esi >>> 0;
+    return 0x005dc086;
   }
 
   // 0x5dc18b..0x5dc1a1 — fall-through: build the image-id and look up its entry.
@@ -430,12 +447,14 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   regs.edi = ediPtr >>> 0;
   return 0x005dc1a8;
-  // TODO: the jl arm is now FULLY computed in JS — from entry through the
-  // 0x5dcbad final pass to checkpoint 0x5dcd34 (the 2-instruction ret epilogue).
-  // Remaining work is on the OTHER paths: the 0x5dc51c jb-arm tail
-  // ([esi+0x24]<0x368a → 0x5dca55, the 0x5dcd40-call path, the jmp-0x5dc086
-  // loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; the flag-8 middle
-  // (0x5dcc28..0x5dcd0a, unexercised); the rare 0x5dc1a8 cx-rotate fall-through.
-  // Then add `_fuzz-5dbeeb` (vary type-37 fields to cover the latent branches) and
-  // flip FUN_005dbeeb_js live (remove the __enable5dbeeb gate).
+  // STATUS: the jl arm (0x5dca73) is FULLY computed in JS to the ret (the
+  // exercised path for ~33/72 type-37 calls). The jb arm (0x5dc3b6, ~38/72) is
+  // transcribed (delta block + the 0x5dc538 no-call tail above) but for type 37
+  // it ALWAYS diverts to the interpreter at 0x5dc450 ([DC30]>=0, measured 38/38),
+  // so that JS is audit-verified-correct but DORMANT for type 37.
+  // NEXT (the real type-37 jb acceleration): replace the 0x5dc450 divert with an
+  // in-JS [DC30]>=0 path — run the delta block, then delegate the 0x5dcd40 call
+  // (set ax=va/cx=vc/dx=vd, bp=[esi+0x40], esi) and handle its jb 0x5dc577.
+  // After that: the flag-8 middle (0x5dcc28..0x5dcd0a); the rare 0x5dc1a8
+  // fall-through; then `_fuzz-5dbeeb` + flip FUN_005dbeeb_js live.
 }

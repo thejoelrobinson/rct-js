@@ -1485,3 +1485,39 @@ epilogue needs no live-in. Production untouched (__enable5dbeeb-gated).
 loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; the unexercised flag-8
 middle (0x5dcc28..0x5dcd0a) and the rare 0x5dc1a8 fall-through. Then `_fuzz-5dbeeb`
 + flip live.
+
+---
+
+## ADDENDUM 27 (2026-06-21) — 5dbeeb: jb-arm no-call tail + the finding that type-37 jb ALWAYS diverts
+
+Transcribed the jb-arm no-call tail (x86 0x5dc538..0x5dc555, replacing the old
+0x5dc51c checkpoint): `cmp [esi+0x24],0x368a; jl 0x5dca55` → checkpoint 0x5dca55
+(a 2-external-call block, esi-only live-in), else
+`[esi+0x2c] += [0x65dc70 + b7*4]; [0x65dc38]++` → checkpoint 0x5dc086 (the
+frame-advance loop-back, esi-only). Lockstep memMis=0 (72/108/144 calls); an
+independent adversarial audit confirmed the precondition reasoning, the
+instruction transcription, and BOTH checkpoints' esi-only hand-off (incl. that
+0x444927's lone 32-bit read `and eax,0xfe0` is benign — mask within the low-16
+loaded from globals). No divergence.
+
+**KEY FINDING (measured, not assumed): the type-37 jb arm diverts to the
+interpreter 38/38 of the time.** A coverage probe showed divert_0x5dc450=38,
+delta_block=0, and both tail exits 0. [DC30] is always >=0 at the jb arm for type
+37 (and esi==[DC28] always, since esi isn't re-pointed after 0x5dbff5), so the
+0x5dc450 divert added in ADDENDUM 22 ALWAYS fires. Consequence: the jb-arm delta
+block (ADD.22) AND this no-call tail are **audit-verified-correct but DORMANT for
+type 37** — they don't accelerate the exercised path. ADDENDUM 22's comment
+"[DC30]<0 is the only path type 37 takes" was BACKWARDS; corrected in the source.
+
+So the session's real, exercised win is the **jl path** (fully in JS to the ret,
+~33/72 calls, ADD.23-26). The jb path (~38/72) still runs in the interpreter from
+0x5dc450. **To actually accelerate it (the next high-value step): replace the
+0x5dc450 divert with an in-JS [DC30]>=0 path — run the delta block, then delegate
+the 0x5dcd40 call (ax=va/cx=vc/dx=vd, bp=[esi+0x40], esi) and handle its
+jb 0x5dc577.** This supersedes the divert.
+
+**Methodology note:** this is the coverage-discipline lesson again (ADD.20) — a
+green oracle says nothing about which BRANCH the scenario took. Here the oracle was
+green for 5 commits while the jb delta block + tail were never executed; only a
+direct branch-count probe revealed it. Always measure call-counts on the intended
+arm, not just memMis. Production untouched (__enable5dbeeb-gated).
