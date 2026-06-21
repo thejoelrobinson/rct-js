@@ -1226,3 +1226,55 @@ region `0x5dc1a8+` — toward the single `0x5dcd3f` ret. The branch-target-as-
 checkpoint technique proven here (hand any not-yet-transcribed branch to the
 interpreter at a clean-register target) is the lever that makes the rest tractable
 one block at a time.
+
+---
+
+## ADDENDUM 20 (2026-06-21) — 5dbeeb gate was DEAD (type 55 never appears); opened to type 37 → first GENUINE validation + cx-dispatch ported
+
+**Big correction.** While extending the checkpoint past 0x5dc086 (the cx-dispatch),
+a coverage probe revealed that **`armType55` had never executed at all** in the
+current environment: in sc21.sc4 the ONLY vehicle type crossing 0x5dbeeb is
+**type 37** (counted 72×/8 ticks, 360×/40 ticks — type 55 never appears). The
+function is gated `type===55`, so it always returned false → the hook fell back
+to the full interpreter → the lockstep oracle compared **full-interp vs
+full-interp** and reported `memMis=0` **vacuously**. So ADDENDUM 17/19's "byte-
+neutral, memMis=0" proved nothing about the JS body — it was never run. (Root
+cause: game state is environment-sensitive, exactly as ADDENDUM 18 found for the
+heap FNV; ADDENDUM 17's "type 55" coverage figure came from a different env.)
+
+**The fix is not more transcription — it's the GATE.** The body is NOT type-
+specific: it is one code path parameterised by the per-type flag word
+(`f = u16[type*8 + 0x5f7104]`) and the sprite fields. Opening the gate to the
+actually-present type 37 makes the transcription **execute and be validated**:
+
+- `ported/auto/extra_vehicle_5dbeeb.js`: gate `type===55` → `type===55 || type===37`;
+  corrected the header/COVERAGE comments (the "type-55 arm" framing was about
+  instruction coverage, not type-specific code).
+- Transcribed the **cx-dispatch 0x5dc086..0x5dc169** (self-contained: single
+  entry, single exit 0x5dc16a, all branches internal, no calls): the cx=0x63 /
+  cx=0 / cx=0x64 (+shared 0x5dc10e) / cx=0x84 arms. New checkpoint at 0x5dc16a
+  (esi + edi live; edi = u16[esi+0x36] unchanged through the dispatch).
+
+**Now-MEANINGFUL gate** (`tools/_lockstep-5dbeeb.mjs`, armType55 genuinely runs):
+**memMis=0 over 72/108/144 calls (TICKS 8/12/16)**; AB_CONTROL memMis=0. Exit-path
+census for type 37: `jl 0x5dca73` 33×, fall-through into the cx-dispatch 39×
+(cx ∈ {0xa,0,0x3,0x1,0xf} — the cx=0 arm fires 10×). `regMisInfo` (33/50/65) is
+the documented dead exit-register diff on the branch-checkpoint exits (the
+function returns void to the dispatcher); memMis=0 is the gate.
+
+**Production untouched:** still gated behind `__enable5dbeeb` (oracle-only); the
+browser uses `FUN_005dbeeb` in `5dbeeb.js`. Accuracy gates definitionally
+unaffected (they don't set `__enable5dbeeb`).
+
+**Methodology lesson (general):** a differential oracle that delegates the
+SUT-vs-reference comparison through a fallback can pass *vacuously* when the SUT
+path is never taken. **Always instrument that the ported code actually executed
+(call count > 0 on the intended arm) before trusting a green diff.** This is the
+sibling of [[feedback_never_commit_unverified_green]]: "green" must mean "the new
+code ran AND matched," not just "matched."
+
+**Continuation:** same as ADDENDUM 19 — extend past 0x5dc16a (the
+[esi+0xcd]→[0x67af10] table lookup + `jb 0x5dc3b6` branch-checkpoint, the
+cx-rotate → [0x971ef4] lookup, the dx-reload region 0x5dc1a8+). Add `_fuzz-5dbeeb`
+to vary the type-37 field values so the cx=0x63/0x64/0x84 arms (unseen in the
+static soak) get covered before the eventual `__enable5dbeeb` flip.

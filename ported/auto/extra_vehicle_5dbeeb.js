@@ -13,16 +13,25 @@
 // The function does NOT use the entry dl/dh (it reloads dx from [esi+0x3c] at
 // 0x5dc1a8); it is type-gated via the per-type flag word [type*8 + 0x5f7104].
 //
-// COVERAGE: the scenario (sc21.sc4) exercises a SINGLE arm — vehicle type 55
-// — covering 318 of the 914 instructions. This port handles that arm; ALL
-// OTHER entries fall back to the interpreter (return false BEFORE any side
-// effect). Because a partial transcription cannot mid-arm fall back (side
-// effects would double-fire under the hook's interp re-run), the body returns
-// false until the type-55 arm is COMPLETE; the in-progress transcription lives
-// in armType55() and is validated against the interpreter by
-// tools/_lockstep-5dbeeb.mjs (memMis=0) + tools/_fuzz-5dbeeb.mjs before it is
-// switched live. STATUS: scaffold + entry-block transcription; arm INCOMPLETE
-// -> still falls back. See PORTING-ROADMAP.md ADDENDUM 17.
+// COVERAGE — IMPORTANT (corrected ADDENDUM 20): the function body is NOT
+// type-specific. It is one code path PARAMETERISED by the per-type flag word
+// (f = u16[type*8 + 0x5f7104]) and the sprite fields; the "type-55 arm" framing
+// in ADDENDUM 17 was about which *instructions* a type-55 sprite would cover.
+// In THIS environment sc21.sc4 produces ONLY type 37 crossing 0x5dbeeb (never
+// type 55 — game state is environment-sensitive, cf. ADDENDUM 18). So the
+// type===55 gate was dead code here and the lockstep "memMis=0" was VACUOUS
+// (armType55 never ran). Opening the gate to type 37 makes the transcription
+// actually execute (72 calls/8 ticks) AND byte-exact: memMis=0, with the
+// jl-0x5dca73 branch (33×) and the cx-dispatch fall-through (39×, cx in
+// {0xa,0,0x3,0x1,0xf}) both genuinely exercised.
+//
+// HYBRID: armType55() runs a byte-exact JS prefix, then RETURNS a checkpoint
+// EIP; the painter-bridge hook continues the real bytes in the interpreter from
+// there (no re-run from 0x5dbeeb, so no double-fire of the JS-side stores).
+// Current checkpoints: 0x5dc60d / 0x5dca73 (branch exits) and 0x5dc16a (the
+// transcribed straight-line + cx-dispatch tail). false return = full fallback.
+// Gated by __enable5dbeeb (oracle-only); production uses FUN_005dbeeb in
+// 5dbeeb.js via _dispatch and is untouched.
 //
 // Oracle: tools/_lockstep-5dbeeb.mjs (per-call JS-vs-interp whole-heap + eax).
 
@@ -35,6 +44,10 @@ const F7104 = 0x005f7104;   // word[] per-vehicle-type flag table (idx = type*8)
 const DC28 = 0x0065dc28, DC2C = 0x0065dc2c, DC30 = 0x0065dc30, DC34 = 0x0065dc34;
 const DC38 = 0x0065dc38, DC40 = 0x0065dc40, DC48 = 0x0065dc48, DC4C = 0x0065dc4c;
 const DC70 = 0x0065dc70, E6B7 = 0x0065e6b7, A74A0 = 0x008874a0;
+// per-ride record fields (idx = ride_record_id * 0x260): +0x20 = type byte,
+// +0x22 = status word, +0x13c/+0x13d = sub-status bytes; +0x5f5b7f = type LUT.
+const A7420 = 0x00887420, A7422 = 0x00887422, A755C = 0x0088755c, A755D = 0x0088755d;
+const S5B7F = 0x005f5b7f;
 
 const s8 = (v) => (v << 24) >> 24;
 const s16 = (v) => (v << 16) >> 16;
@@ -45,18 +58,22 @@ const s32 = (v) => v | 0;
 export function FUN_005dbeeb_js(heap) {
   const esi = regs.esi >>> 0;
   const type = heap.u8(esi + 0x31);
-  // Only vehicle type 55 (the scenario-exercised arm) is ported (HYBRID: a
-  // byte-exact JS prefix + an interpreter suffix from the returned checkpoint).
-  // Gated by __enable5dbeeb until the prefix is large enough to net a win;
-  // production falls back. Other types fall back. Oracle: _lockstep-5dbeeb.mjs.
-  if (type !== 55 || !globalThis.__enable5dbeeb) return false;
+  // Gate = the types whose transcribed prefix is validated byte-exact by the
+  // oracle. type 37 is the ACTUALLY-EXERCISED type here (memMis=0 over 72 calls);
+  // type 55 is kept (transcribed, but never appears in this env so untestable).
+  // The body is type-generic — adding a type just widens which sprites use the
+  // JS prefix; all reach a checkpoint and hand the suffix to the interpreter.
+  // __enable5dbeeb keeps this oracle-only; production falls back. Other types
+  // fall back. Oracle: _lockstep-5dbeeb.mjs.
+  if ((type !== 55 && type !== 37) || !globalThis.__enable5dbeeb) return false;
   return armType55(heap, esi, type);
 }
 
-// === Type-55 arm transcription (IN PROGRESS) =============================
-// Transcribed instruction-by-instruction from the capstone disasm
-// (0x5dbeeb..). NOT yet wired (FUN_005dbeeb_js falls back) — under validation.
-// eslint-disable-next-line no-unused-vars
+// === Vehicle mode-flag update — hybrid JS-prefix (transcribed 0x5dbeeb..0x5dc16a)
+// Instruction-by-instruction from the capstone disasm. Active for the gated types
+// when __enable5dbeeb is set (oracle path); returns a checkpoint EIP to hand the
+// untranscribed suffix to the interpreter. Validated byte-exact (memMis=0) on the
+// type-37 path. Name kept as armType55 for continuity with ADDENDUM 17 notes.
 function armType55(heap, esi, type) {
   const edi = type;                                          // 0x5dbeeb movzx edi,[esi+0x31]
   heap.setU32(DC2C, esi);                                    // 0x5dbeef mov [0x65dc2c],esi
@@ -170,12 +187,62 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   callNative(0x5e53ca, []);
 
-  // CHECKPOINT 0x5dc086 — only esi is live: edi is reloaded (movzx edi,[esi+0x36]),
-  // eax/ebx overwritten and ecx only used as 16-bit cx (set from di) before any
-  // full read. Hand the cx-dispatch suffix to the interpreter.
+  // === cx-dispatch 0x5dc086..0x5dc169 — self-contained (single entry, single
+  // exit 0x5dc16a; all branches internal, no calls). cx = (u16[esi+0x36]>>2). ===
+  const edi36 = heap.u16(esi + 0x36);          // 0x5dc086 movzx edi,[esi+0x36]
+  const cx = (edi36 >>> 2) & 0xffff;           // 0x5dc08a/8d mov cx,di; shr cx,2
+
+  // 0x5dc091: cmp cx,0x63 ; jne 0x5dc0dd
+  if (cx === 0x63) {
+    const r = (heap.u8(esi + 0x30) * 0x260) >>> 0;
+    // 0x5dc0a1 test [r+0x887422],0x80 je 0x5dc0be ; 0x5dc0ac cmp [r+0x88755c],6 jne 0x5dc0be ;
+    // 0x5dc0b5 cmp [r+0x88755d],4 jne 0x5dc0dd  — skip the BE block iff all three hold.
+    const skip = (heap.u16((r + A7422) >>> 0) & 0x80) &&
+                 heap.u8((r + A755C) >>> 0) === 6 &&
+                 heap.u8((r + A755D) >>> 0) !== 4;
+    if (!skip) {                               // 0x5dc0be:
+      const e = (heap.u8(esi + 0xcf) << 0x10) >>> 0;
+      if (s32(e) < s32(heap.u32(DC30))) {      // 0x5dc0ce jge 0x5dc0dd → only act if jl
+        heap.setU32(esi + 0x2c, (((-(heap.u32(DC30) | 0)) << 4) | 0) >>> 0); // neg;shl 4
+      }
+    }
+  }
+
+  // 0x5dc0dd cmp cx,0 jne 0x5dc0f6 ; 0x5dc0f6 cmp cx,0x64 jne 0x5dc12d. Both arms
+  // may reach the shared 0x5dc10e block; cx is one value so they're exclusive.
+  let do10e = false;
+  if (cx === 0) {
+    const r = (heap.u8(esi + 0x30) * 0x260) >>> 0;
+    if (heap.u8((r + A7420) >>> 0) === 0x2a) do10e = true; // 0x5dc0f4 je 0x5dc10e
+  } else if (cx === 0x64) {
+    const e = (heap.u8(esi + 0xcf) << 0x10) >>> 0;
+    if (!(s32(e) <= s32(heap.u32(DC30)))) do10e = true;    // 0x5dc10c jle 0x5dc12d → else fall to 10e
+  }
+  if (do10e) {                                 // 0x5dc10e shared block
+    const r = (heap.u8(esi + 0x30) * 0x260) >>> 0;
+    const t = heap.u8((r + A7420) >>> 0);
+    const v = heap.u8((t * 8 + S5B7F) >>> 0);  // movzx eax,[eax*8+0x5f5b7f]
+    heap.setU32(esi + 0x2c, (v << 0x10) >>> 0);
+  }
+
+  // 0x5dc12d cmp cx,0x84 jne 0x5dc16a — gated by [esi+1]==0, !( [esi+0x48]&0x400 ),
+  // [esi+0x34]>=8 (unsigned).
+  if (cx === 0x84 && heap.u8(esi + 1) === 0 && !(heap.u16(esi + 0x48) & 0x400) &&
+      heap.u16(esi + 0x34) >= 8) {
+    heap.setU32(esi + 0x2c, (((-(heap.u32(DC30) | 0)) << 4) | 0) >>> 0); // 0x5dc149 neg;shl 4
+    if (heap.u16(esi + 0x34) >= 0x18) {        // 0x5dc15b jb 0x5dc16a
+      heap.setU16(esi + 0x48, heap.u16(esi + 0x48) | 0x400);
+      heap.setU8(esi + 0xd2, 0x5a);
+    }
+  }
+
+  // CHECKPOINT 0x5dc16a — esi + edi live: the suffix reads esi (mov ax,[esi+0x34],
+  // movzx ecx,[esi+0xcd]) and edi (mov edi,[ecx+edi*4] @0x5dc17e); eax/ecx are
+  // overwritten before read. edi = u16[esi+0x36] unchanged through the dispatch.
   regs.esi = esi >>> 0;
-  return 0x005dc086;
-  // TODO: extend past 0x5dc086 — the cx (=[esi+0x36]>>2) dispatch (cases 0x63/
-  // 0x64/0x84), the [esi+0x34] bound check (jb 0x5dc3b6), then the dx-reload
-  // region 0x5dc1a8+ — moving the checkpoint toward the 0x5dcd3f ret.
+  regs.edi = edi36 >>> 0;
+  return 0x005dc16a;
+  // TODO: extend past 0x5dc16a — the [esi+0xcd]→[0x67af10] table lookup + the
+  // [esi+0x34] bound check (jb 0x5dc3b6 branch-checkpoint), the cx-rotate
+  // (rol/or/ror → [0x971ef4] lookup), then the dx-reload region 0x5dc1a8+.
 }
