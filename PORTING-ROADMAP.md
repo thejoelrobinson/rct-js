@@ -1387,3 +1387,36 @@ the esi-only flag-dispatch shell). No divergence found — unlike ADDENDUM 22, t
 checkpoint hand-off was correct first time. Production untouched (__enable5dbeeb).
 
 **Continuation:** the 0x5dcb60 join (shared by both arms) is the next-best win.
+
+---
+
+## ADDENDUM 24 (2026-06-21) — 5dbeeb: ported the 0x5dcb60 sprite-chain join
+
+Transcribed the 0x5dcb60 join (0x5dcb60..0x5dcba8), reached by the jl arm: the
+conditional `[0x65dc40]|=0x10` (if `[esi+0x48]&1`), then the sprite-chain walk —
+if `[0x65dc30]>=0` walk via `[esi+0x3e]`, else via `[esi+0x40]` (compare
+`esi==[0x65dc2c]`) — terminating in two checkpoints: **0x5dbffb** (loop-back to
+the flag-dispatch shell with the next sprite) or **0x5dcbad** (chain-exhausted
+final-accumulation pass; it reloads esi from `[0x65dc2c]` and xor-zeros the other
+regs, so it needs NO live-in registers).
+
+**Coverage / verification split (the now-standard pattern):** join exit census
+for type 37 = **0x5dcbad exhausted 29, 0x5dbffb loop-back 0** — sc21.sc4's type-37
+vehicle chains are single-sprite, so the loop-back is NOT oracle-exercised. So:
+- 0x5dcbad path: oracle-validated (lockstep memMis=0 over 72/108/144 calls, TICKS
+  8/12/16; AB_CONTROL memMis=0).
+- 0x5dbffb loop-back path: validated by an independent adversarial audit that
+  traced EVERY reachable path from 0x5dbffb and confirmed all of
+  eax/ecx/edx/ebx/edi/ebp are written-before-read (edi at 0x5dbffb, ebx/eax in the
+  0x5dc032 accumulate, ecx/edx/ebp likewise), so the esi-only hand-off is correct
+  for multi-sprite chains. The next-sprite esi arithmetic and the 0xffff/`[DC2C]`
+  sentinels were confirmed exact.
+
+This is the discipline crystallised over ADDENDA 20/22: the differential oracle
+validates the path the scenario TAKES; an independent static audit validates the
+checkpoint hand-off for the paths it DOESN'T. Both are required.
+
+Production untouched (__enable5dbeeb-gated).
+
+**Continuation:** the 0x5dcbad final-accumulation pass (chain re-walk + idiv +
+final math toward the 0x5dcd3f ret) is the biggest remaining block.

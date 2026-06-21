@@ -210,10 +210,29 @@ function armType55(heap, esi, type) {
         }
       }
     }
-    // 0x5dcb60 — the common join (test [esi+0x48],1 -> [DC40]|=0x10, then the
-    // [DC30] sprite-chain walk + jmp-0x5dbffb loop-back) is left to the interpreter.
+    // === 0x5dcb60 join (reached by the jl arm; the 0x5dcb16 search-loop path
+    // still enters via the interpreter). Conditional [DC40]|=0x10, then walk the
+    // sprite chain: loop back to 0x5dbffb for the next sprite, or fall to the
+    // 0x5dcbad final-accumulation pass when the chain is exhausted. ===
+    if (heap.u16(esi + 0x48) & 1) heap.setU32(DC40, (heap.u32(DC40) | 0x10) >>> 0); // 0x5dcb60/68
+    if (s32(heap.u32(DC30)) >= 0) {                          // 0x5dcb6f jl 0x5dcb93
+      const si = heap.u16(esi + 0x3e);                       // 0x5dcb78 mov si,[esi+0x3e]
+      if (si !== 0xffff) {                                   // 0x5dcb7c cmp si,-1; je 0x5dcbad
+        regs.esi = ((si << 8) + 0x00743b94) >>> 0;           // 0x5dcb82/85/88 next sprite
+        return 0x005dbffb;                                    // 0x5dcb8e jmp 0x5dbffb (loop)
+      }
+    } else {                                                  // 0x5dcb93
+      if (heap.u32(DC2C) !== (esi >>> 0)) {                  // 0x5dcb99 cmp esi,[DC2C]; je 0x5dcbad
+        regs.esi = ((heap.u16(esi + 0x40) << 8) + 0x00743b94) >>> 0; // 0x5dcb9b/9f/a2
+        return 0x005dbffb;                                    // 0x5dcba8 jmp 0x5dbffb (loop)
+      }
+    }
+    // CHECKPOINT 0x5dcbad — chain exhausted: the final-accumulation pass reloads
+    // esi from [DC2C] (mov esi,[0x65dc2c]) and xor-zeros eax/ebp/dx/ebx before
+    // use, so NO registers are live-in. The chain re-walk + division + final
+    // math toward the 0x5dcd3f ret is left to the interpreter.
     regs.esi = esi >>> 0;
-    return 0x005dcb60;
+    return 0x005dcbad;
   }
 
   // 0x5dc066: and word [esi+0xb8],0xfffd
@@ -362,11 +381,12 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   regs.edi = ediPtr >>> 0;
   return 0x005dc1a8;
-  // TODO: both dominant type-37 exits now run in JS — the jb arm (0x5dc3b6) to
-  // checkpoint 0x5dc51c, and the jl arm (0x5dca73) to 0x5dcb60 / 0x5dcb16.
-  // Remaining: the 0x5dcb60 join tail (test [esi+0x48], the [DC30] sprite-chain
-  // walk + jmp-0x5dbffb loop-back); the 0x5dc51c tail ([esi+0x24]<0x368a → 0x5dca55,
-  // jmp-0x5dc086 loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; and
-  // the rare 0x5dc1a8 cx-rotate fall-through (1/39). The 0x5dcb60 join is shared
-  // by both arms, so transcribing it is the next-best win.
+  // TODO: the jl arm now runs in JS all the way through the 0x5dcb60 join to its
+  // two terminal checkpoints — 0x5dbffb (sprite-chain loop-back; unexercised by
+  // type-37 single-sprite chains but audit-verified) and 0x5dcbad (chain-exhausted
+  // final-accumulation pass, 29/29 join calls). Remaining hot work: the 0x5dcbad
+  // final pass (chain re-walk + idiv + final math toward the 0x5dcd3f ret) — the
+  // biggest remaining block. Also: the 0x5dc51c tail ([esi+0x24]<0x368a → 0x5dca55,
+  // jmp-0x5dc086 loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; the
+  // rare 0x5dc1a8 cx-rotate fall-through (1/39).
 }
