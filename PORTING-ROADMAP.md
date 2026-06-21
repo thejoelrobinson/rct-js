@@ -1313,3 +1313,47 @@ exits.
 store ax, skip the 0x2c/0x2d call-block (call 0x452fce) → 0x5dc408 → [esi+1] / bx
 (=u16[esi+0x36]>>2) checks → 0x5dc450 — to a clean checkpoint past 0x5dc450,
 removing the interp suffix for the dominant exit. Then the 0x5dca73 arm (33).
+
+---
+
+## ADDENDUM 22 (2026-06-21) — 5dbeeb: ported the 0x5dc3b6 jb-arm image-delta block; adversarial audit caught a latent live-in-register bug
+
+Transcribed the type-37 dominant jb arm (0x5dc3b6..0x5dc51b, ~50 instructions):
+the `mov [esi+0x34],ax` store, the two pushal/`call 0x452fce` gate-blocks (guarded
+— neither fires for type 37), the 0x5dc450 **image-delta block** (the
+`[esi+0xcd]→0x67af10` table lookup, `recPtr = ax*0xa + [base + u16[esi+0x36]*4]`,
+three deltas `va/vc/vd` with the 0x5dc494 `movsx` sign-extend, the 3-bit
+not-equal mask → `[esi+0x24] -= [0x65dc50 + mask*4]`), and the field stores
+(`[0x65dc48/4a/4c]`, `[esi+0x1e/1f/20]`, the flag-0x200 conditional zeroing of
+`[esi+0x4a/4c/4e]`). New checkpoint **0x5dc51c** (esi + ebx=`u8[recPtr+7]`).
+
+**The headline is the verification, not the transcription.** Per ultracode, an
+independent subagent adversarially audited the JS against the disasm instruction-
+by-instruction. The lockstep oracle was GREEN (memMis=0 over 72/108/144 calls)
+— but the audit found a **real latent bug it could not catch**: the 0x5dc51c
+checkpoint omitted live-in registers eax/ecx/edx. On the `esi==[0x65dc28] &&
+[0x65dc30]>=0` path, the interpreter resumes and calls 0x5dcd40, which reads
+ax/cx/dx (= va/vc/vd) via `sub ax,[edi+0xe]` / `sub cx,[edi+0x10]` /
+`sub dx,[edi+0x12]` (verified by disasm). Type 37 in sc21.sc4 *always* has
+[0x65dc30]<0 here (takes `jl 0x5dc538`, skips the call), so the oracle exercised
+the call path ZERO times — the same vacuous-path trap as ADDENDUM 20, this time
+caught by static audit instead of after the fact.
+
+**Fix (provably correct, no high-16 guesswork):** divert the call path
+(`esi==[DC28] && [DC30]>=0`) to the clean **0x5dc450** checkpoint (only esi live)
+and let the interpreter do the delta block + call exactly. Keep the JS delta
+block only for the no-call path ([DC30]<0, the path type 37 takes), where ax/cx/dx
+are provably dead on the 0x5dc538 fall-through + jmp-0x5dc086 loop-back. The audit
+confirmed every other instruction in 0x5dc3b6..0x5dc51b matches (operand sizes,
+16-bit add wraparound, the movsx, the not-equal mask, the gate conditions).
+
+**Gate:** `tools/_lockstep-5dbeeb.mjs` memMis=0 over 72/108/144 calls (TICKS
+8/12/16) post-fix; AB_CONTROL memMis=0. Production untouched (__enable5dbeeb-gated).
+
+**Methodology note (reinforces ADDENDUM 20):** a green differential oracle proves
+nothing about a sub-branch the scenario never executes. For hybrid checkpoints,
+an independent static audit of live-in registers at the checkpoint EIP is a
+necessary complement to the oracle — the oracle validates the *taken* path; only
+the audit validates the *checkpoint hand-off correctness for untaken paths*.
+
+**Continuation:** the 0x5dca73 jl arm (33/72 calls) is the next-best win.

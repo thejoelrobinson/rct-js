@@ -50,6 +50,7 @@ const DC70 = 0x0065dc70, E6B7 = 0x0065e6b7, A74A0 = 0x008874a0;
 const A7420 = 0x00887420, A7422 = 0x00887422, A755C = 0x0088755c, A755D = 0x0088755d;
 const S5B7F = 0x005f5b7f;
 const AF10 = 0x0067af10, EF4 = 0x00971ef4;  // pointer tables: [0xcd]→base, [rotated]→entry
+const DC4A = 0x0065dc4a, DC50 = 0x0065dc50, S5D02 = 0x005f5d02;  // 0x5dc450 delta block
 
 const s8 = (v) => (v << 24) >> 24;
 const s16 = (v) => (v << 16) >> 16;
@@ -245,16 +246,71 @@ function armType55(heap, esi, type) {
   const ecxBase = heap.u32(AF10 + heap.u8(esi + 0xcd) * 4) >>> 0;
   // 0x5dc17e mov edi,[ecx+edi*4]  (edi=edi36; entry ptr) ; 0x5dc181 cmp ax,[edi-2]
   const ptr = heap.u32((ecxBase + edi36 * 4) >>> 0) >>> 0;
-  // 0x5dc185: jb 0x5dc3b6 — ax < u16[ptr-2] (unsigned). DOMINANT type-37 path
-  // (38/39 calls). Hand to the interpreter AT 0x5dc3b6 (skipping the 0x5dc16a..
-  // 0x5dc185 lookups for these calls) with the registers live there:
-  //   esi (sprite), eax (low16=ax; 0x5dc3b6 `mov [esi+0x34],ax` uses only ax —
-  //   eax high16 set 0, empirically dead), ecx=ecxBase (0x5dc177), edi=ptr
-  //   (0x5dc17e). edx/ebx/ebp are left at hook-entry values; the oracle confirms
-  //   they (and eax high16) are dead in the type-37 suffix (memMis=0).
+  // 0x5dc185: jb 0x5dc3b6 — ax < u16[ptr-2] (unsigned). DOMINANT type-37 exit
+  // (38/39). Transcribe the arm: store ax, the two pushal call-0x452fce gates,
+  // then the 0x5dc450 image-delta block, checkpointing at 0x5dc51c.
   if (ax < heap.u16((ptr - 2) >>> 0)) {
-    regs.esi = esi >>> 0; regs.eax = ax >>> 0; regs.ecx = ecxBase >>> 0; regs.edi = ptr >>> 0;
-    return 0x005dc3b6;
+    const t31 = heap.u8(esi + 0x31);
+    const sub = (heap.u16(esi + 0x36) >>> 2) & 0xffff;
+    // 0x5dc3c6 call-block iff type∈{0x2c,0x2d} && sub==0xf && ax==0xc; 0x5dc422
+    // call-block iff [esi+1]==0 && sub==0x75 && ax==0x30. Neither holds for type
+    // 37; if either does, hand the whole arm to the interpreter at 0x5dc3b6.
+    const callBlock = ((t31 === 0x2c || t31 === 0x2d) && sub === 0xf && ax === 0xc) ||
+                      (heap.u8(esi + 1) === 0 && sub === 0x75 && ax === 0x30);
+    if (callBlock) {
+      regs.esi = esi >>> 0; regs.eax = ax >>> 0; regs.ecx = ecxBase >>> 0; regs.edi = ptr >>> 0;
+      return 0x005dc3b6;
+    }
+    heap.setU16(esi + 0x34, ax);                                        // 0x5dc3b6
+
+    // The 0x5dc51c tail calls 0x5dcd40 (which reads ax/cx/dx = va/vc/vd) iff
+    // esi==[DC28] && [DC30]>=0 (0x5dc51c/24). Rather than carry va/vc/vd (and
+    // their dead-high16) into that checkpoint, hand the call path to the
+    // interpreter at the clean 0x5dc450 checkpoint (only esi live) — it redoes
+    // the delta block + call exactly. The common no-call path ([DC30]<0, the
+    // only path type 37 takes) keeps the JS delta block below, where ax/cx/dx
+    // are dead on the 0x5dc538 fall-through + jmp-0x5dc086 loop-back.
+    if (heap.u32(DC28) === (esi >>> 0) && s32(heap.u32(DC30)) >= 0) {
+      regs.esi = esi >>> 0; return 0x005dc450;
+    }
+
+    // === image-delta block 0x5dc450..0x5dc4cd (no-call path) ===
+    // 0x5dc450/54/58/5f/62/69: edi = ax*0xa + [ [esi+0xcd]→0x67af10 ][ u16[esi+0x36] ]
+    const cbase2 = heap.u32(AF10 + heap.u8(esi + 0xcd) * 4) >>> 0;
+    const recPtr = (ax * 0xa + heap.u32((cbase2 + edi36 * 4) >>> 0)) >>> 0;
+    let va = (heap.u16(recPtr) + heap.u16(esi + 0x38)) & 0xffff;        // 0x5dc46c/7b
+    const vc = (heap.u16((recPtr + 2) >>> 0) + heap.u16(esi + 0x3a)) & 0xffff; // 0x5dc46f/85
+    const rt = heap.u8(((heap.u8(esi + 0x30) * 0x260) + A7420) >>> 0);  // 0x5dc477/7f/89
+    const bxv = s8(heap.u8((rt * 8 + S5D02) >>> 0)) & 0xffff;           // 0x5dc494 movsx bx
+    const vd = (heap.u16((recPtr + 4) >>> 0) + heap.u16(esi + 0x3c) + bxv) & 0xffff; // 0x5dc473/90/9d
+    let mask = 0;                                                       // 0x5dc4a0 xor ebx,ebx
+    if (va !== heap.u16(DC48)) mask |= 1;                               // 0x5dc4a2/ab
+    if (vc !== heap.u16(DC4A)) mask |= 2;                               // 0x5dc4ae/b7
+    if (vd !== heap.u16(DC4C)) mask |= 4;                               // 0x5dc4ba/c3
+    heap.setU32(esi + 0x24, (heap.u32(esi + 0x24) - heap.u32(DC50 + mask * 4)) >>> 0); // 0x5dc4c6/cd
+
+    // === field stores 0x5dc4d0..0x5dc51b ===
+    heap.setU16(DC48, va);                                              // 0x5dc4d0
+    heap.setU16(DC4A, vc);                                              // 0x5dc4d6
+    heap.setU16(DC4C, vd);                                              // 0x5dc4dd
+    heap.setU8(esi + 0x1e, heap.u8((recPtr + 6) >>> 0));               // 0x5dc4e4/e7
+    heap.setU8(esi + 0x20, heap.u8((recPtr + 8) >>> 0));               // 0x5dc4ea/ed
+    const b7 = heap.u8((recPtr + 7) >>> 0);                            // 0x5dc4f0 movzx ebx,[edi+7]
+    heap.setU8(esi + 0x1f, b7);                                        // 0x5dc4f4
+    // 0x5dc4fb test [type*8+0x5f7104],0x200 ; 0x5dc507 cmp bl,0 -> zero 0x4a/4c/4e
+    if ((heap.u16(F7104 + t31 * 8) & 0x200) && b7 !== 0) {
+      heap.setU8(esi + 0x4a, 0);                                       // 0x5dc50c
+      heap.setU16(esi + 0x4c, 0);                                      // 0x5dc510
+      heap.setU16(esi + 0x4e, 0);                                      // 0x5dc516
+    }
+
+    // CHECKPOINT 0x5dc51c — esi + ebx live: 0x5dc545 `mov ebx,[ebx*4+0x65dc70]`
+    // reads ebx (= u8[recPtr+7]). The call path was diverted above, so the tail
+    // here is just the [esi+0x24]<0x368a branch (jl 0x5dca55) and the
+    // jmp-0x5dc086 loop-back — both left to the interpreter; neither reads
+    // ax/cx/dx, so eax/ecx/edx need not be set.
+    regs.esi = esi >>> 0; regs.ebx = b7 >>> 0;
+    return 0x005dc51c;
   }
 
   // 0x5dc18b..0x5dc1a1 — fall-through: build the image-id and look up its entry.
@@ -271,10 +327,10 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   regs.edi = ediPtr >>> 0;
   return 0x005dc1a8;
-  // TODO: the two dominant type-37 exits now checkpoint at 0x5dc3b6 (jb arm,
-  // 38/39 of the cx-dispatch calls) and 0x5dca73 (jl arm, 33/72 calls) — both
-  // still interp-suffixed. Best next win: transcribe the 0x5dc3b6 arm body (for
-  // type 37: store ax, skip the 0x2c/0x2d call-block → 0x5dc408 → [esi+1]/bx
-  // checks → 0x5dc450). The 0x5dc1a8 cx-rotate fall-through is rare (1/39); its
-  // dx-reload + [edi] scan loop (0x5dc1d1..0x5dc1ee) is lower priority.
+  // TODO: the jb arm now runs in JS to checkpoint 0x5dc51c (no-call path) or
+  // diverts the call path to 0x5dc450. Remaining hot work: the 0x5dca73 jl arm
+  // (33/72 calls, still fully interp-suffixed) — the best next win. After that,
+  // the 0x5dc51c tail (the [esi+0x24]<0x368a branch → 0x5dca55, and the
+  // jmp-0x5dc086 loop-back), and the 0x5dc450 delta-block + 0x5dcd40 call path.
+  // The 0x5dc1a8 cx-rotate fall-through is rare (1/39); lower priority.
 }
