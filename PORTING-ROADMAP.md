@@ -1172,3 +1172,57 @@ repeat. Do NOT treat the FNV as an absolute cross-session reference; it is at
 best a within-session relative check. The accuracy gates (byte-equality vs the
 binary's captured surface) and the lockstep oracles (vs the live interpreter)
 are the authoritative correctness signals.
+
+---
+
+## ADDENDUM 19 (2026-06-21) — 0x5dbeeb hybrid checkpoint advanced 0x5dbff5 → 0x5dc086
+
+Continuation of ADDENDUM 17. Pushed the type-55 hybrid JS-prefix forward by one
+contiguous block, all **byte-neutral** (the suffix still runs in the interpreter
+from the new checkpoint; `__enable5dbeeb` stays dormant in production, so the
+browser path — `_dispatch.js` → `FUN_005dbeeb` in `5dbeeb.js` — is untouched).
+
+**Landed:**
+- `tools/disasm-va.py` — reusable VA-keyed capstone disassembler for `rct.exe`
+  (`CODESEG off = VA-0x41c000+0x1a600`). This is the transcription aid the
+  scaffold referenced but that lived only in /tmp before. Generalizable asset.
+- `ported/auto/extra_vehicle_5dbeeb.js` `armType55`: transcribed
+  **0x5dbff5..0x5dc086** of the type-55 arm —
+  - the `[0x65dc28]=esi` store + edi reload;
+  - the flag-2/4/0x180 dispatch (calls 0x5d870c / 0x5d8623 / 0x5d849e delegated
+    via `callNative` with esi+edi set — each callee verified to read only esi on
+    entry, loading ax/al from `[esi+..]` before any reg use);
+  - the straight-line accumulate block `0x5dc032..0x5dc052`
+    (`ebx=[esi+0x1f]`, `[esi+0x2c]=[ebx*4+0x65dc70]`, `[0x65dc38]=1`,
+    `eax=[0x65dc34]+[esi+0x24]`, `[esi+0x24]=eax`);
+  - the two far branches as **branch-target checkpoints**: `js 0x5dc60d` and
+    `jl 0x5dca73` (both verified clean — only esi live: each overwrites eax
+    before any read);
+  - the fall-through `0x5dc066..0x5dc07a` (`and [esi+0xb8],0xfffd`, the
+    `[0x65dc48]`/`[0x65dc4c]` stores) and the `0x5e53ca` call (delegated — it
+    opens with `pushal`, so it preserves caller regs and needs only esi);
+  - new checkpoint at **0x5dc086** (clean: edi reloaded, eax/ebx overwritten,
+    ecx used only as 16-bit cx set from di before any full read).
+
+**Gate (the authoritative one for this byte-neutral step):**
+`tools/_lockstep-5dbeeb.mjs` — JS-prefix+interp-suffix vs full-interp, whole-heap
++ exit-reg diff. **memMis=0 over 36/72/108/144 calls (TICKS 4/8/12/16)**;
+AB_CONTROL (interp-vs-interp) memMis=0. No fixtures touched; the production
+accuracy gates are definitionally unaffected (production never runs `armType55`).
+
+**Coverage caveat (honest):** `sc21.sc4`'s type-55 flag word is `0x11`
+(confirmed via the runtime Heap at `0x5f7104+55*8`). So bits 0x800/0x1000 (prefix
+blocks) AND 0x2/0x4/0x180 (the three delegated calls) are all **clear** — those
+branches are not exercised by this soak; they are correct-by-construction
+(verified callee entry contracts) but unvalidated by the oracle. The *hot* path
+that IS exercised — the accumulate block, both far branches, and the 0x5e53ca
+delegation — is what drives memMis=0 here. A `_fuzz-5dbeeb` harness (copy
+`_fuzz-5da274.mjs`) to vary the type-55 field/flag values remains the way to
+cover the latent arms before the final `FUN_005dbeeb_js` flip.
+
+**Continuation:** extend past 0x5dc086 — the cx(=[esi+0x36]>>2) dispatch (cases
+0x63/0x64/0x84), the `[esi+0x34]` bound check (`jb 0x5dc3b6`), then the dx-reload
+region `0x5dc1a8+` — toward the single `0x5dcd3f` ret. The branch-target-as-
+checkpoint technique proven here (hand any not-yet-transcribed branch to the
+interpreter at a clean-register target) is the lever that makes the rest tractable
+one block at a time.

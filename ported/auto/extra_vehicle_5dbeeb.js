@@ -32,7 +32,8 @@ import { regs } from "../../runtime/regs.js";
 import { callNative } from "../../runtime/painter-bridge.js";
 
 const F7104 = 0x005f7104;   // word[] per-vehicle-type flag table (idx = type*8)
-const DC2C = 0x0065dc2c, DC30 = 0x0065dc30, DC34 = 0x0065dc34, DC40 = 0x0065dc40;
+const DC28 = 0x0065dc28, DC2C = 0x0065dc2c, DC30 = 0x0065dc30, DC34 = 0x0065dc34;
+const DC38 = 0x0065dc38, DC40 = 0x0065dc40, DC48 = 0x0065dc48, DC4C = 0x0065dc4c;
 const DC70 = 0x0065dc70, E6B7 = 0x0065e6b7, A74A0 = 0x008874a0;
 
 const s8 = (v) => (v << 24) >> 24;
@@ -125,11 +126,56 @@ function armType55(heap, esi, type) {
     }                                                          // 0x5dbff3 jmp 0x5dbfdd
   }
 
-  // CHECKPOINT 0x5dbff5 — hand the suffix to the interpreter. esi = the (walked)
-  // sprite; eax/edi/ebx are overwritten by the suffix before being read.
-  regs.esi = esi;
-  return 0x005dbff5;
-  // TODO: extend past 0x5dbff5 — the [0x65dc28]=esi store, the flag-2/4/0x180
-  // dispatch (callNatives 0x5d870c/5d8623/5d849e), then the dx-reload region
-  // 0x5dc1a8+ — moving the checkpoint toward the 0x5dcd3f ret.
+  // 0x5dbff5: mov [0x65dc28],esi  — store the (possibly walked) sprite ptr.
+  heap.setU32(DC28, esi >>> 0);
+  // 0x5dbffb: movzx edi,[esi+0x31]  — edi reloaded = vehicle type. Note esi may
+  // have been re-pointed by the chain walk above, but [esi+0x31] is still the
+  // type byte of the walked sprite; mirror the binary by re-reading it here. (In
+  // the no-walk path this equals `type`; reuse the flag word `f` for that type.)
+  const ediR = heap.u8(esi + 0x31);
+  const fR = (ediR === type) ? f : heap.u16(F7104 + ediR * 8);
+  // 0x5dbfff: test fR,2    ; je 0x5dc010 ; 0x5dc00b call 0x5d870c
+  // 0x5dc010: test fR,4    ; je 0x5dc021 ; 0x5dc01c call 0x5d8623
+  // 0x5dc021: test fR,0x180; je 0x5dc032 ; 0x5dc02d call 0x5d849e
+  // Each callee reads only esi on entry (verified: loads ax/al from [esi+..]
+  // before any reg use), so delegating with esi+edi set is byte-exact. The
+  // bodies still run in the interpreter via callNative — this push converts the
+  // flag-dispatch shell, not the callee bodies, and advances the checkpoint.
+  if (fR & 0x002) { regs.esi = esi >>> 0; regs.edi = ediR >>> 0; callNative(0x5d870c, []); }
+  if (fR & 0x004) { regs.esi = esi >>> 0; regs.edi = ediR >>> 0; callNative(0x5d8623, []); }
+  if (fR & 0x180) { regs.esi = esi >>> 0; regs.edi = ediR >>> 0; callNative(0x5d849e, []); }
+
+  // 0x5dc032: movzx ebx,[esi+0x1f] ; 0x5dc036 mov eax,[ebx*4+0x65dc70]
+  const ebx = heap.u8(esi + 0x1f);
+  let eaxV = heap.u32(DC70 + ebx * 4);
+  heap.setU32(DC38, 1);                                      // 0x5dc03d mov [0x65dc38],1
+  heap.setU32(esi + 0x2c, eaxV >>> 0);                       // 0x5dc047 mov [esi+0x2c],eax
+  // 0x5dc04a: eax=[0x65dc34] ; 0x5dc04f add eax,[esi+0x24] (32-bit wrap)
+  eaxV = (heap.u32(DC34) + heap.u32(esi + 0x24)) | 0;
+  heap.setU32(esi + 0x24, eaxV >>> 0);                       // 0x5dc052 mov [esi+0x24],eax
+
+  // 0x5dc055: js 0x5dc60d  — eax negative. Target is a clean checkpoint (it
+  // overwrites eax at 0x5dc615 before any read; only esi live).
+  if (eaxV < 0) { regs.esi = esi >>> 0; return 0x005dc60d; }
+  // 0x5dc05b: cmp eax,0x368a ; 0x5dc060 jl 0x5dca73 (signed; eax>=0 here).
+  // Target clean checkpoint (mov eax,[esi+0x2c] at 0x5dca73; only esi live).
+  if (eaxV < 0x368a) { regs.esi = esi >>> 0; return 0x005dca73; }
+
+  // 0x5dc066: and word [esi+0xb8],0xfffd
+  heap.setU16(esi + 0xb8, heap.u16(esi + 0xb8) & 0xfffd);
+  heap.setU32(DC48, heap.u32(esi + 0xe) >>> 0);             // 0x5dc06e/75 eax=[esi+0xe]; [0x65dc48]=eax
+  heap.setU16(DC4C, heap.u16(esi + 0x12));                  // 0x5dc071/7a cx=[esi+0x12]; [0x65dc4c]=cx
+  // 0x5dc081: call 0x5e53ca — opens with pushal (preserves caller regs), reads
+  // only esi. Delegate via the interpreter (byte-exact) with esi set.
+  regs.esi = esi >>> 0;
+  callNative(0x5e53ca, []);
+
+  // CHECKPOINT 0x5dc086 — only esi is live: edi is reloaded (movzx edi,[esi+0x36]),
+  // eax/ebx overwritten and ecx only used as 16-bit cx (set from di) before any
+  // full read. Hand the cx-dispatch suffix to the interpreter.
+  regs.esi = esi >>> 0;
+  return 0x005dc086;
+  // TODO: extend past 0x5dc086 — the cx (=[esi+0x36]>>2) dispatch (cases 0x63/
+  // 0x64/0x84), the [esi+0x34] bound check (jb 0x5dc3b6), then the dx-reload
+  // region 0x5dc1a8+ — moving the checkpoint toward the 0x5dcd3f ret.
 }
