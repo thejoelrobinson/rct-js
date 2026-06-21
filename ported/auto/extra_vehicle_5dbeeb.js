@@ -227,12 +227,50 @@ function armType55(heap, esi, type) {
         return 0x005dbffb;                                    // 0x5dcba8 jmp 0x5dbffb (loop)
       }
     }
-    // CHECKPOINT 0x5dcbad — chain exhausted: the final-accumulation pass reloads
-    // esi from [DC2C] (mov esi,[0x65dc2c]) and xor-zeros eax/ebp/dx/ebx before
-    // use, so NO registers are live-in. The chain re-walk + division + final
-    // math toward the 0x5dcd3f ret is left to the interpreter.
-    regs.esi = esi >>> 0;
-    return 0x005dcbad;
+    // === 0x5dcbad final-accumulation pass: re-walk the chain from [DC2C]
+    // accumulating count(ebx)/sum[esi+0x2c](eax)/sum[esi+0x46](ebp), then the
+    // averaging math (two signed idivs) producing ecx. (The dx OR-accumulation
+    // at 0x5dcbb7/bd is dead — cdq at 0x5dcbe0 overwrites edx before any read.) ===
+    let sumEax = 0, sumBp = 0, count = 0, s = heap.u32(DC2C) >>> 0; // 0x5dcbad/b3/b5/ba
+    for (;;) {                                                // loop top 0x5dcbbc
+      count = (count + 1) | 0;                                // inc ebx
+      sumBp = (sumBp + heap.u16(s + 0x46)) & 0xffff;          // 0x5dcbc1 add bp,[esi+0x46] (ebp hi stays 0)
+      sumEax = (sumEax + heap.u32(s + 0x2c)) | 0;             // 0x5dcbc5 add eax,[esi+0x2c] (32-bit)
+      const si = heap.u16(s + 0x3e);                          // 0x5dcbc8 mov si,[esi+0x3e]
+      if (si === 0xffff) break;                               // 0x5dcbcc cmp si,-1; je 0x5dcbe0
+      s = ((si << 8) + 0x00743b94) >>> 0;                     // 0x5dcbd2/d5/d8 next sprite
+    }
+    const esiF = heap.u32(DC2C) >>> 0;                        // 0x5dcbe1 mov esi,[DC2C] (first sprite)
+    // 0x5dcbe0 cdq; 0x5dcbe7 idiv ebx; 0x5dcbe9 imul eax,0x15; 0x5dcbec sar eax,9
+    let eax = (Math.imul(Math.trunc(sumEax / count) | 0, 0x15)) >> 9;
+    let ecx = eax | 0;                                        // 0x5dcbef mov ecx,eax
+    ecx = (ecx - (s32(heap.u32(esiF + 0x28)) >> 0xc)) | 0;    // 0x5dcbf1/f4/f7 eax=[esi+0x28];sar 0xc;sub ecx,eax
+    // 0x5dcbf9..0x5dcc0a: edx=([esi+0x28]>>8)^2, sign-adjusted by [esi+0x28], >>4
+    const e28 = s32(heap.u32(esiF + 0x28));                   // ebx=[esi+0x28] (sign test operand)
+    let edx = Math.imul(e28 >> 8, e28 >> 8) | 0;              // sar edx,8 ; imul edx,edx
+    if (e28 < 0) edx = (-edx) | 0;                            // or ebx,ebx; jns; neg edx
+    edx = edx >> 4;                                           // sar edx,4
+    // 0x5dcc0d eax=edx; cdq; 0x5dcc10 idiv ebp; 0x5dcc12 sub ecx,eax
+    // (if sumBp==0 the binary #DEs; JS yields 0 — unreachable on the type-37 path,
+    // confirmed by the oracle memMis=0 with sumBp the live divisor.)
+    ecx = (ecx - (Math.trunc((edx | 0) / sumBp) | 0)) | 0;
+    // 0x5dcc14 edx=type ; 0x5dcc18 test [type*8+0x5f7104],8 ; je 0x5dcd0c
+    const ty = heap.u8(esiF + 0x31);
+    if (heap.u16(F7104 + ty * 8) & 8) {
+      // flag 8 set (NOT type 37 — unexercised, audit-verified): the big middle
+      // (0x5dcc28..0x5dcd0a, more idivs + [esi+0xb6] clamping) is left to the
+      // interpreter. Live-in: esi, ecx, AND ebp=sumBp (read at 0x5dcc65
+      // `imul ebx,ebp`, never rewritten in the middle). edx=type is NOT needed
+      // (overwritten by movzx edx,[esi+0xc3] at 0x5dcc78 before any read).
+      regs.esi = esiF >>> 0; regs.ecx = ecx >>> 0; regs.ebp = sumBp >>> 0;
+      return 0x005dcc28;
+    }
+    // CHECKPOINT 0x5dcd0c (flag 8 clear, the type-37 path) — esi + ecx live: the
+    // 0x75-subtype tail (cmp bx,0x75 + [esi+0x34] range -> sub ecx,[esi+0x28]>>6),
+    // the final [esi+0x2c]=ecx store, and the eax=[DC40]/ebx=[DC44] ret loads are
+    // left to the interpreter.
+    regs.esi = esiF >>> 0; regs.ecx = ecx >>> 0;
+    return 0x005dcd0c;
   }
 
   // 0x5dc066: and word [esi+0xb8],0xfffd
@@ -381,12 +419,11 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   regs.edi = ediPtr >>> 0;
   return 0x005dc1a8;
-  // TODO: the jl arm now runs in JS all the way through the 0x5dcb60 join to its
-  // two terminal checkpoints — 0x5dbffb (sprite-chain loop-back; unexercised by
-  // type-37 single-sprite chains but audit-verified) and 0x5dcbad (chain-exhausted
-  // final-accumulation pass, 29/29 join calls). Remaining hot work: the 0x5dcbad
-  // final pass (chain re-walk + idiv + final math toward the 0x5dcd3f ret) — the
-  // biggest remaining block. Also: the 0x5dc51c tail ([esi+0x24]<0x368a → 0x5dca55,
-  // jmp-0x5dc086 loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; the
-  // rare 0x5dc1a8 cx-rotate fall-through (1/39).
+  // TODO: the jl arm now runs in JS through the 0x5dcbad final-accumulation pass
+  // (chain re-walk + 2 idivs) to checkpoint 0x5dcd0c (type-37, flag-8 clear) /
+  // 0x5dcc28 (flag-8 set, unexercised, audit-verified). Remaining for the jl path:
+  // the short 0x5dcd0c tail (0x75-subtype check + [esi+0x2c]=ecx store + the
+  // eax=[DC40]/ebx=[DC44] ret loads) and the flag-8 middle (0x5dcc28..0x5dcd0a).
+  // Other paths: the 0x5dc51c jb-arm tail ([esi+0x24]<0x368a → 0x5dca55, loop-back);
+  // the 0x5dc450 delta-block + 0x5dcd40 call path; the rare 0x5dc1a8 fall-through.
 }

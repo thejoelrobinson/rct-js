@@ -1420,3 +1420,38 @@ Production untouched (__enable5dbeeb-gated).
 
 **Continuation:** the 0x5dcbad final-accumulation pass (chain re-walk + idiv +
 final math toward the 0x5dcd3f ret) is the biggest remaining block.
+
+---
+
+## ADDENDUM 25 (2026-06-21) — 5dbeeb: ported the 0x5dcbad avg-math; audit caught ANOTHER latent live-in bug (3rd save)
+
+Transcribed the 0x5dcbad final-accumulation pass's first half (0x5dcbad..0x5dcc22):
+the sprite-chain re-walk loop (count=ebx, sum[esi+0x2c]=eax, sum16[esi+0x46]=ebp;
+the dx OR-accumulation is dead — cdq overwrites edx) and the averaging math —
+**two signed idivs** (`idiv ebx` by count, `idiv ebp` by sum16), an `imul edx,edx`
+square with a `jns/neg` abs-adjust by sign of [esi+0x28], and several `sar` —
+producing ecx. Checkpoints at 0x5dcc28 (flag-8 set) or **0x5dcd0c** (flag-8 clear;
+type-37's path, since type-37 flag = 0x1001).
+
+**The audit earned its keep a 3rd time.** Oracle GREEN (memMis=0 over 72/108/144
+calls) — but the independent adversarial audit found a CRITICAL latent bug: the
+0x5dcc28 checkpoint (flag-8-set, UNEXERCISED by type 37) omitted live-in **ebp**,
+which the middle reads at `0x5dcc65 imul ebx,ebp` and never rewrites. The bridge
+would have supplied a stale caller ebp → wrong quotient / possible #DE. Fixed:
+`regs.ebp = sumBp` at that checkpoint (and dropped the dead `regs.edx=type`,
+overwritten at 0x5dcc78). The audit also flagged a LOW div-by-zero edge (`idiv ebp`
+when sumBp==0 → x86 #DE vs JS 0; unreachable on the type-37 path, oracle-confirmed).
+Everything else (the chain-walk, both idivs' sign handling, the square/abs, the
+0x5dcd0c exercised-path live-ins esi+ecx) verified byte-faithful.
+
+**Verification:** lockstep memMis=0 over 72/108/144 calls (TICKS 8/12/16) post-fix;
+AB_CONTROL memMis=0. The jl arm now runs in JS to within ~10 instructions of the
+0x5dcd3f ret. Production untouched (__enable5dbeeb-gated).
+
+**Tally of the audit-vs-oracle split:** across ADD.22/24/25, the lockstep oracle
+was GREEN every time, yet the static audit caught a real checkpoint-live-in bug in
+2 of 3 (ADD.22 eax/ecx/edx, ADD.25 ebp) — both on flag/value paths the single
+scenario never executes. The audit is not optional for hybrid checkpoints.
+
+**Continuation:** the short 0x5dcd0c tail (0x75-subtype + [esi+0x2c]=ecx store +
+ret loads) completes the jl path to the ret — the next, finishing win.
