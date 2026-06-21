@@ -1357,3 +1357,33 @@ necessary complement to the oracle — the oracle validates the *taken* path; on
 the audit validates the *checkpoint hand-off correctness for untaken paths*.
 
 **Continuation:** the 0x5dca73 jl arm (33/72 calls) is the next-best win.
+
+---
+
+## ADDENDUM 23 (2026-06-21) — 5dbeeb: ported the 0x5dca73 jl arm (both dominant type-37 exits now in JS)
+
+Transcribed the jl arm (0x5dca73..0x5dcb0e, 33/72 type-37 calls): the signed
+`idiv [esi+0x2c] / [0x65dc38]` (truncate-toward-zero; [DC38] is set to 1 at
+0x5dc03d just upstream, so normally a no-op), the `[esi+0xcd]==2` early-out, the
+subtype byte-test (`byte[(subtype<<4)+0x6559d8]&0x10`), the conditional
+`[0x65dc40]|=8`, the `subtype==1 && esi==[0x65dc2c]` narrow path, and the
+cx-threshold logic (0x11 / 6 / 0x14 / −2 by flags 0x1000/0x4000 and [esi+0xcd]==6).
+The whole arm body resolves to two **esi-only** checkpoints — 0x5dcb60 (the common
+join) and 0x5dcb16 (the search-loop) — so the search loop and the join/loop-back
+tail stay in the interpreter; no register reconstruction needed.
+
+With ADDENDUM 22's jb arm, **both dominant type-37 exits now execute in JS** to
+their checkpoints; only the shared 0x5dcb60 join tail, the 0x5dc51c tail, and
+rare paths remain interp-suffixed.
+
+**Verification:** lockstep oracle memMis=0 over 72/108/144 calls (TICKS 8/12/16);
+AB_CONTROL memMis=0. AND an independent adversarial audit (per ultracode) traced
+the arm instruction-by-instruction AND both checkpoint targets forward to the
+0x5dcd3f ret — confirming the idiv truncation, every branch polarity, the
+[DC40]|=8 placement, and that BOTH checkpoints are genuinely esi-only live-in
+(including the unexercised sub==1/esi==[DC2C] path and the 0x5dcb16 search loop;
+the 0x5dcbad tail xor-zeros eax/ebp/dx/ebx before use, and the loop-backs re-enter
+the esi-only flag-dispatch shell). No divergence found — unlike ADDENDUM 22, the
+checkpoint hand-off was correct first time. Production untouched (__enable5dbeeb).
+
+**Continuation:** the 0x5dcb60 join (shared by both arms) is the next-best win.

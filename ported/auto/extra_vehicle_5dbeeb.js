@@ -51,6 +51,7 @@ const A7420 = 0x00887420, A7422 = 0x00887422, A755C = 0x0088755c, A755D = 0x0088
 const S5B7F = 0x005f5b7f;
 const AF10 = 0x0067af10, EF4 = 0x00971ef4;  // pointer tables: [0xcd]→base, [rotated]→entry
 const DC4A = 0x0065dc4a, DC50 = 0x0065dc50, S5D02 = 0x005f5d02;  // 0x5dc450 delta block
+const S59D8 = 0x006559d8;  // 0x5dca73 jl arm: subtype flag table (idx = subtype<<4)
 
 const s8 = (v) => (v << 24) >> 24;
 const s16 = (v) => (v << 16) >> 16;
@@ -178,8 +179,42 @@ function armType55(heap, esi, type) {
   // overwrites eax at 0x5dc615 before any read; only esi live).
   if (eaxV < 0) { regs.esi = esi >>> 0; return 0x005dc60d; }
   // 0x5dc05b: cmp eax,0x368a ; 0x5dc060 jl 0x5dca73 (signed; eax>=0 here).
-  // Target clean checkpoint (mov eax,[esi+0x2c] at 0x5dca73; only esi live).
-  if (eaxV < 0x368a) { regs.esi = esi >>> 0; return 0x005dca73; }
+  if (eaxV < 0x368a) {
+    // === jl 0x5dca73 arm (33/72 type-37 calls). Body resolves to two esi-only
+    // checkpoints: 0x5dcb60 (the common join) or 0x5dcb16 (the search-loop). ===
+    // 0x5dca73/76/77/7d: [esi+0x2c] = trunc([esi+0x2c] / [DC38]) (signed idiv;
+    // [DC38] is set to 1 at 0x5dc03d just before, so this is normally a no-op).
+    const denom = s32(heap.u32(DC38));
+    heap.setU32(esi + 0x2c, (Math.trunc(s32(heap.u32(esi + 0x2c)) / denom) | 0) >>> 0);
+    // 0x5dca80/86: if [esi+0xcd]==2 -> 0x5dcb60
+    if (heap.u8(esi + 0xcd) !== 2) {
+      const sub = (heap.u16(esi + 0x36) >>> 2) & 0xffff;            // 0x5dca8f/93
+      // 0x5dca9a/9d: test byte[(sub<<4)+0x6559d8],0x10 ; je 0x5dcb60
+      if (heap.u8(((sub << 4) + S59D8) >>> 0) & 0x10) {
+        heap.setU32(DC40, (heap.u32(DC40) | 8) >>> 0);              // 0x5dcaaa or [DC40],8
+        // 0x5dcab1 cmp bx,1 jne 0x5dcb60 ; 0x5dcabb cmp esi,[DC2C] jne 0x5dcb60
+        if (sub === 1 && heap.u32(DC2C) === (esi >>> 0)) {
+          const ax2 = heap.u16(esi + 0x34);                        // 0x5dcac7
+          if (s32(heap.u32(DC30)) < 0) {                           // 0x5dcacb jl 0x5dcb10
+            // 0x5dcb10: cmp ax,0x16 ; ja 0x5dcb60 else fall to 0x5dcb16
+            if (!(ax2 > 0x16)) { regs.esi = esi >>> 0; return 0x005dcb16; }
+          } else {
+            // 0x5dcad4..0x5dcb05: cx = 0x11, or 6 (flag 0x1000), or 0x14 (flag
+            // 0x4000; minus 2 if [esi+0xcd]==6).
+            const f2 = heap.u16(F7104 + heap.u8(esi + 0x31) * 8);
+            let cxv = 0x11;
+            if (f2 & 0x1000) cxv = 6;                              // 0x5dcae8
+            if (f2 & 0x4000) { cxv = 0x14; if (heap.u8(esi + 0xcd) === 6) cxv -= 2; } // 0x5dcaf8/fc/05
+            if (ax2 > cxv) { regs.esi = esi >>> 0; return 0x005dcb16; } // 0x5dcb09 ja 0x5dcb16
+          }
+        }
+      }
+    }
+    // 0x5dcb60 — the common join (test [esi+0x48],1 -> [DC40]|=0x10, then the
+    // [DC30] sprite-chain walk + jmp-0x5dbffb loop-back) is left to the interpreter.
+    regs.esi = esi >>> 0;
+    return 0x005dcb60;
+  }
 
   // 0x5dc066: and word [esi+0xb8],0xfffd
   heap.setU16(esi + 0xb8, heap.u16(esi + 0xb8) & 0xfffd);
@@ -327,10 +362,11 @@ function armType55(heap, esi, type) {
   regs.esi = esi >>> 0;
   regs.edi = ediPtr >>> 0;
   return 0x005dc1a8;
-  // TODO: the jb arm now runs in JS to checkpoint 0x5dc51c (no-call path) or
-  // diverts the call path to 0x5dc450. Remaining hot work: the 0x5dca73 jl arm
-  // (33/72 calls, still fully interp-suffixed) — the best next win. After that,
-  // the 0x5dc51c tail (the [esi+0x24]<0x368a branch → 0x5dca55, and the
-  // jmp-0x5dc086 loop-back), and the 0x5dc450 delta-block + 0x5dcd40 call path.
-  // The 0x5dc1a8 cx-rotate fall-through is rare (1/39); lower priority.
+  // TODO: both dominant type-37 exits now run in JS — the jb arm (0x5dc3b6) to
+  // checkpoint 0x5dc51c, and the jl arm (0x5dca73) to 0x5dcb60 / 0x5dcb16.
+  // Remaining: the 0x5dcb60 join tail (test [esi+0x48], the [DC30] sprite-chain
+  // walk + jmp-0x5dbffb loop-back); the 0x5dc51c tail ([esi+0x24]<0x368a → 0x5dca55,
+  // jmp-0x5dc086 loop-back); the 0x5dc450 delta-block + 0x5dcd40 call path; and
+  // the rare 0x5dc1a8 cx-rotate fall-through (1/39). The 0x5dcb60 join is shared
+  // by both arms, so transcribing it is the next-best win.
 }
