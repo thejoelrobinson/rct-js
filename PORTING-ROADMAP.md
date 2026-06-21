@@ -1521,3 +1521,40 @@ green oracle says nothing about which BRANCH the scenario took. Here the oracle 
 green for 5 commits while the jb delta block + tail were never executed; only a
 direct branch-count probe revealed it. Always measure call-counts on the intended
 arm, not just memMis. Production untouched (__enable5dbeeb-gated).
+
+---
+
+## ADDENDUM 28 (2026-06-21) — 5dbeeb: accelerated the type-37 jb arm (removed the divert; delta block now runs in JS for the exercised path); audit caught a 4th live-in bug
+
+Acting on ADDENDUM 27's finding: REMOVED the 0x5dc450 divert and instead run the
+image-delta block in JS for BOTH the call and no-call paths. At 0x5dc51c the call
+path (esi==[DC28] && [DC30]>=0 — the path type 37 takes 38/38) now checkpoints at
+**0x5dc52d**, where the interpreter does `mov bp,[esi+0x40]` + the 0x5dcd40
+proximity call (reads bp + ax/cx/dx = va/vc/vd + esi, sets CF) + the CF-dependent
+`jb 0x5dc577`. (CF isn't exposed by callNative, so we hand off rather than
+delegate-then-branch.) Net: the ~40-instruction delta block now runs in JS for the
+38 exercised jb calls instead of being redone in the interpreter via the old divert.
+
+**Coverage now real:** the call path is exercised 38/38 (measured call52d=38), so the
+delta block — DORMANT since ADD.22 per ADD.27 — is finally genuinely validated by
+the oracle (memMis=0 over 72/108/144 calls; AB_CONTROL memMis=0).
+
+**The audit earned its keep a 4th time.** Oracle GREEN, but the independent
+adversarial audit found a CRITICAL latent bug: the 0x5dc52d checkpoint omitted
+live-in **ebx** (= b7 = u8[recPtr+7], set natively at 0x5dc4f0). 0x5dcd40 preserves
+ebx (pushes only eax/ecx/edx/edi), and ebx is read-before-write at 0x5dc545
+(`mov ebx,[ebx*4+0x65dc70]`) on the 0x5dc538 fall-through ([esi+0x24]>=0x368a) and at
+0x5dc994 on the jb-0x5dc577 path ([esi+0x24]<0). Type-37 field values route through
+0x5dca55 (which reloads ax/cx/dx and never reads ebx), dodging both reads — so the
+oracle stayed green while the code was latently wrong. Fixed: `regs.ebx = b7` at the
+checkpoint. The audit confirmed eax/ecx/edx high16, ebp, and edi are all fine.
+
+**Audit-vs-oracle tally is now 4 catches across ADD.22/24/25/28** (24 was clean):
+the oracle was GREEN every single time, and the static audit caught a real
+checkpoint-live-in bug in 4 of 5 checkpoint transcriptions — always a register
+left stale on a value/flag sub-path the single scenario never triggers. For hybrid
+checkpoints the audit is not optional.
+
+**Remaining for type-37 5dbeeb:** the 0x5dcd40 call + 0x5dc577/0x5dc538 tails on the
+jb path (interp-suffixed); the flag-8 middle (0x5dcc28..0x5dcd0a); the rare 0x5dc1a8
+fall-through. Then `_fuzz-5dbeeb` + flip live. Production untouched (__enable5dbeeb).
