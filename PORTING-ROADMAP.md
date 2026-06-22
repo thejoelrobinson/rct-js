@@ -2115,3 +2115,31 @@ divergence-driven hunt (run careful @manual ports through _lockstep/_invoke-diff
 confirms the interp on that path, any DIFF where the JS is right is a NEW interp bug — how
 ADD.40 was found). Next-pass: either that divergence hunt, or pivot to lever-2 (wire a validated
 auto live to make it a real production change + perf win).
+
+---
+
+## ADDENDUM 45 — divergence hunt CLEAN; interp fixes VERIFIED live+correct (dual-soak)
+
+Ran the divergence hunt (re-swept the 18 reached auto+@manual fns through _lockstep-auto against
+the FIXED interp). All clean (memMis=0) except **0x43c49e** (memMis=15/15). Attributed it: it is
+memMis=15 with the PRE-FIX interp too (checked at commit 0be1b4e), so it's a PRE-EXISTING dead
+divergence — 43c49e.js is a stale standalone `@manual` with NO JS importers; the live peep path
+inlines that logic into extra_peepwalk_43c751 (+ interp sub-calls), which passes the gates and an
+80-tick clean soak. Not my doing, not production-relevant (dead standalone; a cleanup nicety).
+No NEW interp bugs found — the static audit + this hunt have exhausted the reachable interp-bug
+surface for now. (The eaxMis/regMis on the other @manual fns — 45a95d/4238b4/458bcf/5e117d/444927
+— are benign scratch with memMis=0.)
+
+**Dual-soak VERIFICATION of the 3 interp fixes (ADD.40/43/44).** 30-tick whole-heap FNV:
+pre-fix interp (0be1b4e) = `d8fad16c`, post-fix (HEAD) = `df4593ea` — they DIFFER. So the
+corrected byte-ALU/NEG/ADC-SBB flags ARE exercised in live gameplay and change sim state over
+time (the bugs manifest in later-tick peep/vehicle state, which is exactly why the tick-1 gates
+never caught them). Since the flag formulas are unit-verified against x86 semantics (15 cases,
+incl. all overflow cases) and the gates stay byte-exact on the captured frame, the change is
+toward correctness. **This confirms the interp fixes are REAL production fixes** (contrast the 5
+dead JS-auto fixes), validating the ADD.42 re-prioritization onto interp correctness.
+
+**Levers now:** interp-correctness is largely worked out (static audit done + divergence hunt
+clean + fixes verified). Remaining high-value work is lever-2 (wire a validated auto live →
+production change + perf) and the large interp-consumer ports (0x424e0f/0x5da274/0x429560 per
+ADD.6) — both bigger efforts. Minor cleanup: the stale standalone 43c49e.js (dead).
