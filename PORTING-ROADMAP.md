@@ -1923,3 +1923,30 @@ parse-fail stub) — multi-session hybrid/asm rewrites; (2) the deferred complex
 (broken) and 0x5cfac7 (ambiguous); (3) the NOT-REACHED pool (5 stubs + F6 candidates) which
 needs a targeted-invocation harness to validate. Candidate-hunting in the reached set is
 exhausted; further gains require tackling (1) or building (3)'s harness.
+
+---
+
+## ADDENDUM 39 — targeted-invocation harness BUILT (`tools/_invoke-diff.mjs`); unlocks the not-reached pool
+
+Built the group-(3) harness. `tools/_invoke-diff.mjs` invokes ANY function directly from
+the live post-enterScenarioPlay heap — both legs from the same crafted entry registers,
+same scratch stack (top of the 64K carve), same heap snapshot — and diffs heap [0,CMP_END)
++ exit regs. It captures the painter-bridge cpu by briefly hooking 0x5da274 for one tick,
+then uses `runFunction(cpu, ADDR, {stackTop, limit})` for the interp leg and the imported
+`FUN_00<addr>` for the JS leg. No soak reachability needed. Sound with arbitrary entry
+because both legs read the SAME heap+regs, so any divergence is a JS-port bug (a garbage
+pointer is walked identically by both). Entry regs default to live cpu.regs, override via
+env EAX/ECX/.../EDI; STACK="a,b" writes cdecl u32 args.
+
+**Validated:** MATCH (memMis=0, no regMis) on two known-good fns — 0x458a7c (ESI=0x99a888,
+my ADD.37 fix) and 0x5dcd40 (passed _lockstep-auto) — so no false positives. Confirmed it
+flags broken: the 5 stubs (0x417420/4183a0/44c464/5d89c0/9b38bc) show `JS THREW` (parse-fail
+stub) while the interp runs the real code; **0x5d89c0** is the standout — even with default
+entry the interp makes 67 concrete byte-writes (a peep/vehicle anim-update chain-walk,
+complete readable C, calls FUN_005e53ca [@manual, fixed] + FUN_004518fc [auto]). **0x9b38bc**
+(not a stub) shows a real DIFF: ecx/ebx regMis (js leaves them at entry, interp sets
+ecx=1/ebx=0x743c0e) — triage later (may be benign scratch like 0x45389c, or a real output).
+
+**Next:** hand-port the stubs against this harness, starting with 0x5d89c0 (clearest target:
+complete C + 67-write interp reference + realistic live-sprite entry esi=0x700ac8). Then
+0x9b38bc triage, then the param-taking stubs (0x4183a0 needs STACK= pointer args).
