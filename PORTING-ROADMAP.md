@@ -2166,3 +2166,26 @@ specific 90fps push). Combined with interp-correctness being worked out and the 
 blocked, the remaining work is all MULTI-SESSION (fix+wire 0x4415e6 / full peep|vehicle JS port /
 translator secondary-register upgrade) or low-yield. This is the point to get user direction
 rather than sink-cost into an unbounded port (per the don't-sink-cost feedback).
+
+---
+
+## ADDENDUM 47 — 0x4415e6 port, SLICE 1: scan-loop goto fixed; root divergence is the FUN_0044189c callee
+
+User chose "fix + wire 0x4415e6". Slice 1: the auto had ONE `_gotoWarn` — the `goto LAB_004416e1`
+(the pbVar8 ride-table SCAN loop) was emitted as an early-return, so the scan ran ONCE instead
+of looping to match-or-terminator. Restructured LAB_004416e1/LAB_004416f0 into a `while(true)`
+loop with a `go417aa` flag for the two exits (LAB_004417aa local_8=-1 vs LAB_004417af). Correct
+by construction (faithful transcription of the C goto graph); parses; dead/unwired so no
+production risk.
+
+**BUT memMis is still 1** — the remaining divergence is ROOTED IN THE CALLEE `FUN_0044189c`
+(the deferred "complex recursive, multiple bugs" fn, ADD.33, itself BROKEN per ADD.38). The
+diverging bytes are written around its call: `0x6293c1`/`0x6293c4` (set right before/after the
+`FUN_0044189c()` call in the inner bit-scan loop) and the sprite cache `[esi+0xcc/0xce]` (which
+depend on `local_8`, chosen by comparing `local_c`/`DAT_006293c1` AFTER each `FUN_0044189c`
+call). So 0x4415e6 cannot reach memMis=0 until 0x44189c is fixed. SLICE 1 committed honestly as
+a partial (scan loop correct, function still red pending the callee — NOT claimed green).
+
+**Dependency tree:** 0x4415e6 → 0x44189c (complex recursive, broken) → (its own callees). NEXT
+SLICE: fix 0x44189c to ITS OWN memMis=0 (independently validatable: `_lockstep-auto ADDR=0x44189c`,
+reached, calls=1), then re-validate 0x4415e6 (should drop toward 0), then wire 0x4415e6.
