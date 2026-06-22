@@ -2214,3 +2214,25 @@ the current oracle path is single-direction so it isn't hit.
 3: disasm 0x4415e6's `call 0x44189c` site, set up those input registers before the JS call
 (same caller-register-setup pattern as the 5d89c0 → FUN_004518fc fix), then 0x4415e6 → memMis=0
 → wire.
+
+---
+
+## ADDENDUM 49 — 0x4415e6 port, SLICES 3+4: caller reg-setup + 0x44189c recursion fixed
+
+SLICE 3 (commit 83c0294): 0x4415e6's JS leg called FUN_0044189c without the input-register setup
+the asm does (0x44173c-0x441765: eax=in_EAX, ecx=in_ECX, edx=(dh=0,dl=in_DL[+4]), ebp=bit,
+edi=0xffff). Added it → the search now RUNS (depth 0x6293c6 0→0x88) but OVER-explored.
+
+SLICE 4 (this commit): fixed FUN_0044189c's multi-direction RECURSION (now exercised). Bugs:
+setU8 for the DAT_006293c4 DWORD save/restore (→ setU32), ignored JS args + no input-register
+setup on the recursive call, and — the key one — no `unaff_DI` (edi) threading. edi is the A*
+best-distance pruning bound; the asm threads it through recursion (not saved across the call), so
+I (a) set regs.edi=unaff_DI before each recursive call + read it back after, and (b) write
+regs.edi=unaff_DI before every return. Result: 0x4415e6's search outputs now MATCH — 0x6293c1
+(best-cost) and 0x6293c6 (depth) are byte-equal to the interp (the pruning works).
+
+**0x4415e6 STILL memMis=1, now isolated to the TAIL cache-update** (sprite [esi+0xcc..0xd2], the
+LAB_004417af block writing [esi+0xcc]=sVar4 + the 4 direction-cache slots [esi+0xd0+i*4]). SLICE
+5: the tail reads DAT_006293bc/be as `heap.u8` for the `>>5` tile-hash but they're 16-bit (same
+u8→u16 bug fixed in 44189c; also at the early-out line 56) — fix those + re-validate → memMis=0
+→ WIRE 0x4415e6.

@@ -34,6 +34,7 @@ export function FUN_0044189c(heap) {
   in_CX = ((in_CX + heap.i16((0x0065247a + unaff_EBP * 4))) & 0xffff);
   bVar3 = (((((((in_DX) & 0xffff) >>> 8)) << 24 >> 24) + 1) & 0xff);
   if (200 < bVar3) {
+    regs.edi = unaff_DI;   // thread best-distance back to caller
     return;
   }
   uVar7 = ((heap.u16(0x006293bc) - in_AX) & 0xffff);
@@ -55,6 +56,7 @@ export function FUN_0044189c(heap) {
   }
   uVar7 = ((uVar8 + (uVar5 >>> 1) + ((bVar4) & 0xffff)) & 0xffff);
   if ((uVar7 <= unaff_DI) && (((uVar7 < unaff_DI || (bVar3 < heap.u8(0x006293c1))) && (unaff_DI = ((uVar7) & 0xffff), heap.setU8(0x006293c1, (bVar3) & 0xff), uVar7 == 0)))) {
+    regs.edi = unaff_DI;
     return;
   }
   uVar7 = ((in_CX * 0x80 | in_CX >>> 9 | in_AX) & 0xffff);
@@ -78,6 +80,7 @@ export function FUN_0044189c(heap) {
     pbVar1 = ((pbVar9 + 1) >>> 0);
     pbVar9 = ((pbVar9 + 8) >>> 0);
     if ((heap.u8(pbVar1) & 0x80) != 0) {
+      regs.edi = unaff_DI;
       return;
     }
   } while (true);
@@ -90,30 +93,51 @@ export function FUN_0044189c(heap) {
     }
   }
   if (uVar6 == 0) {
+    regs.edi = unaff_DI;
     return;
   }
   uVar6 = ((uVar6 & ~(1 << (unaff_EBP & 0x1f))) >>> 0);
   if (uVar6 != 0) {
+    // @manual fix (ADDENDUM 49): multi-direction RECURSION. Was broken — setU8 for the
+    // DAT_006293c4 DWORD save/restore, ignored JS args, no input-register setup, and no
+    // unaff_DI(edi) threading (so the recursive search never pruned → over-explored).
     if (heap.u16(0x6293c6) != 0) {
       heap.setU8((0x006293c4 + 0), (heap.i8(0x006293c4) + -1) & 0xff);
     }
     heap.setU8((0x006293c4 + 0), (heap.i8(0x006293c4) + -1) & 0xff);
-    uVar2 = ((heap.u8(0x006293c4)) >>> 0);
+    uVar2 = ((heap.u32(0x006293c4)) >>> 0);              // full dword (asm push [0x6293c4])
     if (heap.i8(0x006293c4) < 0) {
+      regs.edi = unaff_DI;                                // thread edi back out
       return;
     }
     do {
       uVar6 = ((uVar6 & ~(1 << (unaff_EBP & 0x1f))) >>> 0);
-      heap.setU8(0x006293c4, (uVar2 & 0xffff) & 0xff);
-      (regs.eax = FUN_0044189c(heap, pbVar9, in_DX, uVar6, in_AX));
-      heap.setU8(0x006293c4, (uVar2) & 0xff);
+      heap.setU32(0x006293c4, (uVar2 & 0xffff) >>> 0);    // DAT_006293c4 = uVar2 & 0xffff
+      // recurse: set up input regs (asm 0x4419cd-0x4419f7); save/restore ax/ebx/cx/dx/esi
+      // + the DAT_006293c4 dword; edi is NOT saved — it threads to carry the best-distance.
+      const _sax = regs.eax, _sbx = regs.ebx, _scx = regs.ecx, _sdx = regs.edx, _ssi = regs.esi;
+      let _recDX = in_DX & 0xffff;                        // dl += 4 iff pbVar9[4]&4 && &3==unaff_EBP
+      if (((heap.u8(pbVar9 + 4) & 4) != 0) && ((heap.u8(pbVar9 + 4) & 3) == unaff_EBP)) {
+        _recDX = ((in_DX & 0xff00) | ((in_DX + 4) & 0xff)) & 0xffff;
+      }
+      regs.eax = in_AX & 0xffff;
+      regs.ecx = in_CX & 0xffff;
+      regs.edx = _recDX;
+      regs.ebp = unaff_EBP >>> 0;
+      regs.esi = pbVar9 >>> 0;
+      regs.edi = unaff_DI;                                // thread best-distance in
+      FUN_0044189c(heap);
+      unaff_DI = regs.edi & 0xffff;                       // and back out
+      regs.eax = _sax; regs.ebx = _sbx; regs.ecx = _scx; regs.edx = _sdx; regs.esi = _ssi;
+      heap.setU32(0x006293c4, uVar2 >>> 0);               // restore the saved dword
       unaff_EBP = ((0) >>> 0);
       if (uVar6 != 0) {
         for (; (uVar6 >>> unaff_EBP & 1) == 0; unaff_EBP = (((unaff_EBP + 1) >>> 0)) >>> 0) {
-        
+
         }
       }
     } while (uVar6 != 0);
+    regs.edi = unaff_DI;                                  // thread edi back out
     return;
   }
   if (((heap.u8(pbVar9 + (4)) & 4) != 0) && ((heap.u8(pbVar9 + (4)) & 3) == unaff_EBP)) {
