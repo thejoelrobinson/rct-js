@@ -101,6 +101,19 @@ export function FUN_004415e6(heap) {
             heap.setU8(0x006293c1, (0xff) & 0xff);
             heap.setU16((0x006293c4 + 2), (0) & 0xffff);
             heap.setU8((0x006293c4 + 1), (0) & 0xff);
+            // @manual fix (ADDENDUM 49): set up FUN_0044189c's INPUT registers before the call
+            // (asm 0x44173c-0x441765). The auto omitted these, so 44189c got 4415e6's stale regs
+            // (esp. edi) and returned early (depth 0x6293c6 stayed 0). eax=in_EAX, ecx=in_ECX,
+            // edx=(dh=0, dl=in_DL +4 iff [pbVar8+4]&4 && [pbVar8+4]&3==uVar2), ebp=bit, edi=0xffff.
+            {
+              let dl = in_DL & 0xff;
+              if ((heap.u8(pbVar8 + 4) & 4) != 0 && (heap.u8(pbVar8 + 4) & 3) == uVar2) dl = (dl + 4) & 0xff;
+              regs.eax = in_EAX >>> 0;
+              regs.ecx = in_ECX >>> 0;
+              regs.edx = dl >>> 0;
+              regs.ebp = uVar2 >>> 0;
+              regs.edi = 0xffff;
+            }
             (regs.eax = FUN_0044189c(heap));
             if ((((((local_c) >>> 16) & 0xffff) | 0) == -1) && (heap.u8(0x006293c1) < ((local_c) & 0xff))) {
               local_c = ((CONCAT31(0xffff00, heap.u8(0x006293c1))) >>> 0);
