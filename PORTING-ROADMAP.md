@@ -2013,3 +2013,50 @@ cx/dx/ecx/edx), and likely 0x4183a0 (5 FP-bignum helpers) and 0x417420 (indirect
 **Unblocking path = a translator/helper upgrade to emit secondary-register writes** (model the
 `extraout_*`/out-register effects), then these stubs become portable. That's the next real
 lever for the not-reached pool — bigger than a single function, so a deliberate separate pass.
+
+---
+
+## ADDENDUM 42 — ARCHITECTURE CORRECTION: production RUNS the x86 interpreter; un-wired JS autos are DEAD CODE
+
+This corrects the central premise of ADDENDA 29/35 ("the browser has NO interpreter; production
+routes via _dispatch.js to the JS autos, so a buggy auto = a shipping bug"). That premise is
+**false**, verified three ways this pass:
+1. `runtime/harness.js:64` calls `installPainterBridge` UNCONDITIONALLY in createRuntime — it
+   builds the x86 interpreter cpu (overlays ~1.98 MB of rct.exe code).
+2. `web/main-native.js:80-110` (the BROWSER entry) fetches `binary/rct.exe`, passes `exeBytes`
+   to createRuntime, and notes "init may exercise painter-bridge interpreter." The file's line-1
+   comment "no x86 interpreter loaded" is STALE/wrong.
+3. Liveness probe (instrument fn entry, run init + 40 scenario ticks, count JS calls): the
+   peep hand-port FUN_extra_peepwalk_43c751 fires 767× (live, eip-hook/fnDispatch-wired), but
+   the broken vehicle auto FUN_005dbeeb fires **0×** (vehicles run in the interp), and **all 5
+   of this session's "fixed" autos (5e53ca/45a95d/444d07/458a7c/5d89c0) fire 0×** — even
+   0x5e53ca, which sits in the peep movement chain, never runs as JS while peeps run 767×.
+
+**Corrected model.** Production (browser AND node) runs a HYBRID: the perf-campaign functions
+(ADDENDA 1-13) are WIRED LIVE as JS via setEipHook/fnDispatch (they replaced interp execution);
+EVERY OTHER function runs in the x86 INTERPRETER, which executes the real binary bytes. The
+1250 `ported/auto/*.js` are the translation DELIVERABLE, validated against the interp, but a
+function's auto is DEAD until it is wired live. So:
+- **"Both core sim subsystems broken in production" (ADD.29/35) was a MISDIAGNOSIS.** Peeps run
+  via the validated hand-port; vehicles run via the interp (the 72/72-"broken" 5dbeeb auto is
+  never called). Neither throws; the 80-tick soak is clean.
+- **This session's 5 auto-fixes (5e53ca/45a95d/444d07/458a7c/5d89c0) had NO current production
+  effect** — they corrected DEAD autos. They are still valuable as the translation deliverable
+  (correct JS, ready to wire live) and were validated vs the interp, but calling them "shipping
+  fixes" was wrong.
+- **The interpreter carry-flag fix (ADD.40, 0x80 byte-ALU CF) WAS a real production fix** — the
+  interp IS the live path, and that bug corrupted live interp execution (e.g. 0x5d89c0's
+  `add byte [esi+0xb5],0x14`, which runs in the interp in production).
+
+**Re-prioritised levers (highest production value first):**
+1. **INTERPRETER AUDIT** — the interp is the live path, so each interp bug is a real shipping
+   bug. The 0x80 handler literally said "approximate; rarely used after"; audit harness/x86.js
+   for other approximate/missing flag computations and opcode gaps (the prefix bugs in
+   ADD.3/4 and this carry bug are the precedent). Bounded + gate-verifiable.
+2. **WIRE + fix autos together** — to make an auto-fix matter, wire it live (setEipHook/
+   fnDispatch) AND validate vs interp (lockstep). Fixing an auto without wiring is deliverable
+   prep, not a production change. (This is also the perf path: each wired auto removes interp
+   steps.)
+3. The _lockstep-auto / _invoke-diff oracles remain correct + useful — they measure auto-vs-interp
+   divergence, which is exactly what to fix BEFORE wiring an auto live. Just don't conflate a
+   green oracle with a shipped fix.
