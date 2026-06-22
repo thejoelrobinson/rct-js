@@ -1558,3 +1558,48 @@ checkpoints the audit is not optional.
 **Remaining for type-37 5dbeeb:** the 0x5dcd40 call + 0x5dc577/0x5dc538 tails on the
 jb path (interp-suffixed); the flag-8 middle (0x5dcc28..0x5dcd0a); the rare 0x5dc1a8
 fall-through. Then `_fuzz-5dbeeb` + flip live. Production untouched (__enable5dbeeb).
+
+---
+
+## ADDENDUM 29 (2026-06-21) — MAJOR FINDING: the PRODUCTION auto-translation FUN_005dbeeb is BROKEN (72/72 divergent)
+
+Stepped back from the hybrid (test-path) grind to ask the real-goal question: **is
+the BROWSER/production path for 0x5dbeeb correct?** Production has no interpreter and
+routes 0x5dbeeb → `FUN_005dbeeb` (ported/auto/5dbeeb.js, the Ghidra-C→JS auto-
+translation) via `_dispatch.js`. The hybrid lockstep never tested this — it tests the
+`__enable5dbeeb` armType55 hybrid, not the auto fn.
+
+New tool `tools/_lockstep-5dbeeb-auto.mjs` (untracked scratch, like the other
+_lockstep tools): per 0x5dbeeb crossing, run `FUN_005dbeeb(heap)` (pure JS, calls its
+JS callees) vs the interpreter, whole-heap + eax diff. Result over an enterScenarioPlay
+soak: **calls=72 memMis=72 eaxMis=72 jsThrew=0** (all type 37). The auto fn does NOT
+crash — it silently computes the WRONG answer on EVERY call. Divergence starts at the
+very first global store `[0x65dc2c]=esi` (0x5dbeef, before any callee): the interp
+writes esi's bytes (…2d=48 …2e=74), the auto wrote 0 — a translator store bug — and
+eax returns 0x12/0x1 vs the interpreter's 0x0.
+
+**Implications:**
+- The browser's in-game VEHICLE SIMULATION (0x5dbeeb is the per-sprite vehicle
+  mode-flag/position update, ~the top sim function) is WRONG in production. This was
+  invisible to every prior gate: the title/gameplay ACCURACY gates render a frame the
+  broken sim doesn't visibly corrupt at tick-1 capture, and the hybrid lockstep only
+  validated the (test-only) armType55, not the auto fn.
+- It vindicates the manual/hybrid approach: the auto-translation of 0x5dbeeb is
+  unusable; this function MUST be hand-ported for production.
+- The hybrid armType55 transcriptions (prefix, flag-dispatch, accumulate, cx-dispatch,
+  the FULL jl arm, the jb delta block) are byte-exact-validated CORRECT JS — they are
+  the reference logic for a production replacement.
+
+**Reframed next work (supersedes the incremental hybrid-checkpoint grind):** the
+high-value goal is a COMPLETE, interp-free, correct JS 0x5dbeeb to REPLACE the broken
+auto-translation in production. The hybrid has validated most of the type-37 logic; the
+remaining interp-suffixed pieces (the 0x5dcd40 proximity call [~168 instr, 3 rets], the
+0x5dc577 tail, the frame-advance loop-backs) must be transcribed too, then assembled
+into a single straight-line/looping JS function (no checkpoints) and diff-tested with
+`_lockstep-5dbeeb-auto`-style harness (auto-fn-vs-interp) driven to memMis=0 before
+replacing 5dbeeb.js. This is the path that actually fixes the browser.
+
+**Methodology lesson (the crown jewel, again):** test the PATH THAT SHIPS. The hybrid
+lockstep was green for ~10 commits while the code that actually runs in the browser
+(the auto fn) was 100% wrong. A differential test is only as good as the SUT it points
+at — point it at the production artifact.
