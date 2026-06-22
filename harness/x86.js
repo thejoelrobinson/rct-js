@@ -160,9 +160,9 @@ function aluR8Op(cpu, m, ip, opc) {
   const dst = reverseDir ? b : a;
   const src = reverseDir ? a : b;
 
-  let r = a, write = true, isSub = false;
+  let r = a, write = true, isSub = false, isAdd = false;
   switch (opc) {
-    case 0x00: case 0x02: r = (a + b) & 0xff; break;
+    case 0x00: case 0x02: r = (a + b) & 0xff; isAdd = true; break;
     case 0x08: case 0x0a: r = (a | b) & 0xff; break;
     case 0x20: case 0x22: r = (a & b) & 0xff; break;
     case 0x28: case 0x2a: r = (dst - src) & 0xff; isSub = true; break;
@@ -190,9 +190,20 @@ function aluR8Op(cpu, m, ip, opc) {
   }
   cpu.eflags.ZF = (r === 0) ? 1 : 0;
   cpu.eflags.SF = (r >>> 7) & 1;
-  // For SUB/CMP, borrow is dst < src (0x38 CMP is a forward form: dst=a, src=b).
-  cpu.eflags.CF = isSub ? ((dst < src) ? 1 : 0) : 0;
-  cpu.eflags.OF = 0;
+  // Correct CF/OF per op (was: CF=0 for ADD + OF=0 always — broke `add byte`+carry
+  // branches and signed byte compares jl/jg/jle/jge on overflow, same class as the
+  // 0x80 byte-ALU carry bug in ADDENDUM 40). For SUB/CMP, borrow is dst < src
+  // (0x38 CMP is a forward form: dst=a, src=b). Logical ops (OR/AND/XOR/TEST) clear both.
+  if (isAdd) {
+    cpu.eflags.CF = (dst + src) > 0xff ? 1 : 0;
+    cpu.eflags.OF = ((~(dst ^ src) & (dst ^ r)) & 0x80) ? 1 : 0;
+  } else if (isSub) {
+    cpu.eflags.CF = (dst < src) ? 1 : 0;
+    cpu.eflags.OF = (((dst ^ src) & (dst ^ r)) & 0x80) ? 1 : 0;
+  } else {
+    cpu.eflags.CF = 0;
+    cpu.eflags.OF = 0;
+  }
   cpu.regs.eip = (ip + 1 + len) >>> 0;
 }
 

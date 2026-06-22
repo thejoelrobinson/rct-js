@@ -2060,3 +2060,28 @@ function's auto is DEAD until it is wired live. So:
 3. The _lockstep-auto / _invoke-diff oracles remain correct + useful — they measure auto-vs-interp
    divergence, which is exactly what to fix BEFORE wiring an auto live. Just don't conflate a
    green oracle with a shipped fix.
+
+---
+
+## ADDENDUM 43 — interpreter audit: byte r/m ALU flags fixed (lever 1, real production fix)
+
+Started the lever-1 interpreter audit (ADD.42). Grepped harness/x86.js for "approximate"/
+hardcoded flags and found the byte r/m ALU handler (opcodes 0x00/0x02 ADD, 0x08/0x0a OR,
+0x20/0x22 AND, 0x28/0x2a/0x38 SUB/CMP, 0x30 XOR, 0x84 TEST) set `CF = isSub ? (dst<src) : 0`
+and **`OF = 0` always** — the SAME bug class as the 0x80 carry fix (ADD.40):
+- ADD byte (0x00/0x02): CF hardcoded 0 (should be carry) → `add byte`+jc/jae/adc wrong.
+- ADD/SUB/CMP byte: OF hardcoded 0 → **signed byte branches jl/jg/jle/jge on overflow wrong**
+  (jl = SF≠OF; with OF≡0 it degrades to SF, mispredicting whenever signed overflow occurs —
+  e.g. `cmp al,bl` with al=0x7f,bl=0x80). Byte cmp+signed-branch is common, so this is a
+  meaningful live-path bug.
+FIX: compute CF/OF correctly for ADD (isAdd flag) and SUB/CMP (isSub); clear both for the
+logical ops. Validated with a flag unit test (/tmp/test_byteflags.mjs) — 8/8 cases incl. the
+overflow cases (add 0x7f+1→OF1, cmp 0x7f,0x80→CF1/OF1, sub 0x80-1→OF1). Gates: title +
+gameplay accuracy 0/307200, title_replay, playability/interactive/viewport_build_live 25/25.
+
+Audit residue (noted, not yet fixed): (a) the 16/32-bit ALU paths (setAddFlags/setSubFlags,
+lines ~255/609) already compute CF/OF correctly. (b) ADC/SBB (adcSbb + the 0x18 handler) set
+CF but NOT OF — stale OF after adc/sbb; low value (multi-word arith rarely followed by a
+signed-overflow branch), deferred. (c) JP/JNP (cond 0xa) always returns not-taken — PF isn't
+tracked; bigger change, low game-code impact, deferred. **2 real interp/production fixes this
+session: the 0x80 byte-ALU carry (ADD.40) and this byte r/m ALU CF/OF (ADD.43).**
