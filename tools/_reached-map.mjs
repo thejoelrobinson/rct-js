@@ -76,3 +76,8 @@ console.log(smallAuto.map((r) => `0x${r.hex}(${r.cl})`).join(" "));
 console.log("--- medium auto (61..150) ---");
 const medAuto = rows.filter((r) => r.hasJs && !r.manual && r.cl > 60 && r.cl <= 150).sort((a, b) => a.cl - b.cl);
 console.log(medAuto.map((r) => `0x${r.hex}(${r.cl})`).join(" "));
+console.log("--- large auto (151..400, still hand-portable) ---");
+const lgAuto = rows.filter((r) => r.hasJs && !r.manual && r.cl > 150 && r.cl <= 400).sort((a, b) => a.cl - b.cl);
+console.log(lgAuto.map((r) => `0x${r.hex}(${r.cl})`).join(" "));
+console.log("--- huge/@manual/no-js (skipped) ---");
+console.log(rows.filter((r) => r.manual || !r.hasJs || r.cl > 400 || r.cl < 0).map((r) => `0x${r.hex}(${r.manual ? "M" : !r.hasJs ? "noJS" : r.cl})`).join(" "));

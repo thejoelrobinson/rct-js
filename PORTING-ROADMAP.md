@@ -1778,3 +1778,37 @@ Validated: `node tools/diff-one.js --addr=0x444d07` → ported=0x0 == interp=0x0
 to surface more pure-leaf mismatches across the whole ported set, fix them (this
 sidesteps interp-reachability entirely); then tackle the `& 0xffff`-on-signed-short
 class systematically (audit the ~5 flagged i16-mask fns + consider a translator fix).
+
+---
+
+## ADDENDUM 35 (2026-06-21) — bulk-diff exhausted; MAJOR FINDING: 6 UNTRANSLATED-STUB functions (incl. the peep core) throw in production
+
+Fresh `bulk-diff-test.js`: ok 35→37 (0x444d07 fix confirmed; it left the mismatch
+bucket). Remaining `mismatch`=1 is the INTENTIONAL 0x40e2e6 shim; `throwPortedOnly`=1
+(0x43e304) is a harness artifact (needs the painter-bridge, which diff-one doesn't
+install). So the leaf-fn mismatch pool is EXHAUSTED. Extended `_reached-map.mjs` with
+a large bucket: the only reached auto fn in 151-400 C-lines is 0x5dcd40 (OK). All
+tractable reached fns are resolved.
+
+**MAJOR FINDING — untranslated stubs.** Testing the reached peep walking core
+0x43c751 (707 C-lines) showed it THROWS: its ported/auto/43c751.js is a STUB
+`throw new Error("…function not translated")` — the translator failed to translate it.
+A grep finds **6 such stub functions, ALL in _dispatch (production-callable)**:
+- **0x43c751 (707) — peep walking core, CONFIRMED reached in gameplay → peep movement
+  THROWS in the browser.** (Big; multi-session hand-port.)
+- 0x417420 (89), 0x4183a0 (78), 0x44c464 (88), 0x5d89c0 (103), 0x9b38bc (98) — small,
+  untranslated, production-callable. If reached they hard-crash; either way they're a
+  FRESH TRACTABLE candidate pool (78-103 C-lines each, ~0x5e53ca-sized hand-ports from C).
+Only 6/1250 failed to translate, so the translator handled ~99.5% — but the 6 misses
+include a core sim function.
+
+**Production-correctness picture (this session).** Both core sim subsystems are broken
+in the shipping browser path: VEHICLES (0x5dbeeb auto-translation 72/72 wrong, ADD.29)
+and PEEPS (0x43c751 untranslated stub → throws). Plus 3 smaller fixes landed
+(0x5e53ca, 0x45a95d, 0x444d07). The accuracy gates never caught any of these (tick-1
+render frame; peeps/vehicles not visibly corrupting that frame).
+
+**Next-pass plan (clear tractable targets now):** hand-port one SMALL untranslated stub
+from C/asm (start with whichever is reached / simplest C — 0x4183a0/78 or 0x417420/89),
+validate via diff-one (if pure) or _lockstep-auto (if reached). Then the two big cores
+(0x43c751 peeps, 0x5dbeeb vehicles) are the remaining multi-session ports.
