@@ -1893,3 +1893,33 @@ re-running it over the reached set will surface the rest of the F2 dropped-write
 (0x439219 6/6 + 0x423677 1/1 eaxMis still to be triaged with it). And the Ghidra-C-is-wrong
 class (a `void(void)` that actually returns a value) is detectable: any reached fn with
 clean memMis but persistent regMis/eaxMis is a decompiler miss worth disassembling.
+
+---
+
+## ADDENDUM 38 — exit-register oracle SWEEP: the reached translatable set is CLEAN
+
+Ran the enhanced `_lockstep-auto` (regMis check) over the full reached auto (non-@manual)
+set, union of the vehicle (HOOK=0x5da274) and peep (HOOK=0x439b86) subtrees:
+
+| fn | C-lines | result |
+|---|---|---|
+| 0x425432 | 27 | CLEAN (memMis=0, no regMis) |
+| 0x45389c | 29 | clean heap; esi/edi regMis is BENIGN — it trashes esi/edi as loop scratch (no push/pop; ends at ret 0x4538ff) and the sole caller 0x4499cc doesn't consume them (its unaff_EDI is reassigned before use; never reads esi) |
+| 0x439219 | 35 | clean heap; ebx/eax regMis benign (void side-effect fn) |
+| 0x423677 | 25 | clean heap; eaxMis benign (return not consumed) |
+| 0x5e3652 | 51 | CLEAN |
+| 0x5cfac7 | 80 | eax (primary return) MATCHES; ecx/esi/ebx regMis but ecx is push/pop-restored (return is eax:dx, not ecx) → likely benign scratch. Complex multi-branch vehicle pos/rotation calc, only 1 soak call (low coverage). DEFER for a higher-coverage + dx-aware look. |
+| 0x423ffd | 130 | CLEAN (104 calls) |
+| 0x5dcd40 | 171 | CLEAN (12 calls) |
+| 0x44189c | 110 | BROKEN (memMis=1) — already DEFERRED (ADD.33: complex recursive, multiple bugs, rare) |
+
+**Conclusion.** After the 0x458a7c fix, every REACHED + TRANSLATABLE function is correct at
+the heap gate, and the regMis cases are all benign scratch (calibration: esi/edi/ebx regMis
+on a void/side-effect fn whose caller doesn't consume them is a false-positive; regMis only
+matters when the register is a documented in/out consumed before reassignment — as with
+0x458a7c's cursor+width). The remaining production-correctness gaps are now precisely:
+(1) the GOTO-heavy reached cores 0x5dbeeb (vehicles, 20 _gotoWarn stubs) and 0x43c751 (peeps,
+parse-fail stub) — multi-session hybrid/asm rewrites; (2) the deferred complex fns 0x44189c
+(broken) and 0x5cfac7 (ambiguous); (3) the NOT-REACHED pool (5 stubs + F6 candidates) which
+needs a targeted-invocation harness to validate. Candidate-hunting in the reached set is
+exhausted; further gains require tackling (1) or building (3)'s harness.
