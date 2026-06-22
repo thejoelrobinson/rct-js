@@ -1745,3 +1745,36 @@ a whole tick) to run in the interpreter during a reached-map soak so its full su
 becomes interp-reached + callEdges-captured, surfacing the JS-dispatch-path functions
 the harness currently can't test. Then resume the ADD.30/32 fix pattern on the new
 tractable candidates. (Alternatively, begin the multi-session 0x5dbeeb production port.)
+
+---
+
+## ADDENDUM 34 (2026-06-21) — force-interp subtrees exhausted; pivot to bulk-diff (pure leaf fns) → fixed 0x444d07
+
+Generalized `tools/_reached-map.mjs` (HOOK env + `globalThis["__forceInterp"+hex]`)
+and ran it for all four force-interp flags (5da274 / 5dbeeb / 429560 / 4238b4). They
+ALL cover the same ~23-26-function vehicle/sprite-update subtree, whose tractable
+members are already resolved (2 fixed, small ones OK, 0x44189c deferred). So the
+force-interp-reachable candidate pool is EXHAUSTED — broadening to other subsystems
+(peeps, scenery, finance) would need new force-interp flags in painter-bridge.
+
+**Pivot to a candidate source that needs NO interp-reachability:** the existing
+`tools/bulk-diff-test.js` synthetic-entry diff over LEAF functions (no callees, only
+`heap`) — exactly the pure-fn case where synthetic-entry diffing is reliable (cf. the
+verify-fn-ceiling memory). Mined the cached `tools/bulk-diff-report.json` (75 leaf fns,
+ok 35/75): the reliable signal is `mismatch` (both ran, different output) = 2 fns. One
+(0x40e2e6) is an INTENTIONAL @manual shim divergence (DIB-validate returns 1 not 0).
+The other is a real bug:
+
+**Fixed 0x444d07 (now @manual):** `short sVar1 = DAT_0087c3a0-300+_DAT_0087c3a6;
+if (sVar1<0) sVar1=0; return sVar1;`. The translator masked sVar1 `& 0xffff` →
+UNSIGNED, so `if (sVar1<0)` never fired and the negative-clamp was DEAD (returned -300
+/ 0xfed4 instead of 0). Fixed: keep sVar1 signed (`<<16>>16`). Same translator-bug
+class as 0x5e53ca (signed `short` must not be `& 0xffff`-masked) — this is the THIRD
+instance of that class (5e53ca side-bug, 5e19eb/437fdc/etc. latent, now 444d07 active).
+Validated: `node tools/diff-one.js --addr=0x444d07` → ported=0x0 == interp=0x0 (was
+0xfed4); title_accuracy + gameplay_accuracy gates both pass.
+
+**Next:** run a FRESH `bulk-diff-test.js` (the cached report is small/stale — 75 fns)
+to surface more pure-leaf mismatches across the whole ported set, fix them (this
+sidesteps interp-reachability entirely); then tackle the `& 0xffff`-on-signed-short
+class systematically (audit the ~5 flagged i16-mask fns + consider a translator fix).

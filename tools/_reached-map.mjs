@@ -36,11 +36,19 @@ enterScenarioPlay(r.heap);
 // Enable callEdges on the bridge cpu the first time any hook fires (the hook
 // receives the cpu). Wrap 0x5dbeeb's hook (fires every tick) to stash the cpu +
 // set callEdges; then chain to the original.
+// Force the vehicle-update 0x5da274 to run in the interpreter (its hook supports
+// __forceInterp5da274) so its WHOLE subtree executes via the interp and records
+// callEdges — capturing the JS-dispatch sim functions the harness otherwise can't
+// reach. (HOOK env=5dbeeb restores the narrower interp-delegated-only map.)
+const HOOK = parseInt(process.env.HOOK || "0x5da274", 16) >>> 0;
+// Force the hooked subsystem through the interpreter so its whole subtree records
+// callEdges. The painter-bridge gates each on globalThis.__forceInterp<hex>.
+globalThis["__forceInterp" + HOOK.toString(16)] = true;
 const edges = new Map();
-const prod = getEipHook(0x5dbeeb);
+const prod = getEipHook(HOOK);
 let cpuRef = null;
-setEipHook(0x5dbeeb, function (c) {
-  if (!c.callEdges) c.callEdges = edges;
+setEipHook(HOOK, function (c) {
+  if (!c.callEdges) c.callEdges = edges;   // set before the forced-interp run so all edges are captured
   cpuRef = c;
   return prod ? prod(c) : undefined;
 });
