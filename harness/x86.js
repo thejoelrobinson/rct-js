@@ -1297,10 +1297,12 @@ export function step(cpu) {
     const { operand, regField, len } = decodeModrm(cpu, ip + 1);
     const a = operand.kind === "reg" ? read8reg(cpu, operand.reg) : mem8(m, operand.addr);
     const b = read8reg(cpu, regField);
-    const r = (a - b - cpu.eflags.CF) & 0xff;
+    const cf0 = cpu.eflags.CF;
+    const r = (a - b - cf0) & 0xff;
     if (operand.kind === "reg") write8reg(cpu, operand.reg, r); else write8(m, operand.addr, r);
     cpu.eflags.ZF = (r === 0) ? 1 : 0; cpu.eflags.SF = (r >>> 7) & 1;
-    cpu.eflags.CF = (a < (b + cpu.eflags.CF)) ? 1 : 0;
+    cpu.eflags.CF = (a < (b + cf0)) ? 1 : 0;
+    cpu.eflags.OF = (((a ^ b) & (a ^ r)) & 0x80) ? 1 : 0;   // was unset
     cpu.regs.eip = (ip + 1 + len) >>> 0; return true;
   }
   // ADC/SBB family — both r/m32 and r/m8 variants, plus eax-imm and r/m,r/m forms.
@@ -1337,6 +1339,11 @@ export function step(cpu) {
     cpu.eflags.CF = kind === "adc"
       ? ((a + b + cf) > (isWide ? 0xffffffff : 0xff) ? 1 : 0)
       : (a < b + cf ? 1 : 0);
+    // OF (was unset): signed overflow of the add/sub, sign bit per width.
+    const sb = isWide ? 0x80000000 : 0x80;
+    cpu.eflags.OF = (kind === "adc"
+      ? ((~(a ^ b) & (a ^ r)) & sb)
+      : (((a ^ b) & (a ^ r)) & sb)) ? 1 : 0;
     cpu.regs.eip = (ip + 1 + len) >>> 0;
   };
   if (opcode === 0x10) { adcSbb("adc", false, false); return true; }
@@ -1727,6 +1734,8 @@ export function step(cpu) {
       const r = wide ? ((-a) >>> 0) : ((-a) & 0xff);
       writeOp(r);
       cpu.eflags.CF = (a !== 0) ? 1 : 0;
+      // OF=1 iff a is the sign-min (the one value where -a overflows). Was unset.
+      cpu.eflags.OF = (a === (wide16 ? 0x8000 : wide ? 0x80000000 : 0x80)) ? 1 : 0;
       cpu.eflags.ZF = (r === 0) ? 1 : 0;
       cpu.eflags.SF = wide ? ((r >>> 31) & 1) : ((r >>> 7) & 1);
       cpu.regs.eip = (ip + 1 + len) >>> 0; return true;

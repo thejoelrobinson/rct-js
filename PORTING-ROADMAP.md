@@ -2085,3 +2085,33 @@ CF but NOT OF — stale OF after adc/sbb; low value (multi-word arith rarely fol
 signed-overflow branch), deferred. (c) JP/JNP (cond 0xa) always returns not-taken — PF isn't
 tracked; bigger change, low game-code impact, deferred. **2 real interp/production fixes this
 session: the 0x80 byte-ALU carry (ADD.40) and this byte r/m ALU CF/OF (ADD.43).**
+
+---
+
+## ADDENDUM 44 — interp flag audit CONCLUDED: NEG/ADC/SBB OF completed; arithmetic flags now systematically correct
+
+Completed the systematic missing-flag pattern the audit kept surfacing (the interp author left
+OF/CF "approximate" in several handlers). Added the missing OF to: NEG (0xf6/0xf7 /3 — OF=1 at
+sign-min), ADC/SBB (adcSbb, both byte+32-bit), and the standalone 0x18 SBB-byte handler. Also
+captured the input CF (cf0) in 0x18 before overwriting it. Unit-tested 7/7 (NEG 0x80→OF1, ADC
+0x7f+CF1→OF1, SBB 0x80-CF1→OF1, etc.); gates all green (title+gameplay 0/307200,
+title_replay, playability/interactive/viewport_build_live 25/25).
+
+**Interp arithmetic-flag audit is now CONCLUDED.** State of harness/x86.js flag correctness:
+- ALU byte (0x00-0x38 r/m, 0x80/0x82 imm): CF+OF correct (ADD.40/43).
+- ALU 16/32-bit (0x01-0x39, 0x81/0x83, eax-imm): CF+OF already correct.
+- INC/DEC 32-bit: correct (preserves CF, sets OF); INC/DEC 16-bit: still misses OF (RARE in
+  32-bit code — left as known-minor).
+- NEG, ADC/SBB: CF+OF correct (ADD.44).
+- Shifts: 8-bit CF correct (HEAD); 16/32-bit CF correct.
+- Known-by-design gaps (no production impact observed): PF untracked (JP/JNP always not-taken;
+  SAHF/no-PF) and AF untracked (BCD ops DAA/DAS/AAA/AAS 0x27/2f/37/3f unhandled — never executed
+  in the soak, so RCT doesn't use BCD). 16-bit INC/DEC OF. These are deferred unless a concrete
+  divergence surfaces.
+
+**Net: 3 interpreter correctness fixes this session (ADD.40/43/44), all on the LIVE production
+path.** Further interp-correctness gains now need a different method than static grep: a
+divergence-driven hunt (run careful @manual ports through _lockstep/_invoke-diff; any MATCH
+confirms the interp on that path, any DIFF where the JS is right is a NEW interp bug — how
+ADD.40 was found). Next-pass: either that divergence hunt, or pivot to lever-2 (wire a validated
+auto live to make it a real production change + perf win).
