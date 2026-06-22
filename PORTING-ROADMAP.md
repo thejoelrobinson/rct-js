@@ -2143,3 +2143,26 @@ dead JS-auto fixes), validating the ADD.42 re-prioritization onto interp correct
 clean + fixes verified). Remaining high-value work is lever-2 (wire a validated auto live →
 production change + perf) and the large interp-consumer ports (0x424e0f/0x5da274/0x429560 per
 ADD.6) — both bigger efforts. Minor cleanup: the stale standalone 43c49e.js (dead).
+
+---
+
+## ADDENDUM 46 — fresh interp-step ranking: perf is 60fps-met; no bounded port left (inflection)
+
+Ran `tools/probe-painter-rank.js` (8 ticks). perTickMs ≈ 16 (node sandbox) → ~6-8 ms/tick on
+the dev Mac (2-3×) = **60 fps budget MET** (90 fps would want more trimming). Current top interp
+consumers (steps/tick):
+- 0x4415e6 = 3791 (30326 steps/CALL, ~1 call/8t — a periodic heavy fn). Has C (~140L) + auto,
+  but the auto is **BROKEN** (`_lockstep-auto` memMis on globals 0x6293xx + sprite fields), so
+  it can't be wired without a substantial fix (likely goto-heavy like 5dbeeb).
+- 0x444e08 = 2616 (wall-painter banner fallback — ADD.6 deferred: pulls in scrolling-text).
+- 0x4368d8 / 0x431bc8 / 0x421d2c = 1-step hook crossings (overhead, not work).
+- 0x439178 (1387) / 0x422a90 (782) / 0x4254e0 (604) / 0x5d7503 (978) — moderate, but these are
+  MID-BLOCK addresses (no standalone decompiled/c/<addr>.c or ported/auto/<addr>.js), so they
+  can't be cleanly hand-ported as standalone functions.
+
+**INFLECTION POINT.** No bounded quick-win port remains: the top consumer needs a multi-session
+fix, the mid-tier are mid-block, and 60 fps is already met (so perf porting is marginal until a
+specific 90fps push). Combined with interp-correctness being worked out and the not-reached pool
+blocked, the remaining work is all MULTI-SESSION (fix+wire 0x4415e6 / full peep|vehicle JS port /
+translator secondary-register upgrade) or low-yield. This is the point to get user direction
+rather than sink-cost into an unbounded port (per the don't-sink-cost feedback).
