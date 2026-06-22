@@ -2259,3 +2259,19 @@ best-DIRECTION selection differs. Likely a subtle difference in the per-directio
 or directions explored (uVar6/pbVar8) feeding the `local_c`/`local_8` min-tracking. SLICE 6:
 trace the per-direction (uVar2, post-call DAT_006293c1, local_8) sequence js-vs-interp to find
 the last divergence, then 0x4415e6 → memMis=0 → WIRE it.
+
+## ADDENDUM 51 — 0x4415e6 SLICE 6 (diagnostic): last byte = 0x44189c recursion cost for dir 3
+
+Traced 4415e6's per-direction search (JS leg, esi=0x747094): explores dirs 0,2,3 with costs
+d0=1, d2=2, d3=0x3f → picks d0 (local_8=0). The interp picks d3 → so the JS `FUN_0044189c(d3)`
+computes cost **0x3f** where the interp finds a LOW cost. cost = DAT_006293c1 = bVar3 = depth+1,
+so the JS search from dir 3 ran ~62 deep down a wrong/expensive branch while the interp found a
+cheap path. So the residual is inside 0x44189c's RECURSION for the dir-3 entry (over-pruning or
+wrong sub-path). 0x44189c's standalone lockstep is single-direction (no recursion), so this path
+is unvalidated there. SLICE 7 (BOUNDED final attempt): use tools/_invoke-diff.mjs on 0x44189c
+with the crafted dir-3 entry (eax=in_EAX, ecx=in_ECX, edx=adjusted dl, ebp=3, edi=0xffff) to
+isolate the recursion divergence directly. If that doesn't crack it, this is an unbounded
+recursive-A* rabbit hole (per the don't-sink-cost feedback) → SURFACE to the user: the port is
+1/624 bytes from done but the last byte needs deep recursion analysis; keep grinding, accept
+(can't wire without byte-exactness), or move on. NOTE: 0x4415e6 cannot be WIRED until byte-exact
+(a 1-byte path-direction-cache diff would make peeps path differently than the real binary).
