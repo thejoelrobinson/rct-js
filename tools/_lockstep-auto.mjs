@@ -60,6 +60,13 @@ const save = new Uint8Array(bytes.byteLength);
 const afterJS = new Uint8Array(bytes.byteLength);
 
 let calls = 0, memMis = 0, eaxMis = 0, jsThrew = 0, reported = 0, inside = false;
+// Non-scratch exit-register mismatches (informational, like eaxMis). esi/edi/ebp/ebx
+// are callee-saved OR explicit register in/out params — a caller relies on them, so a
+// mismatch here flags a dropped register write-back (the F2 unaff_REG bug class) that
+// memMis (heap-only) cannot see. eax/ecx/edx are scratch and stay informational/ignored.
+// ecx is informational too: it is scratch for most functions (nonzero here is benign)
+// but IS the return value for the cx/ecx-returning helpers (e.g. measureStringWidth).
+let ecxMis = 0, esiMis = 0, ediMis = 0, ebpMis = 0, ebxMis = 0;
 
 const snap = (c) => ({ eax: c.regs.eax >>> 0, ecx: c.regs.ecx >>> 0, edx: c.regs.edx >>> 0,
   ebx: c.regs.ebx >>> 0, esi: c.regs.esi >>> 0, edi: c.regs.edi >>> 0, ebp: c.regs.ebp >>> 0, esp: c.regs.esp >>> 0 });
@@ -92,6 +99,7 @@ setEipHook(ADDR, function lockstepAuto(c) {
     regs.esi = r0.esi; regs.edi = r0.edi; regs.ebp = r0.ebp; regs.esp = r0.esp;
     let threw = null, jsEax = 0;
     try { autoFn(heap); jsEax = regs.eax >>> 0; } catch (e) { threw = e; jsThrew++; }
+    const jsExit = threw ? null : { ecx: regs.ecx >>> 0, esi: regs.esi >>> 0, edi: regs.edi >>> 0, ebp: regs.ebp >>> 0, ebx: regs.ebx >>> 0 };
     afterJS.set(bytes);
     // --- restore, leg B: interp truth (left live) ---
     bytes.set(save);
@@ -105,11 +113,20 @@ setEipHook(ADDR, function lockstepAuto(c) {
     let diffs = [];
     if (!a.equals(b)) { memMis++; for (let i = 0; i < CMP_END && diffs.length < 6; i++) if (afterJS[i] !== bytes[i]) diffs.push(`0x${i.toString(16)}:js=${afterJS[i].toString(16)}/in=${bytes[i].toString(16)}`); }
     if (jsEax !== inEax) eaxMis++;
-    if ((diffs.length || threw) && reported < 4) { reported++; console.log(`  mis#${calls} esi=${r0.esi.toString(16)} jsEax=${jsEax.toString(16)} inEax=${inEax.toString(16)}${threw ? " THREW:" + (threw.message || threw).toString().slice(0, 80) : ""} ${diffs.join(" ")}`); }
+    let regDiffs = [];
+    if (jsExit) {
+      if (jsExit.ecx !== (c.regs.ecx >>> 0)) { ecxMis++; regDiffs.push(`ecx:js=${jsExit.ecx.toString(16)}/in=${(c.regs.ecx >>> 0).toString(16)}`); }
+      if (jsExit.esi !== (c.regs.esi >>> 0)) { esiMis++; regDiffs.push(`esi:js=${jsExit.esi.toString(16)}/in=${(c.regs.esi >>> 0).toString(16)}`); }
+      if (jsExit.edi !== (c.regs.edi >>> 0)) { ediMis++; regDiffs.push(`edi:js=${jsExit.edi.toString(16)}/in=${(c.regs.edi >>> 0).toString(16)}`); }
+      if (jsExit.ebp !== (c.regs.ebp >>> 0)) { ebpMis++; regDiffs.push(`ebp:js=${jsExit.ebp.toString(16)}/in=${(c.regs.ebp >>> 0).toString(16)}`); }
+      if (jsExit.ebx !== (c.regs.ebx >>> 0)) { ebxMis++; regDiffs.push(`ebx:js=${jsExit.ebx.toString(16)}/in=${(c.regs.ebx >>> 0).toString(16)}`); }
+    }
+    if ((diffs.length || threw || regDiffs.length) && reported < 4) { reported++; console.log(`  mis#${calls} esi=${r0.esi.toString(16)} jsEax=${jsEax.toString(16)} inEax=${inEax.toString(16)}${threw ? " THREW:" + (threw.message || threw).toString().slice(0, 80) : ""} ${diffs.join(" ")}${regDiffs.length ? " | " + regDiffs.join(" ") : ""}`); }
   } finally { inside = false; }
 });
 
 const TICKS = parseInt(process.env.TICKS || "8", 10);
 for (let i = 0; i < TICKS; i++) { try { r.runTick(); } catch (e) { console.log(`tick ${i} ERR ${e.message}`); } }
 const verdict = calls === 0 ? "NOT-REACHED" : memMis === 0 ? "OK" : "BROKEN";
-console.log(`ADDR=0x${hex} ${verdict}: calls=${calls} memMis=${memMis} eaxMis=${eaxMis} jsThrew=${jsThrew}`);
+const regMisStr = (ecxMis || esiMis || ediMis || ebpMis || ebxMis) ? ` regMis[ecx=${ecxMis} esi=${esiMis} edi=${ediMis} ebp=${ebpMis} ebx=${ebxMis}]` : "";
+console.log(`ADDR=0x${hex} ${verdict}: calls=${calls} memMis=${memMis} eaxMis=${eaxMis} jsThrew=${jsThrew}${regMisStr}`);

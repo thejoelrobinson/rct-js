@@ -1849,3 +1849,47 @@ runtime confirmation (_lockstep-auto / bulk-diff) before a fix is justified. And
 small F6-flagged fns checked, **all NOT-REACHED** — same validation wall as the stubs.
 So F6's immediate payoff is the 3 hits inside 0x5dbeeb: when that core is hand-ported,
 F6 pre-flags exactly which sign branches the translator dropped.
+
+---
+
+## ADDENDUM 37 — exit-register oracle finds 0x458a7c = measureStringWidth, fully mistranslated (4th production fix)
+
+**Diagnostics this pass.** (1) Confirmed the reached VEHICLE core 0x5dbeeb is structurally
+unsalvageable as an auto-translation: `_lockstep-auto` shows memMis=54/54, jsEax=0x12
+constant (it returns heap.u32(0x65dc40) instead of doing the work), and the file has **20
+`_gotoWarn` early-return stubs** — the F4 goto-translation failure, not fixable by
+sign-branch tweaks. So 5dbeeb needs the hybrid/asm-rewrite (as the prior session found),
+not incremental patching. (2) Mapped a NEW reached subtree — the PEEP subsystem via
+`HOOK=0x439b86 node tools/_reached-map.mjs` (23 callees) — surfacing 8 fresh untested
+reached auto fns (0x423677/425432/45389c/458a7c/439219/5e3652/5cfac7/423ffd). All pass the
+memMis gate.
+
+**Tool upgrade — exit-register comparison in `_lockstep-auto.mjs`.** The memMis gate is
+heap-only; it cannot see a dropped REGISTER write-back (the F2 unaff_REG bug class), where a
+caller relies on an output register the JS port never sets. Added informational comparison
+of the JS-leg vs interp-leg EXIT registers ecx/esi/edi/ebp/ebx (eax already covered by
+eaxMis), printed as `regMis[ecx=.. esi=.. ..]` + per-call detail. ecx/esi are scratch for
+most fns (benign nonzero) but ARE the return for cx-returning / cursor-advancing helpers.
+
+**The find: 0x458a7c is measureStringWidth, and the auto-translation is FULLY BROKEN.**
+It passed the memMis gate (writes no heap) but the new regMis lit up esi=12/12 + ebx=12/12,
+and eaxMis=12/12. The asm (tools/disasm-va.py 0x458a7c) shows the Ghidra C
+(decompiled/c/458a7c.c, `void(void)`) recovered ONLY the esi-walk skeleton and dropped: the
+`cx` pixel-width accumulation (`add cl,[ebx+eax+0x99a508]; adc ch,0`), the `ebx` font setup
+(`movzx ebx,word [0x971e84]`), the inline-sprite/escape-code handling, and the **cx (ecx)
+RETURN VALUE**. So the shipping port measured nothing, never advanced esi, never returned a
+width — corrupting all text width/centering through its 5 callers (4585a6/458622/458678/
+42de29/5e3652). The tick-1 accuracy frame didn't exercise the affected layout, so the gates
+stayed green over a real bug — exactly why a per-function exit-register oracle was needed.
+
+**FIX (commit pending): hand-rewrote ported/auto/458a7c.js from the asm** (`@manual`), with
+the font-select codes (7→0x1c0,8→0x2a0,9→0xe0,0xa→0), param-skip codes, and inline-sprite
+width (word [imageId*16+0x8dc0b8]). Validated: `_lockstep-auto ADDR=0x458a7c` → calls=16
+memMis=0 eaxMis=0 **regMis clean (esi/ecx/ebx all match)**. Gates: title_accuracy +
+gameplay_accuracy 0/307200, title_replay, playability/interactive/viewport_build_live 23/23.
+
+**Takeaway for the methodology.** The exit-register oracle is now a standing check —
+re-running it over the reached set will surface the rest of the F2 dropped-writeback class
+(0x439219 6/6 + 0x423677 1/1 eaxMis still to be triaged with it). And the Ghidra-C-is-wrong
+class (a `void(void)` that actually returns a value) is detectable: any reached fn with
+clean memMis but persistent regMis/eaxMis is a decompiler miss worth disassembling.
