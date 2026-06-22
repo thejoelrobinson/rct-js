@@ -1637,12 +1637,13 @@ export function step(cpu) {
     const imm = mem8(m, ip + 1 + len);
     const a = operand.kind === "reg" ? read8reg(cpu, operand.reg) : mem8(m, operand.addr);
     const writeRes = (v) => { if (operand.kind === "reg") write8reg(cpu, operand.reg, v); else write8(m, operand.addr, v); };
+    const cfIn = cpu.eflags.CF;
     let r;
     switch (regField) {
       case 0: r = (a + imm) & 0xff; writeRes(r); break;                                    // ADD
       case 1: r = (a | imm)  & 0xff; writeRes(r); break;                                    // OR
-      case 2: r = (a + imm + cpu.eflags.CF) & 0xff; writeRes(r); break;                     // ADC
-      case 3: r = (a - imm - cpu.eflags.CF) & 0xff; writeRes(r); break;                     // SBB
+      case 2: r = (a + imm + cfIn) & 0xff; writeRes(r); break;                              // ADC
+      case 3: r = (a - imm - cfIn) & 0xff; writeRes(r); break;                              // SBB
       case 4: r = (a & imm)  & 0xff; writeRes(r); break;                                    // AND
       case 5: r = (a - imm) & 0xff; writeRes(r); break;                                     // SUB
       case 6: r = (a ^ imm)  & 0xff; writeRes(r); break;                                    // XOR
@@ -1651,8 +1652,15 @@ export function step(cpu) {
     }
     cpu.eflags.ZF = (r === 0) ? 1 : 0;
     cpu.eflags.SF = (r >>> 7) & 1;
-    if (regField === 7) cpu.eflags.CF = (a >>> 0) < (imm >>> 0) ? 1 : 0;
-    else if (regField === 0 || regField === 5) cpu.eflags.CF = 0; // approximate; rarely used after
+    // Correct CF/OF per op (was: CF hardcoded 0 for ADD/SUB — a real carry-flag bug that
+    // broke `add byte [mem],imm8` + jc/jae carry branches, e.g. 0x5d89c0's [esi+0xb5]+=0x14).
+    switch (regField) {
+      case 0: cpu.eflags.CF = (a + imm) > 0xff ? 1 : 0; cpu.eflags.OF = ((~(a ^ imm) & (a ^ r)) & 0x80) ? 1 : 0; break;          // ADD
+      case 2: cpu.eflags.CF = (a + imm + cfIn) > 0xff ? 1 : 0; cpu.eflags.OF = ((~(a ^ imm) & (a ^ r)) & 0x80) ? 1 : 0; break;    // ADC
+      case 3: cpu.eflags.CF = a < (imm + cfIn) ? 1 : 0; cpu.eflags.OF = (((a ^ imm) & (a ^ r)) & 0x80) ? 1 : 0; break;            // SBB
+      case 5: case 7: cpu.eflags.CF = a < imm ? 1 : 0; cpu.eflags.OF = (((a ^ imm) & (a ^ r)) & 0x80) ? 1 : 0; break;             // SUB/CMP
+      default: cpu.eflags.CF = 0; cpu.eflags.OF = 0; break;                                                                        // OR/AND/XOR clear CF,OF
+    }
     cpu.regs.eip = (ip + 1 + len + 1) >>> 0; return true;
   }
   // XOR r8, r/m8 (0x32) / CMP r8, r/m8 (0x3a)

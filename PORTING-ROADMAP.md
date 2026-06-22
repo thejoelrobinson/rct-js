@@ -1950,3 +1950,34 @@ ecx=1/ebx=0x743c0e) — triage later (may be benign scratch like 0x45389c, or a 
 **Next:** hand-port the stubs against this harness, starting with 0x5d89c0 (clearest target:
 complete C + 67-write interp reference + realistic live-sprite entry esi=0x700ac8). Then
 0x9b38bc triage, then the param-taking stubs (0x4183a0 needs STACK= pointer args).
+
+---
+
+## ADDENDUM 40 — 0x5d89c0 stub PORTED (5th fix) + interpreter add/sub-byte CARRY-FLAG bug fixed
+
+**0x5d89c0 hand-ported (was a parse-fail THROW stub).** Peep/vehicle animation-update chain
+walk — transcribed from the complete C, with the two cross-branch gotos structured as a
+`doA4F` flag (velocity branch re-enters LAB_005d8a4f) + a `skip` flag (the before>=0xec early
+exit). One subtlety the C encodes that's easy to miss: the velocity branch reassigns
+`bVar3 = (byte)uVar4` (abs velocity) BEFORE its `goto LAB_005d8a4f`, so A4F's `bVar3==0x22`
+check uses the velocity value on that path. Validated with `tools/_invoke-diff.mjs`
+(ADD.39): MATCH, memMis=0, exit regs match (was 67 mismatched bytes as a stub).
+
+**Interpreter bug found via the new harness — `add/sub byte [mem],imm8` CARRY FLAG.** The
+last divergence (1 byte: entity0+0xb5, js=0xff/in=0x13) was NOT a port bug — it was the
+INTERPRETER. harness/x86.js's 0x80/0x82 ALU-byte handler hardcoded `CF=0` for ADD and SUB
+("approximate; rarely used after"). So `add byte [esi+0xb5],0x14` on 0xff produced 0x13 with
+CF=0; the following `jae` was wrongly taken, skipping the `mov 0xff`. Ghidra's C (`0xeb <
+bVar3` → set 0xff) and the real CPU set 0xff — the JS port was RIGHT, the "truth" oracle was
+WRONG (the ADD.4 "suspect lockstep mismatches in BOTH directions" lesson, 3rd time: cf the
+66-MOVSX, 66-XCHG prefix bugs). FIXED: compute CF (and OF) correctly for ADD/ADC/SBB/SUB/CMP
+and clear CF/OF for OR/AND/XOR. After the fix 0x5d89c0 is MATCH and the known-good 0x458a7c/
+0x5dcd40 still MATCH. **Gates all green:** title_accuracy + gameplay_accuracy 0/307200,
+title_replay, playability/interactive/viewport_build_live 25/25 — so no production code
+depended on the buggy CF=0. This carry-flag fix improves the interp/oracle for ALL code that
+does a byte add/sub then a carry branch (jc/jnc/jae/jb/adc/sbb).
+
+**Production-fix tally this session: 5** — 0x5e53ca, 0x45a95d, 0x444d07, 0x458a7c, 0x5d89c0,
+plus one interpreter correctness fix (0x80 byte-ALU carry). **Next:** triage 0x9b38bc, then
+port the param-taking stubs (0x4183a0 — 3 pointer args via STACK=; 0x417420 — indirect-call
+display dispatch; 0x44c464; 0x9b38bc).

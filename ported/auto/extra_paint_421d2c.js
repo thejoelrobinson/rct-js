@@ -470,23 +470,9 @@ function paintBody421d2c(heap, cpu, runFunction) {
   // === 0x422801: al = [esi+7] & 0xf ===
   const e7Low = heap.u8(esi0 + 7) & 0x0f;
   if (e7Low !== 0) {
-    // 0x42280c..0x422a89 cliff-edge corner block (~4% of calls, [esi+7]&0xf in
-    // {1,2,3,4,6}). In the shipped baseline this drew NO corners: the interp's
-    // 8-bit shift group left CF stale, so the block's `shr al,1; jae` corner
-    // gate (after `or al,ah` cleared CF) always skipped. With the shift8Op CF
-    // fix (harness/x86.js) the gate now works — but the 0x421d2c HOT-PATH body
-    // leaves eax/ebx DESYNCED from the binary at this COLD dispatch (measured
-    // body eax=0x101 vs from-entry-binary 0x300 on 34/40 cliff tiles —
-    // PORTING-ROADMAP.md ADDENDUM 16, Bug 2), so the corners would render off
-    // wrong registers. Keep them SUPPRESSED until the body's cliff-dispatch
-    // register fidelity is fixed: the block's only heap effect with no corner
-    // drawn is [0x991f78]=8 then =1 (the eax bit-fold is register-only), so
-    // replicate that and continue into the 0x422a90 jumptable. Byte-identical
-    // to the baseline cliff path (verified: tools/_lockstep-42280c history,
-    // 238 cliff calls memMis=0).
-    heap.setU8(0x00991f78, 8);
-    heap.setU8(0x00991f78, 1);
-    return runBodyFrom(heap, cpu, runFunction, 0x00422a90);
+    // COLD-ish: ~4% of calls have [esi+7]&0xf != 0 (cliff-edge corner paint).
+    // Fall back to interp starting at 0x42280c. (Same reasoning as above.)
+    return runBodyFrom(heap, cpu, runFunction, 0x0042280c);
   }
   // Falls through to 0x422a90.
 
