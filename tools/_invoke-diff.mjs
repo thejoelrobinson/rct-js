@@ -78,6 +78,19 @@ const entry = {
 };
 const stackArgs = (process.env.STACK || "").split(",").filter(s => s.length).map(s => parseInt(s, 16) >>> 0);
 
+// POKE="addr=val[/size],..." crafts heap state BEFORE the snapshot, so both legs see
+// it identically (still a valid differential test) — used to force a branch a real
+// entity doesn't reach (e.g. set an animation frame to exercise a cold path). size in
+// bytes: 1/2/4, default 1.
+const pokeDV = new DataView(bytes.buffer);
+for (const p of (process.env.POKE || "").split(",").filter(s => s.length)) {
+  const [lhs, rhs] = p.split("=");
+  const [valStr, szStr] = rhs.split("/");
+  const addr = parseInt(lhs, 16) >>> 0, val = parseInt(valStr, 16) >>> 0, sz = szStr ? parseInt(szStr, 10) : 1;
+  if (sz === 4) pokeDV.setUint32(addr, val, true); else if (sz === 2) pokeDV.setUint16(addr, val & 0xffff, true); else pokeDV.setUint8(addr, val & 0xff);
+  console.log(`  POKE [0x${addr.toString(16)}] = 0x${val.toString(16)} (${sz}B)`);
+}
+
 const save = new Uint8Array(bytes); // post-warm-up baseline both legs restore from
 const afterJS = new Uint8Array(bytes.byteLength);
 const dv = new DataView(bytes.buffer);

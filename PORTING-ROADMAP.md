@@ -1981,3 +1981,35 @@ does a byte add/sub then a carry branch (jc/jnc/jae/jb/adc/sbb).
 plus one interpreter correctness fix (0x80 byte-ALU carry). **Next:** triage 0x9b38bc, then
 port the param-taking stubs (0x4183a0 — 3 pointer args via STACK=; 0x417420 — indirect-call
 display dispatch; 0x44c464; 0x9b38bc).
+
+---
+
+## ADDENDUM 41 — 0x9b38bc benign; POKE harness feature; 0x44c464 BLOCKED on helper register-modeling
+
+**0x9b38bc triage = benign (already ported).** It is NOT a stub — it's an existing `@manual`
+hand-port (the RLE 1x1 pick-blit leaf). Its contract is the DAT_0099c164 hit-flag side-effect
+(heap — matches, memMis=0) and its `eax` return (matches); the ecx/ebx regMis from _invoke-diff
+is pure scratch the callers ignore. No action — consistent with the regMis calibration rule.
+
+**POKE harness feature (`tools/_invoke-diff.mjs`).** Added `POKE="addr=val[/size],…"` which
+writes heap bytes BEFORE the snapshot, so both legs see the crafted state identically — used to
+force a branch a real entity doesn't reach (e.g. a mid-animation frame). Validated: a harmless
+POKE leaves known-good 0x458a7c at MATCH.
+
+**0x44c464 attempted then REVERTED (unverified) — BLOCKED on helper register-modeling.** The
+sprite image-id selector. Real idle entities (esi=0x744994 etc., [0x15a]==0) all take the
+`FUN_00423677` fallback path. My transcription hit memMis=624 because the fallback computes
+`uVar6 = CONCAT22(extraout_CX, uVar3)` / `iVar7 = CONCAT22(extraout_DX, …)` from 0x423677's
+EXIT cx/dx — but 423677.js (auto) only models `regs.eax` + heap, never sets regs.ecx/edx. So
+the caller cannot recover the secondary register outputs it needs; same for FUN_005e6a83's
+extraout_ECX/EDX. Reverted to the stub per "never commit unverified green."
+
+**METHODOLOGY BOUNDARY (important).** A not-reached stub is cleanly hand-portable+validatable
+ONLY if its callees are leaf/pure OR model the FULL register output the caller consumes. The
+auto-translator models eax+heap but NOT secondary register outputs (cx/dx/ecx/edx as Ghidra's
+`extraout_*`). 0x5d89c0 ported cleanly because it consumed only FUN_005e53ca's edx, and that's
+@manual and DOES set regs.edx. The remaining stubs are blocked: 0x44c464 (423677/5e6a83
+cx/dx/ecx/edx), and likely 0x4183a0 (5 FP-bignum helpers) and 0x417420 (indirect GDI calls).
+**Unblocking path = a translator/helper upgrade to emit secondary-register writes** (model the
+`extraout_*`/out-register effects), then these stubs become portable. That's the next real
+lever for the not-reached pool — bigger than a single function, so a deliberate separate pass.
