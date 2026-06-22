@@ -1603,3 +1603,44 @@ replacing 5dbeeb.js. This is the path that actually fixes the browser.
 lockstep was green for ~10 commits while the code that actually runs in the browser
 (the auto fn) was 100% wrong. A differential test is only as good as the SUT it points
 at — point it at the production artifact.
+
+---
+
+## ADDENDUM 30 (2026-06-21) — production-correctness sweep + first end-to-end FIX (0x5e53ca, byte-exact)
+
+Acting on ADDENDUM 29, built the generalizable harness `tools/_lockstep-auto.mjs`
+(untracked): `ADDR=0x... node tools/_lockstep-auto.mjs` runs ANY production auto fn
+`FUN_00<addr>` vs the interpreter with REAL entry state during the soak (a re-entrancy
+guard + a `run-until-esp>entry-esp` interp leg). NOTE: the first cut of that interp
+leg was itself buggy (exited after ~1 step for non-pushing prologues) — caught when a
+result's diff *flipped* direction; fixed to a single `while (esp <= entryEsp) step`.
+Lesson: validate the harness too.
+
+**Production-correctness map of the 0x5dbeeb callees (real entry state):**
+- `0x5e53ca` — **BROKEN** (was wrong on every overlapping call) → **FIXED this commit**.
+- `0x5e117d` OK, `0x5dcd40` OK, `0x5cfac7` OK (auto-translations correct).
+- `0x5cfc50`, `0x5df40c`, `0x5d9220` NOT-REACHED by the type-37 soak.
+- (the big 0x444927/0x4364c2/0x452fce/0x5d849e/0x5d8623/0x5d870c not yet swept.)
+
+**The fix — 0x5e53ca (ported/auto/5e53ca.js, now @manual):** Ghidra's C was BADLY
+incomplete — it collapsed the function to a trivial loop and DROPPED both the
+per-entry bbox-clamp math and the ax/bx/dx/bp register setup before `call 0x5e117d`.
+The real function (rewritten from the 0x5e53ca disasm) is a viewport dirty-rect
+marker: for each window in the table at 0x9a121c overlapping the sprite bbox
+([esi+0x16..0x1c]), clamp the bbox to the window, transform into the window's
+dirty-grid coords (sub origin, `sar` by zoom [esi+0x10], add grid base), and call
+0x5e117d to mark cells. `pushal/popal` ⇒ preserves all regs. The auto fn (faithful
+to the wrong C) called 0x5e117d with un-set registers, so production marked NO dirty
+cells for overlapping sprites — the browser's viewport invalidation was broken.
+
+**Validation:** `tools/_lockstep-auto.mjs ADDR=0x5e53ca` **memMis=0 eaxMis=0 over 178
+calls** (TICKS 16). title_accuracy + gameplay_accuracy gates both PASS (no render
+regression). This is a COMPLETE, shippable production fix — unlike the 0x5dbeeb
+hybrid (test-path-only until fully interp-free). It also re-applies the ADDENDUM 18
+pattern (fix a broken auto-translation, gated by the real-entry lockstep) and proves
+the auto-vs-interp harness as a reusable production-correctness tool.
+
+**Translator-bug classes confirmed here:** (1) `& 0xffff` masking signed `short`
+loads (the initial sVar1..sVar4 fix — real, though not this divergence's root);
+(2) Ghidra dropping a whole clamp loop + call-site register setup (the root) — the
+auto-translation is simply unusable when Ghidra's C is this lossy; hand-port from asm.
