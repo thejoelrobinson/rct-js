@@ -1812,3 +1812,40 @@ render frame; peeps/vehicles not visibly corrupting that frame).
 from C/asm (start with whichever is reached / simplest C — 0x4183a0/78 or 0x417420/89),
 validate via diff-one (if pure) or _lockstep-auto (if reached). Then the two big cores
 (0x43c751 peeps, 0x5dbeeb vehicles) are the remaining multi-session ports.
+
+---
+
+## ADDENDUM 36 — F6 signed-short fingerprint added to the static scanner; small candidates all NOT-REACHED (validation wall confirmed)
+
+**Validation wall, confirmed precisely.** Before hand-porting a small stub I checked
+reachability of all 5 small untranslated stubs (0x417420/4183a0/44c464/5d89c0/9b38bc) via
+tools/_lockstep-auto.mjs: **all 5 NOT-REACHED** (calls=0) in the gameplay-tick soak (HOOK
+0x5da274 vehicle subtree). They also take params (3 pointers for 0x4183a0; an int mode for
+0x417420 whose indirect `(*pcVar4)()` calls need display-init globals) so diff-one's
+synthetic entry is unreliable too. Net: a hand-port of these cannot be gated to memMis=0
+with the current harnesses → per "NEVER commit unverified green," they are deferred until
+a targeted-invocation harness exists (set eip + craft entry state + diff vs interp).
+
+**Methodology deliverable — F6 fingerprint.** Added a 6th fingerprint to
+tools/translator-bug-scan.js for the signed-`short`/`char` bug class that caused TWO of
+this session's three production fixes (0x5e53ca, 0x444d07): a variable narrowed to UNSIGNED
+(`& 0xffff` / `& 0xff` / `>>> 0`) and then tested `< 0` — a provably-dead sign branch
+(the original compared a signed value; the translator masked it unsigned, deleting the
+negative-clamp). Scans backward from each `< 0` to the var's most-recent assignment so
+reassignment is handled. VERIFIED on a fixture: flags both known bug shapes
+(`&0xffff`-then-`<0` and `>>>0`-return-then-`<0`), and does NOT flag the correct fix shape
+(`<<16>>16` re-signed) — so fixing a site cleanly makes F6 stop flagging it (no FP churn).
+
+**F6 worklist — 29 static hits across the port** (`node tools/translator-bug-scan.js`,
+`/tmp/rct-translator-bugs.csv`). Clusters in already-known-broken code corroborate the
+diagnosis: **0x5dbeeb x3 (the 72/72-broken vehicle core — lines 131/608/624)**, 0x5dcd40 x4,
+0x5e16f7/5e19eb/5e613e (0x5e draw/viewport, near the 0x5e53ca fix), 0x9b30f1, 0x415c60 x3,
+416a50, 4190f0, 419880, 428ec0, 43de68 x2, 450b4c, 53cfb8, 53e318.
+
+**KEY CAVEAT (baked into the tool header):** F6 is a STATIC fingerprint — a hit is a
+CANDIDATE, not a confirmed live bug. Proof: 0x5dcd40 has 4 F6 hits yet passes lockstep
+(memMis=0) — its dead branches aren't exercised on the soak path. Every F6 hit still needs
+runtime confirmation (_lockstep-auto / bulk-diff) before a fix is justified. And of the 13
+small F6-flagged fns checked, **all NOT-REACHED** — same validation wall as the stubs.
+So F6's immediate payoff is the 3 hits inside 0x5dbeeb: when that core is hand-ported,
+F6 pre-flags exactly which sign branches the translator dropped.

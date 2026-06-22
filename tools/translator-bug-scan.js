@@ -27,6 +27,16 @@
 //       (puVar*, dest, ebp_target). Severity 3 (this is exactly the
 //       9b30bc vertical-stripe bug fingerprint).
 //
+//   F6: a variable narrowed to UNSIGNED (`& 0xffff`, `& 0xff`, or `>>> 0`)
+//       and then tested `< 0` — a provably-dead sign branch. The original C
+//       compared a signed `short`/`char`/`int`; the translator masked it
+//       unsigned, deleting the negative-clamp/sign branch. Severity 3.
+//       Confirmed twice in production: 0x5e53ca and 0x444d07. Fix by
+//       re-signing (`<<16>>16` short, `<<24>>24` char) instead of masking.
+//       NOTE: static fingerprint only — a hit is a CANDIDATE, not a proven
+//       live bug (0x5dcd40 has 4 F6 hits yet passes lockstep). Confirm at
+//       runtime with tools/_lockstep-auto.mjs or tools/bulk-diff-test.js.
+//
 // Usage:
 //   node tools/translator-bug-scan.js          # scan all ported/auto/*.js
 //   node tools/translator-bug-scan.js 9b30bc   # scan one file
@@ -146,6 +156,46 @@ function scanF5(lines) {
   return hits;
 }
 
+// F6: dead negative-clamp — a variable narrowed to UNSIGNED (`& 0xffff`,
+// `& 0xff`, or `>>> 0`) and then tested `< 0` (or `<= -1`). After an unsigned
+// narrow the value is provably >= 0 in JS, so the `< 0` branch is dead code.
+// This is the signed-`short` bug class: Ghidra's source compared a signed
+// `short`/`char`, but the translator masked it unsigned, silently deleting the
+// negative-clamp / sign branch. Confirmed twice in production: 0x5e53ca (dirty
+// rect clamp) and 0x444d07 (returned -300/0xfed4 instead of 0). To fix the
+// flagged site, re-sign the value with `<<16>>16` (short) or `<<24>>24` (char)
+// before the compare instead of masking it. Severity 3.
+function scanF6(lines) {
+  const hits = [];
+  // an assignment whose RHS's final operation narrows to unsigned, ignoring
+  // trailing close-parens / `;` / whitespace.
+  const unsignedNarrowTail = /(&\s*0xffff|&\s*0xff|>>>\s*0)\s*\)*\s*;?\s*$/;
+  const assignRe = /^\s*(?:let\s+|const\s+|var\s+)?([A-Za-z_$][\w$]*)\s*=\s*([^=].*)$/;
+  // a provably-dead negative test on a bare variable: `X < 0` or `X <= -1`.
+  const negTestRe = /\b([A-Za-z_$][\w$]*)\s*(?:<\s*0|<=\s*-1)\b/g;
+  for (let i = 0; i < lines.length; i++) {
+    let m;
+    negTestRe.lastIndex = 0;
+    while ((m = negTestRe.exec(lines[i])) !== null) {
+      const v = m[1];
+      // walk backward to the most-recent assignment of v.
+      for (let j = i; j >= 0; j--) {
+        // skip the comparison occurrence itself when it shares the line.
+        const am = lines[j].match(assignRe);
+        if (!am || am[1] !== v) continue;
+        if (unsignedNarrowTail.test(am[2])) {
+          hits.push({
+            line: i + 1, kind: "F6", severity: 3,
+            note: `${v} narrowed unsigned at line ${j + 1} then tested <0 at line ${i + 1} — dead sign branch (signed-short bug)`,
+          });
+        }
+        break; // most-recent assignment decides; stop walking
+      }
+    }
+  }
+  return hits;
+}
+
 // ---- main ---------------------------------------------------------------
 
 function listFiles() {
@@ -165,6 +215,7 @@ function scanFile(file) {
     ...scanF3(text, lines),
     ...scanF4(lines),
     ...scanF5(lines),
+    ...scanF6(lines),
   ].map(h => ({ ...h, file }));
 }
 
