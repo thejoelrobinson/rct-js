@@ -54,7 +54,7 @@ export function FUN_004415e6(heap) {
     }
   }
   uVar6 = ((0xf) >>> 0);
-  if ((((unaff_ESI | 0) != -1) && (CONCAT11((((heap.u8(0x006293be) >>> 5)) << 24 >> 24), (((heap.u8(0x006293bc) >>> 5)) << 24 >> 24)) == heap.i16((unaff_ESI + 0xcc)))) && (heap.u8(0x006293c0) == heap.i8((unaff_ESI + 0xce)))) {
+  if ((((unaff_ESI | 0) != -1) && (CONCAT11((((heap.u16(0x006293be) >>> 5)) << 24 >> 24), (((heap.u16(0x006293bc) >>> 5)) << 24 >> 24)) == heap.i16((unaff_ESI + 0xcc)))) && (heap.u8(0x006293c0) == heap.i8((unaff_ESI + 0xce)))) {
     uVar6 = ((0) >>> 0);
     let earlyMatch = false;
     do {
@@ -115,7 +115,10 @@ export function FUN_004415e6(heap) {
               regs.edi = 0xffff;
             }
             (regs.eax = FUN_0044189c(heap));
-            if ((((((local_c) >>> 16) & 0xffff) | 0) == -1) && (heap.u8(0x006293c1) < ((local_c) & 0xff))) {
+            // @manual fix (ADDENDUM 50): local_c._2_2_ == -1 is a SIGNED short compare; the auto's
+            // `((local_c>>>16)&0xffff)|0 == -1` is always false (0xffff=65535 != -1), so local_8
+            // was never set → the search result was never recorded → the cache tail was skipped.
+            if (((((local_c) >>> 16) & 0xffff) << 16 >> 16) == -1 && (heap.u8(0x006293c1) < ((local_c) & 0xff))) {
               local_c = ((CONCAT31(0xffff00, heap.u8(0x006293c1))) >>> 0);
               local_8 = ((uVar2) >>> 0);
             }
@@ -141,7 +144,7 @@ export function FUN_004415e6(heap) {
   cVar3 = ((heap.u8(0x006293c0)) & 0xff);
   if (((unaff_ESI | 0) != -1) && (local_8 != 0xffffffff)) {
     LAB_00441885: {
-    sVar4 = ((CONCAT11((((heap.u8(0x006293be) >>> 5)) << 24 >> 24), (((heap.u8(0x006293bc) >>> 5)) << 24 >> 24))) & 0xffff);
+    sVar4 = ((CONCAT11((((heap.u16(0x006293be) >>> 5)) << 24 >> 24), (((heap.u16(0x006293bc) >>> 5)) << 24 >> 24))) & 0xffff);
     if ((sVar4 != heap.i16((unaff_ESI + 0xcc))) || (heap.u8(0x006293c0) != heap.i8((unaff_ESI + 0xce)))) {
       heap.setI16((unaff_ESI + 0xcc), (sVar4) & 0xffff);
       heap.setI8((unaff_ESI + 0xce), (cVar3) & 0xff);
@@ -159,7 +162,7 @@ export function FUN_004415e6(heap) {
       }
       uVar6 = ((uVar6 + 1) >>> 0);
     } while (uVar6 < 4);
-    uVar6 = ((heap.u32((unaff_ESI + 0xcf))) >>> 0);
+    uVar6 = ((heap.u8((unaff_ESI + 0xcf))) >>> 0);   // @manual fix (ADD.50): slot counter is a BYTE (asm `movzx edi, byte [esi+0xcf]`), was u32
     heap.setI8((unaff_ESI + 0xcf), (heap.i8((unaff_ESI + 0xcf)) + 1) & 0xff);
     heap.setU8((unaff_ESI + 0xcf), (heap.u8((unaff_ESI + 0xcf)) & 3) & 0xff);
     heap.setI16((unaff_ESI + 0xd0 + uVar6 * 4), (sVar4) & 0xffff);

@@ -2236,3 +2236,26 @@ LAB_004417af block writing [esi+0xcc]=sVar4 + the 4 direction-cache slots [esi+0
 5: the tail reads DAT_006293bc/be as `heap.u8` for the `>>5` tile-hash but they're 16-bit (same
 u8→u16 bug fixed in 44189c; also at the early-out line 56) — fix those + re-validate → memMis=0
 → WIRE 0x4415e6.
+
+---
+
+## ADDENDUM 50 — 0x4415e6 port, SLICE 5: 624→1 mismatched byte (three more confirmed bugs)
+
+Three asm-confirmed tail bugs fixed; memMis 624 → 1 byte:
+1. **DAT_006293bc/be u8→u16** (early-out line 56 + tail): asm `mov ax, word [0x6293bc]; shr ax,5;
+   mov ah,cl` — sVar4 = CONCAT11((be>>5)&0xff,(bc>>5)&0xff) but the shifts are on the FULL 16-bit
+   coords. (Latent for this test — high bytes 0 — but correct.)
+2. **local_c._2_2_ == -1 signed compare** (line 118): the auto's `((local_c>>>16)&0xffff)|0 == -1`
+   is ALWAYS FALSE (0xffff=65535 ≠ -1), so `local_8` (the best direction) was NEVER set → the
+   whole cache tail was skipped. Fixed with `<<16>>16` sign-extension. (F6 class.) THIS was the
+   big one — it unblocked the entire tail.
+3. **slot counter [esi+0xcf] u32→u8** (line 142): asm `movzx edi, byte [esi+0xcf]` — the
+   round-robin slot index is a byte; reading u32 gave a huge index → cache slot written 0x400
+   bytes off (to a neighbouring sprite).
+
+**REMAINING: 1 byte — [esi+0xd3] (slot flags), js cleared bit 0 vs interp bit 3 → local_8
+differs (js=0, interp=3).** The search best-COST (0x6293c1) and depth (0x6293c6) match, but the
+best-DIRECTION selection differs. Likely a subtle difference in the per-direction cost sequence
+or directions explored (uVar6/pbVar8) feeding the `local_c`/`local_8` min-tracking. SLICE 6:
+trace the per-direction (uVar2, post-call DAT_006293c1, local_8) sequence js-vs-interp to find
+the last divergence, then 0x4415e6 → memMis=0 → WIRE it.
