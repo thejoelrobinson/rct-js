@@ -85,7 +85,10 @@ export function FUN_0044189c(heap) {
     }
   } while (true);
   in_DX = ((CONCAT11(bVar3, heap.u8(pbVar9 + (2)))) & 0xffff);
-  uVar6 = ((((heap.u8(pbVar9 + (6)) & heap.u32((0x00630e58) + (heap.u8(pbVar9 + (6))) * 4)) >>> 0) & ~(1 << ((unaff_EBP ^ 2) & 0x1f))) >>> 0);
+  // @manual fix (ADDENDUM 52): DAT_00630e58[pbVar9[6]] is a BYTE mask at offset +pbVar9[6]
+  // (asm `and bl, byte [ebx+0x630e58]`); the auto read u32 at *4 offset → wrong direction mask
+  // → recursion explored wrong dirs → deep wrong path (cost 0x3f) instead of the cheap turn.
+  uVar6 = ((((heap.u8(pbVar9 + (6)) & heap.u8((0x00630e58 + heap.u8(pbVar9 + (6))))) >>> 0) & ~(1 << ((unaff_EBP ^ 2) & 0x1f))) >>> 0);
   unaff_EBP = ((0) >>> 0);
   if (uVar6 != 0) {
     for (; (uVar6 >>> unaff_EBP & 1) == 0; unaff_EBP = (((unaff_EBP + 1) >>> 0)) >>> 0) {

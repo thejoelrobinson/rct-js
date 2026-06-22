@@ -76,7 +76,7 @@ export function FUN_004415e6(heap) {
     heap.setU8((0x006293c4 + 0), (uVar5) & 0xff);            // LAB_004416e1
     if ((in_DL == heap.u8(pbVar8 + (2))) && ((heap.u8(pbVar8) & 0x3c) == 4)) {
       // MATCH
-      uVar6 = (((heap.u8(pbVar8 + (6)) & heap.u32((0x00630e58) + (heap.u8(pbVar8 + (6))) * 4)) & uVar6) >>> 0);
+      uVar6 = (((heap.u8(pbVar8 + (6)) & heap.u8((0x00630e58 + heap.u8(pbVar8 + (6))))) & uVar6) >>> 0);   // @manual fix (ADD.52): DAT_00630e58 is a BYTE mask (asm `and bl,byte[ebx+0x630e58]`), was u32 at *4
       if (uVar6 != 0) {
         local_8 = ((0) >>> 0);
         if (uVar6 != 0) {
