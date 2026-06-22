@@ -1,6 +1,11 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
-// Source: decompiled/c/45a95d.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// @manual — do not regenerate.
+// Source: decompiled/c/45a95d.c — font glyph rasterizer (renders the glyph cache for
+// in-game text). FIX (ADDENDUM 32): line ~78 had two translator bugs writing
+// DAT_0064bb04 — (1) setU32 for an `undefined1` (byte) store, corrupting the 3 bytes
+// after it; (2) the table index `(byte)(bVar4 + 0x72)` was emitted as `(bVar4+0x72)>>>0`
+// (no byte cast) — and since this path runs for bVar4 in [0x8e,0x9b], bVar4+0x72
+// overflowed 0xff, indexing the LUT 256 entries too far → wrong glyph colour byte.
+// Found broken (memMis 3/12) by tools/_reached-map.mjs + tools/_lockstep-auto.mjs.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
@@ -75,7 +80,7 @@ export function FUN_0045a95d(heap) {
         if ((0x9b < bVar4) || (bVar4 < 0x8e)) {
           break;
         }
-        heap.setU32(0x0064bb04, (heap.u8((heap.u32(0x0093a464) + ((bVar4 + 0x72) >>> 0) * 4))) >>> 0);
+        heap.setU8(0x0064bb04, heap.u8((heap.u32(0x0093a464) + ((bVar4 + 0x72) & 0xff) * 4)));  // @manual fix: undefined1 store (was setU32, corrupting +1/2/3) + (byte) index cast (was >>>0; bVar4∈[0x8e,0x9b] so +0x72 overflowed past 0xff)
       }
     } while (bVar4 < 0x20);
     uVar7 = ((heap.u32(((0x0099a6c8) >>> 0) + (((bVar4 - 0x20) & 0xff)) * 4)) >>> 0);

@@ -1676,3 +1676,38 @@ record (callee addr, count), cross-ref C-size, and rank small+frequent+auto cand
 That makes the harness's per-function test productive instead of guess-and-hang. Then
 fix the broken small ones (ADDENDUM 30 pattern). The big interp consumers (0x5dbeeb
 production fix; 0x444927 etc.) remain multi-session hand-ports.
+
+---
+
+## ADDENDUM 32 (2026-06-21) — reached-function map closes the candidate gap → fixed 0x45a95d (font rasterizer)
+
+Built `tools/_reached-map.mjs` (the ADDENDUM 31 plan): it enables the interpreter's
+own `cpu.callEdges` tracing on the painter-bridge cpu during the soak (every interp
+execution shares that cpu), capturing the set of functions the CORRECT execution
+reaches, then cross-refs C-size + @manual to rank candidates. This closes the
+candidate-finding gap — it surfaces small/medium reached auto functions to point the
+`_lockstep-auto` harness at.
+
+**Sweep results (sc21.sc4 / type-37 soak):** 26 distinct interp-reached callees. The
+6 small (<=60 C-line) reached auto functions are all CORRECT (memMis=0: 0x423677,
+0x425432, 0x45389c, 0x458a7c, 0x439219, 0x5e3652 — some show eaxMis but are `void`,
+eax dead). Of the medium ones: 0x423ffd OK; **0x45a95d BROKEN (memMis 3/12) — FIXED
+this commit**; 0x44189c BROKEN (memMis 1/1, 110 C-lines — next target).
+
+**Fix — 0x45a95d (ported/auto/45a95d.js, now @manual):** the font GLYPH RASTERIZER
+(renders the in-game text glyph cache). One source line writing DAT_0064bb04 carried
+TWO translator bugs: (1) `setU32` for an `undefined1` (byte) store — corrupts the 3
+trailing bytes (the recurring setU32-as-setU8 class); (2) the LUT index
+`(byte)(bVar4 + 0x72)` was emitted without the byte cast (`>>>0`), and since this path
+runs for control bytes bVar4∈[0x8e,0x9b], `bVar4+0x72` overflowed 0xff → indexed the
+colour LUT 256 entries too far (js colour 0xb0 vs binary 0x37). So in-game text
+rendered with the wrong glyph colour. Fix: `heap.setU8(0x64bb04, heap.u8(... ((bVar4+0x72)&0xff)*4))`.
+
+**Validation:** `_lockstep-auto ADDR=0x45a95d` memMis=0 over 32 calls (TICKS 16);
+title_accuracy + gameplay_accuracy both PASS (no regression). Second shippable
+production fix via the harness (after 0x5e53ca), now with the reached-map making target
+discovery systematic.
+
+**Next:** fix 0x44189c (110 C-lines, broken); then re-run the reached-map after wiring
+more of the sim through the interp (the current map only covers the interp-delegated
+subtree — extending coverage will surface more JS-dispatch-path candidates).
