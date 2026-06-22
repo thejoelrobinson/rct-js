@@ -1,9 +1,13 @@
-// Browser entry — auto-translated RCT1, no x86 interpreter loaded.
+// Browser entry — auto-translated RCT1, HYBRID JS + x86 interpreter. (Corrected: this
+// file DOES load the interpreter — step 3 fetches rct.exe and createRuntime installs the
+// painter-bridge interpreter. Functions wired live run as JS; the rest run in the interp.
+// See CLAUDE.md "Browser path" / PORTING-ROADMAP ADDENDUM 42.)
 //
 // Sequence:
 //   1. fetch decompiled/data.bin (the binary's data sections at their VAs)
 //   2. fetch the .dat asset files into a VFS Map
-//   3. createRuntime({ dataBin, vfs, canvas })
+//   3. fetch binary/rct.exe (.text/CODESEG for the painter-bridge interpreter) +
+//      createRuntime({ dataBin, vfs, canvas, exeBytes, extraEntriesJson })
 //   4. runInit() — runs the binary's window-creation prelude
 //   5. requestAnimationFrame loop:
 //        post WM_TIMER + WM_PAINT periodically
