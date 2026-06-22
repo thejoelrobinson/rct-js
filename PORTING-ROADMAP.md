@@ -1711,3 +1711,37 @@ discovery systematic.
 **Next:** fix 0x44189c (110 C-lines, broken); then re-run the reached-map after wiring
 more of the sim through the interp (the current map only covers the interp-delegated
 subtree — extending coverage will surface more JS-dispatch-path candidates).
+
+---
+
+## ADDENDUM 33 (2026-06-21) — 0x44189c diagnosed (DEFERRED, complex recursive); reached-map tractable targets exhausted
+
+Investigated the last broken reached-map candidate, 0x44189c (a recursive
+pathfinding/connectivity search, ~110 C-lines). It is multiply-mistranslated, NOT a
+one-line fix:
+- **Recursive register-convention dropped:** the auto's recursive call (line ~99)
+  is `FUN_0044189c(heap, pbVar9, in_DX, uVar6, in_AX)` but the function takes only
+  `heap` and reads its inputs from REGISTERS (ax/cx/dx/ebp/di). So the recursion runs
+  with stale regs — the auto never sets regs.eax/ecx/edx/ebp/edi before the call at
+  0x4419f7. (Asm confirms the entry reads `[ebp*4+0x652478]`, ax, cx, dx, di.)
+- **Wrong load width + stride (line 24/25):** `(&DAT_00652478)[unaff_EBP*2]` is a
+  `short` read at byte offset ebp*4 (asm: `add ax, word[ebp*4+0x652478]`), but the
+  auto emitted `heap.u32(0x652478 + (unaff_EBP*2)*4)` = u32 at ebp*8 — both the width
+  (u32 vs u16) and the index unit are wrong.
+- Plus packed-field globals (DAT_006293c4._0_1_/._2_2_) to verify.
+It's also RARELY exercised (memMis 1/1 — a single call in the soak). So: complex +
+recursive + low-frequency = a full asm hand-port best done in a dedicated focused
+session, not a loop increment. DEFERRED with this diagnosis.
+
+**Status of the reached-map fix campaign:** of the interp-reached auto functions, the
+tractable ones are now resolved — **2 fixed** (0x5e53ca viewport dirty-marker ADD.30;
+0x45a95d font rasterizer ADD.32), the small ones all verified correct, 0x44189c
+deferred (above), and the rest are big (>150 C-lines, multi-session). The current
+reached-map only covers the interp-DELEGATED subtree (0x5dbeeb + painters); the bulk
+of the sim runs via JS dispatch and isn't interp-reached, so the harness can't see it.
+
+**Next-pass plan:** broaden coverage — force the vehicle-update 0x5da274 (and ideally
+a whole tick) to run in the interpreter during a reached-map soak so its full subtree
+becomes interp-reached + callEdges-captured, surfacing the JS-dispatch-path functions
+the harness currently can't test. Then resume the ADD.30/32 fix pattern on the new
+tractable candidates. (Alternatively, begin the multi-session 0x5dbeeb production port.)
