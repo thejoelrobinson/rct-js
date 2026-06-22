@@ -21,17 +21,26 @@ export function FUN_0044189c(heap) {
   let uVar8 = 0;
   let pbVar9 = 0;
   let unaff_DI = regs.edi & 0xffff;
-  code_r0x0044189c: in_AX = ((in_AX + heap.u32((0x00652478) + (unaff_EBP * 2) * 4)) & 0xffff);
-  in_CX = ((in_CX + heap.u32((0x0065247a) + (unaff_EBP * 2) * 4)) & 0xffff);
+  // @manual fix (ADDENDUM 48): the `goto code_r0x0044189c` tail-loop was a _gotoWarn
+  // return-stub, so the iterative single-direction search ran ONCE (depth counter
+  // 0x6293c6 reached 1 not 2). Restructured into a while-loop (continue at the bottom).
+  // Also: the dx/dy delta reads were u32 at ×8 offset — the asm is `word [ebp*4+0x652478]`
+  // (signed 16-bit, ×4); and the target coords [0x6293bc/be] are `word` not byte.
+  // KNOWN-LIMITATION: the multi-direction RECURSION (uVar6 != 0 branch) still passes
+  // ignored JS args + doesn't propagate unaff_DI (edi) across the call — broken if
+  // exercised (same secondary-register class as ADD.41); not hit by the current oracle.
+  while (true) {  // code_r0x0044189c
+  in_AX = ((in_AX + heap.i16((0x00652478 + unaff_EBP * 4))) & 0xffff);
+  in_CX = ((in_CX + heap.i16((0x0065247a + unaff_EBP * 4))) & 0xffff);
   bVar3 = (((((((in_DX) & 0xffff) >>> 8)) << 24 >> 24) + 1) & 0xff);
   if (200 < bVar3) {
     return;
   }
-  uVar7 = ((heap.u8(0x006293bc) - in_AX) & 0xffff);
+  uVar7 = ((heap.u16(0x006293bc) - in_AX) & 0xffff);
   if (((uVar7) << 16 >> 16) < 0) {
     uVar7 = ((-uVar7) & 0xffff);
   }
-  uVar5 = ((heap.u8(0x006293be) - in_CX) & 0xffff);
+  uVar5 = ((heap.u16(0x006293be) - in_CX) & 0xffff);
   if (((uVar5) << 16 >> 16) < 0) {
     uVar5 = ((-uVar5) & 0xffff);
   }
@@ -110,6 +119,7 @@ export function FUN_0044189c(heap) {
   if (((heap.u8(pbVar9 + (4)) & 4) != 0) && ((heap.u8(pbVar9 + (4)) & 3) == unaff_EBP)) {
     in_DX = ((CONCAT11(bVar3, heap.u8(pbVar9 + (2)) + 4)) & 0xffff);
   }
-  heap.setU16((0x006293c4 + 2), (heap.u16(0x6293c6) + 1) & 0xffff);
-  /* goto code_r0x0044189c — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_0044189c/code_r0x0044189c"); return 0;
+  heap.setU32(0x006293c6, (heap.u32(0x006293c6) + 1) >>> 0);   // inc dword [0x6293c6]
+  // goto code_r0x0044189c → loop back
+  }
 }

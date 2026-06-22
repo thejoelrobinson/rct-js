@@ -2189,3 +2189,28 @@ a partial (scan loop correct, function still red pending the callee — NOT clai
 **Dependency tree:** 0x4415e6 → 0x44189c (complex recursive, broken) → (its own callees). NEXT
 SLICE: fix 0x44189c to ITS OWN memMis=0 (independently validatable: `_lockstep-auto ADDR=0x44189c`,
 reached, calls=1), then re-validate 0x4415e6 (should drop toward 0), then wire 0x4415e6.
+
+---
+
+## ADDENDUM 48 — 0x4415e6 port, SLICE 2: 0x44189c (peep pathfinder) now memMis=0
+
+Fixed the callee `FUN_0044189c` (peep A*-like ride-search) to its own `memMis=0` (`_lockstep-auto
+ADDR=0x44189c`, was memMis=1). Three bugs from the asm (tools/disasm-va.py):
+1. **Goto tail-loop** `goto code_r0x0044189c` was a _gotoWarn return-stub → the single-direction
+   iterative search ran ONCE (depth counter 0x6293c6 hit 1 not 2). Restructured to a while-loop.
+2. **dx/dy delta reads**: auto `heap.u32(0x652478 + (ebp*2)*4)` but the asm is
+   `add ax, word [ebp*4 + 0x652478]` → `heap.i16(0x652478 + ebp*4)` (signed 16-bit, ×4 offset).
+3. **target coords** [0x6293bc/0x6293be]: auto `heap.u8` but the asm is `mov si, word [...]` → u16.
+Plus the depth counter is `inc dword [0x6293c6]` (was setU16). memMis=0 now; the residual
+eaxMis/esi/edi/ebx are 0x44189c's EXIT registers, which the caller 0x4415e6 does NOT consume
+(it reads the heap result DAT_006293c1). KNOWN-LIMITATION (documented in the file): the
+multi-direction RECURSION branch still passes ignored JS args + doesn't propagate unaff_DI
+(edi) across the recursive call — broken if exercised (the ADD.41 secondary-register class);
+the current oracle path is single-direction so it isn't hit.
+
+**0x4415e6 still BROKEN** — root cause now isolated to a NEW layer: 0x4415e6's JS leg calls
+`FUN_0044189c(heap)` WITHOUT setting up the registers 44189c reads (eax/ecx/edx/ebp/edi). It gets
+0x4415e6's stale entry regs → 44189c returns early (depth 0x6293c6 stays 0 vs interp 0x22). SLICE
+3: disasm 0x4415e6's `call 0x44189c` site, set up those input registers before the JS call
+(same caller-register-setup pattern as the 5d89c0 → FUN_004518fc fix), then 0x4415e6 → memMis=0
+→ wire.
