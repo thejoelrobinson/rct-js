@@ -1644,3 +1644,35 @@ the auto-vs-interp harness as a reusable production-correctness tool.
 loads (the initial sVar1..sVar4 fix — real, though not this divergence's root);
 (2) Ghidra dropping a whole clamp loop + call-site register setup (the root) — the
 auto-translation is simply unusable when Ghidra's C is this lossy; hand-port from asm.
+
+---
+
+## ADDENDUM 31 (2026-06-21) — promote the production-correctness harness; candidate-finding gap
+
+Promoted `tools/_lockstep-auto.mjs` from untracked scratch to a TRACKED tool — it's
+the generalizable "test the path that ships" harness (run any production auto fn vs
+the interpreter with real entry state) that found the ADDENDUM 29/30 results. With
+`tools/disasm-va.py`, these are the reusable methodology assets the project's true
+goal is about.
+
+**Negative findings this pass (recorded so the next pass starts smarter):**
+- The `i16(...) & 0xffff` translator-bug class (signed `short` read masked unsigned,
+  the 5e53ca side-bug) is RARE: only 5 auto files (415c60, 437fdc, 5d6a1d, 5dbeeb,
+  5e19eb), and 437fdc/5e19eb/5d6a1d are all NOT-REACHED by the sc21.sc4/type-37 soak,
+  so they can't be soak-validated and aren't an active production problem. (`i8 & 0xff`
+  appears 118× but is mostly legitimate unsigned use.) Not the systemic lever hoped.
+- **The candidate-finding gap:** the harness tests ONE function/run and needs the
+  function to be reached by the soak. But there's no good "small + gameplay-reached +
+  auto" candidate list: the static callgraph (tools/dynamic-callgraph) misses the
+  `extra_*` hand-ports' callNative edges (BFS from 0x5da274 found only itself), indirect
+  edges are sparse (4 callees), and the big 0x5dbeeb callees (0x444927 ~10k instr, etc.)
+  are too slow to soak-test (the earlier 12-callee sweep hung on them). The tractable
+  reached functions in 0x5dbeeb's subtree are already done (5e53ca fixed; 5e117d/5dcd40/
+  5cfac7 OK).
+
+**Next-pass plan:** to fix production functions efficiently, first build a
+reached-function MAP — instrument the interpreter's `call` dispatch during the soak to
+record (callee addr, count), cross-ref C-size, and rank small+frequent+auto candidates.
+That makes the harness's per-function test productive instead of guess-and-hang. Then
+fix the broken small ones (ADDENDUM 30 pattern). The big interp consumers (0x5dbeeb
+production fix; 0x444927 etc.) remain multi-session hand-ports.
