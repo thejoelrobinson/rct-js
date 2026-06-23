@@ -2297,3 +2297,23 @@ SLICE 9 (definitive, NOT more guessing): build a dual-trace — log the JS 0x441
 result), uVar6, and uVar6_old (early-out) AND the interp's same values (hook the interp), to find
 exactly where the direction set diverges (the scan's pbVar8? the early-out cache? the mask?).
 Then fix → 0x4415e6 memMis=0 → WIRE. Files clean at 7f29501.
+
+## ADDENDUM 54 — 0x4415e6 SLICE 9+10: PORT COMPLETE (memMis=0). Last bug = dropped distance-compare.
+
+Slice 9 dual-trace corrected the slice-8 lead (the "interp 1 call" was a cross-soak artifact —
+both legs explore the same 3 dirs). The REAL last bug (slice 10): the direction SELECTION. The
+asm (0x441777) compares `di` (the per-direction best-DISTANCE, threaded out of FUN_0044189c via
+edi) against the best-so-far FIRST (`cmp di,[esp+2]; ja/jb`), using cost (DAT_006293c1) only as
+the tie-break. Ghidra's C DROPPED the `di` compare + the `mov [esp+2],di`, so the auto selected
+purely by COST → it picked the cheapest direction (d0, cost 1) instead of the CLOSEST (d3). Fixed
+4415e6's bit-scan selection to: `di = regs.edi & 0xffff` after each call; update local_8 when
+`di < bestDist || (di==bestDist && c1 < bestCost)`; local_c packs bestDist(hi16)+bestCost(lo8).
+
+**`_lockstep-auto ADDR=0x4415e6` → memMis=0** (was 624 bytes over 10 slices). eaxMis=1 benign
+(void fn, eax not consumed by caller). 0x44189c also memMis=0. calls=1 (rare/periodic fn — 1 call
+per soak even at 24 ticks; coverage is that one call + asm-faithful transcription). THE PORT IS
+COMPLETE. Slices: 1=40b44ed scan, 2=254b3a6 callee goto/reads, 3=83c0294 caller reg-setup,
+4=d991193 recursion+edi, 5=db5b11e tail (u16/local_c-sign/slot-u8), 7=7f29501 dir-mask byte,
+10=(this) distance-compare. NEXT: WIRE 0x4415e6 (setEipHook so the interp routes to the JS) →
+validate via gates + dual-soak (byte-identical) → it becomes the live path + removes ~3791
+interp steps/tick.

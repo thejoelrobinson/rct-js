@@ -118,9 +118,20 @@ export function FUN_004415e6(heap) {
             // @manual fix (ADDENDUM 50): local_c._2_2_ == -1 is a SIGNED short compare; the auto's
             // `((local_c>>>16)&0xffff)|0 == -1` is always false (0xffff=65535 != -1), so local_8
             // was never set → the search result was never recorded → the cache tail was skipped.
-            if (((((local_c) >>> 16) & 0xffff) << 16 >> 16) == -1 && (heap.u8(0x006293c1) < ((local_c) & 0xff))) {
-              local_c = ((CONCAT31(0xffff00, heap.u8(0x006293c1))) >>> 0);
-              local_8 = ((uVar2) >>> 0);
+            // @manual fix (ADDENDUM 54): the SELECTION compares DISTANCE first, then cost. Ghidra
+            // DROPPED the `cmp di,[esp+2]` distance test (asm 0x441777) and the `mov [esp+2],di`,
+            // so the auto selected purely by cost (picked the cheapest dir, not the closest). di =
+            // FUN_0044189c's threaded best-distance (edi after the call); local_c packs best-distance
+            // (high 16) + best-cost (low 8). Update when strictly closer, or same-dist + lower cost.
+            {
+              const di = regs.edi & 0xffff;
+              const c1 = heap.u8(0x006293c1);
+              const bestDist = (local_c >>> 16) & 0xffff;
+              const bestCost = local_c & 0xff;
+              if (di < bestDist || (di === bestDist && c1 < bestCost)) {
+                local_c = (((di & 0xffff) << 16) | (c1 & 0xff)) >>> 0;
+                local_8 = uVar2 >>> 0;
+              }
             }
           }
         }
