@@ -2275,3 +2275,25 @@ recursive-A* rabbit hole (per the don't-sink-cost feedback) → SURFACE to the u
 1/624 bytes from done but the last byte needs deep recursion analysis; keep grinding, accept
 (can't wire without byte-exactness), or move on. NOTE: 0x4415e6 cannot be WIRED until byte-exact
 (a 1-byte path-direction-cache diff would make peeps path differently than the real binary).
+
+## ADDENDUM 53 — 0x4415e6 SLICE 7+8: dir-mask byte fix (committed) + bug localized to 4415e6's uVar6
+
+User chose "keep going — finish it." SLICE 7 (commit 7f29501): fixed DAT_00630e58[pbVar9[6]] —
+a BYTE mask at offset +pbVar9[6] (asm `and bl, byte [ebx+0x630e58]`), was u32 at *4 — in both
+0x44189c and 0x4415e6. Asm-confirmed correct; latent for this test (no result change).
+
+SLICE 8 (diagnostic, no code change): ruled out hypotheses + LOCALIZED the last byte:
+- `_invoke-diff ADDR=0x44189c` with the crafted JS dir-0 entry (EAX=c4830320 ECX=820 EDX=4 EBP=0
+  EDI=ffff, POKE bc=380/be=720/c0=5c/c1=ff/c4=0) → **memMis=0**. So 0x44189c is CORRECT IN
+  ISOLATION; the bug is NOT in the callee.
+- FUN_005df40c is ONLY `push ebx … pop ebx; ret` (0x5df40c-0x5df430) → it preserves ecx, so the
+  pre-existing `extraout_ECX = in_ECX` hand-fix in 4415e6 is CORRECT. Ruled out.
+- DECISIVE CLUE: `_lockstep-auto ADDR=0x44189c` reports **calls=1** — the INTERP's 0x4415e6 makes
+  only ONE 0x44189c call, but the JS makes THREE (traced dirs 0,2,3 costs 1,2,0x3f → JS picks
+  dir 0; interp explores ~1 dir → picks dir 3). So **0x4415e6's `uVar6` (direction set) is too
+  large in the JS** — it explores extra directions, so its min-cost pick differs.
+
+SLICE 9 (definitive, NOT more guessing): build a dual-trace — log the JS 0x4415e6's pbVar8 (scan
+result), uVar6, and uVar6_old (early-out) AND the interp's same values (hook the interp), to find
+exactly where the direction set diverges (the scan's pbVar8? the early-out cache? the mask?).
+Then fix → 0x4415e6 memMis=0 → WIRE. Files clean at 7f29501.
