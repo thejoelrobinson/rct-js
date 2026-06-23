@@ -26,9 +26,11 @@ import { FUN_00452fce } from "../ported/auto/452fce.js";
 // Gameplay port: award block 0 ("tidiest park") of the award dispatcher
 // 0x429502 — reached via its internal `jmp [ebx*4+0x429544]` (ebx=0).
 import { FUN_extra_award_429560 } from "../ported/auto/extra_award_429560.js";
+import { FUN_004415e6 } from "../ported/auto/4415e6.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
+import { FUN_005dbeeb_js } from "../ported/auto/extra_vehicle_5dbeeb.js";
 import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 // Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
@@ -398,6 +400,42 @@ export function installPainterBridge(heap, opts = {}) {
   });
 
   // ====================================================================
+  // Gameplay port — peep ride-list / direction-cache update, 0x4415e6.
+  // ====================================================================
+  // The top remaining interpreter consumer (~3791 steps/tick, ADDENDUM 46).
+  // Byte-exact JS port landed over 10 slices (ADDENDUM 47-54), validated by
+  // tools/_lockstep-auto.mjs ADDR=0x4415e6 (memMis=0); its callee 0x44189c
+  // (peep A* ride-search, incl. recursion + edi-threaded pruning) is also
+  // memMis=0. The function ends in a plain `ret` (0x441890) back to its caller,
+  // so the call frame is intact when we arrive — the harness simulates exactly
+  // ONE `ret` after the hook returns. The JS body's callees (FUN_0044189c,
+  // FUN_005df40c) are pure JS (no callNative), so cpu.esp isn't clobbered;
+  // snapshot/restore it anyway for symmetry with the other gameplay hooks.
+  // Interpreter reachable behind __forceInterp4415e6 (clear-hook / step-to-ret).
+  setEipHook(0x4415e6, (c) => {
+    if (globalThis.__forceInterp4415e6) {
+      const self = getEipHook(0x4415e6);
+      clearEipHook(0x4415e6);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      try {
+        c.regs.eip = 0x4415e6;
+        let n = 0;
+        while ((c.regs.eip >>> 0) !== 0x441890) { if (!step(c) || ++n > limit) break; }
+      } finally { setEipHook(0x4415e6, self); }
+      return;
+    }
+    const savedEsp = c.regs.esp >>> 0;
+    regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0;
+    try { FUN_004415e6(heap); } catch (e) { /* hand-port errors are non-fatal */ }
+    c.regs.esp = savedEsp;
+    c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
+    c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
+    c.regs.ebp = regs.ebp >>> 0;
+  });
+
+  // ====================================================================
   // Gameplay port — ride/vehicle per-sprite update, 0x5da274.
   // ====================================================================
   // PTR_LAB_005d97b4 vtable slot 4, reached from the sprite-update walk at
@@ -449,6 +487,52 @@ export function installPainterBridge(heap, opts = {}) {
     c.regs.esi = regs.esi >>> 0;
     c.regs.edi = regs.edi >>> 0;
     c.regs.ebp = regs.ebp >>> 0;
+  });
+
+  // FUN_005dbeeb — vehicle mode-flag query, callee of 0x5da274 (reached via
+  // callNative(0x5dbeeb) -> runFunction -> this eip hook). The JS body
+  // (extra_vehicle_5dbeeb.js) returns true if it fully handled the call in JS,
+  // or false to FALL BACK to the interpreter (it returns false BEFORE any side
+  // effect, so the fallback re-run is clean). __forceInterp5dbeeb forces the
+  // interp leg (oracle control). Single exit ret at 0x5dcd3f. STATUS: the JS
+  // body currently always falls back (the type-55 arm is still being
+  // transcribed) — so this is byte-neutral. Oracle: tools/_lockstep-5dbeeb.mjs.
+  const runInterp5dbeeb = (c) => {
+    const self = getEipHook(0x5dbeeb);
+    clearEipHook(0x5dbeeb);
+    const limit = globalThis.__painterStepLimit || 50_000_000;
+    try {
+      c.regs.eip = 0x5dbeeb;
+      let n = 0;
+      while ((c.regs.eip >>> 0) !== 0x5dcd3f) { if (!step(c) || ++n > limit) break; }
+    } finally { setEipHook(0x5dbeeb, self); }
+  };
+  setEipHook(0x5dbeeb, (c) => {
+    if (globalThis.__forceInterp5dbeeb) { runInterp5dbeeb(c); return; }
+    const savedEsp = c.regs.esp >>> 0;
+    regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0;
+    // FUN returns: false = fall back from 0x5dbeeb; true = fully handled in JS;
+    // a NUMBER X = HYBRID — the JS body ran the byte-exact prefix [0x5dbeeb,X)
+    // and left regs binary-exact at X; run the interpreter suffix [X,0x5dcd3f).
+    let result = false;
+    try { result = FUN_005dbeeb_js(heap); } catch (e) { result = false; }
+    if (result === false) { c.regs.esp = savedEsp; runInterp5dbeeb(c); return; }
+    c.regs.esp = savedEsp;
+    c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
+    c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
+    c.regs.ebp = regs.ebp >>> 0;
+    if (typeof result === "number") {
+      const self = getEipHook(0x5dbeeb);
+      clearEipHook(0x5dbeeb);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      try {
+        c.regs.eip = result >>> 0;
+        let n = 0;
+        while ((c.regs.eip >>> 0) !== 0x5dcd3f) { if (!step(c) || ++n > limit) break; }
+      } finally { setEipHook(0x5dbeeb, self); }
+    }
   });
 
   // ====================================================================

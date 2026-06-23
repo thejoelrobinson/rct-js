@@ -2317,3 +2317,27 @@ COMPLETE. Slices: 1=40b44ed scan, 2=254b3a6 callee goto/reads, 3=83c0294 caller 
 10=(this) distance-compare. NEXT: WIRE 0x4415e6 (setEipHook so the interp routes to the JS) →
 validate via gates + dual-soak (byte-identical) → it becomes the live path + removes ~3791
 interp steps/tick.
+
+## ADDENDUM 55 — 0x4415e6 WIRED LIVE (fix+wire COMPLETE). Top interp consumer eliminated.
+
+SLICE 11: wired 0x4415e6 via `setEipHook(0x4415e6)` in runtime/painter-bridge.js (the 0x429560/
+0x5da274 template: __forceInterp4415e6 fallback steps the real bytes to the body's ret 0x441890;
+else runs FUN_004415e6 with esp/reg snapshot-restore). The body's callees (FUN_0044189c recursive
+A* + FUN_005df40c) are pure JS, so the whole subtree now runs in JS.
+
+**VALIDATED:**
+- Dual-soak 30 ticks: JS-wired hash `19537cd9` == force-interp hash `19537cd9` → BYTE-IDENTICAL.
+- All gates green: title+gameplay accuracy 0/307200, title_replay, playability/interactive/
+  viewport_build_live 25/25.
+- Perf (probe-painter-rank, 8 ticks): 0x4415e6 3791→0 steps/tick, 0x44189c →0 (callee now JS too);
+  perTickMs 16→14 (node sandbox; ≈5-7ms on the dev Mac = 90fps range). 0x4415e6 was the #1 interp
+  consumer (ADD.46); it's now gone. New top: 0x444e08 (banner fallback, deferred).
+
+**This is the production+perf payoff the user chose ("fix + wire 0x4415e6"): an interpreter-only
+function is now a byte-exact LIVE JS port.** The peep ride-list/direction-cache + its A* search
+(0x44189c) run in JS. Interpreter reachable behind __forceInterp4415e6. DONE.
+
+Next candidates (if the loop continues): the new top interp consumers 0x444e08 (banner — pulls in
+scrolling-text, ADD.6 deferred), 0x439178 (1387/tick, mid-block — no standalone source), or
+re-assess with the user. The 0x4415e6 multi-session port (slices 1-11) is the template for porting
++ wiring an interp-heavy gameplay function end-to-end.
