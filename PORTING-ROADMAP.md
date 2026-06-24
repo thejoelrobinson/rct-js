@@ -2341,3 +2341,34 @@ Next candidates (if the loop continues): the new top interp consumers 0x444e08 (
 scrolling-text, ADD.6 deferred), 0x439178 (1387/tick, mid-block — no standalone source), or
 re-assess with the user. The 0x4415e6 multi-session port (slices 1-11) is the template for porting
 + wiring an interp-heavy gameplay function end-to-end.
+
+## ADDENDUM 56 — 0x4183a0 ported (80-bit-ext-float → packed-float; throwing stub → correct)
+
+After 0x4415e6 (ADD.55), I confirmed the remaining top interp consumers are NOT clean port targets:
+0x5d7503 (978/tick) and 0x439178 (1387/tick) have NO standalone `decompiled/c/*.c` (mid-block
+addresses, like ADD.8's finding); 0x444e08 (banner) is ADD.6-deferred (scrolling-text subsystem).
+The clean port+wire lever among the TOP consumers is exhausted. Surfaced to the user → chose
+"keep porting" → took the cleanest remaining NOT-REACHED stub: **0x4183a0**.
+
+0x4183a0 = the CRT `_cfltcvt`-style float formatter: param_1 = a 12-byte working FP value
+({u16 mantLow @+0, u32 mantMid @+2, u32 mantHigh @+6, u16 exp/sign @+10}), param_2 = output,
+param_3 = format descriptor. The two callers (418570/418590) pass the real descriptors
+DAT_005ee9f8 (IEEE single: [128,-127,24,8,0x20,127]) and DAT_005ee9e0 (double:
+[1024,-1023,53,11,0x40,1023]); param_3[4]∈{0x20,0x40} selects the 32-/64-bit output store.
+
+The auto stub THREW (parse failed). Faithful hand-transcription of 4183a0.c. Helper tree is
+BOUNDED + all real auto-JS: 4183a0 → {4182c0,4182b0,418290,4181f0,4182e0}, 4181f0 →
+{418110,418180}, 418180 → 418ef0 (all leaves, 10-40 lines). **Stack-local modeling:** the C's
+{local_18,local_14,local_10} (passed to helpers BY POINTER as `&local_18`) + local_c[12] are
+carved out of the live stack below the caller's esp (esp-0x40) — matches the real `sub esp` and
+keeps both legs' locals in untracked carve space. **Return convention:** eax = uVar3; the binary's
+last act is a store to param_2, leaving ecx = param_2 (caller-saved). Both written to `regs` so a
+wired caller would read them; verified vs interp.
+
+**VALIDATED (tools/_invoke-diff.mjs, crafted FP inputs via POKE, scratch @0x780000):** 6/6 MATCH
+(memMis=0 + registers clean) across both descriptors × {normal, denormal/zero, overflow, negative,
+underflow} exponent paths — covers all 5 LAB-reaching branches + both output stores. Gates: 201/201
+vitest (the lone "fail" in the bulk run is a 5s parallel-transform TIMEOUT; gameplay_accuracy passes
+in 2.1s isolated). NOT wired: 0x4183a0 is dead (FP-format unreached in RCT's fixed-point gameplay) —
+wiring a never-called fn is pure hook overhead. Value: the throwing stub is now a CORRECT impl, so
+the path no longer crashes if ever hit (e.g. a debug/format code). One more auto stub eliminated.
