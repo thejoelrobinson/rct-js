@@ -2372,3 +2372,32 @@ vitest (the lone "fail" in the bulk run is a 5s parallel-transform TIMEOUT; game
 in 2.1s isolated). NOT wired: 0x4183a0 is dead (FP-format unreached in RCT's fixed-point gameplay) —
 wiring a never-called fn is pure hook overhead. Value: the throwing stub is now a CORRECT impl, so
 the path no longer crashes if ever hit (e.g. a debug/format code). One more auto stub eliminated.
+
+## ADDENDUM 57 — CLEAN-PORT LEVER EXHAUSTED; remaining work is the harder asm/subsystem tier
+
+Assessed the next targets after 0x4183a0. Findings (so the next pass doesn't re-derive):
+- **0x417420** (last small untranslated stub besides 0x44c464): NOT a clean leaf port — it's a
+  function-pointer DISPATCH (`pcVar4 = DAT_005f0288/8c/90/94`, then `(*pcVar4)(...)` indirect call
+  to runtime-populated subsystem-teardown handlers; `__exit(3)` on null). Dead (not reached).
+  Needs indirect-call modeling — the "indirect-call dispatch" hard case (ADD.35/41). DEFERRED.
+- **0x44c464**: still BLOCKED (secondary-register/extraout_* helper modeling, ADD.41).
+- Big cores already handled: **0x43c751 peeps** = live via the wired `extra_peepwalk_43c751`
+  hand-port (767×/tick); **0x5dbeeb vehicles** = NOT a top interp consumer anymore (auto dead,
+  interp runs it but it's not in the hot list).
+- **Fresh interp ranking (TICKS=6, post-4415e6)** — 4415e6/44189c GONE (wire holds). Real-work
+  consumers (>1 step/call): 0x444e08 banner **2620/tick** (#1, ADD.6-deferred subsystem),
+  0x439178 **1400**, 0x5d7503 **967**, 0x422a90 **782**, 0x4254e0 **604**. The 1-step/call rows
+  (0x4368d8 1974, 0x431bc8/0x421d2c 954, 0x4238b4 230) are HOOK-CROSSING overhead, not work.
+- **0x439178 / 0x5d7503 are UNLABELED functions with NO decompiled C.** 0x439178 sits 0x43 bytes
+  past FUN_00439135's `ret` (0x439177) — Ghidra never split it. Disasm shows it's a sprite-paint
+  helper: reads DAT_00981ef8, builds an image id (`shl/or` → `| 0xa0000000`), writes coords to
+  [0x99a4e8..ec], then `call dword [ebp*4 + 0x432204]` (indirect PAINT dispatch). Entered DIRECTLY
+  via call (221 calls), bypassing 439135's prologue. So porting it = ASM transcription (no C) +
+  checkpoint-bridge the indirect paint call = the hybrid-checkpoint tier (ADD.20-32), ~0xa0 bytes.
+  0x5d7503 (inside FUN_005d74b4, 0x4f past its start) is almost certainly the same shape.
+
+**CONCLUSION: no clean C-port target remains.** The remaining levers, in rough value/effort order:
+(1) port+wire 0x439178 then 0x5d7503 (~2367/tick combined; asm-transcribe + checkpoint-bridge the
+paint dispatch; multi-slice, harder tier); (2) the 0x444e08 banner subsystem (2620/tick, larger);
+(3) push the 28 commits + pause for review. Surfaced to the user for direction (a new multi-slice
+asm investment parallels the user-blessed 0x4415e6 fork, and 28 commits make a natural checkpoint).
