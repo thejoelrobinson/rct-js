@@ -31,6 +31,11 @@ import { FUN_004415e6 } from "../ported/auto/4415e6.js";
 // entry 1 of the sprite-type paint dispatch table at 0x6309a0; reached only
 // via FUN_00444820's callIndirect. See ported/auto/439178.js (ADDENDUM 58).
 import { FUN_00439178 } from "../ported/auto/439178.js";
+// Paint port: vehicle sprite painter — unlabeled binary fn (no decompiled C),
+// entry 0 of the sprite-type paint dispatch table at 0x6309a0; sibling of
+// 0x439178 with the same two reach paths. Untranscribed special shapes/tails
+// are routed to the interp shim via the js5d7503CanHandle pre-flight guard.
+import { FUN_005d7503, js5d7503CanHandle } from "../ported/auto/5d7503.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -824,6 +829,68 @@ export function installPainterBridge(heap, opts = {}) {
     regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
     regs.ebp = c.regs.ebp >>> 0;
     try { FUN_00439178(heap); } catch (e) { /* hand-port errors are non-fatal */ }
+    c.regs.esp = savedEsp;
+    c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
+    c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
+    c.regs.ebp = regs.ebp >>> 0;
+  });
+
+  // 0x5d7503 — the VEHICLE sprite painter (@manual JS), sprite-type 0 of the
+  // 0x6309a0 dispatch table — the sibling of 0x439178 above, with the same
+  // two reach paths (rot-0 JS chain via FUN_00444820's callIndirect; interp-
+  // native chain at rotations 1-3) and the same dual-wire. Differences:
+  //   - the JS body transcribes only the generic handler (57/64 shape
+  //     indices) + the trivial pop-esi shapes; special shapes (7/31/34/44/63)
+  //     and special tails (2/20/44/45) throw. js5d7503CanHandle routes those
+  //     sprites to the interpreter from the START — the guard must run
+  //     BEFORE the body because the unhandled-TAIL throw only fires after
+  //     the paint calls landed (catch-and-rerun would double-paint).
+  //   - 0x5d7503 IS in the painter list, so interpShim5d7503 always exists.
+  // Both paths stay behind __forceInterp5d7503 (the dual-soak lever).
+  {
+    const interpShim5d7503 = state.fnDispatch.get(0x5d7503);
+    state.fnDispatch.set(0x5d7503, function _js5d7503(_heap, ..._args) {
+      if (globalThis.__forceInterp5d7503 || !js5d7503CanHandle(heap, regs.esi >>> 0)) {
+        if (interpShim5d7503) return interpShim5d7503(_heap, ..._args);
+        if (!globalThis.__warned5d7503NoShim) {
+          globalThis.__warned5d7503NoShim = true;
+          if (typeof console !== "undefined") console.warn("[painter-bridge] 0x5d7503 wants the interp shim (forced or unhandled shape) but none exists — running the JS port");
+        }
+      }
+      FUN_005d7503(heap);
+      return regs.eax >>> 0;
+    });
+  }
+
+  // eip hook for the interp-native path (camera rotations 1-3). Same esp-
+  // snapshot template as 0x439178 above. The native-fallback stop rule
+  // differs from 439178's fixed ret address: the untranscribed paths
+  // (0x5d8453, tails 0x5d77a6/783c/78a4) exit through rets whose addresses
+  // aren't catalogued, so stop when esp is back at its entry value AND the
+  // next opcode is a bare `ret` (0xC3) — that is precisely the top-level
+  // return about to execute (inner calls/pushes always hold esp below the
+  // entry value; push-ret jump idioms sit 4 below). The harness then
+  // simulates the actual ret, exactly as for a hook that ran the JS body.
+  setEipHook(0x5d7503, (c) => {
+    if (globalThis.__forceInterp5d7503 || !js5d7503CanHandle(heap, c.regs.esi >>> 0)) {
+      const self = getEipHook(0x5d7503);
+      clearEipHook(0x5d7503);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      const espEntry = c.regs.esp >>> 0;
+      try {
+        c.regs.eip = 0x5d7503;
+        let n = 0;
+        while (!((c.regs.esp >>> 0) === espEntry && (c.regs.eip >>> 0) < heap.bytes.length && heap.u8(c.regs.eip >>> 0) === 0xc3)) {
+          if (!step(c) || ++n > limit) break;
+        }
+      } finally { setEipHook(0x5d7503, self); }
+      return;
+    }
+    const savedEsp = c.regs.esp >>> 0;
+    regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0;
+    try { FUN_005d7503(heap); } catch (e) { /* hand-port errors are non-fatal */ }
     c.regs.esp = savedEsp;
     c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
     c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;

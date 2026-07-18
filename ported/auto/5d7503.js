@@ -75,6 +75,24 @@
 import { callIndirect } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
 
+// Pre-flight guard for the wiring (runtime/painter-bridge.js): TRUE iff the
+// JS body can run this sprite without hitting an untranscribed throw path.
+// Reads exactly the dispatch state the body reads — the [esi+0xc] 0x80 flag,
+// the shape byte, and BOTH jump tables (entry 0x65da40 + tail 0x65db34) —
+// with no side effects, so the caller can route unhandled sprites to the
+// interpreter shim from the START. The guard must run BEFORE the body: the
+// unhandled-TAIL throw at 0x5d779b fires only after the paint calls have
+// already landed, so a catch-and-rerun fallback would paint the sprite twice.
+export function js5d7503CanHandle(heap, sprite) {
+  if ((heap.u16((sprite + 0xc) >>> 0) & 0x80) !== 0) return false; // 0x5d8453
+  const shape = heap.u8((sprite + 0x31) >>> 0);
+  const t1 = heap.u32((0x0065da40 + shape * 4) >>> 0) >>> 0;
+  if (t1 === 0x5d78fe) return true;   // trivial pop esi; ret — body handles
+  if (t1 !== 0x5d751d) return false;  // special shapes (idx 7/31/34/44/63)
+  // generic body, but shapes 2/20/44/45 exit through untranscribed tails
+  return (heap.u32((0x0065db34 + shape * 4) >>> 0) >>> 0) === 0x5d78fe;
+}
+
 // add bl, v8 ; adc bh, 0  — 16-bit add with the carry stopping at bh.
 function addBlAdcBh(ebx, v8) {
   const s = (ebx & 0xff) + v8;

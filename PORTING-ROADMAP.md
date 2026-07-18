@@ -2443,3 +2443,52 @@ rot1 (3f48ca61, exercises the eip-hook wire). Gates 201/201 (gameplay_accuracy i
 minors: eax-capture convention on the inner callIndirect; warn-once when __forceInterp439178 is
 set with no shim to fall back to. **The rotate-capable soak is a project-level oracle upgrade:
 every painter wire can now be validated at all 4 rotations** (previously rot-0-only, silently).
+
+## ADDENDUM 59 — 0x5d7503 (vehicle sprite painter) WIRED at all 4 rotations; lockstep oracle un-vacuoused
+
+Wired the ADDENDUM-58-era 0x5d7503 transcription live, dual-wire template as 0x439178 (fnDispatch
+override for the rot-0 JS chain + setEipHook for the interp-native rot-1..3 chains, both behind
+__forceInterp5d7503) with one addition: **js5d7503CanHandle pre-flight guard** (exported from
+ported/auto/5d7503.js). The body's untranscribed special shapes (entry-table 7/31/34/44/63) and
+special tails (tail-table 2/20/44/45) throw — and the TAIL throw fires only AFTER the paint calls
+landed, so a catch-and-rerun fallback would double-paint. The guard re-reads the fn's own dispatch
+state ([esi+0xc]&0x80, shape byte, BOTH jump tables 0x65da40/0x65db34) side-effect-free and routes
+unhandled sprites to the interp _paintShim from the start. The eip hook's native fallback stops at
+esp==entryEsp && opcode C3/C2 (top-level-ret rule — works for paths whose ret addresses aren't
+catalogued; inner frames always hold esp below entry).
+
+**ORACLE-INTEGRITY FIX (the real find of this slice): tools/_lockstep-auto.mjs had two bugs that
+made every painter-class lockstep VACUOUSLY green.** (1) runInterp ran leg B until esp rose ABOVE
+entry — i.e. it executed the fn's real ret — and then step()/runFunction's hook path simulated a
+SECOND ret. On a fresh _paintShim sentinel frame that was just the "mem8 OOB: 0xdeadbeef" warning
+spam; on a crossing arriving via a live in-binary call (the rot-1..3 painter chains) it ate one
+stack slot of the ENCLOSING painter frame per crossing and collapsed the strip walk (0x436bc3
+sentinel-OOB abort spam, downstream sprites never painted). Fixed: stop AT the top-level ret
+(esp==entryEsp && opcode C3/C2) and let the harness's simulated ret perform it. (2) Leg A (the JS
+body) clobbers cpu.regs.eip whenever it bridges an inner paint call (callIndirect → _paintShim →
+nested runFunction exits with eip=RET_SENTINEL); the leg-B register restore covered GPRs but not
+eip, so leg B stepped from 0xdeadbeef and THREW BEFORE THE COMPARE — memMis=0 was never actually
+evaluated for painter-class fns (ADDENDUM 58's 439178 lockstep counts were real crossings but
+uncompared). Fixed: runInterp resets c.regs.eip=ADDR. Verified with a compare-counter: compares
+now == calls. **0x439178 re-validated under the fixed oracle: rot0=219, rot1=73 calls, all
+memMis=0 eaxMis=0.** Also: POKE= now applies AFTER ROTATE= (the rotate handler rewrites the
+viewport view_x/y; same order as _soakhash).
+
+**Vehicle visibility at rot 1-3.** The canonical rotate leaves NO vehicles in the rotated view
+(peeps everywhere → 439178 had natural coverage; vehicles cluster on their track). NOT-REACHED
+lockstep runs at rot1-3 were vacuous coverage, not validation. Solution: capture the live vehicle
+descriptors at rot0 (fnDispatch wrap; they live at ~0x743e94..0x744894 stride 0x100 — NOT the
+0x010d6000 pool probe-animation.js assumes), rotate canonically, let 2-3 ticks refresh the
+444927-cached iso bboxes ([esi+0x16/18/1a/1c] = l/t/r/b), take the median center, and POKE
+viewport slot 0 (0x9a1170/0x9a1172 = view_x/view_y u16) to center it. Derivation probe kept at
+tools/_aim-vehicles.mjs. Working POKEs for sc21 at this boot timeline:
+  rot1 POKE=9a1170=f19a/2,9a1172=198/2   rot2 POKE=9a1170=f89f/2,9a1172=f7d3/2
+  rot3 POKE=9a1170=be6/2,9a1172=fbbd/2
+
+**VALIDATED (fixed oracle, real compares):** lockstep rot0=72, rot1=101, rot2=141, rot3=121
+calls — ALL memMis=0 eaxMis=0 jsThrew=0. Dual-soak 30 ticks byte-identical at ALL FOUR rotations:
+rot0 bd010739, rot1 812c4e1b, rot2 3f62896b, rot3 198af8bf (vehicle-aimed at rot1-3; JS leg ==
+forced-interp leg at each). Gates: 201/201 vitest (gameplay_accuracy isolated 2.7s; the parallel
+5s-timeout "fail" is the known runner artifact). Interp elimination: 72 crossings/6 ticks at rot0
+now run as JS (was ~967 steps/tick in the ADD-57 rank); shape-37 covers every sprite in the
+current scenario, specials fall back via the guard.
