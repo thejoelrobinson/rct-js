@@ -42,9 +42,11 @@
 //   0x439282 xor edi,edi; ret          → ZF=1, edi=0   (element gone)
 //   0x439285 or edi,edi;  ret          → ZF=(edi==0), edi = found element
 //            ptr (a real heap address, never 0)
-// so at THIS call site exit-ZF == (exit-edi == 0) exactly, given entry
-// edi != 0 (guaranteed: single dispatch site loads edi = state = 6). The
-// port branches on regs.edi after callNative.
+// so exit-ZF == (exit-edi == 0) HOLDS ONLY IF entry edi != 0. That
+// assumption broke in production (439822.js had dropped the dispatch's
+// `movzx edi, state` — since restored), so the port now branches on the
+// REAL exit ZF left on the bridge cpu by callNative (see the body), with
+// the edi inference kept only as a no-cpu fallback.
 //
 // Register-exactness notes (validated vs interp via tools/_lockstep-auto.mjs):
 //   - 0x43a609 movzx edi,[esi+0x68]; imul edi,edi,0x260 — full-register
@@ -61,6 +63,7 @@
 
 import { regs } from "../../runtime/regs.js";
 import { callNative } from "../../runtime/painter-bridge.js";
+import { state } from "../../runtime/win32/context.js";
 
 // 0x43a62d..0x43a649 — "give up queuing": toggle sprite direction-ish bit
 // 0x10 in [esi+0x1e], invalidate, unlink from the queue chain, invalidate
@@ -80,8 +83,19 @@ function giveUpQueuing(heap) {
 export function FUN_0043a5f8(heap) {
   // 0x43a5f8: call 0x439219 (subtick gate + tile-element presence check)
   callNative(0x439219, []);
-  // 0x43a5fd: jne 0x43a609 — exit-ZF == (exit-edi == 0), see header.
-  if ((regs.edi >>> 0) === 0) {
+  // 0x43a5fd: jne 0x43a609 — branch on the REAL exit ZF, which callNative
+  // leaves live on the bridge cpu (all three 0x439219 exits set it as their
+  // last ALU op: cmp al,bl / xor edi,edi / or edi,edi). The original
+  // "exit-ZF == (exit-edi == 0)" inference was WRONG in production: it
+  // assumed entry edi != 0 (the binary's dispatch loads edi = state = 6),
+  // but the live JS dispatcher (439822.js) had dropped that register-init,
+  // so the gate-skip exit (edi unchanged) returned edi = 0 and this port
+  // mis-took the element-gone unlink path while the binary's jne entered
+  // the main body (caught by the 30-tick lockstep, mis-call #21; both the
+  // dispatcher init and this branch are fixed — belt and braces).
+  const zfGone = state.__painterCpu ? state.__painterCpu.eflags.ZF === 1
+                                    : (regs.edi >>> 0) === 0;
+  if (zfGone) {
     // element gone: 0x43a5ff call 0x43e792 ; 0x43a604 jmp 0x43a73e (ret)
     callNative(0x43e792, []);
     return;

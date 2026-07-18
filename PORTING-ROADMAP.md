@@ -2520,3 +2520,40 @@ ticks byte-identical: rot0 bd010739 (== pre-change baseline, i.e. the rewiring i
 rot2-aimed 706568ac. Gates 201/201 (gameplay_accuracy isolated). NOT exercised: interpDoor /
 interpShade (no door walls / shade mode in sc21) — mis-routing risk there is interp-side only
 (interp = truth); the hot-path predicates (banner/scrollText/main) are lockstep-covered.
+
+## ADDENDUM 61 — 422a90/43a5f8/43a74b wired; lockstep catches a REAL dispatcher bug (439822 dropped movzx edi)
+
+Wired the last three WIP transcriptions via a shared painter-bridge template (installJsFnEipHook:
+stage translator cells → JS body → sync back; harness's simulated ret performs the fn's ret —
+correct for every entry mode since all three bodies are ret-terminated on every path; per-fn
+__forceInterp<hex> native step-through as the soak lever).
+
+**0x422a90** (tile-corner setter dispatch, mid-block label of the 0x421d2c terrain body): reached
+only via extra_paint_421d2c's cliff runBodyFrom — organically UNREACHED in sc21 gameplay views at
+every rotation (the ~204/soak figure in its header predates the hot-path corner inlining). Gated
+with tools/_invoke-diff.mjs instead: **18/18 MATCH sweeping ALL 16 jumptable cases** (incl. 16-bit
+dx-wrap inputs EDX=0xfffe/0xabcd) — complete case-table coverage, stronger than any organic soak.
+JS-throw fallback = interp rerun (only prior write is an idempotent OR).
+
+**0x43a5f8** (peep-state 6 queuing handler): the 8-tick lockstep was clean; the 30-tick run went
+BROKEN (mis-call #21) — and the failure was REAL and interesting. Bisection chain: 0x439219
+callNative-vs-native 29/29 agree → full-fn A/B with waypoint traces → walking core from identical
+state agrees 142/142 steps → leg A's exit regs == its ENTRY values → spy hooks show entry
+**edi=0, not 6**. Root cause: **ported/auto/439822.js (the live JS peep-update dispatcher)
+dropped the binary's `movzx edi, byte [esi+0x2b]` before its `jmp [edi*4+0x62d4ac]`** (the
+register-init-at-call-site translator class, ADD.35) — every state handler entered with stale
+edi. Harmless while all handlers ran interp-natively (the binary branches on ZF, not edi), but
+43a5f8's "exit-ZF == (exit-edi==0)" inference relied on entry edi != 0: on the subtick-gate-skip
+exit (edi unchanged = 0) the port mis-took the element-gone unlink while the binary's jne entered
+the main body. **Fixed both sides:** 439822.js restores the register contract (edi = state before
+callIndirect), and 43a5f8 now branches on the REAL exit ZF from state.__painterCpu.eflags.ZF
+(callNative leaves the callee's exit flags live; all three 0x439219 exits set ZF as their last
+ALU op) with the edi inference kept only as a no-cpu fallback.
+
+**0x43a74b** (peep-state 4 dispatcher): 2-instruction movzx+tail-jmp bridge via callNative.
+
+**VALIDATED:** lockstep 43a5f8 60 ticks = 60 calls, 43a74b 60 ticks = 48 calls — memMis=0
+eaxMis=0 jsThrew=0. Dual-soak 30 ticks byte-identical for all three (bd010739 == baseline on
+every leg — the 439822 edi fix is also behavior-neutral on the live path: no interp-run handler
+read the stale edi in this soak, so the fix restores the contract without a state fork). Gates
+201/201 (gameplay_accuracy isolated).

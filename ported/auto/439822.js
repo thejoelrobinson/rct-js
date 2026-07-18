@@ -135,8 +135,18 @@ export function FUN_00439822(heap) {
     return;
   }
   // Jumptable PTR_LAB_0062d4ac[0x2b(%esi)] — indirect call.
+  // 0x439906: movzx edi, byte [esi+0x2b] — the binary loads the state index
+  // into EDI before the jmp, so every state handler enters with edi = state.
+  // The auto-translation dropped this register-init (the F2/call-site class),
+  // leaving stale edi at handler entry — harmless while every handler ran in
+  // the interpreter (the real bodies re-derive what they need), but a JS
+  // handler that models the entry contract (e.g. 43a5f8's edi-based ZF
+  // inference before it was switched to reading the cpu ZF) sees garbage.
+  // Restore the contract.
+  const stateIdx = heap.u8((unaff_ESI + 0x2b) >>> 0);
+  regs.edi = stateIdx >>> 0;
   return (regs.eax = callIndirect(
     heap,
-    heap.u32((0x0062d4ac + (heap.u8((unaff_ESI + 0x2b) >>> 0)) * 4) >>> 0),
+    heap.u32((0x0062d4ac + stateIdx * 4) >>> 0),
   ));
 }

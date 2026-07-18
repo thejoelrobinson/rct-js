@@ -36,6 +36,12 @@ import { FUN_00439178 } from "../ported/auto/439178.js";
 // 0x439178 with the same two reach paths. Untranscribed special shapes/tails
 // are routed to the interp shim via the js5d7503CanHandle pre-flight guard.
 import { FUN_005d7503, js5d7503CanHandle } from "../ported/auto/5d7503.js";
+// ADDENDUM 61 trio — asm-transcribed @manual bodies, wired as eip hooks:
+// tile-corner setter (mid-block label), peep-state 6 (queuing) handler,
+// peep-state 4 dispatcher. See installJsFnEipHook below.
+import { FUN_00422a90 } from "../ported/auto/422a90.js";
+import { FUN_0043a5f8 } from "../ported/auto/43a5f8.js";
+import { FUN_0043a74b } from "../ported/auto/43a74b.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -936,6 +942,75 @@ export function installPainterBridge(heap, opts = {}) {
     c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
     c.regs.ebp = regs.ebp >>> 0;
   });
+
+  // Shared eip-hook template for regs-based JS fn bodies (the 439178/5d7503
+  // wire, factored): stage the translator reg cells from the cpu, run the JS
+  // body, sync back; the harness's simulated ret then performs the fn's
+  // `ret`. Correct for EVERY entry mode — real in-binary call/jmp reach AND
+  // runFunction/runBodyFrom sentinel frames AND native fallthrough — because
+  // each wired body is ret-terminated on every path, so at entry [esp] is
+  // always exactly the slot its own `ret` would pop. __force<hex> = native
+  // step-through (the dual-soak differential lever; top-level-ret stop rule:
+  // halt at esp==entry && opcode C3/C2, let the harness's ret perform it).
+  // onThrow: "interp" reruns the body natively — only valid when the JS
+  // throws before any non-idempotent write; "warn" warns once and continues.
+  const installJsFnEipHook = (addr, jsFn, forceFlag, onThrow) => {
+    const stepThroughNative = (c) => {
+      const self = getEipHook(addr);
+      clearEipHook(addr);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      const espEntry = c.regs.esp >>> 0;
+      try {
+        c.regs.eip = addr >>> 0;
+        let n = 0;
+        while (!((c.regs.esp >>> 0) === espEntry && (c.regs.eip >>> 0) < heap.bytes.length
+                 && (heap.u8(c.regs.eip >>> 0) === 0xc3 || heap.u8(c.regs.eip >>> 0) === 0xc2))) {
+          if (!step(c) || ++n > limit) break;
+        }
+      } finally { setEipHook(addr, self); }
+    };
+    setEipHook(addr, (c) => {
+      if (globalThis[forceFlag]) { stepThroughNative(c); return; }
+      const savedEsp = c.regs.esp >>> 0;
+      regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+      regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+      regs.ebp = c.regs.ebp >>> 0;
+      try {
+        jsFn(heap);
+      } catch (e) {
+        if (onThrow === "interp") { c.regs.esp = savedEsp; stepThroughNative(c); return; }
+        const warned = `__warned_${addr.toString(16)}`;
+        if (!globalThis[warned]) {
+          globalThis[warned] = true;
+          if (typeof console !== "undefined") console.warn(`[painter-bridge] 0x${addr.toString(16)} JS body threw: ${(e.message || e).slice(0, 160)}`);
+        }
+      }
+      c.regs.esp = savedEsp;
+      c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
+      c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
+      c.regs.ebp = regs.ebp >>> 0;
+    });
+  };
+
+  // 0x422a90 — tile-corner-heights setter dispatch, a mid-block label of the
+  // unlabeled 0x421d2c terrain body. Reached via extra_paint_421d2c's
+  // runBodyFrom(0x00422a90) cliff branch AND by native fallthrough at
+  // 0x422a89 during runBodyFrom(0x004225e9) runs — in both cases [esp] holds
+  // the slot the case body's own `ret` would pop (sentinel resp. the real
+  // return address), so the simulated ret is exact. The body's only throw is
+  // an out-of-range ebx (garbage jumptable target); its only prior write is
+  // an idempotent OR, so an interp rerun is byte-safe.
+  installJsFnEipHook(0x422a90, FUN_00422a90, "__forceInterp422a90", "interp");
+
+  // 0x43a5f8 — peep-state 6 (queuing) handler, vtable PTR_0062d4ac[6],
+  // reached only via FUN_00439822's dispatch tail `jmp [edi*4+0x62d4ac]`
+  // (in-binary; [esp] there = 439822's caller's return address, which is
+  // exactly where the handler's ret goes). All callees run via callNative.
+  installJsFnEipHook(0x43a5f8, FUN_0043a5f8, "__forceInterp43a5f8", "warn");
+
+  // 0x43a74b — peep-state 4 dispatcher (movzx sub-state + tail-jmp into the
+  // 0x62d50c handler family, bridged via callNative). Same reach as 43a5f8.
+  installJsFnEipHook(0x43a74b, FUN_0043a74b, "__forceInterp43a74b", "warn");
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the
