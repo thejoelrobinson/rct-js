@@ -2557,3 +2557,25 @@ eaxMis=0 jsThrew=0. Dual-soak 30 ticks byte-identical for all three (bd010739 ==
 every leg — the 439822 edi fix is also behavior-neutral on the live path: no interp-run handler
 read the stale edi in this soak, so the fix restores the contract without a state fork). Gates
 201/201 (gameplay_accuracy isolated).
+
+## ADDENDUM 62 — runBodyFrom's unconditional hook-clear was suppressing the 422a90 port
+
+The fresh interp rank (probe-painter-rank, TICKS=6) contradicted ADD.61's NOT-REACHED lockstep:
+0x422a90 showed 204 calls × 23 interp steps (782 steps/tick). Cause: extra_paint_421d2c's
+runBodyFrom cleared ANY eip hook at its target address — a recursion guard written for the
+self-referential runBodyFrom(0x421d2c) fallback, with a comment assuming the cold-tail addrs
+carry no hooks. That assumption went stale the moment ADD.61 hooked 0x422a90: the cliff branch's
+runBodyFrom(0x00422a90) silently lifted the new port on every call (and lifted the lockstep
+oracle's wrapper hook identically — hence NOT-REACHED). Guard is now SELF-specific
+(clear only when addr == 0x421d2c).
+
+**VALIDATED:** lockstep 0x422a90 now sees the organic crossings — 204 calls / 6 ticks, memMis=0
+eaxMis=0 (on top of ADD.61's 18/18 all-cases invoke-diff). Interp rank: 0x422a90 4692 steps
+(23/call) → 204 (1/call, hook crossings only), 782 → 34 steps/tick. Dual-soak 30 ticks
+byte-identical (bd010739 both legs, == baseline). Gates 201/201 (gameplay_accuracy isolated).
+
+**Post-62 interp rank (real work, >1 step/call):** 0x4254e0 604/tick (#1), 0x43c2ec 309 (peep
+ride sub-state 9, family of the 43a74b bridge), 0x4238b4 230 (supports painter, 1/call hook
+overhead), 0x43d38b 219 (11 steps/call — the 0x423677 slope-LUT tail delegated by the @manual
+port), 0x4314ed 194, 0x43c751 147. The 1-step/call rows (4368d8 1974, 431bc8/421d2c 954) are
+hook-crossing overhead, not interp work.

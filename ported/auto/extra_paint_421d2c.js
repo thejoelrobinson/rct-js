@@ -545,19 +545,20 @@ function runBodyFrom(heap, cpu, runFunction, addr) {
   const savedEIP = cpu.regs.eip >>> 0;
   const savedCallDepth = cpu.callDepth;
   cpu.eflags.CF = 0; cpu.eflags.ZF = 0; cpu.eflags.SF = 0; cpu.eflags.OF = 0;
-  // CRITICAL recursion guard: runFunction dispatches an entry-address eip hook
-  // DIRECTLY (harness/x86.js fast path) — so if `addr` itself carries a hook
-  // (the 0x421d2c fallback at install421d2cHook below runs runBodyFrom(0x421d2c)),
-  // calling runFunction(cpu, 0x421d2c) re-invokes the very hook we're falling
-  // back FROM, re-enters paintBody421d2c, fails again, and recurses until the
-  // step/recursion limit. On a corrupt tile-element pointer (esi=0x6f0020,
-  // a garbage element reached by the per-tile chain walk) this recursion ran
-  // ~1,500-3,700 levels deep — the "~5-6s repaint hitch". Clear the hook so the
-  // interpreter decodes the REAL bytes once (the binary's actual behaviour),
-  // then reinstall. Same pattern callHelperDirect already uses for the palette
-  // helpers. For the cold-tail addrs (0x4225e9 / 0x42280c) there is no hook, so
-  // getEipHook returns undefined and this is a no-op.
-  const savedHook = getEipHook(addr);
+  // CRITICAL recursion guard — but SELF-specific: runFunction dispatches an
+  // entry-address eip hook DIRECTLY (harness/x86.js fast path), so when the
+  // 0x421d2c fallback below runs runBodyFrom(0x421d2c), calling runFunction
+  // would re-invoke the very hook we're falling back FROM, re-enter
+  // paintBody421d2c, fail again, and recurse until the step/recursion limit
+  // (~1,500-3,700 levels on a corrupt tile-element pointer — the "~5-6s
+  // repaint hitch"). Clear the hook ONLY in that self-referential case.
+  // For any OTHER addr, a hook is a genuine JS port that must fire — the
+  // original unconditional clear silently suppressed the 0x422a90 corner-
+  // setter port (ADD.61) on all ~204 calls/soak (and made its lockstep
+  // report NOT-REACHED, since the oracle's own wrapper hook got cleared
+  // the same way). The cold-tail addrs 0x4225e9 / 0x42280c remain hook-free
+  // either way.
+  const savedHook = addr === 0x00421d2c ? getEipHook(addr) : null;
   if (savedHook) clearEipHook(addr);
   try {
     runFunction(cpu, addr, { stackTop: savedESP, limit: 5_000_000 });
