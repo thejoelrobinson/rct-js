@@ -59,16 +59,6 @@ try { r.runInit(); } catch {}
 try { r.runTick(); } catch {}
 skipFadeIn(r.heap);
 enterScenarioPlay(r.heap);
-// POKE="addr=val[/size],..." — craft heap state after warm-up, before the
-// soak; both legs see it identically (still a valid differential). Additive,
-// mirrors tools/_invoke-diff.mjs. E.g. POKE="991f88=1/4" pins camera rot 1.
-for (const p of (process.env.POKE || "").split(",").filter((s) => s.length)) {
-  const [lhs, rhs] = p.split("=");
-  const [valStr, szStr] = rhs.split("/");
-  const a = parseInt(lhs, 16) >>> 0, v = parseInt(valStr, 16) >>> 0, sz = szStr ? parseInt(szStr, 10) : 1;
-  if (sz === 4) r.heap.setU32(a, v); else if (sz === 2) r.heap.setU16(a, v & 0xffff); else r.heap.setU8(a, v & 0xff);
-  console.log(`  POKE [0x${a.toString(16)}] = 0x${v.toString(16)} (${sz}B)`);
-}
 const heap = r.heap;
 const bytes = heap.bytes;
 const CMP_END = bytes.byteLength - 64 * 1024;
@@ -112,6 +102,19 @@ if (ROTATE) {
   console.log(`ROTATE: rotated ${ROTATE}x, [0x991f88] = ${heap.u32(0x00991f88)}`);
 }
 
+// POKE="addr=val[/size],..." — craft heap state after warm-up/ROTATE, before
+// the soak; both legs see it identically (still a valid differential). Runs
+// AFTER the ROTATE block (the rotate handler rewrites the viewport view_x/y,
+// so a POKE that aims the camera must land second — same order as _soakhash).
+// E.g. POKE="9a1170=f19a/2,9a1172=198/2" pans viewport slot 0.
+for (const p of (process.env.POKE || "").split(",").filter((s) => s.length)) {
+  const [lhs, rhs] = p.split("=");
+  const [valStr, szStr] = rhs.split("/");
+  const a = parseInt(lhs, 16) >>> 0, v = parseInt(valStr, 16) >>> 0, sz = szStr ? parseInt(szStr, 10) : 1;
+  if (sz === 4) r.heap.setU32(a, v); else if (sz === 2) r.heap.setU16(a, v & 0xffff); else r.heap.setU8(a, v & 0xff);
+  console.log(`  POKE [0x${a.toString(16)}] = 0x${v.toString(16)} (${sz}B)`);
+}
+
 let calls = 0, memMis = 0, eaxMis = 0, jsThrew = 0, reported = 0, inside = false;
 // Non-scratch exit-register mismatches (informational, like eaxMis). esi/edi/ebp/ebx
 // are callee-saved OR explicit register in/out params — a caller relies on them, so a
@@ -132,11 +135,36 @@ const runInterp = (c) => {
   const entryEsp = c.regs.esp >>> 0;   // [esp] holds the return address at entry
   const limit = 50_000_000;
   let n = 0;
+  // Leg A (the JS body) clobbers cpu.regs.eip whenever it bridges an inner
+  // paint call (callIndirect → _paintShim → nested runFunction leaves
+  // eip = RET_SENTINEL). The register restore before leg B covers the GPRs
+  // but not eip — without this reset, leg B stepped from 0xdeadbeef and
+  // threw on the first instruction fetch, aborting the crossing BEFORE the
+  // compare: memMis stayed 0 vacuously for every painter-class fn, and the
+  // escaping throw killed the enclosing native painter frame (the
+  // "0x436bc3: mem8 OOB" abort spam at rot 1-3).
+  c.regs.eip = ADDR >>> 0;
   try {
-    // Run from ADDR until the matching `ret` pops the return address, i.e. esp
-    // rises above entryEsp. This works whether or not the function pushes early
-    // (the previous two-loop logic exited after 1 step for non-pushing prologues).
-    while ((c.regs.esp >>> 0) <= entryEsp) { if (!step(c) || ++n > limit) break; }
+    // Step until the fn is ABOUT to execute its top-level ret — esp back at
+    // its entry value (balanced code: inner frames always hold esp below it)
+    // and the next opcode a ret (0xc3/0xc2) — and STOP THERE. The caller of
+    // this hook is step()/runFunction's hook path, which SIMULATES one ret
+    // itself after the hook returns. The previous rule ("run until esp rises
+    // above entryEsp") executed the real ret too, so the simulated ret was a
+    // SECOND pop: harmless on a fresh _paintShim sentinel frame (the
+    // "mem8 OOB: 0xdeadbeef" warning spam), but on a crossing that arrives
+    // via a live in-binary call (the rot 1-3 painter chains) it ate one
+    // stack slot of the ENCLOSING painter frame per crossing, collapsing
+    // the strip walk after the first sprite — 0x5d7503 showed as
+    // NOT-REACHED at rot 1-3 while 0x436bc3 spammed sentinel-OOB aborts.
+    while (true) {
+      const esp = c.regs.esp >>> 0, eip = c.regs.eip >>> 0;
+      if (esp === entryEsp && eip < bytes.length) {
+        const op = bytes[eip];
+        if (op === 0xc3 || op === 0xc2) break;
+      }
+      if (!step(c) || ++n > limit) break;
+    }
   } finally { setEipHook(ADDR, self); }
 };
 
