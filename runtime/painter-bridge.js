@@ -42,6 +42,8 @@ import { FUN_005d7503, js5d7503CanHandle } from "../ported/auto/5d7503.js";
 import { FUN_00422a90 } from "../ported/auto/422a90.js";
 import { FUN_0043a5f8 } from "../ported/auto/43a5f8.js";
 import { FUN_0043a74b } from "../ported/auto/43a74b.js";
+// Entrance-element painter (vtable slot 4 of PTR_LAB_00628a94), ADDENDUM 63.
+import { FUN_004254e0, js4254e0CanHandle } from "../ported/auto/4254e0.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -954,7 +956,10 @@ export function installPainterBridge(heap, opts = {}) {
   // halt at esp==entry && opcode C3/C2, let the harness's ret perform it).
   // onThrow: "interp" reruns the body natively — only valid when the JS
   // throws before any non-idempotent write; "warn" warns once and continues.
-  const installJsFnEipHook = (addr, jsFn, forceFlag, onThrow) => {
+  // canHandle (optional): (heap, c) => bool pre-flight guard — false routes
+  // the call to the native step-through (for bodies with unported cold arms,
+  // the 5d7503/444e08 pattern).
+  const installJsFnEipHook = (addr, jsFn, forceFlag, onThrow, canHandle) => {
     const stepThroughNative = (c) => {
       const self = getEipHook(addr);
       clearEipHook(addr);
@@ -970,11 +975,14 @@ export function installPainterBridge(heap, opts = {}) {
       } finally { setEipHook(addr, self); }
     };
     setEipHook(addr, (c) => {
-      if (globalThis[forceFlag]) { stepThroughNative(c); return; }
+      if (globalThis[forceFlag] || (canHandle && !canHandle(heap, c))) { stepThroughNative(c); return; }
       const savedEsp = c.regs.esp >>> 0;
       regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
       regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
       regs.ebp = c.regs.ebp >>> 0;
+      // esp too: a body with an embedded-interp fallback (4254e0) must run
+      // the real bytes on the CURRENT stack, not a stale regs.esp.
+      regs.esp = savedEsp;
       try {
         jsFn(heap);
       } catch (e) {
@@ -1011,6 +1019,16 @@ export function installPainterBridge(heap, opts = {}) {
   // 0x43a74b — peep-state 4 dispatcher (movzx sub-state + tail-jmp into the
   // 0x62d50c handler family, bridged via callNative). Same reach as 43a5f8.
   installJsFnEipHook(0x43a74b, FUN_0043a74b, "__forceInterp43a74b", "warn");
+
+  // 0x4254e0 — ENTRANCE-element per-tile painter (vtable slot 4 of
+  // PTR_LAB_00628a94, dispatched from FUN_extra_paint_4368d8; ADDENDUM 63).
+  // JS covers ride EXITS (case 1) and park-entrance SIDE POSTS (case 2,
+  // e5lo 1/2); the fn routes ride entrances (case 0), the park-sign middle
+  // (runs the 458bcf/458a7c/45a95d string trio — real bodies must run) and
+  // the shade-overlay arm through its embedded interpreter INTERNALLY (the
+  // 444e08-orchestrator pattern), so the lockstep oracle exercises the same
+  // routing production does.
+  installJsFnEipHook(0x4254e0, FUN_004254e0, "__forceInterp4254e0", "warn");
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the

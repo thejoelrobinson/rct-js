@@ -2579,3 +2579,31 @@ ride sub-state 9, family of the 43a74b bridge), 0x4238b4 230 (supports painter, 
 overhead), 0x43d38b 219 (11 steps/call — the 0x423677 slope-LUT tail delegated by the @manual
 port), 0x4314ed 194, 0x43c751 147. The 1-step/call rows (4368d8 1974, 431bc8/421d2c 954) are
 hook-crossing overhead, not interp work.
+
+## ADDENDUM 63 — 0x4254e0 (entrance-element painter) PORTED — post-62 rank #1 eliminated
+
+0x4254e0 = the ENTRANCE per-tile painter, vtable slot 4 of PTR_LAB_00628a94 (pointer at 0x628aa4,
+sole reference), no decompiled C. Transcribed ported/auto/4254e0.js: case 1 ride EXIT (parity-
+mirrored double paint via [4*rot+0x432204] + edge-strip ring stores at [0x99c165/6]/[0x999f9a/dc])
+and case 2 park-entrance SIDE POSTS (12-entry jumptable on (e5lo<<2)|rot; all 8 side-post bodies
+identical except image = 0x923f + rot*3 + (e5lo-1) — machine-checked against every table target);
+shared tail (parity supports call 0x4238b4 with ebp=0x20260000, 9-word segment clear, 16-bit
+dx += 0x30/0x50 ON THE SUPPORTS CALLEE'S EXIT DX — the binary never saves edx — then the signed
+jge height-max update). Unported arms routed through the fn's EMBEDDED interpreter (444e08-
+orchestrator pattern): case 0 ride entrance (unseen in sc21), park-sign middle (paints the arch +
+park name via the 458bcf/458a7c/45a95d string trio — ADD.6-deferred, real bodies must run), and
+the shade-overlay head.
+
+**Routing lesson (cost one broken lockstep run):** the guard was first placed in the WIRING
+(installJsFnEipHook canHandle) — but the lockstep oracle invokes the fn directly, bypassing
+wiring, so leg A ran the side-post body on park-sign-middle calls (20/100 memMis, exit ebx off by
+one 0x30 paint node). Guards for partially-ported fns belong INSIDE the fn (444e08 pattern) so the
+oracle exercises production routing. installJsFnEipHook now also stages regs.esp (an embedded-
+interp fallback must run the real bytes on the CURRENT stack).
+
+**VALIDATED:** lockstep rot0 = 300 calls/30 ticks (240 JS + 60 embedded-interp middle, all
+compared), rot1/2/3 aimed at the ADD.60 world-region POKEs = 120/100/120 calls — ALL memMis=0
+eaxMis=0 jsThrew=0 (every rotation variant of both ported cases exercised). Dual-soak 30 ticks
+byte-identical at rot0 (bd010739) and aimed rot2 (706568ac), == baselines. Gates 201/201
+(gameplay_accuracy isolated). 0x4254e0 off the interp real-work rank (was #1 at 604 steps/tick;
+residual interp = the park-sign middle's string trio, i.e. the deferred subsystem).
