@@ -27,6 +27,10 @@ import { FUN_00452fce } from "../ported/auto/452fce.js";
 // 0x429502 — reached via its internal `jmp [ebx*4+0x429544]` (ebx=0).
 import { FUN_extra_award_429560 } from "../ported/auto/extra_award_429560.js";
 import { FUN_004415e6 } from "../ported/auto/4415e6.js";
+// Paint port: peep sprite painter — unlabeled binary fn (no decompiled C),
+// entry 1 of the sprite-type paint dispatch table at 0x6309a0; reached only
+// via FUN_00444820's callIndirect. See ported/auto/439178.js (ADDENDUM 58).
+import { FUN_00439178 } from "../ported/auto/439178.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -766,6 +770,65 @@ export function installPainterBridge(heap, opts = {}) {
     });
     bridged++;
   }
+
+  // 0x439178 — the PEEP sprite painter (@manual JS, ADDENDUM 58). An unlabeled
+  // binary fn (no decompiled C) reached via TWO paths (audit finding, ADD.58):
+  //   rot 0:   JS chain — 0x436b50 JS override → FUN_00444820 (JS) →
+  //            callIndirect through the sprite-type table at 0x6309a0 →
+  //            fnDispatch. Covered by the override below.
+  //   rot 1-3: interp chain — 0x436bc3/0x436c3d/0x436cb3 run natively; their
+  //            in-binary `call 0x444820` → `call [0x6309a0+type*4]` never
+  //            consults fnDispatch. Covered by the eip hook below.
+  // Both stay behind __forceInterp439178 (the dual-soak differential lever).
+  // The fnDispatch wrapper must return regs.eax: the caller does
+  // `regs.eax = callIndirect(...)`, and the interp shim returns the synced-back
+  // eax — returning undefined here would NaN-poison regs.eax.
+  {
+    const interpShim439178 = state.fnDispatch.get(0x439178);
+    state.fnDispatch.set(0x439178, function _js439178(_heap, ..._args) {
+      if (globalThis.__forceInterp439178) {
+        if (interpShim439178) return interpShim439178(_heap, ..._args);
+        // No shim to fall back to (painter list omitted 0x439178) — a forced-
+        // interp differential would silently compare JS against JS. Warn once.
+        if (!globalThis.__warned439178NoShim) {
+          globalThis.__warned439178NoShim = true;
+          if (typeof console !== "undefined") console.warn("[painter-bridge] __forceInterp439178 set but no interp shim exists — running the JS port");
+        }
+      }
+      FUN_00439178(heap);
+      return regs.eax >>> 0;
+    });
+  }
+
+  // eip hook for the interp-native path (camera rotations 1-3, see above).
+  // Same template as 0x4415e6/0x5da274: the fn is entered by a real in-binary
+  // `call`, so the caller's return address is on the stack and the harness
+  // simulates exactly ONE `ret` after the hook returns. The JS body's inner
+  // callIndirect → _paintShim runs runFunction on THIS cpu and clobbers
+  // esp/eip — snapshot/restore esp around the body so the post-hook ret pops
+  // the real return address. Body's own ret = 0x439218 (step-to-ret fallback).
+  setEipHook(0x439178, (c) => {
+    if (globalThis.__forceInterp439178) {
+      const self = getEipHook(0x439178);
+      clearEipHook(0x439178);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      try {
+        c.regs.eip = 0x439178;
+        let n = 0;
+        while ((c.regs.eip >>> 0) !== 0x439218) { if (!step(c) || ++n > limit) break; }
+      } finally { setEipHook(0x439178, self); }
+      return;
+    }
+    const savedEsp = c.regs.esp >>> 0;
+    regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0;
+    try { FUN_00439178(heap); } catch (e) { /* hand-port errors are non-fatal */ }
+    c.regs.esp = savedEsp;
+    c.regs.eax = regs.eax >>> 0; c.regs.ecx = regs.ecx >>> 0; c.regs.edx = regs.edx >>> 0;
+    c.regs.ebx = regs.ebx >>> 0; c.regs.esi = regs.esi >>> 0; c.regs.edi = regs.edi >>> 0;
+    c.regs.ebp = regs.ebp >>> 0;
+  });
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the

@@ -2401,3 +2401,45 @@ Assessed the next targets after 0x4183a0. Findings (so the next pass doesn't re-
 paint dispatch; multi-slice, harder tier); (2) the 0x444e08 banner subsystem (2620/tick, larger);
 (3) push the 28 commits + pause for review. Surfaced to the user for direction (a new multi-slice
 asm investment parallels the user-blessed 0x4415e6 fork, and 28 commits make a natural checkpoint).
+
+## ADDENDUM 58 — 0x439178 (peep sprite painter) PORTED + DUAL-WIRED; rotate-capable soak lands
+
+User directed "keep porting" → took 0x439178 (1400 steps/tick, the biggest real-work consumer
+after the deferred banner). **DISCOVERY — how the "mid-block" consumers are really reached:** the
+dword 0x439178 appears exactly once in rct.exe, in a 4-entry SPRITE-TYPE PAINT DISPATCH TABLE at
+DATASEG **0x6309a0** = {0x5d7503 vehicle, 0x439178 peep, 0x42d69f, 0x42e001} (file→VA via the PE
+section table — the linear CODESEG mapping is WRONG for data sections; section map now recorded
+here: .text 0x401000/0x400, CODESEG 0x41c000/0x1a600, .rdata 0x5e7000/0x1e5400, .data
+0x5e9000/0x1e7400, DATASEG 0x5f4000/0x1ed400, DataSeg 0x9a2000/0x59ac00, CodeSeg 0x9b3000/0x5ab000).
+The dispatcher is FUN_00444820 (per-tile sprite-chain walker, @manual JS, LIVE):
+`regs.eax = callIndirect(heap, heap.u32(0x006309a0 + spriteType*4))` with entry contract
+ESI=sprite desc, EBX=((rot<<3)+[esi+0x1e])&0x1f, AX/CX/DX=x/y/z, EBP=type. 0x439178 itself is an
+UNLABELED fn (starts 1 byte past FUN_00439135's ret; Ghidra never split it) — ported from asm
+(disasm-va 0x439178..0x439219) to ported/auto/439178.js (@manual): guards (zoom==2 je,
+[0x991f8c]&0x1000), peep image id (dir=ebx>>3 + action-base [[0x62d640+[esi+0x2d]*8]+[esi+0x6e]*8]
++ frame[esi+0x70]*4, remap [esi+0x30]<<17|[esi+0x31]<<24, |0xa0000000; special [esi+0x71]==0xfe →
+[esi+0x6f]+frame 0), paint regs (eax=0x0b00 provably exact, ecx=0, di=1/si=1 partial writes,
+[0x99a4e8/ea]=0, [0x99a4ec]=z+3), inner `call [0x432204+rot*4]` bridged via callIndirect, pop-esi.
+
+**ADVERSARIAL AUDIT (3-lens workflow):** asm-equivalence CLEAN, register-semantics CLEAN, one
+MAJOR integration finding: **fnDispatch wiring is live ONLY at camera rotation 0.** The rot-slot
+dispatch (436b2a JS → [0x436b40+rot*4]) has a JS override only for slot 0 (0x436b50); slots 1-3
+(0x436bc3/0x436c3d/0x436cb3) run interp-natively, and in-binary CALLs never consult fnDispatch —
+so the whole peep chain (444820 → 439178) runs on raw binary bytes at rot 1-3. (Same holds for
+444820's own JS and predates this work.) **CLOSED by dual-wiring + a rotate-capable soak:**
+(1) added a setEipHook(0x439178) (the 4415e6/5da274 template: esp snapshot/restore, step-to-ret
+0x439218 fallback behind __forceInterp439178) so the port is live on the interp-native chain too;
+(2) a blunt POKE of [0x991f88] does NOT exercise rot 1-3 (derived view state stays rot-0; paint
+finds nothing — proven by tools/_probe-rot.mjs: 0x436bc3 runs 84x but never reaches 444820);
+(3) the REAL rotate = FUN_004340f5 with esi = main world window (window list 0x9a013c..[0x9a1164],
+stride 0x178, class byte +0x174==0 → main). Added **ROTATE=n** to tools/_lockstep-auto.mjs +
+tools/_soakhash.mjs (invokes the rotate in the interpreter pre-soak), plus additive POKE= and
+FORCE= envs (FORCE needed to lockstep an fn whose fnDispatch is already JS-wired).
+
+**VALIDATED (all four rotations, real entries):** lockstep rot0=293, rot1=72, rot2=59, rot3=24
+calls — ALL memMis=0 eaxMis=0 jsThrew=0. Dual-soak 30 ticks byte-identical at rot0 (f78ba50c) AND
+rot1 (3f48ca61, exercises the eip-hook wire). Gates 201/201 (gameplay_accuracy isolated). Perf:
+0x439178 eliminated from the interp rank (8398 steps/6-ticks → 0 at rot 0). Also fixed audit
+minors: eax-capture convention on the inner callIndirect; warn-once when __forceInterp439178 is
+set with no shim to fall back to. **The rotate-capable soak is a project-level oracle upgrade:
+every painter wire can now be validated at all 4 rotations** (previously rot-0-only, silently).
