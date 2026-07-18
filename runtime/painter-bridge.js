@@ -44,6 +44,10 @@ import { install4368d8Hooks } from "../ported/auto/extra_paint_4368d8.js";
 import { install421d2cHook } from "../ported/auto/extra_paint_421d2c.js";
 // Phase R+12: hand-port scaffold for fence/wall per-element painter (stub).
 import { install444e08Hook } from "../ported/auto/extra_paint_444e08.js";
+// Full-fn wall-painter orchestrator (ADDENDUM 60): jsMain (the validated
+// paintBody444e08) + jsBanner (banner walls, previously interp-only) +
+// predicate-routed embedded-interp fallbacks (shade/door/scroll-text).
+import { FUN_00444e08 } from "../ported/auto/444e08.js";
 import { install4238b4Hook } from "../ported/auto/extra_paint_4238b4.js";
 // Phase R+12b: hand-port for small-scenery per-element painter.
 import { install5ce7f8Hook } from "../ported/auto/extra_paint_5ce7f8.js";
@@ -334,7 +338,43 @@ export function installPainterBridge(heap, opts = {}) {
   // due to the 0x44635d sub-dispatcher sprawl reached via the door/banner
   // tail jumptable. Follow-up phase (R+12.next) will swap the stub for the
   // real port; the scaffold here lets that swap be a single-file change.
-  install444e08Hook(cpu, runFunction, setEipHook, heap);
+  // REPLACED (ADDENDUM 60) by the full-fn orchestrator FUN_00444e08: the old
+  // install444e08Hook covered non-banner walls with a blind try/fallback;
+  // the orchestrator routes by the same predicates the binary branches on
+  // (shade/door/banner/scroll-text, all entry-state-only) — banner walls now
+  // run as JS, cold paths run byte-exactly in the embedded interpreter with
+  // this hook lifted. The fn stages from the translator reg cells and leaves
+  // the cpu positioned for the harness's simulated ret (its own finally), so
+  // this wrapper only stages regs and calls it. __forceInterp444e08 = native
+  // step-through (the dual-soak lever), same top-level-ret stop rule as the
+  // 0x5d7503 hook (stop at esp==entry && opcode C3/C2, don't execute it).
+  setEipHook(0x444e08, (c) => {
+    if (typeof globalThis._renderTrace === "function") globalThis._renderTrace("FUN_00444e08");
+    if (globalThis.__forceInterp444e08) {
+      const self = getEipHook(0x444e08);
+      clearEipHook(0x444e08);
+      const limit = globalThis.__painterStepLimit || 50_000_000;
+      const espEntry = c.regs.esp >>> 0;
+      try {
+        c.regs.eip = 0x444e08;
+        let n = 0;
+        while (!((c.regs.esp >>> 0) === espEntry && (c.regs.eip >>> 0) < heap.bytes.length
+                 && (heap.u8(c.regs.eip >>> 0) === 0xc3 || heap.u8(c.regs.eip >>> 0) === 0xc2))) {
+          if (!step(c) || ++n > limit) break;
+        }
+      } finally { setEipHook(0x444e08, self); }
+      return;
+    }
+    regs.eax = c.regs.eax >>> 0; regs.ecx = c.regs.ecx >>> 0; regs.edx = c.regs.edx >>> 0;
+    regs.ebx = c.regs.ebx >>> 0; regs.esi = c.regs.esi >>> 0; regs.edi = c.regs.edi >>> 0;
+    regs.ebp = c.regs.ebp >>> 0; regs.esp = c.regs.esp >>> 0;
+    try { FUN_00444e08(heap); } catch (e) {
+      if (!globalThis.__warned444e08Orch) {
+        globalThis.__warned444e08Orch = true;
+        if (typeof console !== "undefined") console.warn(`[painter-bridge] 444e08 orchestrator threw: ${(e.message || e).slice(0, 160)}`);
+      }
+    }
+  });
 
   // FUN_extra_paint_4238b4 — vertical-supports painter, called per
   // wall/track element (the JS 444e08 port reaches it via runFunction;

@@ -2492,3 +2492,31 @@ forced-interp leg at each). Gates: 201/201 vitest (gameplay_accuracy isolated 2.
 5s-timeout "fail" is the known runner artifact). Interp elimination: 72 crossings/6 ticks at rot0
 now run as JS (was ~967 steps/tick in the ADD-57 rank); shape-37 covers every sprite in the
 current scenario, specials fall back via the guard.
+
+## ADDENDUM 60 — 0x444e08 wall painter: full-fn orchestrator WIRED; banner walls now JS
+
+Replaced install444e08Hook (blind try-JS/fallback) with the ADDENDUM-58-era orchestrator
+ported/auto/444e08.js FUN_00444e08: routes by the same entry-state-only predicates the binary
+branches on — jsMain (the validated paintBody444e08), NEW jsBanner (banner walls whose
+scrolling-text block is skipped: duplicated main body + hand-transcribed banner glue
+0x446c69..0x446de4), and embedded-interp fallbacks (shade-overlay / door cases 1-13 /
+scroll-text, run byte-exactly with the hook lifted). Wrapper in painter-bridge stages the
+translator reg cells and lets the fn's own finally reposition the cpu for the harness's
+simulated ret; __forceInterp444e08 = native step-through (top-level-ret stop rule, as 5d7503).
+
+**Banner coverage needed camera work:** the two banner walls sit in the rot-0 default view and
+FACE the camera there (bDir=(cl+([esi]>>6))&3 ∈ {1,2} → scrollText, interp). At other rotations
+they leave the default view. Aimed the rotated view at the same world region by inverting the
+rot-0 iso projection of the view centre (wz≈0 error acceptable at view scale):
+  rot1 POKE=9a1170=f2f0/2,9a1172=1b8/2   rot2 POKE=9a1170=f9b0/2,9a1172=f948/2
+  rot3 POKE=9a1170=a90/2,9a1172=fca8/2
+At rot1/3 the pair splits facing/non-facing ({2,3}/{0,1}); at rot2 both flip non-facing.
+
+**VALIDATED (fixed oracle, real compares; DBG444E08=1 path stats):** lockstep
+rot0=1856 (jsMain 1840 + scrollText 16), rot1-default=496, rot2-default=824, rot3-default=600
+(all jsMain), rot1-aimed=684 (jsBanner 8 + scrollText 8), rot2-aimed=664 (jsBanner 8),
+rot3-aimed=904 (jsBanner 8 + scrollText 8) — ALL memMis=0 eaxMis=0 jsThrew=0. Dual-soak 30
+ticks byte-identical: rot0 bd010739 (== pre-change baseline, i.e. the rewiring is byte-neutral),
+rot2-aimed 706568ac. Gates 201/201 (gameplay_accuracy isolated). NOT exercised: interpDoor /
+interpShade (no door walls / shade mode in sc21) — mis-routing risk there is interp-side only
+(interp = truth); the hot-path predicates (banner/scrollText/main) are lockstep-covered.
