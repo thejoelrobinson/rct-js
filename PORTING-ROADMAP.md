@@ -2632,3 +2632,18 @@ platform arms all exercised; the two rare arrived-fallthrough crossings are the 
 the bug). Dual-soak 30 ticks byte-identical (5b79d5b5 both legs, stable across repeated runs).
 Gates 201/201 (gameplay_accuracy isolated). 0x43c2ec (309 steps/tick, post-62 rank #2 real-work)
 now JS on the live path.
+
+## ADDENDUM 65 — 0x5e53ca (sprite bbox invalidate) eip-hooked; bigger win than the rank showed
+
+The @manual JS (rewritten from asm long ago; fnDispatch-mapped for JS callers) was never
+eip-hooked, so every in-binary `call 0x5e53ca` and every callNative bridge (43a5f8/43c2ec et al)
+ran the ~124-step interp body. One installJsFnEipHook line wires it (pushal/popal contract — all
+GP regs preserved; no caller reads its exit flags). The rank had under-sold this fn: it counts
+only runFunction ENTRIES (12/6 ticks), but the hook also catches mid-run call sites — lockstep
+saw 148 crossings/10 ticks (~15/tick, >7x the ranked figure).
+
+**VALIDATED:** lockstep rot0 598 calls/40 ticks + rot1 150/10 — ALL memMis=0 eaxMis=0 jsThrew=0.
+Dual-soak 30 ticks byte-identical (5b79d5b5 both legs, the time-independent baseline). Gates
+201/201 (gameplay_accuracy isolated). 0x5e53ca off the interp rank (was 248 steps/tick ranked;
+true elimination larger per the crossing count). Remaining real-work top: 0x43d38b's 0x423677
+slope-LUT tail 219, 0x4314ed 194, 0x43c751 residue 147.

@@ -46,6 +46,11 @@ import { FUN_0043a74b } from "../ported/auto/43a74b.js";
 import { FUN_004254e0, js4254e0CanHandle } from "../ported/auto/4254e0.js";
 // Peep ride sub-state 9 handler (0x62d50c[9], via the 43a74b bridge), ADD 64.
 import { FUN_0043c2ec } from "../ported/auto/43c2ec.js";
+// Sprite bbox invalidate (dirty-grid marking), ADDENDUM 65. The @manual JS
+// (rewritten from asm; the Ghidra C dropped the clamp loop) has long been in
+// the fnDispatch map for JS callers — this hook makes the in-binary `call
+// 0x5e53ca` sites and the callNative bridges fast-path it too.
+import { FUN_005e53ca } from "../ported/auto/5e53ca.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1038,6 +1043,11 @@ export function installPainterBridge(heap, opts = {}) {
   // sequencer over five callNative-delegated callees with two CF-across-call
   // branches read from the live cpu flags (ADDENDUM 64).
   installJsFnEipHook(0x43c2ec, FUN_0043c2ec, "__forceInterp43c2ec", "warn");
+
+  // 0x5e53ca — sprite bbox invalidate (pushal/popal: preserves every GP reg;
+  // no caller reads its exit flags). ~124 interp steps/call from the native
+  // `call 0x5e53ca` sites and the 43a5f8/43c2ec callNative bridges (ADD 65).
+  installJsFnEipHook(0x5e53ca, FUN_005e53ca, "__forceInterp5e53ca", "warn");
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the
