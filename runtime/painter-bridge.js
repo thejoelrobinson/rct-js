@@ -61,6 +61,11 @@ import { FUN_005ddcbe } from "../ported/auto/5ddcbe.js";
 import { FUN_004314ed } from "../ported/auto/4314ed.js";
 // Peep-state 13 handler (leaving through the park exit), ADDENDUM 68.
 import { FUN_0043a3a8 } from "../ported/auto/43a3a8.js";
+// Map-animation handlers (vtable 0x628ab0, dispatched from FUN_00436508 with
+// AX=x CX=y DL=z; exit CF=1 dequeues): type 0 ride entrance, type 1 path
+// queue banner — ADDENDUM 71.
+import { FUN_004264f6 } from "../ported/auto/4264f6.js";
+import { FUN_00449178 } from "../ported/auto/449178.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1085,6 +1090,15 @@ export function installPainterBridge(heap, opts = {}) {
   // 0x43a3a8 — peep-state 13 (leaving via the park exit): walking-core /
   // exit-march sequencer with one CF-across-call branch (ADDENDUM 68).
   installJsFnEipHook(0x43a3a8, FUN_0043a3a8, "__forceInterp43a3a8", "warn");
+
+  // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
+  // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,
+  // reached via FUN_00436508's callIndirect (no fnDispatch JS => _paintShim
+  // runFunction => these entry hooks). Exit CF is the caller's dequeue
+  // contract — both bodies set the painter cpu's eflags exactly as the
+  // binary's exit ops (stc resp. and eax,eax) leave them (ADDENDUM 71).
+  installJsFnEipHook(0x4264f6, FUN_004264f6, "__forceInterp4264f6", "warn");
+  installJsFnEipHook(0x449178, FUN_00449178, "__forceInterp449178", "warn");
 
   // 0x43a73f — peep states 2 AND 7 share this 2-instruction sub-state
   // dispatcher; it is byte-for-byte the same `movzx edi,[esi+0x2c] ;
