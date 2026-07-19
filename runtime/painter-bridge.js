@@ -56,6 +56,9 @@ import { FUN_005e53ca } from "../ported/auto/5e53ca.js";
 // both reached via callNative from live JS (peepwalk / 5da274) — ADD 66.
 import { FUN_0043d38b } from "../ported/auto/43d38b.js";
 import { FUN_005ddcbe } from "../ported/auto/5ddcbe.js";
+// Popcount of [0x87c3dc]+[0x87c3e0] -> AX (auto-translation, validated by
+// tools/_lockstep-4314ed.mjs since ADDENDUM 18; never hooked) — ADD 66.
+import { FUN_004314ed } from "../ported/auto/4314ed.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -996,7 +999,14 @@ export function installPainterBridge(heap, opts = {}) {
       // the real bytes on the CURRENT stack, not a stale regs.esp.
       regs.esp = savedEsp;
       try {
-        jsFn(heap);
+        // Auto-translated bodies RETURN their eax (the callIndirect
+        // convention: callers do `regs.eax = fn(heap)`); @manual bodies set
+        // regs directly and return undefined (or their eax, equivalently).
+        // Discarding the return value broke 0x4314ed (a popcount RETURNED
+        // in AX — caller read stale eax; caught by the generic lockstep's
+        // eaxMis and a diverged dual-soak).
+        const ret = jsFn(heap);
+        if (typeof ret === "number") regs.eax = ret >>> 0;
       } catch (e) {
         if (onThrow === "interp") { c.regs.esp = savedEsp; stepThroughNative(c); return; }
         const warned = `__warned_${addr.toString(16)}`;
@@ -1064,6 +1074,11 @@ export function installPainterBridge(heap, opts = {}) {
   // 0x5ddcbe — vehicle breakdown-eligibility check (@manual JS; lockstep
   // 48 calls memMis=0; caller discards exit regs). Was ~64 steps/tick.
   installJsFnEipHook(0x5ddcbe, FUN_005ddcbe, "__forceInterp5ddcbe", "warn");
+
+  // 0x4314ed — popcount of two dword globals returned in AX (~194 interp
+  // steps/tick via callNative from the 424e0f sim step). Auto-translation,
+  // bespoke-oracle-validated since ADD 18; hook added in ADD 66.
+  installJsFnEipHook(0x4314ed, FUN_004314ed, "__forceInterp4314ed", "warn");
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the

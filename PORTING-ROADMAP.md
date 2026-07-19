@@ -2659,3 +2659,18 @@ callNative inside the JS) was ~219 steps/tick; 0x5ddcbe (vehicle breakdown-eligi
 informational scratch — same classes the bespoke oracles documented; bespoke tools re-run and
 agree: 123 resp. 48 calls, gates clean). Dual-soak 30 ticks byte-identical for both
 (5b79d5b5). Gates 201/201. Both off the interp rank.
+
+## ADDENDUM 67 — 0x4314ed hooked; return-value convention fixed in the hook template AND the oracle
+
+Third ADD-65-class wire: 0x4314ed (popcount of [0x87c3dc]+[0x87c3e0] -> AX, auto-translation
+validated since ADD 18) hooked. It immediately exposed a CONVENTION BUG in installJsFnEipHook:
+auto-translated bodies RETURN their eax (callIndirect does `regs.eax = fn(heap)`), and the
+template discarded the return — callers read stale eax (generic-lockstep eaxMis 10/10 AND a
+diverged dual-soak caught it before it shipped). Fixed: the template folds a numeric return into
+regs.eax. The SAME defect existed in tools/_lockstep-auto.mjs leg A (spurious eaxMis on every
+return-value fn) — fixed identically; note the bespoke _lockstep-4314ed.mjs never had it (it
+already folded the return), which is what flagged the contradiction.
+
+**VALIDATED:** generic lockstep 10 calls memMis=0 eaxMis=0 (post-fix); bespoke 8 calls all-zero;
+dual-soak 30 ticks byte-identical (5b79d5b5). Gates 201/201. Interp real-work top is now
+0x5d99a2 130/tick, 0x4499cc 117, 0x43a3a8 94, 0x43a73f 79 — the tail thins.

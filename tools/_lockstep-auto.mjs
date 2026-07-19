@@ -179,7 +179,15 @@ setEipHook(ADDR, function lockstepAuto(c) {
     regs.eax = r0.eax; regs.ecx = r0.ecx; regs.edx = r0.edx; regs.ebx = r0.ebx;
     regs.esi = r0.esi; regs.edi = r0.edi; regs.ebp = r0.ebp; regs.esp = r0.esp;
     let threw = null, jsEax = 0;
-    try { autoFn(heap); jsEax = regs.eax >>> 0; } catch (e) { threw = e; jsThrew++; }
+    try {
+      // Auto-translated bodies RETURN their eax (callIndirect convention);
+      // fold it into regs.eax exactly as production wiring does — without
+      // this, return-value fns (e.g. the 0x4314ed popcount) showed a
+      // spurious eaxMis on every call.
+      const __r = autoFn(heap);
+      if (typeof __r === "number") regs.eax = __r >>> 0;
+      jsEax = regs.eax >>> 0;
+    } catch (e) { threw = e; jsThrew++; }
     const jsExit = threw ? null : { ecx: regs.ecx >>> 0, esi: regs.esi >>> 0, edi: regs.edi >>> 0, ebp: regs.ebp >>> 0, ebx: regs.ebx >>> 0 };
     afterJS.set(bytes);
     // --- restore, leg B: interp truth (left live) ---
