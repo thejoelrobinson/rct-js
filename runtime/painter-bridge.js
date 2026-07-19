@@ -51,6 +51,11 @@ import { FUN_0043c2ec } from "../ported/auto/43c2ec.js";
 // the fnDispatch map for JS callers — this hook makes the in-binary `call
 // 0x5e53ca` sites and the callNative bridges fast-path it too.
 import { FUN_005e53ca } from "../ported/auto/5e53ca.js";
+// Two more validated-but-unhooked @manual ports (the ADD-65 class): the
+// peep tile z-height helper and the vehicle breakdown-eligibility check,
+// both reached via callNative from live JS (peepwalk / 5da274) — ADD 66.
+import { FUN_0043d38b } from "../ported/auto/43d38b.js";
+import { FUN_005ddcbe } from "../ported/auto/5ddcbe.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1048,6 +1053,17 @@ export function installPainterBridge(heap, opts = {}) {
   // no caller reads its exit flags). ~124 interp steps/call from the native
   // `call 0x5e53ca` sites and the 43a5f8/43c2ec callNative bridges (ADD 65).
   installJsFnEipHook(0x5e53ca, FUN_005e53ca, "__forceInterp5e53ca", "warn");
+
+  // 0x43d38b — peep tile z-height helper (@manual JS rewritten from asm,
+  // ADDENDUM ~58-era; lockstep-validated 123 calls memMis=0 eaxMis=0). The
+  // (bl&0x18)!=0 arm tail-calls the 0x423677 slope LUT via callNative inside
+  // the JS. Reached via callNative from the peepwalk JS AND native call
+  // sites; was ~219 interp steps/tick unhooked (ADDENDUM 66).
+  installJsFnEipHook(0x43d38b, FUN_0043d38b, "__forceInterp43d38b", "warn");
+
+  // 0x5ddcbe — vehicle breakdown-eligibility check (@manual JS; lockstep
+  // 48 calls memMis=0; caller discards exit regs). Was ~64 steps/tick.
+  installJsFnEipHook(0x5ddcbe, FUN_005ddcbe, "__forceInterp5ddcbe", "warn");
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the

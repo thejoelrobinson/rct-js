@@ -2647,3 +2647,15 @@ Dual-soak 30 ticks byte-identical (5b79d5b5 both legs, the time-independent base
 201/201 (gameplay_accuracy isolated). 0x5e53ca off the interp rank (was 248 steps/tick ranked;
 true elimination larger per the crossing count). Remaining real-work top: 0x43d38b's 0x423677
 slope-LUT tail 219, 0x4314ed 194, 0x43c751 residue 147.
+
+## ADDENDUM 66 — 43d38b + 5ddcbe eip-hooked (the ADD-65 class: validated JS, unhooked call sites)
+
+Same one-line-wire class as ADD 65: both @manual ports were lockstep-validated this session and
+fnDispatch-mapped, but their callNative/native call sites still ran the interp bodies. Hooked
+both. 0x43d38b (peep tile z-height; the (bl&0x18)!=0 arm tail-calls the 0x423677 slope LUT via
+callNative inside the JS) was ~219 steps/tick; 0x5ddcbe (vehicle breakdown-eligibility) ~64.
+
+**VALIDATED:** generic lockstep 43d38b 206 calls / 5ddcbe 80 calls, memMis=0 (ebx resp. eax/edi
+informational scratch — same classes the bespoke oracles documented; bespoke tools re-run and
+agree: 123 resp. 48 calls, gates clean). Dual-soak 30 ticks byte-identical for both
+(5b79d5b5). Gates 201/201. Both off the interp rank.
