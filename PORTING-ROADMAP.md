@@ -2695,3 +2695,31 @@ goto-truncation bugs; header says "hand-port when hot" — it is now); the Ghidr
 with 11 cross-jumping gotos, a proper multi-slice transcription. 0x5d99a2 (130/tick) is
 sprite-update vtable slot 1 whose paths run deep into the 0x5db333 vehicle tails — the 5dbeeb
 hybrid-checkpoint tier, not a single-fn port.
+
+## ADDENDUM 69 — 4499cc port PLAN (next session's slice); the quick-win tail is now cleared
+
+The clean single-fn interp tail is done: everything above ~100 steps/tick is either ported or
+scoped. 0x4499cc (per-ride breakdown/inspection/music/profit tick, 117/tick) is next and needs a
+dedicated slice. Execution plan from the full C+asm review (decompiled/c/4499cc.c, 405 lines):
+
+1. STRUCTURE: pre-call 0x45389c; per-ride loop (0x887420, stride 0x260, 0xff = empty, 0xff rides,
+   exit calls 0x453bf8); per ride: (a) music block (flag 0x80000 in 0x5f5b78 table; picks tune
+   via rand from the 0x5f66c8 per-type list; plays via 0x453900 with the PITCH IN EDI — 0x5622 ±
+   0x46*[+0x15c] breakdown warble — an implicit register arg the C mistracks as unaff_EDI);
+   (b) unless type==0x14: station loop 0..3 with test-track/boarding scans over the car sprites
+   (0x743b94 pool) and the station-flag update tail (map-element walk via tile_pointers, byte+5
+   bit 0x80, then 0x5e59ec invalidate with EDI arg); (c) customer-history rotate every 0x3c0
+   ticks ([+0xd2] timer; ten LOCK'd u16 shifts; popularity math via the 0x5f5e88/0x62d580
+   tables); (d) music-crossfade block (type 0x12 flag 1); (e) type 0x15 shop restock walk;
+   (f) satisfaction/profit updates on the &0xff and &0x1fff tick gates (rand-gated award calls
+   0x4516de/0x45174b); (g) 0x4519c9 on (&0x1c0-flags, tick>>1 & 0xff == ride); (h) inspection
+   due-timer on the &0x7ff gate (may set flag 0x100 + goto exit mid-station-scan).
+2. HAZARDS: implicit EDI args (0x453900 / 0x5e59ec / 0x5e585a); the LAB_00449ce9/ceb shared tail
+   uses uVar9 (station coord word) + bVar5 (the boarding flag) ACROSS arms; the type-0xc/0xd arms
+   look near-duplicated in the C — transcribe their loop predicates from asm (0x449b2c..0x449ce8),
+   not the C; CONCAT11 artifact at the else-arm (line 150) = mov ah/[+0x3a]-family — asm-check.
+3. COVERAGE: the &0x3bf/&0x7ff/&0x1fff arms never fire in short soaks. Validate with POKE on the
+   tick dword 0x88741c (set to gate-aligned values pre-soak) + per-arm lockstep runs; the music
+   and station arms have organic coverage (~1 ride-with-music in sc21, 6 calls/6 ticks).
+4. Also next tier: 0x5d99a2 (130/tick) belongs to the 5dbeeb vehicle-subsystem checkpoint
+   project, not single-fn work.
