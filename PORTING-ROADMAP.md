@@ -2674,3 +2674,24 @@ already folded the return), which is what flagged the contradiction.
 **VALIDATED:** generic lockstep 10 calls memMis=0 eaxMis=0 (post-fix); bespoke 8 calls all-zero;
 dual-soak 30 ticks byte-identical (5b79d5b5). Gates 201/201. Interp real-work top is now
 0x5d99a2 130/tick, 0x4499cc 117, 0x43a3a8 94, 0x43a73f 79 — the tail thins.
+
+## ADDENDUM 68 — peep-state 13 ported; states 2/7 dispatcher bridged (shared with 43a74b)
+
+**0x43a3a8** (peep-state 13, leaving via the park exit; no decompiled C): walking-core/exit-march
+sequencer with one CF-across-call branch and the leave-park bookkeeping tail (guest counters
+0x87c81c/1e, park-value snapshot to [esi+0xa8], 0x5e5301 window refresh). Ported as
+ported/auto/43a3a8.js (callNative + live-CF, the 43a5f8 pattern). Lockstep 15 calls memMis=0.
+
+**0x43a73f** (peep states 2 AND 7 share it): byte-identical twin of the 43a74b sub-state
+dispatcher (movzx [esi+0x2c]; jmp [0x62d50c table]) — wired with the SAME JS body via a
+re-export stub (ported/auto/43a73f.js) so the address-keyed oracles resolve it. Lockstep 29
+calls memMis=0.
+
+Dual-soak 30 ticks byte-identical for both (5b79d5b5). Gates 201/201.
+
+**Next (bigger) targets, examined:** 0x4499cc (117/tick) is the per-ride breakdown/inspection
+tick — ported/auto/4499cc.js is a DELIBERATE interp delegate (the old auto-translation had 3
+goto-truncation bugs; header says "hand-port when hot" — it is now); the Ghidra C is 405 lines
+with 11 cross-jumping gotos, a proper multi-slice transcription. 0x5d99a2 (130/tick) is
+sprite-update vtable slot 1 whose paths run deep into the 0x5db333 vehicle tails — the 5dbeeb
+hybrid-checkpoint tier, not a single-fn port.

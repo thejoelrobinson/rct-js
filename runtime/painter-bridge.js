@@ -59,6 +59,8 @@ import { FUN_005ddcbe } from "../ported/auto/5ddcbe.js";
 // Popcount of [0x87c3dc]+[0x87c3e0] -> AX (auto-translation, validated by
 // tools/_lockstep-4314ed.mjs since ADDENDUM 18; never hooked) — ADD 66.
 import { FUN_004314ed } from "../ported/auto/4314ed.js";
+// Peep-state 13 handler (leaving through the park exit), ADDENDUM 68.
+import { FUN_0043a3a8 } from "../ported/auto/43a3a8.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1079,6 +1081,16 @@ export function installPainterBridge(heap, opts = {}) {
   // steps/tick via callNative from the 424e0f sim step). Auto-translation,
   // bespoke-oracle-validated since ADD 18; hook added in ADD 66.
   installJsFnEipHook(0x4314ed, FUN_004314ed, "__forceInterp4314ed", "warn");
+
+  // 0x43a3a8 — peep-state 13 (leaving via the park exit): walking-core /
+  // exit-march sequencer with one CF-across-call branch (ADDENDUM 68).
+  installJsFnEipHook(0x43a3a8, FUN_0043a3a8, "__forceInterp43a3a8", "warn");
+
+  // 0x43a73f — peep states 2 AND 7 share this 2-instruction sub-state
+  // dispatcher; it is byte-for-byte the same `movzx edi,[esi+0x2c] ;
+  // jmp [edi*4+0x62d50c]` as 0x43a74b, so the same JS bridge body serves
+  // both addresses (ADDENDUM 68).
+  installJsFnEipHook(0x43a73f, FUN_0043a74b, "__forceInterp43a73f", "warn");
 
   // Generic native call with STACK arguments (cdecl, caller-cleans) —
   // for delegating translated functions that take JS stack params (the
