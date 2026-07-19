@@ -2607,3 +2607,28 @@ eaxMis=0 jsThrew=0 (every rotation variant of both ported cases exercised). Dual
 byte-identical at rot0 (bd010739) and aimed rot2 (706568ac), == baselines. Gates 201/201
 (gameplay_accuracy isolated). 0x4254e0 off the interp real-work rank (was #1 at 604 steps/tick;
 residual interp = the park-sign middle's string trio, i.e. the deferred subsystem).
+
+## ADDENDUM 64 — 0x43c2ec (ride sub-state 9) ported; wall-clock leak in the time shims fixed
+
+**0x43c2ec** (peep "walk to ride platform", 0x62d50c[9] via the 43a74b bridge, no decompiled C):
+sequencer over five callNative-delegated callees (43c49e movement step, 5e53ca, 444927, 43c698,
+441a10) with TWO CF-across-call branches read live from state.__painterCpu.eflags.CF (the 43a5f8
+pattern). The 60-tick lockstep caught a transcription slip on first landing: the below-platform
+arm (0x43c337, bp<0x10) has NO ret — it FALLS THROUGH into the arrival block (photo charge +
+sub-state←0x12); the first version returned early (2/34 memMis, [esi+0x2c] stuck at 9; localized
+by a sub-call A/B — callNative(43c49e) vs native agreed 48/48 — then a full-body waypoint trace
+showing truth passing 43c337→43c34e). Fixed; lockstep 34/34 memMis=0 eaxMis=0.
+
+**ORACLE-DETERMINISM FIX (the second real find):** while validating, the dual-soak drifted off
+the bd010739 baseline with NO tracked change — down to kernel32.js GetSystemTime/GetLocalTime
+using zero-arg `new Date()`, which bypasses the Date.now stub and reads the REAL clock; the
+binary branches on the boot hour, so every soak/lockstep baseline all along was time-of-day
+dependent (morning bd010739 / evening d86a9f0b — same tree!). Now `new Date(Date.now())`:
+deterministic under the stub (canonical 30-tick soak hash = **5b79d5b5** at any hour; recorded
+baselines before this addendum were morning-hour-conditioned), real clock in the browser.
+
+**VALIDATED:** lockstep 60 ticks = 34 calls memMis=0 eaxMis=0 jsThrew=0 (arrived/fallthrough/
+platform arms all exercised; the two rare arrived-fallthrough crossings are the ones that caught
+the bug). Dual-soak 30 ticks byte-identical (5b79d5b5 both legs, stable across repeated runs).
+Gates 201/201 (gameplay_accuracy isolated). 0x43c2ec (309 steps/tick, post-62 rank #2 real-work)
+now JS on the live path.
