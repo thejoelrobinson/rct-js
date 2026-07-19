@@ -442,9 +442,16 @@ export function GetSystemInfo(heap, lpSystemInfo) {
   heap.setU32(lpSystemInfo + 28, 1);         // dwNumberOfProcessors
 }
 
+// NOTE: both time shims derive from Date.now(), NOT the zero-arg `new Date()`.
+// Every oracle/harness tool stubs Date.now (deterministic 1700000000000+n
+// counter) but a zero-arg Date bypasses the stub and reads the REAL wall
+// clock — which made every soak/lockstep hash TIME-OF-DAY dependent (the
+// binary branches on the boot hour; all morning-run baselines hashed
+// bd010739, evening runs d86a9f0b — ADDENDUM 64). The browser path is
+// unaffected: its Date.now is the real clock.
 export function GetSystemTime(heap, lpSystemTime) {
   if (!lpSystemTime) return;
-  const d = new Date();
+  const d = new Date(Date.now());
   heap.setU16(lpSystemTime + 0,  d.getUTCFullYear());
   heap.setU16(lpSystemTime + 2,  d.getUTCMonth() + 1);
   heap.setU16(lpSystemTime + 4,  d.getUTCDay());
@@ -456,7 +463,7 @@ export function GetSystemTime(heap, lpSystemTime) {
 }
 export function GetLocalTime(heap, lpSystemTime) {
   if (!lpSystemTime) return;
-  const d = new Date();
+  const d = new Date(Date.now());
   heap.setU16(lpSystemTime + 0,  d.getFullYear());
   heap.setU16(lpSystemTime + 2,  d.getMonth() + 1);
   heap.setU16(lpSystemTime + 4,  d.getDay());
