@@ -460,7 +460,45 @@ export function createRuntime(opts) {
           // calling it with viewport=0 hits an early-return that does no harm
           // but produces no work — saves cycles to skip.
           const viewportPtr = heap.u32(slot + 8) >>> 0;
-          if (viewportPtr === 0) continue;
+          if (viewportPtr === 0) {
+            // UI WINDOWS (toolbars, dialogs) — no viewport attached, and their
+            // paint procs (e.g. the top toolbar's 0x42afb5) have no JS port, so
+            // BOTH guards above used to skip them. That is why the game has
+            // never drawn any chrome: window classes 1 (top toolbar) and 2
+            // (bottom toolbar) are created correctly by MainOpen (0x4298a0)
+            // with the right geometry (640x30 at 0,0 — verified) and widget
+            // pointers, but nothing ever invoked their paint proc.
+            //
+            // Paint them through the interpreter instead: the RCT window-paint
+            // convention is ESI = window, EDI = DPI (edi == -1 is the
+            // measure-only mode the proc early-returns from). We pass the
+            // back-buffer DPI at 0x0099fb7c, the same struct the viewport path
+            // below fills in.
+            //
+            // OPT-IN (globalThis.__paintUiWindows) while this is proven out:
+            // drawing chrome CHANGES PIXELS, and the accuracy/replay gates are
+            // byte-comparisons against a truth surface captured without it.
+            // Flipping the default is a separate, gated decision — see the
+            // two-step rule in CLAUDE.md.
+            if (globalThis.__paintUiWindows && heap.u32(slot + 0x1c) !== 0) {
+              const savedRegs = { eax: regs.eax, ecx: regs.ecx, edx: regs.edx,
+                                  ebx: regs.ebx, esi: regs.esi, edi: regs.edi, ebp: regs.ebp };
+              try {
+                regs.esi = slot >>> 0;
+                regs.edi = 0x0099fb7c;          // back-buffer DPI
+                callNative(wndProcAddr, []);
+              } catch (e) {
+                if (!globalThis.__warnedUiPaint) {
+                  globalThis.__warnedUiPaint = true;
+                  if (typeof console !== "undefined") {
+                    console.warn(`[harness] UI paint 0x${wndProcAddr.toString(16)} threw: ${(e.message || e).slice(0, 120)}`);
+                  }
+                }
+              }
+              Object.assign(regs, savedRegs);
+            }
+            continue;
+          }
 
           // Read the viewport's world-space view_x/view_y and screen-space
           // width/height. The viewport struct layout (FUN_005e429d output):

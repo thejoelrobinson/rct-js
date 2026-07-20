@@ -2935,3 +2935,40 @@ the menu it should overlay is a separate window subsystem.
 
 Non-goals for "playable v1": sound, park-value/awards polish, the ddraw palette animation cycles
 (ADD 76), and scenario editor.
+
+## ADDENDUM 79 — PHASE 1 UNBLOCKED: the toolbars paint. The UI was never dispatched, not missing.
+
+The window/UI subsystem was not missing — it was never *invoked*. Findings, in order:
+
+1. **The windows already exist, correctly.** MainOpen (FUN_004298a0) creates all three: class 0
+   (main viewport), class 1 (TOP TOOLBAR, event proc 0x42a830, paint proc 0x42afb5, widgets
+   0x5f5124), class 2 (bottom toolbar, procs 0x429d41/0x429f6c, widgets 0x5f5268). Dumping the
+   pool confirms class 1 is **640x30 at (0,0)** with enabled-widget mask 0xfffff, and the main
+   window sits at y=30 below it. Nothing was broken about creation.
+2. **Window struct layout (derived from WindowCreate 0x5e3f31, correcting earlier guesses):**
+   `+0x00 paint proc`, `+0x04 event proc`, `+0x08 viewport ptr`, `+0x0c enabled widgets`,
+   `+0x1c widgets ptr`, `+0x20 x|y packed`, `+0x24 w|h packed`, `+0x174 class`. Note the paint
+   proc is at +0x00 — there are no `call [esi+8]` sites in the binary.
+3. **Why nothing drew:** the harness's synthetic paint pump skips a slot when
+   (a) `state.fnDispatch` has no JS fn for its paint proc, and (b) `window+8` (viewport) is 0.
+   Both guards were written for the viewport window; every UI window fails BOTH (toolbar paint
+   procs are unported, and UI windows have no viewport). Measured: over 6 ticks the toolbar's
+   EVENT proc ran 10x while its PAINT proc ran **0x**, and the top 30 rows were a single uniform
+   palette index (void fill).
+4. **Fix:** paint viewport-less windows through the interpreter with the RCT window-paint
+   convention **ESI = window, EDI = DPI** (edi == -1 is the measure-only mode the proc
+   early-returns from), using the back-buffer DPI at 0x0099fb7c. Result: the top band goes from
+   1 distinct colour to **142**, and the rendered frame shows the real RCT top toolbar (pause,
+   save, sound, zoom, view, map, ride/scenery/terrain/staff/finance buttons) plus the bottom
+   status bar with the money readout.
+
+**Cost: none measurable.** 30 ticks in 121 ms with UI paint ON vs 121 ms OFF (~4 ms/tick both).
+
+**Gated OFF by default** (`globalThis.__paintUiWindows`): drawing chrome changes pixels, and
+title_accuracy / gameplay_accuracy / title_replay byte-compare against truth surfaces captured
+without it. All three still pass and the 30-tick soak hash is unchanged (5b79d5b5). The browser
+path opts IN (web/main-native.js), since it is not gated — the browser now shows full game chrome.
+
+**Next (phase 2):** prove input end-to-end. An earlier click test was INVALID — it ran while the
+page was still booting (~27M heap ops), so the frozen tick counter measured boot, not a pause.
+Re-test against a booted page: click the pause button and assert the binary's pause flag flips.

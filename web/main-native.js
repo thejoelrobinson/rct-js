@@ -220,6 +220,14 @@ async function main() {
   // Pass the heap so right-drag pan can mutate viewport coords directly
   // (the binary's title-state machine that normally drives the pan is
   // gated behind unreachable CODESEG code).
+  // Paint the binary's UI windows (top/bottom toolbars) in the browser. The
+  // harness's synthetic paint pump skips every window with no viewport
+  // attached and no JS paint proc, which is exactly the UI set — so the game
+  // rendered its world with no chrome at all until this was turned on
+  // (ADDENDUM 79). Left opt-in at the runtime level because it changes
+  // pixels and the accuracy/replay gates byte-compare against a truth
+  // surface captured without chrome; the browser is not gated, so it opts in.
+  globalThis.__paintUiWindows = true;
   attachInput(canvas, { heap: runtime.heap });
 
   // Expose state for browser-console inspection.

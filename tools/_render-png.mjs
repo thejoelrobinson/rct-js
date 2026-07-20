@@ -3,6 +3,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { deflateSync } from "node:zlib";
 const ROOT = "/Users/joelrobinson/rct-js";
+globalThis.__paintUiWindows = !!process.env.UI;
 let _t = 1700000000000; Date.now = () => ++_t;
 if (typeof performance !== "undefined") performance.now = () => Date.now() - 1700000000000;
 globalThis._renderTrace = () => {};
