@@ -66,6 +66,9 @@ import { FUN_0043a3a8 } from "../ported/auto/43a3a8.js";
 // queue banner — ADDENDUM 71.
 import { FUN_004264f6 } from "../ported/auto/4264f6.js";
 import { FUN_00449178 } from "../ported/auto/449178.js";
+// Vehicle status 1 "waiting for passengers" (vtable PTR_LAB_005d97b4 slot 1);
+// hot dh==1 arm in JS, other arms via its own embedded interp — ADDENDUM 72.
+import { FUN_005d99a2 } from "../ported/auto/5d99a2.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1090,6 +1093,14 @@ export function installPainterBridge(heap, opts = {}) {
   // 0x43a3a8 — peep-state 13 (leaving via the park exit): walking-core /
   // exit-march sequencer with one CF-across-call branch (ADDENDUM 68).
   installJsFnEipHook(0x43a3a8, FUN_0043a3a8, "__forceInterp43a3a8", "warn");
+
+  // 0x5d99a2 — vehicle status 1 "waiting for passengers", vtable slot 1 of
+  // PTR_LAB_005d97b4 (the sprite-update walk's per-state dispatch; slot 4 is
+  // the wired extra_vehicle_5da274). The organically-hot dh==1 arm runs as
+  // pure JS; the dh!=1 arms and the rare depart continuation route through
+  // the fn's OWN embedded-interp fallback (444e08 orchestrator pattern), so
+  // no wiring-level guard is needed here (ADDENDUM 72).
+  installJsFnEipHook(0x5d99a2, FUN_005d99a2, "__forceInterp5d99a2", "warn");
 
   // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
   // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,

@@ -2723,3 +2723,29 @@ dedicated slice. Execution plan from the full C+asm review (decompiled/c/4499cc.
    and station arms have organic coverage (~1 ride-with-music in sc21, 6 calls/6 ticks).
 4. Also next tier: 0x5d99a2 (130/tick) belongs to the 5dbeeb vehicle-subsystem checkpoint
    project, not single-fn work.
+
+## ADDENDUM 72 — 0x5d99a2 (vehicle "waiting for passengers") ported; team-review catches a dropped gate
+
+Parallel-team slice (agent branch agent/5d99a2, reviewed + fixed + landed by the main session).
+0x5d99a2 = vehicle status 1, slot 1 of the per-vehicle dispatch vtable PTR_LAB_005d97b4 (slot 4 =
+the wired extra_vehicle_5da274); no decompiled C. The agent's Phase-1 probe measured the live path
+distribution: 100% of organic crossings over a 120-tick soak take the dh==1 arm, so that arm is
+ported as pure JS (saturating wait timer, bit-4 clear, car-chain sum into [0x65e6b4/b5/b6] with
+the `and cl,0x7f`, then the depart-decision ladder) while dh!=1 and the rare depart continuation
+route through the fn's OWN embedded interpreter — the latter from a CHECKPOINT at 0x5d9bd8
+(live-in = ESI only, verified by disasm; all regs staged anyway so callee stack spills match).
+
+**REVIEW FINDING (the agent shipped this unvalidated — it was killed by a usage limit while
+wiring, so its gate never ran):** the final load-fraction gate is TWO independent ready-tests —
+`cmp ah,0 ; je READY` followed by `or al,al ; je READY` — and only the fallthrough (ah!=0 AND
+al!=0) does `or [esi+0x48],0x10`. The port modelled just the first, so with ah=4 al=0 (an empty
+train on the ~3/4-load rung) it set the depart-ready bit where the binary leaves it clear:
+**30/60 lockstep calls memMis**. Localized by waypoint-tracing the binary's ladder against an
+instrumented JS decision (the ADDENDUM 64 technique); one-line fix. Note the waypoint trace alone
+was misleading — 0x5d9b9e/0x5d9ba0 weren't in the waypoint set, so the truth path *looked* like it
+exited at `cmp ah,0`; only the instrumented JS inputs (ah=4, not 0) exposed the real exit.
+
+**VALIDATED (post-fix, by the main session):** lockstep 180 calls / 90 ticks memMis=0 eaxMis=0
+jsThrew=0; dual-soak 30 ticks byte-identical (5b79d5b5); gameplay_accuracy + title_replay pass;
+suite 201/201. **Process note: agent-produced ports are UNVERIFIED until the reviewing session
+re-runs the gates — this one looked complete and well-documented and was still wrong.**
