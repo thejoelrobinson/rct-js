@@ -73,6 +73,9 @@ import { FUN_005d99a2 } from "../ported/auto/5d99a2.js";
 // unported → embedded interp; the soak only ever sends the unhandled
 // fall-through event 0x12) — ADDENDUM 73.
 import { FUN_0042a830 } from "../ported/auto/42a830.js";
+// Tooltip/hover dwell-timer tick; only the soak's single observed path is JS,
+// every other shape routes to the fn's embedded interp — ADDENDUM 74.
+import { FUN_005e2b52 } from "../ported/auto/5e2b52.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1110,6 +1113,12 @@ export function installPainterBridge(heap, opts = {}) {
   // fall-through (the only shape the soak produces, ~19 interp steps/call);
   // matched events route through the fn's own embedded interp (ADDENDUM 73).
   installJsFnEipHook(0x42a830, FUN_0042a830, "__forceInterp42a830", "warn");
+
+  // 0x5e2b52 — tooltip/hover dwell timer (input subsystem). The JS covers the
+  // dwell-accumulate path (the only shape the gameplay soak produces); the
+  // cx 1/3 arms, the widget block (16-bit div + indirect call [esi+4]) and
+  // the already-hovered branch route through its embedded interp (ADD 74).
+  installJsFnEipHook(0x5e2b52, FUN_005e2b52, "__forceInterp5e2b52", "warn");
 
   // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
   // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,

@@ -2772,3 +2772,32 @@ Parallel-team slice (agent branch agent/small-tail), reviewed and re-gated by th
 **Still open from the team run:** 0x5e2b52 (~30/tick) and 0x43e304 (~29/tick) were never reached
 by the sweep; 0x4499cc (ADD 69 plan) got only as far as a probe tool. Both remain next-session
 work.
+
+## ADDENDUM 74 — 0x5e2b52 (tooltip dwell timer) ported; 0x43e304's "clean" lockstep was VACUOUS
+
+**0x5e2b52** (~30 steps/tick, no decompiled C): tooltip/hover dwell-timer tick. A path probe over
+30 ticks showed a SINGLE shape on 30/30 crossings (init done, cx==0, esi==0, [0x991f49]==0xff,
+[0x991f54]<0x1f4 → accumulate [0x991f52] += [0x999f98], call 0x5e3652, reset+latch cursor), never
+entering the widget block (16-bit `div bp` + INDIRECT `call [esi+4]`) or the cx 1/3 arms — those,
+plus the already-hovered branch at 0x5e2c47, route to the fn's embedded interpreter behind an
+entry-state-only guard (the 4254e0/42a830 orchestrator pattern). Two transcription details worth
+keeping: the guard's `[0x991f54] < 0x1f4` makes the 0x3e8 threshold's `bp` deterministically 0, so
+the far jump at 0x5e2c25 (`ja 0x5e2f9f`) is unreachable under it; and the two final stores read
+AX/BX *after* `call 0x5e3652`, i.e. the CALLEE's exit values — latching the pre-call ax/bx would
+be wrong. VALIDATED: lockstep 90 calls / 90 ticks memMis=0 eaxMis=0 jsThrew=0; dual-soak 30 ticks
+byte-identical (5b79d5b5); accuracy + replay pass; suite 201/201.
+
+**0x43e304 — do NOT trust its lockstep.** Running the generic oracle on it reports
+`calls=1 memMis=0 eaxMis=0`, which looks like a validated port. It is not: ported/auto/43e304.js
+is a DELIBERATE interpreter delegate (its header explains why — Ghidra typed the 0x887420 ride
+record as int arrays, so nearly every field access came out quadruple-scaled, plus a goto lowered
+as an early return). The oracle's JS leg therefore delegates to the very interpreter it is
+compared against — vacuously green BY CONSTRUCTION, and the single crossing in 60 ticks makes it
+look thin rather than meaningless. **Rule: before believing a lockstep, check whether the module
+under test is a delegate** (grep the header for INTERPRETER-DELEGATED). 0x43e304 (~0x480 bytes,
+the peep queue-join / ride-entry decision) is a real hand-port job in the 4499cc tier, NOT a wire.
+
+**Remaining interp real-work tail:** 0x43c751 148/tick (peepwalk residue — the JS core delegates
+slices), then 0x5dff38 123 and 0x432214 61 (both 1 step/call = hook-crossing overhead, not work).
+The single-fn quick wins are now genuinely exhausted; what is left is 4499cc, 43e304, and the
+4368d8 caller-chain overhead — all multi-slice subsystem work.
