@@ -97,9 +97,22 @@ export function decodeSprite(csg, index) {
 // (768 bytes; 0/0/0 entries reflect unused indices like 0..9 reserved for
 // system colors).
 //
+// CORRECTNESS NOTE (ADDENDUM 76 — this data was wrong until 2026-07-19):
+// sprites.json is NOT a single 256-entry table. It is 202 runs: run[0]
+// (`index: 10`, 236 colours) is the BASE palette covering indices 10..245;
+// every other run is a palette-ANIMATION / colour-remap overlay that reuses
+// the same index ranges (16+, 32+, 48+, …). The original transcription
+// folded all 202 runs into one table, so the overlays clobbered the base —
+// e.g. the water-cycle teal #076B63 overwrote indices 16..30, which is why
+// terrain and paths rendered teal/brown instead of grass-green and tan.
+// Rebuilt from run[0] ONLY (295 bytes across indices 10..245 changed);
+// slots 1..9 and 246..255 still come from _ANIMATED_SLOT_DEFAULTS below.
+// Do not "fix" this by merging the later runs back in — they are frames of
+// the animation cycles, which belong in the cycling code, not the base.
+//
 // Index 0 is transparent; indices 0xFE/0xFF are typically white/black.
 const _RCT_PALETTE_RGB_BASE64 =
-  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFyMjIzMzL0NDP1NTS2NjW3NzN5uXJ4+HG4N7D3dvB2tjB2tjB2tjB2tjB2tjB2tjB2tjB2tjD3dvG4N7J4+Hu79zF393D3NrB2tjAF9XAFdPAFdPAFdPAFdPAFdPAFdPAFdPAFdPAF9XB2dfD3NrXysAB2tjAGNbAFtTAFNLAEtDAEtDAEtDAEtDAEtDAEtDAEtDAEtDAFNLAFtTAGNbjycnozs7s09Px2dn139/65+f/7+/GzMTIz8XL08fO18nR28rV38zY487c5tDg6tLk7tTx///m+Pjc8vLU7OvN5uXN5uXN5uXN5uXN5uXN5uXN5uXN5uXU7Ovc8vLm+PjE1MAq+fne8vLU7OvL5eTF393F393F393F393F393F393F393F393L5eTU6+ve8vLu3NTg8/PV7OzN5uXG4N7B2tjB2tjB2tjB2tjB2tjB2tjB2tjB2tjG4N7M5uXV7Ozt7ff09Pv7+//ABtvACeXBzOnD0O7G1PLK2ffQ4fjW6Pnd7vvj9Pzr+f71/f/CysPDzcXLy8vLy8vV0cvO3NLT4dfY5t3e6+Lk8enr9vDz/PfPwBfSwdzUw9/Xx+Payubez+rJycrJycrQzcjv5vn18Pz8+v/PwAAVwAAcwAAjwAAqwAAxwAA4wcA/wcA/09D/3tzHyMnHyMnPy8bbzMAkz8At0cA208A/1MA/28X/4sz/6NP/7dr/8uH/9ujADMvAD83AEtDAFdPB2tjF393K5OPR6ejY7u7g8/Pq+fnz///PwAbZwAzews/jxdPox9ftydv2zuP71ur83e795fL+7ff/9fvJxMANx8HRy8PWz8fa1Mze2dLj39ro5N/u6uTz8Or59vD//PfN0tL/7cA/9sA//8AB2tjD3dvG4N7J4+HN5uXN5uXU7Ovc8vLm+Pjx///Q1tbU2trY3t7AABfGyuLJzuXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFyMjIzMzL0NDP1NTS2NjW3Nzb4ODg5eXn6+vt8PD09vb7/PzMy8APzsAT0sLW1sTa2sfd3svh4s7l5tPp69fu79zy8+L3+OjQysHVzsLb0sXf1cfj2Mnn3Mzs4NDv5dXy69v28eH59uj9+/DRxsAXysAdz8Aj1MHp28Hv4sP16cT88sb/+cv//Nf//uP///DIwAATwAAXwcHbw8Pfxsbjycnozs7s09Px2dn139/65+f/7+/GzMTIz8XL08fO18nR28rV38zY487c5tDg6tLk7tTo8tft9tnHzcbL0cjO1MrS2M3W29Db4dPh59fn7dvt89/w9uTz+en3/e/Dz8AE1MAF2cAH3sAJ48HN58XR68nW78/b89Xi99zo++Pw/+zTysTYzcbd0cri1c7p2NDu3NTz4Nj15dz46uD77+X98+r/+PDDxM3JytXMzdnP0N3U1OLY2Obd3evi4u/n5/Pt7ff09Pv7+//ABtvACeXBzOnD0O7G1PLK2ffQ4fjW6Pnd7vvj9Pzr+f71/f/CysPDzcXF0cfI1MrL2M7O3NLT4dfY5t3e6+Lk8enr9vDz/PfPwBfSwdzUw9/Xx+Payubez+rh1O7m2fHq3/Xv5vn18Pz8+v/PwAAVwAAcwAAjwAAqwAAxwAA4wcA/wcA/09D/3tz/6uj/9vXTycAbzMAkz8At0cA208A/1MA/28X/4sz/6NP/7dr/8uH/9ujADMvAD83AEtDAFdPB2tjF393K5OPR6ejY7u7g8/Pq+fnz///PwAbZwAzews/jxdPox9ftydv2zuP71ur83e795fL+7ff/9fvJxMANx8HRy8PWz8fa1Mze2dLj39ro5N/u6uTz8Or59vD//PfN0tL/7cA/9sA//8AB2tjD3dvG4N7J4+HN5uXN5uXU7Ovc8vLm+Pjx///Q1tbU2trY3t7AABfGyuLJzuXAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
 // Standard RCT defaults for the "animated cycle" palette slots that the
 // baked base64 leaves as zero. These slots get overwritten at runtime by

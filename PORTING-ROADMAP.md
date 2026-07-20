@@ -2830,3 +2830,34 @@ scanning — a heap scan for palette-shaped data returns ~48k false positives an
 **Browser path NOT verified this session:** the preview harness in this environment never bound a
 port (npm/http-server and python http.server both tried), so web/main-native.js remains
 unconfirmed visually here; the headless dump above is the evidence that stands.
+
+## ADDENDUM 76 — PALETTE FIXED: the baked table folded animation overlays into the base
+
+The wrong colours from ADDENDUM 75 were NOT the missing phase-2 SetEntries write (that gap is
+real but cosmetically irrelevant): the seeded `defaultPalette()` data in harness/csg.js was itself
+corrupt. **OpenRCT2's resources/palettes/sprites.json is 202 runs, not one 256-entry table** —
+run[0] (`index: 10`, 236 colours) is the BASE palette covering indices 10..245, and the other 201
+runs are palette-ANIMATION / colour-remap overlays that reuse the same index ranges (16+, 32+,
+48+, …). The original transcription folded all 202 runs into a single table, so the overlays
+clobbered the base: the water-cycle teal #076B63 landed on indices 16..30 (hence teal "grass"),
+and 295 bytes across 10..245 were wrong in total.
+
+Rebuilt the baked base64 from run[0] ONLY, preserving slots 1..9 / 246..255 (they come from
+_ANIMATED_SLOT_DEFAULTS). Spot-checks now match canonical RCT: idx 20 = (211,219,219) light grey
+(was teal), idx 100 = (71,175,39) grass green, idx 32 = (203,207,139). The rendered frame is now
+recognisably RollerCoaster Tycoon — textured dirt terrain, tan footpaths, grey fences, peeps in
+coloured clothing, a blue-roofed structure.
+
+**A false lead worth recording:** the first hypothesis was an R/B byte-order swap (idx 10 decodes
+(23,35,35) and "looked" reversed). Rendering with R/B swapped turned terrain blue — worse — and
+the canonical run[0] value for idx 10 is *exactly* (23,35,35), so the byte order was always right.
+Also do NOT go hunting the palette by scanning the heap: a shape-heuristic scan returns ~48k
+false positives. The authoritative source is sprites.json run[0].
+
+**Gates unaffected (as expected — they compare 8bpp INDEX buffers, not RGB):** title_accuracy and
+gameplay_accuracy both still MAX_DIVERGENCE=0, title_replay passes, suite 201/201, 30-tick soak
+hash unchanged at 5b79d5b5. The palette is display-side only.
+
+**Still open (cosmetic, lower priority):** phase 2 of the ddraw palette pipeline still never fires
+under enterScenarioPlay, so the live sky/water ANIMATION cycles don't run — colours are correct
+but static. Fix = find why the csg1.dat sprite palette never reaches SetEntries.
