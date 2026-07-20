@@ -45,6 +45,21 @@ const VFS_FILES = [
   "css1.dat", "css2.dat", "css3.dat", "css4.dat", "css5.dat", "css6.dat",
   "css7.dat", "css8.dat", "css9.dat", "css11.dat", "css13.dat", "css14.dat",
   "css15.dat", "css17.dat",
+  // Tutorial data (ADDENDUM 82). tutl.dat was previously faked as an empty
+  // placeholder; these are the real files from the retail Data/ directory.
+  "tutk.dat", "tutl.dat", "tutoriak.dat",
+  // FULL SCENARIO SET (ADDENDUM 82). The retail Scenarios/ directory ships
+  // 21 scenarios plus the SC.IDX index; we previously shipped exactly ONE
+  // (sc21.sc4), so scenario select had nothing to enumerate and "New Game"
+  // could never work. kernel32's FindFirstFileA/FindNextFileA already glob
+  // the VFS by basename, so listing them here is enough for the binary's own
+  // enumeration to see them. Retail filename case is inconsistent (sc0.SC4,
+  // SC10.SC4, sc6.sc4) — the VFS lowercases basenames on lookup.
+  "SC.IDX",
+  "sc0.SC4", "sc1.SC4", "sc2.SC4", "sc3.SC4", "SC4.SC4", "SC5.SC4",
+  "sc6.sc4", "sc7.sc4", "sc8.sc4", "SC9.SC4", "SC10.SC4", "SC11.SC4",
+  "SC12.SC4", "SC13.SC4", "SC14.SC4", "SC15.SC4", "SC16.SC4", "SC17.SC4",
+  "SC18.SC4", "SC19.SC4", "SC20.SC4",
   // Phase E: title-screen demo scenario. The binary's data.bin has the
   // template filename "SC21.SC4" baked in at 0x005f888e. Real RCT cycles
   // through Scenarios/SC*.SC4 — we ship one fixed copy (SC20 = Forest
@@ -58,8 +73,12 @@ const VFS_FILES = [
 // successfully and execution proceeds to scenario init / sprite-table
 // population. ReadFile against an empty file returns 0 bytes, which
 // the binary treats as a successful zero-length read.
+// NOTE (ADDENDUM 82): css10/css12/css16 are FAITHFUL as empty placeholders —
+// they are 6-byte stub files in the retail Data/ directory too, so faking them
+// is not a fidelity gap. tutl.dat was removed from this list: the real 117 KB
+// file is now shipped (see VFS_FILES above).
 const VFS_PLACEHOLDERS = [
-  "css10.dat", "css12.dat", "css16.dat", "tutl.dat",
+  "css10.dat", "css12.dat", "css16.dat",
 ];
 
 // Win32 message constants we care about for the rAF pump.

@@ -3039,3 +3039,60 @@ hit-test), the pieces for a real boot flow are all present.
 open the scenario-select window. Then the phase-4 goal: reach a loaded scenario through that
 path with runInit's force-load, skipFadeIn, skipTitleIntro and the synthetic viewport pan all
 REMOVED.
+
+## ADDENDUM 82 — 1:1 FIDELITY AUDIT vs retail RCT, and the scenario data gap closed
+
+Systematic audit of every way this build deviates from the retail game. Grouped by kind, with
+evidence. **This list is the definition of "not yet 1:1" — work it top-down.**
+
+### A. DATA — was the largest gap; now mostly closed
+- **Scenarios: shipped 1 of 21.** web/assets held only `sc21.sc4` (a renamed copy of SC20), so
+  scenario select had NOTHING to enumerate and "New Game" could never work. FIXED: copied the
+  retail `Scenarios/` set from the ISO at ~/rct-web/iso_contents/rct_iso — all 21 (SC0..SC20,
+  mixed filename case) plus `SC.IDX`. Verified through the binary's OWN api:
+  `FindFirstFileA("*.SC4")` and `FindFirstFileA("Scenarios\\*.SC4")` each enumerate **22 files**.
+- **Tutorial data: missing.** `tutl.dat` was faked as an EMPTY placeholder; the retail file is
+  117 KB. FIXED: shipped the real `tutk.dat` (115 KB), `tutl.dat` (118 KB), `tutoriak.dat` (100 KB).
+- **css10/css12/css16: NOT a gap.** These are 6-byte stub files in the retail Data/ directory
+  too, so faking them as empty is faithful. Corrected the misleading comment.
+- **Ride designs (Tracks/): 60 files copied to web/assets/tracks/ but NOT yet in the VFS.** The
+  VFS is a flat basename map, so they need registering before the design browser can see them —
+  `FindFirstFileA("*.TD4")` currently returns NO MATCHES. OPEN.
+- **Localisation dirs** (English/, French/, German/, Italian/, Dutch/, Spanish/, Swedish/) not
+  shipped; only the English strings baked into data.bin are used. OPEN (low priority).
+
+### B. BOOT-FLOW DEVIATIONS — the harness hacks (the real "not the game" list)
+1. `runInit` **force-loads** the scenario by calling the .SC4 loader 0x42f4be directly (Phase E).
+2. `skipFadeIn` — bypasses the boot fade-in state machine.
+3. `skipTitleIntro` — stuffs cb9 and runs the 438aac default-arm cleanup.
+4. **Synthetic viewport pan** — harness hard-sets view_x/view_y to a hardcoded (976,1304).
+5. **Synthetic per-tick paint pump** — replaces the binary's own paint dispatcher, which has
+   never been identified (candidates noted in harness.js: 9bbfb3/9bbff8 gated on DAT_008d7eb6,
+   or 4533d0 gated on DAT_006323f4). This is the deepest structural deviation.
+6. **Title mode never entered** until ADDENDUM 81 found `[0x99a500] bit 0`.
+Removing 1-4 is the phase-4 definition of done; 5 needs the real dispatcher identified.
+
+### C. OS/WIN32 SURFACE
+- **Save/load: absent.** `GetOpenFileNameA` / `GetSaveFileNameA` are hard stubs returning 0, and
+  `WriteFile` output is **silently discarded** (runtime/vfs.js plans IndexedDB persistence). So
+  no saved games, no exported designs. OPEN — required for a complete play loop.
+- **Audio**: DSound/WinMM partially shimmed with a WebAudio backend; `?noaudio=1` bisect toggle
+  exists. Music tracks load but end-to-end audio fidelity is unverified. OPEN.
+- Time: tools stub `Date.now`; the browser uses the real clock (correct after the f11e075 fix).
+
+### D. RENDERING
+- **Palette animation cycles are static** (ADD 76): the ddraw palette phase-2 (`SetEntries` from
+  csg1.dat + `AnimatePalette`) never fires under enterScenarioPlay, so sky/water don't cycle.
+- **Cursor is synthesised** by runtime/canvas.js rather than drawn by the binary's own path.
+- UI chrome painting is opt-in (`__paintUiWindows`, ADD 79) because the accuracy/replay gates
+  compare truth surfaces captured WITHOUT chrome — those fixtures need re-capturing with
+  interpreter evidence before the default can flip.
+
+### E. UNEXERCISED CODE (correct-by-construction, but never driven)
+- 9 event arms of the toolbar proc 0x42a830 (buttons/dropdowns/scrollbars) run in the
+  interpreter — proven reachable by ADD 80's pause click, but only widget 0 has been exercised.
+- Of the 20 window classes mapped in ADD 81, only 4 have ever been opened (0, 1, 2, 29/39).
+  Classes 5,6,8,9,10,12,13,14,17,20,26,32,33,34 — dialogs, tooltips, error popups — untested.
+
+**Gates after the data changes:** gameplay_accuracy, title_replay, native_dispatch (5/5) all
+pass; 30-tick soak hash unchanged (5b79d5b5).
