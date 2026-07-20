@@ -2972,3 +2972,32 @@ path opts IN (web/main-native.js), since it is not gated — the browser now sho
 **Next (phase 2):** prove input end-to-end. An earlier click test was INVALID — it ran while the
 page was still booting (~27M heap ops), so the frozen tick counter measured boot, not a pause.
 Re-test against a booted page: click the pause button and assert the binary's pause flag flips.
+
+## ADDENDUM 80 — PHASE 2 DONE: input is end-to-end, in a real browser, on the real chain
+
+Phase 2 turned out to be mostly already built — and my earlier "input is unproven" claim in
+ADDENDUM 78 was too pessimistic, because the one test I ran was invalid (it clicked during boot).
+Corrected record:
+
+1. **The native chain already existed and is tested.** `test/runtime/native_dispatch.test.js`
+   passes 5/5, including *"LBUTTONDOWN + LBUTTONUP on toolbar pause widget → toggles pause flag
+   (0x0099c169) — full native chain"*. The documented route is
+   `WM_LBUTTONDOWN → WndProc 0x403d79 → ring buffer (DAT_005f1cc0) → FUN_005e2225 →
+   FUN_005e3ace hit-test → 0x42a830 widget dispatch → 0x426f56 game-cmd → 0x427247 (XOR the
+   pause flag)`, covering all 20 toolbar widgets. Note 0x42a830 is exactly the event proc whose
+   nine arms ADDENDUM 73 left on the interpreter — they work, they had simply never been driven.
+2. **Verified live in the browser** (not just in a test harness), against a *booted* page:
+   synthesised a real DOM `mousemove/mousedown/mouseup` at canvas pixel (15,15) — the pause
+   button on the now-painted toolbar — and read the binary's own flag through `window._runtime`:
+   **pauseFlag 0 → 1**, and a second click **1 → 0**. A genuine toggle, driven by a real mouse
+   event, resolved by the binary's own hit-test against the real widget table.
+
+So the chain DOM → Win32 message → binary WndProc → widget hit-test → game command → world state
+is closed and observable. Combined with ADDENDUM 79 (chrome now paints), the game is
+**interactive**: the toolbar is visible, clickable, and clicks change simulation state.
+
+**Honest remaining gap to "playable RCT" (phases 3-5 of ADD 78 are untouched):** there is still
+no title screen, no menu, no scenario select, and no new-game flow — the world is still the
+harness-loaded sc21 via runInit's force-load, with skipFadeIn/skipTitleIntro and the synthetic
+viewport pan still in place. Removing those four hacks remains the definition of done. What
+ADDENDA 79-80 change is that the UI layer they need is now proven to paint and respond.
