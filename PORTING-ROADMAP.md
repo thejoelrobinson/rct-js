@@ -3096,3 +3096,40 @@ Removing 1-4 is the phase-4 definition of done; 5 needs the real dispatcher iden
 
 **Gates after the data changes:** gameplay_accuracy, title_replay, native_dispatch (5/5) all
 pass; 30-tick soak hash unchanged (5b79d5b5).
+
+## ADDENDUM 83 — BATCH ORACLE: validate many functions per boot; triage rules that came out of run #1
+
+Scaling insight: after 25 addenda of single-fn slices, the bottleneck is VALIDATION, not
+transcription — every oracle run costs a 20-40s boot. **tools/_lockstep-batch.mjs** wraps EVERY
+candidate address in one soak: discovery (rank real-work interp entries via __fnSteps, auto-skip
+already-hooked / no-module / interpreter-delegate addresses), concurrent per-address lockstep
+(one global in-flight guard: nested crossings of other wrapped fns run the interp leg uncompared,
+so both legs of the outer comparison see identical callee behaviour), and a report that emits
+ready-to-paste installJsFnEipHook lines for the clean set. All three oracle-integrity fixes from
+this campaign are baked in (stop-AT-ret, eip reset before leg B, fold JS return into eax).
+
+**Run #1 (30 ticks, one boot) triaged 11 entries:**
+- auto-skipped: 4499cc + 43e304 (delegates — vacuous, ADD 74), 43ab17/5d9f8b/42682d/4501b0 (no module).
+- **0x5e3652 (tooltip show) CLEAN 30/30 → WIRED** (it is the callee the 5e2b52 port callNatives;
+  single-addr re-check 20/20, dual-soak byte-identical 5b79d5b5, accuracy+replay pass).
+- **0x425432 CLEAN 1/1 but DO NOT WIRE — new triage rule discovered:** it is a CF-returning
+  predicate ("can stand on surface?"; its caller does `call 0x425432 ; jb`), and auto
+  translations do not model eflags. The oracle compares heap+eax only, so heap-clean ≠ wireable
+  when ANY caller consumes exit flags. **Check call sites for jb/jae/je/jne immediately after
+  `call <fn>` before wiring any batch-clean fn.** (The peepwalk port inlines 425432 precisely
+  because of the CF contract.)
+- **0x43c751 / 0x43c49e / 0x439219 BROKEN — correctly:** their ported/auto modules are STALE
+  TRANSLATOR OUTPUT superseded by hand ports living elsewhere (extra_peepwalk_43c751 inlines all
+  three). 43c751's auto throws (42/42), 43c49e's auto diverges on sprite fields (30/30 memMis),
+  439219's auto has a wrong eax convention (30/30 eaxMis). None is production-wired, so no live
+  bug — but the tool now inoculates against ever wiring them by mistake. The 43c751-residue
+  interp cost (~148/tick) is NOT fixable by wiring the auto module; it needs the extra_peepwalk
+  fn evaluated for eip-hook wiring (own slice — its entry contract must be checked first).
+
+**Flicker triage (the user-reported "guests flashing"):** headless consecutive-frame analysis
+shows NO flicker — frames t/t+1/t+2 differ by only 0.14-0.57% of pixels (peep motion) and
+clothing-coloured pixel counts are stable (18916/18922/18677); peep paint calls are steady at
+23-24 distinct guests EVERY tick, and both DDraw surfaces stay byte-identical (back/front in
+sync, the Flip no-op is harmless). The flashing is a BROWSER PRESENT-CADENCE artifact: when the
+tab is background-throttled (rAF suspended) or ticks stall, guests teleport between frames.
+Content is sound. TODO: on-page tick-rate HUD so cadence problems are visible at a glance.

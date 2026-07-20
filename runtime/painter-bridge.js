@@ -76,6 +76,9 @@ import { FUN_0042a830 } from "../ported/auto/42a830.js";
 // Tooltip/hover dwell-timer tick; only the soak's single observed path is JS,
 // every other shape routes to the fn's embedded interp — ADDENDUM 74.
 import { FUN_005e2b52 } from "../ported/auto/5e2b52.js";
+// Tooltip show/refresh — the 0x5e3652 callee the 5e2b52 port callNatives;
+// batch-oracle CLEAN 30/30 (tools/_lockstep-batch.mjs, ADDENDUM 83).
+import { FUN_005e3652 } from "../ported/auto/5e3652.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1119,6 +1122,10 @@ export function installPainterBridge(heap, opts = {}) {
   // cx 1/3 arms, the widget block (16-bit div + indirect call [esi+4]) and
   // the already-hovered branch route through its embedded interp (ADD 74).
   installJsFnEipHook(0x5e2b52, FUN_005e2b52, "__forceInterp5e2b52", "warn");
+
+  // 0x5e3652 — tooltip show/refresh (batch-oracle CLEAN 30/30; no caller
+  // consumes its exit flags — the 5e2b52 site proceeds unconditionally).
+  installJsFnEipHook(0x5e3652, FUN_005e3652, "__forceInterp5e3652", "warn");
 
   // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
   // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,
