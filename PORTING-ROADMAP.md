@@ -2885,3 +2885,53 @@ So the answer to "can we do live playback" is **yes**: the park runs and renders
 the browser at near-real-time speed, with the 8bpp surface byte-exact vs the original binary
 (both accuracy ratchets at MAX_DIVERGENCE=0). Remaining cosmetic gap is unchanged from ADD 76:
 ddraw palette phase 2 never fires, so sky/water animation cycles are static.
+
+## ADDENDUM 78 — HONEST GAP ANALYSIS: what stands between "renders a live park" and PLAYABLE
+
+The user's assessment is correct: ADDENDUM 77 demonstrated a *warm-booted park being simulated and
+rendered*, NOT a playable game. There is no title screen, no menu, no scenario select, no
+new-game flow, and no verified input path. What the browser shows is reached by harness hacks
+(`skipFadeIn`, `skipTitleIntro`, runInit force-driving the .SC4 loader 0x42f4be, and the harness
+itself panning the viewport). Recording the measured gap so the next phase is executable.
+
+**Measured state (this session):**
+- Simulation + viewport render: WORKING, byte-exact vs binary (both accuracy ratchets 0),
+  ~33 ticks/s in-browser.
+- UI chrome: ABSENT. The browser page reports `wins=1` — only the main viewport window exists.
+  Real RCT gameplay has the top toolbar + bottom toolbar windows too. Headless runInit yields 3
+  windows, so window creation partly works; the toolbars are never opened.
+- Input: `runtime/input.js` exists and IS attached (`attachInput(canvas)` at main-native.js:223),
+  wiring DOM mouse/keyboard → postWindowMessage + polled state. But a synthetic click on the
+  canvas produced NO observable frame change — untested end-to-end, and with no toolbars there is
+  nothing to click. Input is plumbed, not proven.
+- New-game flow: entirely bypassed.
+
+**STALE BLOCKER CLEARED (the useful find):** harness.js:195 says the title-state machine
+FUN_00429361 is "unreachable — gated behind a tick-counter wrap and a stripped CODESEG jumptable
+at 0x42937c". That is no longer true: the painter bridge overlays the real CODESEG, and the
+jumptable now holds valid pointers ([0]=0x4293e5 [1]=0x429390 [2]=0x4293c1 [3]/[4]=0x4293e5).
+Verified by driving it: with the gate `[0x87d718] == 0x80000000` armed, `callNative(0x429361)`
+runs 30 ticks without throwing, holding title-state `[0x87d0d0] == 1`. State 1's arm (0x429390)
+is the TITLE DEMO controller — it compares `[0x87d0d1]*8` against `[0x6e3b80]`, a dwell counter
+`[0x87cc88]` against 0x258, and guests-in-park `[0x87c81c]` against a target `[0x87d0d8]`, i.e.
+it cycles demo parks. So the binary's own title flow EXECUTES; it simply isn't being driven, and
+the menu it should overlay is a separate window subsystem.
+
+**PHASED PLAN TO PLAYABLE (in dependency order):**
+1. **Window/UI subsystem.** The blocker for everything interactive. Requires the window-proc
+   family to actually run: note ADDENDUM 73 wired 0x42a830's fall-through ONLY — all nine of its
+   real event arms ({1,2,3,4,7,8,9,0xa,0xb} = button/dropdown/scroll handling, ~0x1000 bytes)
+   still route to the interpreter, which is fine functionally but means the UI has never been
+   exercised. First concrete step: open the top toolbar window from the binary's own opener and
+   confirm it paints.
+2. **Input end-to-end.** Prove one click reaches the binary: synthesize WM_MOUSEMOVE/WM_LBUTTONDOWN
+   at a known widget and assert the binary's input globals change; the polled-state path
+   (GetCursorPos / GetAsyncKeyState) also needs checking against what RCT1 actually reads.
+3. **Title → menu → scenario select.** Drive FUN_00429361 properly instead of the runInit
+   force-load, then reach the scenario-select window and start a scenario the way the game does.
+4. **New game end-to-end.** Land a scenario from the menu (not the hardcoded sc21 path), with the
+   harness's viewport pan and skip* hacks REMOVED — their removal is the definition of done.
+5. **Save/load + speed controls** for a complete loop.
+
+Non-goals for "playable v1": sound, park-value/awards polish, the ddraw palette animation cycles
+(ADD 76), and scenario editor.
