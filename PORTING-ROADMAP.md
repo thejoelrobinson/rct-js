@@ -2801,3 +2801,32 @@ the peep queue-join / ride-entry decision) is a real hand-port job in the 4499cc
 slices), then 0x5dff38 123 and 0x432214 61 (both 1 step/call = hook-crossing overhead, not work).
 The single-fn quick wins are now genuinely exhausted; what is left is 4499cc, 43e304, and the
 4368d8 caller-chain overhead — all multi-slice subsystem work.
+
+## ADDENDUM 75 — live gameplay playback CONFIRMED headless; the wrong colours are a phase-2 palette gap
+
+Rendered live gameplay to PNG from the hybrid runtime (boot → skipFadeIn → enterScenarioPlay →
+40 ticks → dump the densest DDraw surface through the captured palette; script kept at
+tools/_render-png.mjs). Result: **640x480, 40 ticks in 161 ms (~4 ms/tick), 109 distinct palette
+indices**, and the frame is recognisably RCT — isometric terrain, winding footpaths, fence posts,
+peeps as moving dots, a ride structure. Combined with the two accuracy ratchets now at
+**MAX_DIVERGENCE = 0** (title_accuracy AND gameplay_accuracy — the JS 8bpp surface is BYTE-EXACT
+against the interpreter running the real binary), the simulation + render pipeline is genuinely
+playing the game.
+
+**The colours are wrong, and the cause is now localised (display-only, not a render bug).**
+Measured: `state.capturedPalette` is byte-identical to the seeded `defaultPalette()` (0/1024 bytes
+differ) — i.e. the palette machinery's PHASE 2 never fires on this path. Per the design notes in
+runtime/win32/ddraw.js#mergePaletteIntoCaptured, phase 1 (FUN_0040ae98's logical palette) marks
+entries 10..245 PC_RESERVED and is deliberately skipped, expecting phase 2 — the csg1.dat sprite
+palette + AnimatePalette cycles arriving via SetEntries — to fill them. Under enterScenarioPlay
+that never happens, so every sprite index renders through the placeholder defaults (index 20/32
+≈ rgb(7,107,99) teal, hence teal "grass").
+
+**Next step for colour (bounded):** instrument IDD_CreatePalette / IDDS_SetPalette /
+AnimatePalette to log every call under enterScenarioPlay and find which phase-2 write is missing
+(likely the csg1.dat palette load never reaching SetEntries), rather than heuristic memory
+scanning — a heap scan for palette-shaped data returns ~48k false positives and is a dead end.
+
+**Browser path NOT verified this session:** the preview harness in this environment never bound a
+port (npm/http-server and python http.server both tried), so web/main-native.js remains
+unconfirmed visually here; the headless dump above is the evidence that stands.
