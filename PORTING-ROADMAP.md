@@ -2861,3 +2861,27 @@ hash unchanged at 5b79d5b5. The palette is display-side only.
 **Still open (cosmetic, lower priority):** phase 2 of the ddraw palette pipeline still never fires
 under enterScenarioPlay, so the live sky/water ANIMATION cycles don't run — colours are correct
 but static. Fix = find why the csg1.dat sprite palette never reaches SetEntries.
+
+## ADDENDUM 77 — LIVE BROWSER PLAYBACK CONFIRMED
+
+ADDENDUM 75 had to leave the browser path unverified (the preview harness never bound a port).
+Root cause was environmental, not the app: the harness assigns its own port and another chat's
+dev server held the one it wanted. Fixed by launching through `/bin/sh -c 'exec python3 -m
+http.server $PORT --directory <repo>'` with `autoPort: true` (no hardcoded -p flag), which lets
+the harness pick the port.
+
+**Measured live at web/index-native.html (post-ADDENDUM-76 palette):**
+- boot log: `[init] complete after 27,549,843 heap ops`, `palette captured: true`,
+  `[first tick] complete after 1,274,981 heap ops in 86ms`,
+  `[gameplay] fade-in + title-intro opened — park is live`, warm-up tick 88ms.
+- **~33 ticks/sec sustained** (tick #213 → #262 over 1500 ms of wall clock) against RCT's nominal
+  40 — i.e. roughly 80% of real-time, in a browser, on the hybrid JS+interpreter path.
+- **Canvas genuinely animating:** 640x480 canvas, sampled frame hash changes between two grabs
+  1200 ms apart (b3193e48 → d5b513b0); ran past tick #867 with `errs=0`.
+- Visually: textured dirt terrain, tan footpaths, fences, and individual peeps in coloured
+  clothing walking the paths — i.e. the park simulates and renders continuously.
+
+So the answer to "can we do live playback" is **yes**: the park runs and renders continuously in
+the browser at near-real-time speed, with the 8bpp surface byte-exact vs the original binary
+(both accuracy ratchets at MAX_DIVERGENCE=0). Remaining cosmetic gap is unchanged from ADD 76:
+ddraw palette phase 2 never fires, so sky/water animation cycles are static.
