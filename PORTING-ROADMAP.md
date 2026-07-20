@@ -3001,3 +3001,41 @@ no title screen, no menu, no scenario select, and no new-game flow — the world
 harness-loaded sc21 via runInit's force-load, with skipFadeIn/skipTitleIntro and the synthetic
 viewport pan still in place. Removing those four hacks remains the definition of done. What
 ADDENDA 79-80 change is that the UI layer they need is now proven to paint and respond.
+
+## ADDENDUM 81 — PHASE 3: the TITLE MENU renders. MainOpen has a title mode nobody had triggered.
+
+Mapped every window class the binary can create by scanning all 20 `call 0x5e3f31` (WindowCreate)
+sites and recovering the `mov ecx, imm32` (class | flags<<8), `mov edx` (event proc) and
+`mov ebp` (paint proc) that precede each. Full map now recorded here:
+
+| class | site | event | paint | notes |
+|---|---|---|---|---|
+| 0 | 0x4298ee | 0x42b076 | 0x42b079 | main viewport |
+| 1 | 0x42997a | 0x42a830 | 0x42afb5 | TOP TOOLBAR |
+| 2 | 0x4299ba | 0x429d41 | 0x429f6c | bottom toolbar |
+| 5 / 6 | 0x5e37a6 / 0x5e5daa | | | tooltip / error popups |
+| 8,9,10,12,13,14,17,20,26 | various | | | dialogs (13 twice: 0x5d3567/0x5d35ed) |
+| **29** | **0x429a0f** | **0x429a65** | **0x429ad5** | **TITLE MENU** — widgets 0x5f531c, enabled 0xf (4 buttons) |
+| 32,33,34 | 0x430525, 0x5d611f, 0x5d6662 | | | |
+| **39** | **0x429a49** | 0x429ae1 | 0x429ae4 | title LOGO — widgets 0x5f5360 |
+
+**The find:** MainOpen (0x4298a0) has TWO modes, selected at 0x42994b by
+`test word [0x99a500], 1`. Bit clear → the gameplay branch (toolbars, classes 1+2). Bit SET →
+the TITLE branch (classes 29 + 39) at 0x4299e1, which nothing in the harness had ever set. The
+geometry is computed, not hardcoded: class 29 gets `x = (screen_w - 0x148)/2`,
+`y = screen_h - 0x66`, `328x82` — i.e. horizontally centred, 102px off the bottom.
+
+**Verified:** setting `[0x99a500] |= 1` and calling MainOpen produces
+`29@(156,378,328x82)` — exactly (640-328)/2 = 156 and 480-102 = 378 — plus `39@(440,0,200x133)`.
+With ADDENDUM 79's UI painting on, the rendered frame is the REAL RCT TITLE SCREEN: the
+RollerCoaster Tycoon logo top-right and the four-button menu (New Game / Load Game / Tutorial /
+Exit) with their helter-skelter icons, over the demo park.
+
+So the title screen was never missing either — like the toolbars (ADD 79), it was a mode the
+harness never entered. Combined with ADD 80 (clicks reach widgets through the binary's own
+hit-test), the pieces for a real boot flow are all present.
+
+**Next:** click "New Game" (class 29 widget 0) and follow where the binary goes — expected to
+open the scenario-select window. Then the phase-4 goal: reach a loaded scenario through that
+path with runInit's force-load, skipFadeIn, skipTitleIntro and the synthetic viewport pan all
+REMOVED.
