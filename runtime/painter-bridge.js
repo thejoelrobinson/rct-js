@@ -69,6 +69,10 @@ import { FUN_00449178 } from "../ported/auto/449178.js";
 // Vehicle status 1 "waiting for passengers" (vtable PTR_LAB_005d97b4 slot 1);
 // hot dh==1 arm in JS, other arms via its own embedded interp — ADDENDUM 72.
 import { FUN_005d99a2 } from "../ported/auto/5d99a2.js";
+// Window event proc registered at 0x429960 (event {1,2,3,4,7,8,9,a,b} arms
+// unported → embedded interp; the soak only ever sends the unhandled
+// fall-through event 0x12) — ADDENDUM 73.
+import { FUN_0042a830 } from "../ported/auto/42a830.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1101,6 +1105,11 @@ export function installPainterBridge(heap, opts = {}) {
   // the fn's OWN embedded-interp fallback (444e08 orchestrator pattern), so
   // no wiring-level guard is needed here (ADDENDUM 72).
   installJsFnEipHook(0x5d99a2, FUN_005d99a2, "__forceInterp5d99a2", "warn");
+
+  // 0x42a830 — window event proc: JS handles the unhandled-event
+  // fall-through (the only shape the soak produces, ~19 interp steps/call);
+  // matched events route through the fn's own embedded interp (ADDENDUM 73).
+  installJsFnEipHook(0x42a830, FUN_0042a830, "__forceInterp42a830", "warn");
 
   // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
   // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,

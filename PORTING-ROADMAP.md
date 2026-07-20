@@ -2749,3 +2749,26 @@ exited at `cmp ah,0`; only the instrumented JS inputs (ah=4, not 0) exposed the 
 jsThrew=0; dual-soak 30 ticks byte-identical (5b79d5b5); gameplay_accuracy + title_replay pass;
 suite 201/201. **Process note: agent-produced ports are UNVERIFIED until the reviewing session
 re-runs the gates — this one looked complete and well-documented and was still wrong.**
+
+## ADDENDUM 71/73 — team small-tail sweep: 4264f6, 449178 (landed) + 42a830 (salvaged)
+
+Parallel-team slice (agent branch agent/small-tail), reviewed and re-gated by the main session.
+- **0x4264f6 / 0x449178** — types 0 (ride entrance) and 1 (path queue banner) of the map-animation
+  vtable at 0x628ab0, dispatched per queue entry by FUN_00436508 with AX=x CX=y DL=z; exit CF=1
+  dequeues (the caller's jb), so both bodies set the painter cpu's exit eflags exactly as the
+  binary's `stc` / `and eax,eax` leave them. Quadtile-hash tile walk + conditional 0x5e585a
+  height-band invalidate (implicit DI/SI args, edi/esi push/pop replicated). Landed as ADD 71.
+  Re-verified independently: lockstep 40 calls each memMis=0 eaxMis=0; dual-soak 5b79d5b5.
+- **0x42a830** (ADD 73) — the window EVENT PROC registered at 0x429960 (`mov edx,0x42a830 ; mov
+  ebp,0x42afb5 ; call 0x5e3f31`). Its body is a 9-way `cmp bp` dispatch chain
+  ({1,2,3,4,7,8,9,0xa,0xb} → a ~0x1000-byte button/dropdown subsystem, NOT ported); the soak only
+  ever sends bp=0x12, i.e. the pure fall-through to the ret at 0x42afb4 (19 steps/call, the whole
+  40 steps/tick rank entry). JS ports the fall-through (no register writes; exit flags from the
+  LAST compare `cmp bp,0xb` — verified against the chain order at 0x42af5a) and routes matched
+  events through the fn's own embedded interpreter from entry. This one was left uncommitted and
+  UNWIRED in the agent's worktree when its session died; salvaged, wired and gated here:
+  lockstep 43 calls memMis=0 eaxMis=0, dual-soak 5b79d5b5, accuracy+replay pass.
+
+**Still open from the team run:** 0x5e2b52 (~30/tick) and 0x43e304 (~29/tick) were never reached
+by the sweep; 0x4499cc (ADD 69 plan) got only as far as a probe tool. Both remain next-session
+work.
