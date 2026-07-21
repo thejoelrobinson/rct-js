@@ -3223,7 +3223,9 @@ coverage, dual-soak, per-fn lockstep). The 52-fn ledger regenerates in ~7 minute
 done: ledger EMPTY at 12 ticks × 21 scenarios × 4 rotations, all gates green, zero harness
 hacks in the browser boot path.
 
-## ADDENDUM 86 — 0x43c210 (peep ride sub-state 8) ported; a callNative-reachable lockstep oracle
+## ADDENDUM 86 — peep family arms ported inline (spend-limit killed the team); callNative lockstep oracle
+
+### 86a — 0x43c210 (peep ride sub-state 8)
 
 Endgame Tier-3 slice, done inline (the parallel team spun up for ADD 85 all died at setup on the
 MONTHLY SPEND LIMIT — a hard cap, not a resettable session limit — with zero commits; re-spawning
@@ -3249,3 +3251,11 @@ soak hash unchanged (5b79d5b5); gameplay_accuracy + title_replay + title_accurac
 native_dispatch all pass (8/8). sc11 dual-soak byte-identical (a2d167ac, JS leg == forced-interp
 leg). Ledger: one of the 52 remaining tick-loop fns done; 51 to go (regenerate with
 tools/_coverage-ledger.mjs).
+
+### 86b — 0x43a424 (peep-state 14, "leaving the park")
+Sibling of 0x43a3a8 (state 13): a walking sequencer whose ARRIVED arm sets [esi+0x37]=1 and FALLS
+THROUGH (jmp 0x43a42a) into the walking-core block — modelled as a shared walkingCore() helper
+called from both the [esi+0x37]!=0 entry and the ARRIVED fall-through. CF-across-call from 0x43c49e
+read live. VALIDATED via _lockstep-cn: sc10 405 / sc13 26 / sc8 47 calls, ALL memMis=0 eaxMis=0
+jsThrew=0 (478 crossings). No regression: sc21 soak 5b79d5b5, accuracy+replay+title pass; sc10
+dual-soak byte-identical (a444e18e). 50 tick-loop fns to go.
