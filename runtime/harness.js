@@ -234,7 +234,13 @@ export function createRuntime(opts) {
       // fade to 0x11, off-by-one breaking the fadein test gate.
       heap.setU8(0x005f8da2, 0);
 
-      const path = "sc21.sc4\0";
+      // Scenario override (ADDENDUM 84): the full retail set now ships (ADD
+      // 82), so oracle runs can soak DIFFERENT parks — different ride types,
+      // terrain, and peep behaviour = different code paths crossing the
+      // differential oracles. globalThis.__scenarioFile must be a VFS
+      // basename (e.g. "sc0.sc4"); default stays sc21 (the byte-exact-gate
+      // baseline — the truth fixtures were captured on it).
+      const path = ((globalThis.__scenarioFile || "sc21.sc4") + "\0").toLowerCase();
       for (let i = 0; i < path.length; i++) heap.setU8(0x0099aa88 + i, path.charCodeAt(i));
       try { call(0x42f4be); }
       catch (e) {

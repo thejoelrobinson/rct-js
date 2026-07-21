@@ -42,6 +42,8 @@ let _t = 1700000000000;
 Date.now = () => ++_t;
 if (typeof performance !== "undefined") performance.now = () => Date.now() - 1700000000000;
 globalThis._renderTrace = () => {};
+// SCENARIO=<basename.sc4> — soak a different retail park (ADDENDUM 84).
+if (process.env.SCENARIO) globalThis.__scenarioFile = process.env.SCENARIO.toLowerCase();
 
 const { createRuntime, skipFadeIn, enterScenarioPlay } = await import("../runtime/harness.js");
 const { getEipHook, setEipHook, clearEipHook, step, runFunction } = await import("../harness/x86.js");
@@ -51,6 +53,7 @@ const VFS_FILES = ["csg1.dat","csg1i.dat","game.cfg","kanji.dat","tutorial.dat",
 const vfs = new Map();
 for (const n of VFS_FILES) { try { vfs.set(n.toLowerCase(), readFileSync(resolve(ROOT, "web/assets", n))); } catch {} }
 for (const n of ["css10.dat","css12.dat","css16.dat","tutl.dat"]) vfs.set(n.toLowerCase(), new Uint8Array(0));
+if (process.env.SCENARIO) { const f = process.env.SCENARIO.toLowerCase(); try { vfs.set(f, readFileSync(resolve(ROOT, "web/assets", process.env.SCENARIO))); } catch { try { vfs.set(f, readFileSync(resolve(ROOT, "web/assets", process.env.SCENARIO.toUpperCase()))); } catch (e) { console.log("SCENARIO load failed: " + e.message); process.exit(1); } } }
 const r = createRuntime({ dataBin: readFileSync(resolve(ROOT, "decompiled/data.bin")), vfs, exeBytes: readFileSync(resolve(ROOT, "binary/rct.exe")) });
 const heap = r.heap;
 const bytes = heap.bytes;
@@ -191,13 +194,46 @@ const TICKS = parseInt(process.env.TICKS || "30", 10);
 for (let i = 0; i < TICKS; i++) { try { r.runTick(); } catch (e) { console.log(`tick ${i} ERR ${(e.message || e).toString().slice(0, 60)}`); } }
 for (const addr of fns.keys()) clearEipHook(addr);
 
+// ---- flag-contract check (the 0x425432 lesson, ADDENDUM 83/84): a heap+eax-
+// clean fn is UNWIREABLE if any direct call site consumes its exit flags
+// (call ; [flag-transparent]* ; Jcc/SETcc/ADC/SBB...). Compact port of
+// tools/_flagcheck.mjs — see it for the full opcode notes.
+const exeBuf = readFileSync(resolve(ROOT, "binary/rct.exe"));
+const SECS = [[0x401000, 0x400, 0x1a600 - 0x400], [0x41c000, 0x1a600, 0x1e5400 - 0x1a600]];
+function flagConsumed(target) {
+  const classify = (off, depth = 0) => {
+    if (depth > 4) return false;
+    const b0 = exeBuf[off], b1 = exeBuf[off + 1];
+    if (b0 >= 0x70 && b0 <= 0x7f) return true;
+    if (b0 === 0x0f && ((b1 >= 0x80 && b1 <= 0x9f) || (b1 >= 0x40 && b1 <= 0x4f))) return true;
+    if ((b0 >= 0x10 && b0 <= 0x15) || (b0 >= 0x18 && b0 <= 0x1d) || b0 === 0x9f || b0 === 0x9c) return true;
+    if ((b0 === 0x80 || b0 === 0x81 || b0 === 0x83) && [2, 3].includes((b1 >> 3) & 7)) return true;
+    if (b0 === 0x66) return classify(off + 1, depth + 1);
+    if ((b0 >= 0x50 && b0 <= 0x5f) || b0 === 0x90 || (b0 >= 0x91 && b0 <= 0x97)) return classify(off + 1, depth + 1);
+    if (b0 >= 0xb8 && b0 <= 0xbf) return classify(off + 5, depth + 1);
+    if ((b0 >= 0x88 && b0 <= 0x8b) || b0 === 0x8d) {
+      const mod = (b1 >> 6) & 3, rm = b1 & 7;
+      let len = 2;
+      if (rm === 4 && mod !== 3) len += 1;
+      if (mod === 1) len += 1; else if (mod === 2) len += 4; else if (mod === 0 && rm === 5) len += 4;
+      return classify(off + len, depth + 1);
+    }
+    return false;
+  };
+  for (const [va, off, len] of SECS)
+    for (let i = 0; i < len - 5; i++)
+      if (exeBuf[off + i] === 0xe8 && (((va + i + 5 + exeBuf.readInt32LE(off + i + 1)) >>> 0) === target) && classify(off + i + 5)) return true;
+  return false;
+}
+
 // ---- Phase 3: report ----
 console.log(`\naddr        calls  compared  skipped  memMis  eaxMis  jsThrew  verdict`);
 console.log(`--------------------------------------------------------------------------`);
 const green = [];
 for (const [addr, st] of stats) {
-  const verdict = st.compared === 0 ? "NOT-REACHED"
+  let verdict = st.compared === 0 ? "NOT-REACHED"
     : (st.memMis === 0 && st.eaxMis === 0 && st.jsThrew === 0) ? "CLEAN" : "BROKEN";
+  if (verdict === "CLEAN" && flagConsumed(addr)) verdict = "CLEAN-UNWIREABLE (callers consume exit flags — hand wrapper required)";
   if (verdict === "CLEAN") green.push(addr);
   console.log(`0x${addr.toString(16).padEnd(8)} ${String(st.calls).padStart(6)} ${String(st.compared).padStart(9)} ${String(st.skipped).padStart(8)} ${String(st.memMis).padStart(7)} ${String(st.eaxMis).padStart(7)} ${String(st.jsThrew).padStart(8)}  ${verdict}${st.firstDiff ? "   first: " + st.firstDiff : ""}`);
 }

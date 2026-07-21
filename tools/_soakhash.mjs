@@ -11,12 +11,15 @@ const ROOT = resolve(HERE, "..");
 let _t = 1700000000000; Date.now = () => ++_t;
 if (typeof performance !== "undefined") performance.now = () => Date.now() - 1700000000000;
 globalThis._renderTrace = () => {};
+// SCENARIO=<basename.sc4> — soak a different retail park (ADDENDUM 84).
+if (process.env.SCENARIO) globalThis.__scenarioFile = process.env.SCENARIO.toLowerCase();
 if (process.env.FORCE) globalThis[process.env.FORCE] = true;
 const { createRuntime, skipFadeIn, enterScenarioPlay } = await import("../runtime/harness.js");
 const VFS_FILES = ["csg1.dat","csg1i.dat","game.cfg","kanji.dat","tutorial.dat","mp.dat","css1.dat","css2.dat","css3.dat","css4.dat","css5.dat","css6.dat","css7.dat","css8.dat","css9.dat","css11.dat","css13.dat","css14.dat","css15.dat","css17.dat","sc21.sc4"];
 const vfs = new Map();
 for (const n of VFS_FILES) { try { vfs.set(n.toLowerCase(), readFileSync(resolve(ROOT, "web/assets", n))); } catch {} }
 for (const n of ["css10.dat","css12.dat","css16.dat","tutl.dat"]) vfs.set(n.toLowerCase(), new Uint8Array(0));
+if (process.env.SCENARIO) { const f = process.env.SCENARIO.toLowerCase(); try { vfs.set(f, readFileSync(resolve(ROOT, "web/assets", process.env.SCENARIO))); } catch { try { vfs.set(f, readFileSync(resolve(ROOT, "web/assets", process.env.SCENARIO.toUpperCase()))); } catch (e) { console.log("SCENARIO load failed: " + e.message); process.exit(1); } } }
 const r = createRuntime({ dataBin: readFileSync(resolve(ROOT, "decompiled/data.bin")), vfs, exeBytes: readFileSync(resolve(ROOT, "binary/rct.exe")) });
 try { r.runInit(); } catch {}
 try { r.runTick(); } catch {}

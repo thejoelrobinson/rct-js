@@ -27,6 +27,8 @@ let _t = 1700000000000;
 Date.now = () => ++_t;
 if (typeof performance !== "undefined") performance.now = () => Date.now() - 1700000000000;
 globalThis._renderTrace = () => {};
+// SCENARIO=<basename.sc4> — soak a different retail park (ADDENDUM 84).
+if (process.env.SCENARIO) globalThis.__scenarioFile = process.env.SCENARIO.toLowerCase();
 
 const { createRuntime, skipFadeIn, enterScenarioPlay } = await import("../runtime/harness.js");
 const { getEipHook, setEipHook, clearEipHook, step, runFunction } = await import("../harness/x86.js");

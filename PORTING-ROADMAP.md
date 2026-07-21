@@ -3133,3 +3133,46 @@ clothing-coloured pixel counts are stable (18916/18922/18677); peep paint calls 
 sync, the Flip no-op is harmless). The flashing is a BROWSER PRESENT-CADENCE artifact: when the
 tab is background-throttled (rAF suspended) or ticks stall, guests teleport between frames.
 Content is sound. TODO: on-page tick-rate HUD so cadence problems are visible at a glance.
+
+## ADDENDUM 84 — CATCHING MORE: flag-contract scanner + scenario sweep; sc2 finds 4 new issues in one run
+
+Two new catch-more mechanisms, both now part of the pipeline:
+
+**1. tools/_flagcheck.mjs — static flag-contract scanner.** Mechanises the ADD-83 rule: for every
+direct `call` site of a target, walk forward over FLAG-TRANSPARENT instructions (push/pop/mov/
+lea/nop — up to 4) and classify the first flag-relevant opcode (Jcc/SETcc/CMOVcc/ADC/SBB/LAHF/
+PUSHF = consumer; any ALU = flags dead). The naive next-byte version missed the `call ; pop edi ;
+jb` idiom at 0x43c370 — the walk catches it (the tool's own header records that self-caught miss).
+**Retroactive audit: all 20 wired hook addresses are flag-safe** — every direct-call callee
+(5e53ca ×174 sites, 444927 ×83, 44142c ×58, 441452 ×61, 43c60b ×33, 43e792 ×10, 4314ed, 43d38b,
+5ddcbe, 5e3652) has zero flag consumers, and the vtable-reached fns have no direct sites (their
+dispatch conventions were hand-verified per port). A whole latent-bug class ruled out. The check
+is now INTEGRATED into the batch oracle: heap+eax-clean fns with flag-consuming callers report
+**CLEAN-UNWIREABLE** and are excluded from the wiring suggestions (425432 now reports exactly
+that).
+
+**2. Scenario sweep.** The harness scenario is now overridable (globalThis.__scenarioFile /
+SCENARIO= env in _soakhash, _lockstep-auto, _lockstep-batch) — the retail set from ADD 82 makes
+every park an oracle workload. Default stays sc21 (the truth-fixture baseline).
+
+**First sweep (sc2, one 30-tick batch run) caught four NEW issues sc21 can never show:**
+- **0x5e56d3: BROKEN, eaxMis 54/54** — a previously-unknown bad auto-translation (never crossed
+  on sc21). Triage next session: check whether any caller consumes its eax.
+- **repeating painter abort: `0x5e56fc: mem32 OOB @eip=0x5e5858`** on the live paint path —
+  sc2's map exercises a height-band-invalidate route (0x5e585a family) that walks off the stack
+  carve. A REAL crash-class bug a user would hit loading sc2 in the browser.
+- **0x421d2c terrain-painter runaway: 1,006,194 interp steps / 9,252 calls in 6 ticks** (sc21:
+  ~5,700 steps at 1/call). sc2's cliffs drive the hook's cold runBodyFrom(0x4225e9) branch
+  near-constantly — the un-ported cliff path is a first-order perf cliff (pun intended) on real
+  scenarios. Port target.
+- **0x5ddf5d: 21,834 steps / 474 calls in 6 ticks, no auto module** — a hot vehicle-family fn
+  invisible on sc21. Port target.
+- Also: 425432's coverage went from 1 crossing (sc21) to 277 (sc2), all clean — the CF-predicate
+  is behaviourally validated even though it stays hand-wrapper-only.
+
+**Gates (sc21 defaults untouched):** gameplay_accuracy + title_replay pass, 30-tick soak hash
+5b79d5b5 unchanged.
+
+**The catch-more recipe going forward:** sweep the batch oracle across all 21 scenarios ×
+rotations (the ADD-59 POKE technique) — each run is one boot regardless of how many fns it
+triages; every new park is new coverage. The sc2 findings above are the next work queue.
