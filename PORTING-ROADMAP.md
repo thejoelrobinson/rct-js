@@ -3222,3 +3222,30 @@ already exists and has caught its own bugs (batch oracle, flag scanner, scenario
 coverage, dual-soak, per-fn lockstep). The 52-fn ledger regenerates in ~7 minutes. Definition of
 done: ledger EMPTY at 12 ticks × 21 scenarios × 4 rotations, all gates green, zero harness
 hacks in the browser boot path.
+
+## ADDENDUM 86 — 0x43c210 (peep ride sub-state 8) ported; a callNative-reachable lockstep oracle
+
+Endgame Tier-3 slice, done inline (the parallel team spun up for ADD 85 all died at setup on the
+MONTHLY SPEND LIMIT — a hard cap, not a resettable session limit — with zero commits; re-spawning
+is futile against it, so this was done directly).
+
+**0x43c210** = peep ride sub-state 8 "walk to the boarding position", entry 8 of the 0x62d50c
+sub-state table, sibling of 0x43c2ec (sub-state 9, ADD 64) — it sets [esi+0x2c]=9 at exit, handing
+off to it. A callNative sequencer: movement step 0x43c49e with a CF-across-call `jae`, then (on
+arrival) a station-entrance tile scan + a boarding-target-position computation from the direction
+tables at 0x629254/56 scaled by the ride group's 0x5f7104 flags. Ported ported/auto/43c210.js with
+the established conventions (cpu-flags reads, 16-bit partial-register masking, ret-verified arms).
+
+**Tooling gap found + filled: tools/_lockstep-cn.mjs.** tools/_lockstep-auto.mjs reported
+NOT-REACHED for 43c210 despite 79 organic crossings/80 ticks (a plain probe confirmed) — it
+instruments the fnDispatch path, but eip-HOOKED fns reached via callNative/tail-jmp are dispatched
+by runFunction's eip-hook fast-path, not through fnDispatch. The new _lockstep-cn.mjs installs the
+comparison hook directly and soaks a real scenario; it is the right oracle for the whole remaining
+family tier (the peep-substate + vehicle-status arms are all this class).
+
+**VALIDATED:** _lockstep-cn across three scenarios — sc11 79 calls, sc10 298, sc9 67 (+ sc10
+re-run 244) — ALL memMis=0 eaxMis=0 jsThrew=0 (444+ crossings total). NO REGRESSION: default sc21
+soak hash unchanged (5b79d5b5); gameplay_accuracy + title_replay + title_accuracy +
+native_dispatch all pass (8/8). sc11 dual-soak byte-identical (a2d167ac, JS leg == forced-interp
+leg). Ledger: one of the 52 remaining tick-loop fns done; 51 to go (regenerate with
+tools/_coverage-ledger.mjs).

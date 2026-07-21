@@ -79,6 +79,9 @@ import { FUN_005e2b52 } from "../ported/auto/5e2b52.js";
 // Tooltip show/refresh — the 0x5e3652 callee the 5e2b52 port callNatives;
 // batch-oracle CLEAN 30/30 (tools/_lockstep-batch.mjs, ADDENDUM 83).
 import { FUN_005e3652 } from "../ported/auto/5e3652.js";
+// Peep ride sub-state 8 "walk to boarding position" (0x62d50c[8], sibling of
+// 43c2ec sub-state 9); reached via 43a74b's tail-jmp — ADDENDUM 86.
+import { FUN_0043c210 } from "../ported/auto/43c210.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1126,6 +1129,11 @@ export function installPainterBridge(heap, opts = {}) {
   // 0x5e3652 — tooltip show/refresh (batch-oracle CLEAN 30/30; no caller
   // consumes its exit flags — the 5e2b52 site proceeds unconditionally).
   installJsFnEipHook(0x5e3652, FUN_005e3652, "__forceInterp5e3652", "warn");
+
+  // 0x43c210 — peep ride sub-state 8 (walk to boarding position); a
+  // callNative sequencer with one CF-across-call branch, hands off to
+  // sub-state 9 (43c2ec) at exit (ADDENDUM 86).
+  installJsFnEipHook(0x43c210, FUN_0043c210, "__forceInterp43c210", "warn");
 
   // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
   // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,
