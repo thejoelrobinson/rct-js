@@ -3272,3 +3272,20 @@ identical (79cdb906).
 `add al,2 ; add ah,[ebx+eax] ; shl al,3`, dropping the `and al,3` direction mask. Raw-byte
 recheck at the diverging address fixed it. LESSON: when a single rare crossing diverges, re-dump
 the RAW BYTES at that exact instruction — disasm can misalign across a wide window.
+
+### 86d — 0x43c383 (peep ride-exit) PORTED but REVERTED — a lockstep-cn blind spot found
+0x43c383 (ride-exit / walk-off-platform handler, 58 peak steps/tick, 4 scenarios) was transcribed
+and validated CLEAN by _lockstep-cn across all 4 scenarios (127 crossings, memMis=0 eaxMis=0), and
+even an augmented full-GP-register per-crossing compare found NO exit-register divergence. **Yet
+the sc12 DUAL-SOAK diverged** (wired-JS 913da501 vs pure-interp baseline 774805fc, confirmed by a
+true-unwired run). So per-crossing byte-exactness in heap AND all 7 GP registers is STILL not
+sufficient — some accumulated state escapes the compare. Leading hypotheses (unresolved): (a) the
+exit EFLAGS 43c383 leaves are consumed by the dispatcher's caller and installJsFnEipHook doesn't
+model them (the other wired peep-state entries pass their soaks, so if this is it, 43c383's caller
+is flag-sensitive where theirs aren't); (b) a 43c383-reachable path not exercised by the
+interp-forward OR JS-forward lockstep crossings. REVERTED (unwired; transcription parked at
+.parked/43c383.js) rather than ship an sc12 regression for a 58-steps/tick fn — the "don't
+sink-cost" rule. **Methodology upgrade for the endgame: the DUAL-SOAK on a driving scenario is the
+real ship gate, not the per-crossing lockstep** — always run it (this session's 43c210/43a424/
+43a482 all passed it; 43c383 is the one that didn't). Open follow-up: teach installJsFnEipHook to
+carry exit eflags, then re-test 43c383 from .parked/.
