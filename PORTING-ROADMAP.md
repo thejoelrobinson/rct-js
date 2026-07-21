@@ -3259,3 +3259,16 @@ called from both the [esi+0x37]!=0 entry and the ARRIVED fall-through. CF-across
 read live. VALIDATED via _lockstep-cn: sc10 405 / sc13 26 / sc8 47 calls, ALL memMis=0 eaxMis=0
 jsThrew=0 (478 crossings). No regression: sc21 soak 5b79d5b5, accuracy+replay+title pass; sc10
 dual-soak byte-identical (a444e18e). 50 tick-loop fns to go.
+
+### 86c — 0x43a482 (peep-state 8, "walk to ride entrance / board")
+The full impatience handler (43a5f8 pattern): sub-state dispatch on [esi+0x2c], a walking-core
+boarding-setup block (BLOCK0) and a rand-gated board/depart block (BLOCK1) with a shared DEPART
+convergence. All callNative + heap writes; 439219 ZF and the rand-eax bit tests read live.
+VALIDATED via _lockstep-cn: sc15 946 / sc7 205 / sc12 90 / sc9 35 calls, ALL memMis=0 eaxMis=0
+jsThrew=0 (1276+ crossings). No regression: sc21 5b79d5b5, gates pass; sc15 dual-soak byte-
+identical (79cdb906).
+**Oracle caught a real bug (1/946 on sc15) → a DISASSEMBLER MISALIGNMENT:** a wide
+`disasm-va.py` range mis-decoded `add al,2 ; and al,3 ; shl al,3` (bytes 04 02 24 03 c0 e0 03) as
+`add al,2 ; add ah,[ebx+eax] ; shl al,3`, dropping the `and al,3` direction mask. Raw-byte
+recheck at the diverging address fixed it. LESSON: when a single rare crossing diverges, re-dump
+the RAW BYTES at that exact instruction — disasm can misalign across a wide window.

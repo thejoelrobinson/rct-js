@@ -84,6 +84,8 @@ import { FUN_005e3652 } from "../ported/auto/5e3652.js";
 import { FUN_0043c210 } from "../ported/auto/43c210.js";
 // Peep-state 14 "leaving the park" (vtable 0x62d4ac[14], sibling of 43a3a8) — ADD 86.
 import { FUN_0043a424 } from "../ported/auto/43a424.js";
+// Peep-state 8 "boarding a ride" (vtable 0x62d4ac[8]) — ADDENDUM 86c.
+import { FUN_0043a482 } from "../ported/auto/43a482.js";
 // Gameplay port: ride/vehicle per-sprite update, vtable slot 4 of
 // PTR_LAB_005d97b4 — reached via the sprite-update walk's `call [edi*4+0x5d97b4]`.
 import { FUN_005da274_js } from "../ported/auto/extra_vehicle_5da274.js";
@@ -1140,6 +1142,10 @@ export function installPainterBridge(heap, opts = {}) {
   // 0x43a424 — peep-state 14 (leaving the park): walking sequencer whose
   // ARRIVED arm falls through into the walking-core block (ADDENDUM 86).
   installJsFnEipHook(0x43a424, FUN_0043a424, "__forceInterp43a424", "warn");
+
+  // 0x43a482 — peep-state 8 (walk to ride entrance / board the vehicle);
+  // sub-state-dispatched impatience handler, 43a5f8 pattern (ADDENDUM 86c).
+  installJsFnEipHook(0x43a482, FUN_0043a482, "__forceInterp43a482", "warn");
 
   // 0x4264f6 / 0x449178 — map-animation type-0 (ride entrance) and type-1
   // (path queue banner) handlers, entries 0/1 of the 0x628ab0 vtable,
