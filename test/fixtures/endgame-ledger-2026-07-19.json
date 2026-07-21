@@ -1,0 +1,706 @@
+[
+ {
+  "addr": 4332844,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc19",
+   "sc5",
+   "sc9",
+   "sc0",
+   "sc2",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 520853,
+  "totalSteps": 33582786,
+  "status": "WIRED/hook-adjacent"
+ },
+ {
+  "addr": 4418204,
+  "scenarios": [
+   "sc11",
+   "sc15",
+   "sc16",
+   "sc5",
+   "sc9",
+   "sc0"
+  ],
+  "maxSpt": 207554,
+  "totalSteps": 3114802,
+  "status": "WIRED/hook-adjacent"
+ },
+ {
+  "addr": 4335081,
+  "scenarios": [
+   "sc16"
+  ],
+  "maxSpt": 162162,
+  "totalSteps": 1945944,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6152029,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc19",
+   "sc5",
+   "sc9",
+   "sc0",
+   "sc1",
+   "sc2",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 47601,
+  "totalSteps": 1850432,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4530168,
+  "scenarios": [
+   "sc5"
+  ],
+  "maxSpt": 6204,
+  "totalSteps": 74448,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4441937,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc15",
+   "sc16",
+   "sc17",
+   "sc18",
+   "sc20",
+   "sc5",
+   "sc9",
+   "sc1",
+   "sc2",
+   "sc21",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 3761,
+  "totalSteps": 192238,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 4495820,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc14",
+   "sc15",
+   "sc16",
+   "sc17",
+   "sc18",
+   "sc19",
+   "sc20",
+   "sc5",
+   "sc9",
+   "sc0",
+   "sc1",
+   "sc2",
+   "sc21",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 2610,
+  "totalSteps": 373691,
+  "status": "DELEGATE (hand-port job)"
+ },
+ {
+  "addr": 6133760,
+  "scenarios": [
+   "sc11",
+   "sc17",
+   "sc18",
+   "sc5",
+   "sc9",
+   "sc1",
+   "sc7"
+  ],
+  "maxSpt": 1109,
+  "totalSteps": 30193,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4401392,
+  "scenarios": [
+   "sc11",
+   "sc15"
+  ],
+  "maxSpt": 999,
+  "totalSteps": 19092,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6157324,
+  "scenarios": [
+   "sc11",
+   "sc15",
+   "sc7"
+  ],
+  "maxSpt": 858,
+  "totalSteps": 18000,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 6137040,
+  "scenarios": [
+   "sc11",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc9",
+   "sc7"
+  ],
+  "maxSpt": 765,
+  "totalSteps": 19635,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4428313,
+  "scenarios": [
+   "sc11",
+   "sc12",
+   "sc15",
+   "sc18",
+   "sc20",
+   "sc5",
+   "sc9",
+   "sc1",
+   "sc21",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 757,
+  "totalSteps": 29455,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 6139505,
+  "scenarios": [
+   "sc18",
+   "sc9",
+   "sc7"
+  ],
+  "maxSpt": 639,
+  "totalSteps": 21657,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4432932,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc15",
+   "sc18",
+   "sc5",
+   "sc9",
+   "sc1",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 462,
+  "totalSteps": 16060,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4376337,
+  "scenarios": [
+   "sc18"
+  ],
+  "maxSpt": 356,
+  "totalSteps": 4277,
+  "status": "WIRED/hook-adjacent"
+ },
+ {
+  "addr": 4433026,
+  "scenarios": [
+   "sc12",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc5",
+   "sc9",
+   "sc7"
+  ],
+  "maxSpt": 323,
+  "totalSteps": 6205,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6134933,
+  "scenarios": [
+   "sc11",
+   "sc9",
+   "sc7"
+  ],
+  "maxSpt": 245,
+  "totalSteps": 3180,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6182611,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc19",
+   "sc5",
+   "sc9",
+   "sc0",
+   "sc2",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 241,
+  "totalSteps": 14854,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 4546303,
+  "scenarios": [
+   "sc11",
+   "sc12",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc9",
+   "sc7"
+  ],
+  "maxSpt": 241,
+  "totalSteps": 8315,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4440592,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc17",
+   "sc9"
+  ],
+  "maxSpt": 239,
+  "totalSteps": 4892,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4382721,
+  "scenarios": [
+   "sc11",
+   "sc18"
+  ],
+  "maxSpt": 230,
+  "totalSteps": 2967,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4346930,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc15",
+   "sc16",
+   "sc17",
+   "sc18",
+   "sc19",
+   "sc20",
+   "sc5",
+   "sc9",
+   "sc0",
+   "sc2",
+   "sc21",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 190,
+  "totalSteps": 29010,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 4433750,
+  "scenarios": [
+   "sc11",
+   "sc12",
+   "sc15",
+   "sc17",
+   "sc18",
+   "sc5",
+   "sc9",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 138,
+  "totalSteps": 5677,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4436646,
+  "scenarios": [
+   "sc12",
+   "sc15",
+   "sc8"
+  ],
+  "maxSpt": 128,
+  "totalSteps": 2709,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4434711,
+  "scenarios": [
+   "sc10",
+   "sc17",
+   "sc18",
+   "sc20",
+   "sc5",
+   "sc9",
+   "sc1",
+   "sc21",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 106,
+  "totalSteps": 4366,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6130809,
+  "scenarios": [
+   "sc11"
+  ],
+  "maxSpt": 63,
+  "totalSteps": 750,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 4440963,
+  "scenarios": [
+   "sc12",
+   "sc15",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 58,
+  "totalSteps": 1410,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4438647,
+  "scenarios": [
+   "sc11",
+   "sc18",
+   "sc7"
+  ],
+  "maxSpt": 51,
+  "totalSteps": 1554,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4440165,
+  "scenarios": [
+   "sc12",
+   "sc8"
+  ],
+  "maxSpt": 49,
+  "totalSteps": 717,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4441246,
+  "scenarios": [
+   "sc10",
+   "sc12",
+   "sc20",
+   "sc1",
+   "sc21",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 45,
+  "totalSteps": 2466,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 6181633,
+  "scenarios": [
+   "sc18",
+   "sc8"
+  ],
+  "maxSpt": 40,
+  "totalSteps": 504,
+  "status": "WIRED/hook-adjacent"
+ },
+ {
+  "addr": 4380319,
+  "scenarios": [
+   "sc15"
+  ],
+  "maxSpt": 38,
+  "totalSteps": 456,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4437248,
+  "scenarios": [
+   "sc15"
+  ],
+  "maxSpt": 36,
+  "totalSteps": 434,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6135691,
+  "scenarios": [
+   "sc15",
+   "sc17",
+   "sc20",
+   "sc5",
+   "sc21"
+  ],
+  "maxSpt": 32,
+  "totalSteps": 1752,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4449028,
+  "scenarios": [
+   "sc15",
+   "sc20",
+   "sc9",
+   "sc21",
+   "sc8"
+  ],
+  "maxSpt": 32,
+  "totalSteps": 1267,
+  "status": "DELEGATE (hand-port job)"
+ },
+ {
+  "addr": 6139100,
+  "scenarios": [
+   "sc15"
+  ],
+  "maxSpt": 26,
+  "totalSteps": 312,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6138404,
+  "scenarios": [
+   "sc15",
+   "sc8"
+  ],
+  "maxSpt": 22,
+  "totalSteps": 528,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4352045,
+  "scenarios": [
+   "sc10",
+   "sc11",
+   "sc12",
+   "sc13",
+   "sc14",
+   "sc15",
+   "sc16",
+   "sc17",
+   "sc18",
+   "sc19",
+   "sc20",
+   "sc5",
+   "sc9",
+   "sc0",
+   "sc1",
+   "sc2",
+   "sc21",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 18,
+  "totalSteps": 3185,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4460515,
+  "scenarios": [
+   "sc11"
+  ],
+  "maxSpt": 18,
+  "totalSteps": 210,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 4430099,
+  "scenarios": [
+   "sc15",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 17,
+  "totalSteps": 606,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4436871,
+  "scenarios": [
+   "sc8"
+  ],
+  "maxSpt": 17,
+  "totalSteps": 199,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6138616,
+  "scenarios": [
+   "sc5"
+  ],
+  "maxSpt": 16,
+  "totalSteps": 196,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4438679,
+  "scenarios": [
+   "sc12"
+  ],
+  "maxSpt": 15,
+  "totalSteps": 180,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4339319,
+  "scenarios": [
+   "sc9"
+  ],
+  "maxSpt": 15,
+  "totalSteps": 176,
+  "status": "WIRED/hook-adjacent"
+ },
+ {
+  "addr": 6138254,
+  "scenarios": [
+   "sc8"
+  ],
+  "maxSpt": 15,
+  "totalSteps": 174,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4522416,
+  "scenarios": [
+   "sc10",
+   "sc12",
+   "sc13",
+   "sc14",
+   "sc16",
+   "sc18",
+   "sc19",
+   "sc20",
+   "sc9",
+   "sc0",
+   "sc1",
+   "sc2",
+   "sc21",
+   "sc6",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 9,
+  "totalSteps": 1729,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4430622,
+  "scenarios": [
+   "sc10",
+   "sc15",
+   "sc7",
+   "sc8"
+  ],
+  "maxSpt": 9,
+  "totalSteps": 416,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4438288,
+  "scenarios": [
+   "sc8"
+  ],
+  "maxSpt": 7,
+  "totalSteps": 84,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4461650,
+  "scenarios": [
+   "sc9",
+   "sc8"
+  ],
+  "maxSpt": 6,
+  "totalSteps": 148,
+  "status": "AUTO-EXISTS (batch-validate)"
+ },
+ {
+  "addr": 4438005,
+  "scenarios": [
+   "sc8"
+  ],
+  "maxSpt": 4,
+  "totalSteps": 48,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 6177656,
+  "scenarios": [
+   "sc11"
+  ],
+  "maxSpt": 3,
+  "totalSteps": 30,
+  "status": "NO-MODULE (port from asm)"
+ },
+ {
+  "addr": 4461612,
+  "scenarios": [
+   "sc9",
+   "sc8"
+  ],
+  "maxSpt": 0,
+  "totalSteps": 10,
+  "status": "AUTO-EXISTS (batch-validate)"
+ }
+]

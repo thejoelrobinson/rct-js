@@ -3176,3 +3176,49 @@ every park an oracle workload. Default stays sc21 (the truth-fixture baseline).
 **The catch-more recipe going forward:** sweep the batch oracle across all 21 scenarios ×
 rotations (the ADD-59 POKE technique) — each run is one boot regardless of how many fns it
 triages; every new park is new coverage. The sc2 findings above are the next work queue.
+
+## ADDENDUM 85 — THE ENDGAME: finishing the 1:1 port, measured and planned
+
+**Reframe that makes "finish" well-defined:** the hybrid is ALREADY behaviourally 1:1 — wherever
+JS is not wired, the interpreter executes the actual binary's bytes, and the accuracy gates hold
+at MAX_DIVERGENCE=0. "Complete the port" therefore means exactly: **drive interpreter execution
+to zero across all content, gates green the whole way.** That is finishable and measurable.
+
+**tools/_coverage-ledger.mjs** measures it: every retail scenario (one isolated process each,
+12 ticks), aggregate every real-work interp entry (steps/call > 1), classify port status. Result
+across 19 scenarios (sc3/SC4 workers TIMED OUT — see queue):
+
+**THE ENTIRE REMAINING TICK-LOOP PORT IS 52 FUNCTIONS** (ledger JSON archived; regenerate any
+time with the tool). Status: 35 NO-MODULE (asm transcription), 10 AUTO-EXISTS (batch-validate +
+wire), 2 DELEGATE (4499cc, 43e304 — plans already written), 5 wired-fns-with-hot-cold-arms.
+Upper bound of remaining interp work: ~960K steps/tick summed over per-fn peaks — but the
+distribution is extreme:
+
+- **TIER 1 — three painter cold arms are ~93% of everything:** 0x421d2c cliff path (peak 520,853
+  steps/tick, 15 scenarios), 0x436a9c (207,554, 6 scenarios — a 4368d8-family painter's cold
+  fallback), 0x4225e9 (162,162 — the terrain cold branch runBodyFrom targets). Porting these
+  three blocks kills ~890K of the 960K bound. Same slice pattern as ADD 60's orchestrator.
+- **TIER 2 — the planned singles:** 0x5ddf5d (47,601 peak, present in 16 scenarios — the
+  vehicle-family hot fn), 4499cc (2,610, in 20 scenarios; plan = ADD 69), 43e304 (plan = ADD 74
+  note), plus batch-validate the 10 AUTO-EXISTS (one boot per scenario-sweep, ADD 83 tool; mind
+  CLEAN-UNWIREABLE flags).
+- **TIER 3 — two patterned families (~30 small asm jobs):** the peep ride-substate arms
+  (0x62d50c table: 43ab17, 43b2a6, 43b387, 43b500, 43b7f5, 43b910, 43ba77, 43ba97, 43c065,
+  43c210, 43c383…) and the vehicle-status family (5d9800, 5d9c95, 5da4d0, 5da98e, 5daa24,
+  5daaf8, 5dacdc, 5dae71…). Each is the 43c2ec shape: bounded sequencer, callNative callees,
+  cpu-flags reads — ~1 focused slice apiece with the established checklist.
+- **TIER 4 — correctness queue from the sweeps:** sc3/SC4 boot TIMEOUTS (real bugs — the
+  ledger's first catch), the 0x5e56fc OOB painter crash (ADD 84), 0x5e56d3 eaxMis, 0x425432
+  hand wrapper (CF contract), 0x455eff/42d69f/42e001 (sprite painters for types sc21 lacks).
+
+**Beyond the tick loop, to full-game 1:1 (already scoped elsewhere):** boot-flow de-hacking
+phases 3-5 (ADD 78: title machine → scenario select → new game with the 6 harness hacks
+DELETED), save/load (comdlg stubs + WriteFile persistence), palette animation phase 2 (ADD 76),
+per-scenario truth-surface gates (capture interp accuracy fixtures for all 21, not just sc21),
+and the paint-dispatcher identification that retires the synthetic pump (ADD 82-B5).
+
+**Why this is now an execution problem, not a research problem:** every tier uses tooling that
+already exists and has caught its own bugs (batch oracle, flag scanner, scenario sweep, POKE
+coverage, dual-soak, per-fn lockstep). The 52-fn ledger regenerates in ~7 minutes. Definition of
+done: ledger EMPTY at 12 ticks × 21 scenarios × 4 rotations, all gates green, zero harness
+hacks in the browser boot path.
