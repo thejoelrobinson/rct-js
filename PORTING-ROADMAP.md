@@ -3289,3 +3289,30 @@ sink-cost" rule. **Methodology upgrade for the endgame: the DUAL-SOAK on a drivi
 real ship gate, not the per-crossing lockstep** — always run it (this session's 43c210/43a424/
 43a482 all passed it; 43c383 is the one that didn't). Open follow-up: teach installJsFnEipHook to
 carry exit eflags, then re-test 43c383 from .parked/.
+
+## ADDENDUM 87 — 0x4225e9 slope-extra/water block PORTED (byte-identical); flat-tile path is the true Tier-1 target
+
+Ported the terrain painter's slope-extra cold branch (0x4225e9..0x422a89) — previously
+`return runBodyFrom(0x004225e9)` — into `slopeExtraBlock()` in extra_paint_421d2c.js. Covers the
+WATER surface paint ([esi+5]&0x1f) + the four cliff-corner overlays (0x9238..0x923d image
+families with the shr-al-1 gate chain and the per-corner 0x432204 paint reg files), handing off to
+the already-ported FUN_00422a90 corner-heights setter. The four water-edge walkers
+(0x4219b5/0x421b78/0x4210f9/0x421553) still run via callBridge (byte-exact interp — future port
+candidates).
+
+**SHIP GATE PASSED (dual-soak vs TRUE baseline, the ADDENDUM 86d lesson):** stashed the file to
+get the pure-runBodyFrom baseline, compared to the wired JS across FOUR scenarios — sc2 3d373d72,
+sc15 79cdb906, sc9 74032728 all BYTE-IDENTICAL baseline==wired; sc21 soak 5b79d5b5 unchanged;
+gameplay_accuracy + title_replay + title_accuracy pass.
+
+**HONEST SCOPE CORRECTION — the 520K-peak headline was a red herring.** Profiling sc2 at the
+421d2c hook shows the dominant residual interp cost (ledger: 421d2c still ~167K __fnSteps/tick on
+sc2 AFTER this port) is NOT the slope-extra block — it's the FLAT-TILE path. paintBody421d2c does
+`if ((e5 & 0xe0) === 0) return false;` (bail to interp) for tiles with no slope bits. The original
+"Profile = 0 hits" comment was measured on the TITLE screen where every tile is sloped; on real
+scenarios flat tiles DOMINATE (sc2: essentially all sampled tiles are slope5hi=0), so this bail
+fires on nearly every terrain tile → the real Tier-1 cost. The flat path (0x421e13: check
+[0x5f472a]==0 and [0x991f8c]&1==0, then the 0x421f38 jumptable case [esi+6]&7 — case 1 dominant)
+is the NEXT and larger port. The slope-extra block was still worth porting (real water/cliff
+elimination, byte-exact), but it is not the headline win. Revised Tier-1 order: (1) flat-tile
+arm 0x421e13, (2) the 436a9c painter, (3) the water-edge walkers.

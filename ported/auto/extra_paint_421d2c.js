@@ -78,6 +78,7 @@
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { regs } from "../../runtime/regs.js";
+import { FUN_00422a90 } from "./422a90.js";
 import { clearEipHook, setEipHook as _setEipHook, getEipHook } from "../../harness/x86.js";
 import { paintBody420d9c } from "./extra_paint_420d9c.js";
 import { paintBody420f4c } from "./extra_paint_420f4c.js";
@@ -101,6 +102,201 @@ import { paintBody42094b } from "./extra_paint_42094b.js";
  * fallback (body returns false), run the binary body via the interpreter the
  * same recursion-safe way the helper's own hook does. Preserves esp/eip/
  * callDepth across the call, matching the prior callBridge contract. */
+
+// ============================================================================
+// SLOPE-EXTRA / WATER BLOCK (0x4225e9..0x422a89) — ADDENDUM 87.
+// Was the single largest interpreter consumer in the game (peak ~520K
+// steps/tick on water-heavy scenarios via runBodyFrom fallback). Transcribed
+// from asm (python3 tools/disasm-va.py 0x4225e9 0x422a90):
+//   1. WATER surface (0x4225e9): [0x991f78]=4; waterZ=([esi+5]&0x1f)<<4 ->
+//      [0x5f472c] (twice, as in the binary) + [0x991f2c]; edge-sprite index
+//      byte[0x5f48c0 + slope&0xf] when waterZ <= landZ+0x10 else 0; sprite =
+//      idx + 0x5e6c (+0x6035fffb in underground view [0x991f8c]&0x80); paint
+//      via [rot*4+0x431bb8] (al=0 cl=0 di=0x20 si=0x20 ah=0xff, dx=waterZ);
+//      ebx=0; the 16-pair unrolled copy tables 0x5f4104/0x5f4146 -> rings
+//      0x999f9a/0x999fdc (exit edi/esi = the last pair, replicated); dx>>=4;
+//      the four water-edge walkers 0x4219b5/0x421b78/0x4210f9/0x421553 (run
+//      via callBridge — byte-exact interp; candidates for later porting);
+//      pop esi/edx/ebx.
+//   2. CLIFF-CORNER paints (0x422801): mask=[esi+7]&0xf; if 0 -> straight to
+//      FUN_00422a90. Else [0x991f78]=8; al=(mask<<cl)&0xff; al|=al>>4 (cl =
+//      live rotation); four shr al,1 gates, each corner: slope-driven image
+//      select (0x9238..0x923d families, +0x10 dx lift on the deep diagonal
+//      chains), underground/water gate (skip when !([0x991f8c]&0x80) && dx <
+//      [0x5f472c]), paint via [rot*4+0x432204] with per-corner reg files
+//      (C1 al=1 cl=0x1f di=0x1e si=1 / C2 al=0x1f cl=0 di=1 si=0x1e /
+//      C3 al=1 cl=0 di=0x1e si=1 / C4 al=1 cl=1 di=1 si=0x1e; all ah=9,
+//      [0x99a4ec]=dx+1), eax/ebx/ecx/edx/esi push/popped per corner (the
+//      deep-chain dx+=0x10 is DISCARDED by the pop — scoped per corner).
+//   3. [0x991f78]=1 (0x422a89), then the corner-heights setter FUN_00422a90
+//      (already a validated JS port) with the live ebx as its jumptable
+//      index; if it throws (slope outside its 16-case table — the binary
+//      would wild-jump there too), fall back to runBodyFrom for exactness.
+// ============================================================================
+function corner432204(heap, cpu, runFunction, o, dxPaint) {
+  cpu.regs.eax = ((cpu.regs.eax & 0xffff0000) | (o.ah << 8) | o.al) >>> 0;
+  cpu.regs.ecx = ((cpu.regs.ecx & 0xffffff00) | o.cl) >>> 0;
+  cpu.regs.ebx = o.ebx >>> 0;
+  cpu.regs.edi = ((cpu.regs.edi & 0xffff0000) | o.di) >>> 0;
+  cpu.regs.esi = ((cpu.regs.esi & 0xffff0000) | o.si) >>> 0;
+  heap.setU16(0x0099a4e8, o.e8);
+  heap.setU16(0x0099a4ea, o.ea);
+  heap.setU16(0x0099a4ec, (dxPaint + 1) & 0xffff);
+  cpu.regs.edx = ((cpu.regs.edx & 0xffff0000) | dxPaint) >>> 0;
+  const rot = heap.u32(0x00991f88) >>> 0;
+  cpu.regs.ebp = rot;
+  callBridge(cpu, runFunction, heap.u32((TBL_432204 + (rot & 3) * 4) >>> 0));
+}
+
+function slopeExtraBlock(heap, cpu, runFunction) {
+  // ---- WATER (0x4225e9) ----
+  heap.setU8(0x00991f78, 4);
+  const savedEbx = cpu.regs.ebx >>> 0;   // push ebx
+  const savedEdx = cpu.regs.edx >>> 0;   // push edx
+  const savedEsi = cpu.regs.esi >>> 0;   // push esi
+  const landZ = cpu.regs.edx & 0xffff;                       // mov ax,dx
+  let dx = ((heap.u8((savedEsi + 5) >>> 0) & 0x1f) << 4) & 0xffff;
+  heap.setU16(0x005f472c, dx);
+  heap.setU16(0x005f472c, dx);                               // binary stores twice
+  heap.setU16(0x00991f2c, dx);
+  let eax = 0;
+  if (!(dx > ((landZ + 0x10) & 0xffff))) {                   // cmp dx,ax ; ja
+    cpu.regs.ebx = (savedEbx & 0xf) >>> 0;                   // and ebx,0xf
+    eax = heap.u8((0x005f48c0 + (savedEbx & 0xf)) >>> 0);
+  }
+  let sprite = (eax + 0x5e6c) >>> 0;                         // ebx = eax+0x5e6c
+  if ((heap.u16(0x00991f8c) & 0x80) !== 0) sprite = (sprite + 0x6035fffb) >>> 0;
+  const savedEcx = cpu.regs.ecx >>> 0;                       // push ecx
+  {
+    const rot = heap.u32(0x00991f88) >>> 0;
+    cpu.regs.eax = ((cpu.regs.eax & 0xffff0000) | 0xff00) >>> 0;  // al=0 ah=0xff
+    cpu.regs.ecx = (cpu.regs.ecx & 0xffffff00) >>> 0;             // cl=0
+    cpu.regs.edi = ((cpu.regs.edi & 0xffff0000) | 0x20) >>> 0;
+    cpu.regs.esi = ((cpu.regs.esi & 0xffff0000) | 0x20) >>> 0;
+    cpu.regs.ebx = sprite >>> 0;
+    cpu.regs.edx = ((cpu.regs.edx & 0xffff0000) | dx) >>> 0;
+    cpu.regs.ebp = rot;
+    callBridge(cpu, runFunction, heap.u32((TBL_431BB8 + (rot & 3) * 4) >>> 0));
+  }
+  cpu.regs.ecx = savedEcx;                                   // pop ecx
+  cpu.regs.ebx = 0;                                          // xor ebx,ebx
+  // 16-pair unrolled ring init (exit edi/esi = the last pair)
+  for (let i = 0; i < 16; i++) {
+    const a = heap.u32((0x005f4104 + i * 4) >>> 0) >>> 0;
+    const b = heap.u32((0x005f4146 + i * 4) >>> 0) >>> 0;
+    heap.setU32((0x00999f9a + i * 4) >>> 0, a);
+    heap.setU32((0x00999fdc + i * 4) >>> 0, b);
+    cpu.regs.edi = a; cpu.regs.esi = b;
+  }
+  dx = (dx >>> 4) & 0xffff;                                  // shr dx,4
+  cpu.regs.edx = ((cpu.regs.edx & 0xffff0000) | dx) >>> 0;
+  callBridge(cpu, runFunction, 0x004219b5);                  // water-edge walkers
+  callBridge(cpu, runFunction, 0x00421b78);
+  callBridge(cpu, runFunction, 0x004210f9);
+  callBridge(cpu, runFunction, 0x00421553);
+  cpu.regs.esi = savedEsi;                                   // pop esi
+  cpu.regs.edx = savedEdx;                                   // pop edx
+  cpu.regs.ebx = savedEbx;                                   // pop ebx
+
+  // ---- CLIFF CORNERS (0x422801) ----
+  const mask = heap.u8((savedEsi + 7) >>> 0) & 0xf;
+  cpu.regs.eax = ((cpu.regs.eax & 0xffffff00) | mask) >>> 0; // mov al ; and al
+  if (mask !== 0) {
+    heap.setU8(0x00991f78, 8);
+    const cl = cpu.regs.ecx & 0xff;                          // live rotation cl
+    let al = ((mask << cl) & 0xff);                          // shl ax,cl (al slice)
+    al = (al | (al >>> 4)) & 0xff;                           // fold high nibble
+    const bl = savedEbx & 0xff;                              // slope (restored ebx)
+    const dxBase = savedEdx & 0xffff;
+    const water = heap.u16(0x005f472c);
+    const under = (heap.u16(0x00991f8c) & 0x80) !== 0;
+    // corner spec: [maskBitOrder, shallow tests, deep chain, paint regs]
+    const corners = [
+      { // C1 @0x422825
+        img: () => {
+          if ((bl & 1) === 0) return { i: (bl & 8) === 0 ? 0x9238 : 0x923a, lift: 0 };
+          if ((bl & 8) === 0) return { i: 0x923c, lift: 0 };
+          if ((bl & 0x10) === 0) return { i: 0x9238, lift: 0x10 };
+          if ((bl & 4) !== 0) return { i: 0x923a, lift: 0x10 };
+          if ((bl & 2) !== 0) return { i: 0x923c, lift: 0x10 };
+          return { i: 0x9238, lift: 0x10 };
+        },
+        regs: { al: 1, cl: 0x1f, di: 0x1e, si: 1, ah: 9, e8: 1, ea: 0x1f },
+      },
+      { // C2 @0x4228c0
+        img: () => {
+          if ((bl & 1) === 0) return { i: (bl & 2) === 0 ? 0x9239 : 0x923b, lift: 0 };
+          if ((bl & 2) === 0) return { i: 0x923d, lift: 0 };
+          if ((bl & 0x10) === 0) return { i: 0x9239, lift: 0x10 };
+          if ((bl & 4) !== 0) return { i: 0x923b, lift: 0x10 };
+          if ((bl & 8) !== 0) return { i: 0x923d, lift: 0x10 };
+          return { i: 0x9239, lift: 0x10 };
+        },
+        regs: { al: 0x1f, cl: 0, di: 1, si: 0x1e, ah: 9, e8: 0x1f, ea: 1 },
+      },
+      { // C3 @0x42295b
+        img: () => {
+          if ((bl & 4) === 0) return { i: (bl & 2) === 0 ? 0x9238 : 0x923c, lift: 0 };
+          if ((bl & 2) === 0) return { i: 0x923a, lift: 0 };
+          if ((bl & 0x10) === 0) return { i: 0x9238, lift: 0x10 };
+          if ((bl & 8) !== 0) return { i: 0x923a, lift: 0x10 };
+          if ((bl & 1) !== 0) return { i: 0x923c, lift: 0x10 };
+          return { i: 0x9238, lift: 0x10 };
+        },
+        regs: { al: 1, cl: 0, di: 0x1e, si: 1, ah: 9, e8: 1, ea: 1 },
+      },
+      { // C4 @0x4229f6
+        img: () => {
+          if ((bl & 4) === 0) return { i: (bl & 8) === 0 ? 0x9239 : 0x923d, lift: 0 };
+          if ((bl & 8) === 0) return { i: 0x923b, lift: 0 };
+          if ((bl & 0x10) === 0) return { i: 0x9239, lift: 0x10 };
+          if ((bl & 2) !== 0) return { i: 0x923b, lift: 0x10 };
+          if ((bl & 1) !== 0) return { i: 0x923d, lift: 0x10 };
+          return { i: 0x9239, lift: 0x10 };
+        },
+        regs: { al: 1, cl: 1, di: 1, si: 0x1e, ah: 9, e8: 1, ea: 1 },
+      },
+    ];
+    for (const c of corners) {
+      const bit = al & 1;
+      al = (al >>> 1) & 0xff;                                // shr al,1 (CF = bit)
+      if (bit === 0) continue;                               // jae skip
+      // push eax/ebx/ecx/edx/esi — modelled by scoping; pops restore below
+      const sel = c.img();
+      const dxC = (dxBase + sel.lift) & 0xffff;
+      // underground/water gate: paint only if under || dxC >= water (jb skips)
+      if (under || !(dxC < water)) {
+        corner432204(heap, cpu, runFunction, { ...c.regs, ebx: sel.i }, dxC);
+      }
+      // pops: restore the per-corner clobbers to the pre-corner values
+      cpu.regs.ebx = savedEbx;
+      cpu.regs.edx = ((cpu.regs.edx & 0xffff0000) | dxBase) >>> 0;
+      cpu.regs.ecx = savedEcx;
+      cpu.regs.esi = savedEsi;
+      // eax restored by pop, except the OUTER al shift persists via our `al`
+      cpu.regs.eax = ((cpu.regs.eax & 0xffffff00) | al) >>> 0;
+    }
+    cpu.regs.eax = ((cpu.regs.eax & 0xffffff00) | al) >>> 0;
+  }
+  // ---- 0x422a89: [0x991f78]=1, then the corner-heights setter ----
+  heap.setU8(0x00991f78, 1);
+  // FUN_00422a90 dispatches on the LIVE full ebx; it throws on targets
+  // outside its 16-case table — the binary would wild-jump there, so fall
+  // back to the raw bytes for exactness on any such slope.
+  regs.eax = cpu.regs.eax >>> 0; regs.ebx = cpu.regs.ebx >>> 0;
+  regs.ecx = cpu.regs.ecx >>> 0; regs.edx = cpu.regs.edx >>> 0;
+  regs.esi = cpu.regs.esi >>> 0; regs.edi = cpu.regs.edi >>> 0;
+  regs.ebp = cpu.regs.ebp >>> 0;
+  try {
+    FUN_00422a90(heap);
+    cpu.regs.edx = regs.edx >>> 0;                           // dx mutations persist
+    cpu.regs.eax = regs.eax >>> 0;
+  } catch (_) {
+    return runBodyFrom(heap, cpu, runFunction, 0x00422a90);
+  }
+  return true;
+}
+
 function callHelperDirect(heap, cpu, runFunction, addr, body) {
   const entryESP = cpu.regs.esp >>> 0;
   const entryEIP = cpu.regs.eip >>> 0;
@@ -138,6 +334,7 @@ function callHelperDirect(heap, cpu, runFunction, addr, body) {
 // Sub-painter rotation tables. PTR_LAB_00431bb8 = base-tile shade paint;
 // PTR_LAB_00432204 = overlay sprite paint; PTR_LAB_00432e90 = unused on hot.
 const TBL_431BB8 = 0x00431bb8;
+const TBL_432204 = 0x00432204;
 // const TBL_432204 = 0x00432204;
 // const TBL_432e90 = 0x00432e90;
 
@@ -463,7 +660,9 @@ function paintBody421d2c(heap, cpu, runFunction) {
     // We DON'T fall back via runFunction(0x421d2c, ...) because we've
     // already executed half the function in JS — re-running the entry would
     // double-fire side effects. Instead, run the body starting at 0x4225e9.
-    return runBodyFrom(heap, cpu, runFunction, 0x004225e9);
+    // ADDENDUM 87: was runBodyFrom(0x004225e9) — the game's single largest
+    // interp consumer. Now a JS port; see slopeExtraBlock above.
+    return slopeExtraBlock(heap, cpu, runFunction);
   }
   // Falls through to 0x422801 (skipping the slope-extra block via je 422a90).
 
