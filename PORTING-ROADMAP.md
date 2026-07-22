@@ -3316,3 +3316,30 @@ fires on nearly every terrain tile → the real Tier-1 cost. The flat path (0x42
 is the NEXT and larger port. The slope-extra block was still worth porting (real water/cliff
 elimination, byte-exact), but it is not the headline win. Revised Tier-1 order: (1) flat-tile
 arm 0x421e13, (2) the 436a9c painter, (3) the water-edge walkers.
+
+## ADDENDUM 88 — flat-tile path port ATTEMPTED + REVERTED (dual-soak caught it); precise failure map
+
+Attempted the ADD-87-identified real Tier-1 target: the flat-tile arm (0x421e13, `e5&0xe0==0`)
+that currently `return false`s to interp on nearly every terrain tile of every real scenario
+(~167K __fnSteps/tick on sc2 — the game's single largest interp consumer). Transcribed the flat
+guards (0x421e13: [0x5f472a]==0 && [0x991f8c]&1==0) and the [esi+6]&7 jumptable (cases 1-3 ->
+sloped-shade block ebp=0; case 0 -> +[0x5f4938+rot*4] shade; cases 4/5/6 -> water-cycle shade from
+[0x991f72]/[0x991f76] counters via [0x5f4918]/[0x5f4928]; all jump to the 0x421fe1 paint setup).
+
+**SHIP GATE (dual-soak vs true baseline) FAILED — all 4 scenarios diverged** (sc2 fd5a010b vs base
+3d373d72, etc.). A/B vs native localized it: FLAT and SLOPE-EXTRA COEXIST. A tile with e5=5 has
+e5&0xe0==0 (flat, my new path) AND e5&0x1f=5 (nonzero → the 0x4225df slope-extra/water block must
+still fire, setting [0x5f472c]=0x50 and [0x991f78]=4). My flat splice disrupted the flow so those
+tiles no longer reached slopeExtraBlock (js [0x5f472c]=0, [0x991f78]=1 vs native 0x50/4). ROOT
+SUBTLETY: the binary's flat dispatch `mov si,[esi+6]; and esi,7` ZEROES the full esi (tile ptr
+destroyed → esi is just the type 0-7); esi is later reloaded from [esp+8], and the paint call +
+the downstream slope-extra reads all depend on exactly WHERE esi is live vs zeroed. My model got
+the esi lifetime / downstream routing wrong. REVERTED (working tree back to the ADD-87 committed
+state — sc2 3d373d72, sc21 5b79d5b5 confirmed).
+
+**For the next attempt (parked map):** (1) the flat path must FALL THROUGH to the same common tail
+as the sloped path (paint setup 0x421fe1 → ... → 0x4225df slope-extra test), NOT short-circuit;
+(2) model esi as zeroed only across the jumptable dispatch, restored to esi0 immediately after
+(the binary's [esp+8] reload); (3) re-validate with the A/B dbg-421d2c.mjs (scratch) which pins
+the exact diverging tile + heap addr per crossing. The dual-soak-vs-true-baseline gate (ADD 86d)
+did its job — this bad port did NOT ship. slope-extra (ADD 87) remains the validated Tier-1 win.
