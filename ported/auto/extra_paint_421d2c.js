@@ -277,9 +277,14 @@ function slopeExtraBlock(heap, cpu, runFunction) {
       cpu.regs.eax = ((cpu.regs.eax & 0xffffff00) | al) >>> 0;
     }
     cpu.regs.eax = ((cpu.regs.eax & 0xffffff00) | al) >>> 0;
+    // ---- 0x422a89: [0x991f78]=1 — ONLY on the corner fall-through. When
+    // mask==0 the binary's `je 0x422a90` (0x422806) jumps STRAIGHT to the
+    // corner-heights setter, leaving [0x991f78]=4 from the water block. The
+    // old unconditional set here was latently wrong (scratch value reset each
+    // call, so it passed ADD-87's soak; the flat-tile A/B exposed it).
+    heap.setU8(0x00991f78, 1);
   }
-  // ---- 0x422a89: [0x991f78]=1, then the corner-heights setter ----
-  heap.setU8(0x00991f78, 1);
+  // ---- 0x422a90: the corner-heights setter (reached both ways) ----
   // FUN_00422a90 dispatches on the LIVE full ebx; it throws on targets
   // outside its 16-case table — the binary would wild-jump there, so fall
   // back to the raw bytes for exactness on any such slope.
