@@ -3343,3 +3343,34 @@ as the sloped path (paint setup 0x421fe1 → ... → 0x4225df slope-extra test),
 (the binary's [esp+8] reload); (3) re-validate with the A/B dbg-421d2c.mjs (scratch) which pins
 the exact diverging tile + heap addr per crossing. The dual-soak-vs-true-baseline gate (ADD 86d)
 did its job — this bad port did NOT ship. slope-extra (ADD 87) remains the validated Tier-1 win.
+
+## ADDENDUM 88c — flat-tile debug session: 88b bug fixed & shipped; flat path still diverges, parked
+
+Debugged the flat-path dual-soak failure (ADD 88). Native control-flow trace (scratch
+trace-native.mjs) of a flat+water tile (esi=0x6f3dc0, e5=5, c6=1, e7=0) revealed the exact binary
+flow: 0x421e30 `mov si,[esi+6]; and esi,7` (esi -> 1) -> jumptable case 1 -> 0x421fb2 sloped-shade
+(ebp=0) -> 0x421fe1 paint (esi=0x20) -> **0x4225df with esi RELOADED to the tile ptr** (pop esi at
+0x4225d5) -> 0x4225e9 slope-extra -> 0x422806 `je 0x422a90` (mask==0, SKIPS 0x422a89) -> 0x422a90.
+
+**REAL BUG FOUND + FIXED (committed 88b):** slopeExtraBlock (ADD 87) set [0x991f78]=1
+UNCONDITIONALLY, but the binary only does so on the mask!=0 corner fall-through; mask==0 jumps
+straight to the corner-heights setter leaving [0x991f78]=4. Latently wrong (scratch value — ADD
+87's soak passed) and exposed by the flat A/B. Fixed: [0x991f78]=1 now inside the mask!=0 block.
+Byte-identical soak preserved (sc2 3d373d72 / sc15 79cdb906 / sc21 5b79d5b5 all unchanged).
+
+**FLAT PATH STILL DIVERGES (dual-soak, authoritative) — parked.** After 88b, the residual A/B
+divergence is uniform [0x5f472c] (water level): js=0 vs native=0x50 on flat+water tiles with e4=0x1d
+(but NOT e4=0xc — some flat+water tiles pass). Deep instrumentation gave CONTRADICTORY readings:
+slopeExtra's own stage prints show it setting [0x5f472c]=0x50 through completion (post-walkers,
+pre/post-422a90 all 0x50), yet the A/B's afterA reads 0 for the same tile. That contradiction means
+the A/B oracle (dbg-421d2c.mjs) is UNRELIABLE for this callBridge-heavy path — likely the four
+water-edge walkers (0x4219b5/0x421b78/0x4210f9/0x421553) running on the shared bridge cpu interact
+with the A/B's native-leg heap restoration. The dual-soak (the true gate) confirms the flat path
+IS broken (sc2 df1f40de vs base 3d373d72), so the divergence is real regardless. REVERTED (parked
+at .parked/421d2c-flat-attempt.js with the 88b fix + flat splice).
+
+**Next-session prerequisites for the flat path:** (1) a RELIABLE oracle for callBridge paths — the
+A/B must run the JS leg WITHOUT leaving the bridge cpu in a state that its own native leg inherits
+(snapshot/restore the full cpu, not just heap); (2) with that, pin the e4-dependent [0x5f472c]
+divergence (why e4=0xc passes but e4=0x1d fails — likely a walker reads e4-derived state). The
+88b correctness fix stands as the shipped progress from this session.
