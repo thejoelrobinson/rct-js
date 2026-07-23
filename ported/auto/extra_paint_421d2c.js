@@ -730,6 +730,18 @@ function paintBody421d2c(heap, cpu, runFunction) {
   // entries via the jumptable address (taking u32 from TBL_422AA0 + 4*(ebx & 0xf))
   // and run the inline data table for that case.
   const dxFinal = cpu.regs.edx & 0xffff;
+  // The binary's corner dispatch is `jmp [ebx*4 + 0x422aa0]` using the FULL
+  // ebx; the inline CORNER_CASES only covers indices 0..15. On the current
+  // (non-flat) hot path ebx is always < 16 so this never triggers, but it is
+  // a latent correctness gap the flat-tile port exposed (flat tiles with
+  // e4&0x10 reach here with ebx in 16..31, whose jumptable entries are
+  // DISTINCT — e.g. 0x17 -> 0x4233f3). Delegate ebx>15 to the real jumptable
+  // via the interpreter (ADDENDUM 90). [0x991f2b]|=1 was done above; 0x422a90
+  // redoes it (idempotent) then jmps.
+  if ((ebx & 0xffff) > 0xf) {
+    cpu.regs.ebx = ebx >>> 0;
+    return runBodyFrom(heap, cpu, runFunction, 0x00422a90);
+  }
   const caseIdx = ebx & 0xf;
   const caseOps = CORNER_CASES[caseIdx];
   for (const op of caseOps) {

@@ -3396,3 +3396,27 @@ with a clean, consistent breakdown (vs the old tool's contradictory noise):
   48x e5=5 water @0x5f472c  |  ...  — i.e. the DOMINANT flat-path bug is fully-flat (e5=0) tiles'
 CORNER HEIGHTS (FUN_00422a90 writes [0x991f04/06/0a]) getting the wrong jumptable index ebx, NOT
 the water tiles. The next flat-path attempt now has a reliable oracle and a precise bug list.
+
+## ADDENDUM 90 — corner-dispatch latent-bug fix (ebx>15); flat-path progress via the fixed oracle
+
+Using the fixed oracle (ADD 89), pinned the DOMINANT flat-path divergence: FUN_00422a90's inline
+corner dispatch does `caseIdx = ebx & 0xf`, but the binary's `jmp [ebx*4 + 0x422aa0]` uses the FULL
+ebx. Flat tiles with e4&0x10 reach the setter with ebx in 16..31 (savedEbxStack = e4&0x1f), whose
+jumptable entries are DISTINCT from 0..15 (verified: entry 0x17 -> 0x4233f3, a real corner setter;
+entry 0x10 -> 0x422b20). Fix: delegate ebx>15 to the real jumptable via runBodyFrom(0x422a90).
+
+SHIPPED to the committed (non-flat) code as a latent-bug fix — the current hot path never has
+ebx>15 (sloped tiles only), so it is BYTE-IDENTICAL: oracle memMis=0 across sc2/sc15/sc9, sc21
+5b79d5b5 unchanged. It only matters once the flat path lands.
+
+**Flat-path status (parked, .parked/421d2c-flat-attempt.js updated):** the ebx>15 fix cut the
+oracle memMis from 684 -> 189, eliminating the e5=0 corner-height class (465 crossings) — but
+those were SCRATCH (sc2 soak hash df1f40de unchanged by the fix), so the DUAL-SOAK still fails.
+Two soak-affecting classes remain, precisely localized by the fixed oracle:
+  - 48x e5=5 (flat+water) @0x5f472c — water level; slopeExtra sets it right in isolation, so the
+    divergence is a downstream interaction (a water-edge walker or the flat routing into
+    slopeExtra).
+  - 105x e5=0 corner=1 (flat WITH edge-corners) @0x5f96e8 — a sprite/paint-list field; the flat
+    path's paint-call registers (flatEsiZeroed esi) likely differ into the corner block.
+Next session: chase these two with the reliable oracle (dump ALL diffs per crossing, not the
+first). The callBridge oracle is no longer the blocker.
