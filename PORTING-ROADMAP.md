@@ -3374,3 +3374,25 @@ A/B must run the JS leg WITHOUT leaving the bridge cpu in a state that its own n
 (snapshot/restore the full cpu, not just heap); (2) with that, pin the e4-dependent [0x5f472c]
 divergence (why e4=0xc passes but e4=0x1d fails — likely a walker reads e4-derived state). The
 88b correctness fix stands as the shipped progress from this session.
+
+## ADDENDUM 89 — callBridge oracle FIXED (re-entrancy guard) + validated
+
+The ADD-88c contradiction (slopeExtra's internal heap read = 0x50, the A/B's afterA = 0, same
+crossing, same array) is resolved: the scratch A/B oracle (dbg-421d2c.mjs) was NOT re-entrancy-
+safe. paintBody's callBridge sub-painters (the water-edge walkers 0x4219b5/0x421b78/0x4210f9/
+0x421553, and the base-tile 0x431bb8 paints) RE-ENTER 0x421d2c for neighbour tiles; the shared
+save/afterA snapshot buffers were clobbered by the nested crossing, so the outer comparison read
+garbage. tools/_lockstep-cn.mjs already had the `inside` guard; the ad-hoc painter A/B did not.
+
+FIX: tools/_ab-painter.mjs — a re-entrancy-safe per-crossing A/B oracle (nested crossings run the
+production hook plainly and are not compared; the outer save/afterA survive). Buckets divergences
+by tile shape (e5 slope bits, water, jumptable case, corner flag) + heap address.
+
+VALIDATED (the oracle correctly PASSES known-good code): on the committed extra_paint_421d2c.js
+(no flat port — flat tiles bail to interp, byte-exact by construction) it reports **memMis=0 across
+sc2 (2313 calls), sc15 (2871), sc9 (2838)**. On the parked flat-path version it reports memMis=684
+with a clean, consistent breakdown (vs the old tool's contradictory noise):
+  231x e5=0 corner=0 @0x991f06  |  165x @0x991f04  |  105x e5=0 corner=1 @0x5f96e8  |
+  48x e5=5 water @0x5f472c  |  ...  — i.e. the DOMINANT flat-path bug is fully-flat (e5=0) tiles'
+CORNER HEIGHTS (FUN_00422a90 writes [0x991f04/06/0a]) getting the wrong jumptable index ebx, NOT
+the water tiles. The next flat-path attempt now has a reliable oracle and a precise bug list.
