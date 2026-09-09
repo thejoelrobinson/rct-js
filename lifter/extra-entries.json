@@ -1,0 +1,1213 @@
+[
+ {
+  "_comment": "Painters reached via DAT_00991f88-indexed jumptables that Ghidra couldn't recover (jumptable-internal branches were 'too many'). Each table has 4 rotation variants. Addresses extracted from rct.exe by reading 4 dwords from each table base. Originally we found 5 tables (20 painters); audit during paint pipeline turned up 17 more tables (68 more painters)."
+ },
+ {
+  "_table": "PTR_LAB_00431bb8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_431bc8",
+  "addr": "0x431bc8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00431bb8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_431d4b",
+  "addr": "0x431d4b",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00431bb8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_431edc",
+  "addr": "0x431edc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00431bb8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_43206f",
+  "addr": "0x43206f",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared allocator-full epilogue used by the PTR_LAB_00431bb8 terrain painters.",
+  "name": "FUN_extra_paint_432200",
+  "addr": "0x432200",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432204",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_432214",
+  "addr": "0x432214",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432204",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4323b8",
+  "addr": "0x4323b8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432204",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_43256d",
+  "addr": "0x43256d",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432204",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_432727",
+  "addr": "0x432727",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared clipped-painter epilogue reached by all PTR_LAB_00432204 rotations.",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4328dc",
+  "addr": "0x4328dc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004328e0",
+  "name": "FUN_extra_paint_4328f0",
+  "addr": "0x4328f0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004328e0",
+  "name": "FUN_extra_paint_432a4e",
+  "addr": "0x432a4e",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004328e0",
+  "name": "FUN_extra_paint_432bb8",
+  "addr": "0x432bb8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004328e0",
+  "name": "FUN_extra_paint_432d24",
+  "addr": "0x432d24",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432e90",
+  "name": "FUN_extra_paint_432ea0",
+  "addr": "0x432ea0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432e90",
+  "name": "FUN_extra_paint_43300a",
+  "addr": "0x43300a",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432e90",
+  "name": "FUN_extra_paint_433180",
+  "addr": "0x433180",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00432e90",
+  "name": "FUN_extra_paint_4332f8",
+  "addr": "0x4332f8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004342c0",
+  "name": "FUN_extra_paint_4342d0",
+  "addr": "0x4342d0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004342c0",
+  "name": "FUN_extra_paint_4344bf",
+  "addr": "0x4344bf",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004342c0",
+  "name": "FUN_extra_paint_4346ae",
+  "addr": "0x4346ae",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004342c0",
+  "name": "FUN_extra_paint_43489d",
+  "addr": "0x43489d",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00434e98",
+  "name": "FUN_extra_paint_434ea8",
+  "addr": "0x434ea8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00434e98",
+  "name": "FUN_extra_paint_434eb9",
+  "addr": "0x434eb9",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00434e98",
+  "name": "FUN_extra_paint_434eca",
+  "addr": "0x434eca",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00434e98",
+  "name": "FUN_extra_paint_434edb",
+  "addr": "0x434edb",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004350bc",
+  "name": "FUN_extra_paint_4350cc",
+  "addr": "0x4350cc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004350bc",
+  "name": "FUN_extra_paint_4352ff",
+  "addr": "0x4352ff",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004350bc",
+  "name": "FUN_extra_paint_435532",
+  "addr": "0x435532",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004350bc",
+  "name": "FUN_extra_paint_435765",
+  "addr": "0x435765",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00435ad8",
+  "name": "FUN_extra_paint_435ae8",
+  "addr": "0x435ae8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00435ad8",
+  "name": "FUN_extra_paint_435d1b",
+  "addr": "0x435d1b",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00435ad8",
+  "name": "FUN_extra_paint_435f4e",
+  "addr": "0x435f4e",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00435ad8",
+  "name": "FUN_extra_paint_436181",
+  "addr": "0x436181",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004368c8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4368d8",
+  "addr": "0x4368d8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004368c8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4368e0",
+  "addr": "0x4368e0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004368c8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4368ec",
+  "addr": "0x4368ec",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004368c8",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4368ff",
+  "addr": "0x4368ff",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared tail of the 0x4368c8 rotation variants."
+ },
+ {
+  "name": "FUN_extra_paint_436909",
+  "addr": "0x436909",
+  "section": "CODESEG"
+ },
+ {
+  "name": "FUN_extra_paint_436a73",
+  "addr": "0x436a73",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared rotation dispatcher directly called by 0x4367cb."
+ },
+ {
+  "name": "FUN_extra_paint_436a76",
+  "addr": "0x436a76",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436a8c",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_436a9c",
+  "addr": "0x436a9c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436a8c",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_436aa4",
+  "addr": "0x436aa4",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436a8c",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_436ab0",
+  "addr": "0x436ab0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436a8c",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_436ac3",
+  "addr": "0x436ac3",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared tail of the 0x436a8c rotation variants."
+ },
+ {
+  "name": "FUN_extra_paint_436acd",
+  "addr": "0x436acd",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436b40",
+  "name": "FUN_extra_paint_436b50",
+  "addr": "0x436b50",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436b40",
+  "name": "FUN_extra_paint_436bc3",
+  "addr": "0x436bc3",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436b40",
+  "name": "FUN_extra_paint_436c3d",
+  "addr": "0x436c3d",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00436b40",
+  "name": "FUN_extra_paint_436cb3",
+  "addr": "0x436cb3",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004384b8",
+  "name": "FUN_extra_paint_4384c8",
+  "addr": "0x4384c8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004384b8",
+  "name": "FUN_extra_paint_4384dd",
+  "addr": "0x4384dd",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004384b8",
+  "name": "FUN_extra_paint_4384f4",
+  "addr": "0x4384f4",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004384b8",
+  "name": "FUN_extra_paint_438510",
+  "addr": "0x438510",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004449c4",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4449d4",
+  "addr": "0x4449d4",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004449c4",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4449e8",
+  "addr": "0x4449e8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004449c4",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_4449fc",
+  "addr": "0x4449fc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_004449c4",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_444a10",
+  "addr": "0x444a10",
+  "section": "CODESEG"
+ },
+ {
+  "name": "FUN_extra_paint_444a22",
+  "addr": "0x444a22",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_0045304c",
+  "name": "FUN_extra_paint_45305c",
+  "addr": "0x45305c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_0045304c",
+  "name": "FUN_extra_paint_453070",
+  "addr": "0x453070",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_0045304c",
+  "name": "FUN_extra_paint_453084",
+  "addr": "0x453084",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_0045304c",
+  "name": "FUN_extra_paint_453098",
+  "addr": "0x453098",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00453930",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_453940",
+  "addr": "0x453940",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00453930",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_453954",
+  "addr": "0x453954",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00453930",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_453968",
+  "addr": "0x453968",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_00453930",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_45397c",
+  "addr": "0x45397c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "tail-ret",
+  "name": "FUN_extra_00453bf7",
+  "addr": "0x453bf7",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e17b8",
+  "name": "FUN_extra_paint_5e17c8",
+  "addr": "0x5e17c8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e17b8",
+  "name": "FUN_extra_paint_5e17dc",
+  "addr": "0x5e17dc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e17b8",
+  "name": "FUN_extra_paint_5e17f0",
+  "addr": "0x5e17f0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e17b8",
+  "name": "FUN_extra_paint_5e1804",
+  "addr": "0x5e1804",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e18ec",
+  "name": "FUN_extra_paint_5e18fc",
+  "addr": "0x5e18fc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e18ec",
+  "name": "FUN_extra_paint_5e1910",
+  "addr": "0x5e1910",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e18ec",
+  "name": "FUN_extra_paint_5e1924",
+  "addr": "0x5e1924",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e18ec",
+  "name": "FUN_extra_paint_5e1938",
+  "addr": "0x5e1938",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e4368",
+  "name": "FUN_extra_paint_5e4378",
+  "addr": "0x5e4378",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e4368",
+  "name": "FUN_extra_paint_5e438c",
+  "addr": "0x5e438c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e4368",
+  "name": "FUN_extra_paint_5e43a0",
+  "addr": "0x5e43a0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e4368",
+  "name": "FUN_extra_paint_5e43b4",
+  "addr": "0x5e43b4",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e557c",
+  "name": "FUN_extra_paint_5e558c",
+  "addr": "0x5e558c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e557c",
+  "name": "FUN_extra_paint_5e55b4",
+  "addr": "0x5e55b4",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e557c",
+  "name": "FUN_extra_paint_5e55dc",
+  "addr": "0x5e55dc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e557c",
+  "name": "FUN_extra_paint_5e5604",
+  "addr": "0x5e5604",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e56ec",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e56fc",
+  "addr": "0x5e56fc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e56ec",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e572c",
+  "addr": "0x5e572c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e56ec",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5759",
+  "addr": "0x5e5759",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e56ec",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5786",
+  "addr": "0x5e5786",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared epilogue tail-jumped to by the 0x5e56ec rotation painters."
+ },
+ {
+  "name": "FUN_extra_paint_5e57b3",
+  "addr": "0x5e57b3",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5874",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5884",
+  "addr": "0x5e5884",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5874",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e58b4",
+  "addr": "0x5e58b4",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5874",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e58e1",
+  "addr": "0x5e58e1",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5874",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e590e",
+  "addr": "0x5e590e",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5a08",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5a18",
+  "addr": "0x5e5a18",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5a08",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5a48",
+  "addr": "0x5e5a48",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5a08",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5a75",
+  "addr": "0x5e5a75",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e5a08",
+  "_staticLift": true,
+  "name": "FUN_extra_paint_5e5aa2",
+  "addr": "0x5e5aa2",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_006309a0",
+  "_comment": "Sprite-class dispatch jumptable [0]=terrain renderer. Reached from 0x444820 (per-tile sprite walker) via callIndirect(jumptable[spriteType]).",
+  "name": "FUN_extra_paint_5d7503",
+  "addr": "0x5d7503",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_006309a0",
+  "_comment": "Sprite-class dispatch jumptable [1]. Type-1 sprite (peeps/vehicles per agent-C audit, 63 sprites in pool).",
+  "name": "FUN_extra_paint_439178",
+  "addr": "0x439178",
+  "section": ".text"
+ },
+ {
+  "_table": "PTR_LAB_006309a0",
+  "_comment": "Sprite-class dispatch jumptable [2].",
+  "name": "FUN_extra_paint_42d69f",
+  "addr": "0x42d69f",
+  "section": ".text"
+ },
+ {
+  "_table": "PTR_LAB_006309a0",
+  "_comment": "Sprite-class dispatch jumptable [3].",
+  "name": "FUN_extra_paint_42e001",
+  "addr": "0x42e001",
+  "section": ".text"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "_comment": "Per-sprite update vtable, called from FUN_005d94b6 indexed by sprite[0x50] (subtype/state). 19 entries in CODESEG (between FUN_005d94b6 end at 0x5d97b4 and first target at 0x5d9800). Phase O: all 63 type-1 sprites currently have [0x50]=0 \u2192 only entry [0] dispatches, but registering all 19 is the same work and avoids future regressions when peeps transition into other states (walking/queueing/being-on-ride/etc)."
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5d9800",
+  "addr": "0x5d9800",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5d99a2",
+  "addr": "0x5d99a2",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5d9c95",
+  "addr": "0x5d9c95",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5d9f8b",
+  "addr": "0x5d9f8b",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5da274",
+  "addr": "0x5da274",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5da4d0",
+  "addr": "0x5da4d0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5da799",
+  "addr": "0x5da799",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5dae71",
+  "addr": "0x5dae71",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5daf1b",
+  "addr": "0x5daf1b",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5da924",
+  "addr": "0x5da924",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5da98e",
+  "addr": "0x5da98e",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5daa24",
+  "addr": "0x5daa24",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5daaf8",
+  "addr": "0x5daaf8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5dabd7",
+  "addr": "0x5dabd7",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5dac92",
+  "addr": "0x5dac92",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5dae1c",
+  "addr": "0x5dae1c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5dac2c",
+  "addr": "0x5dac2c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005d97b4",
+  "name": "FUN_extra_sprite_5dacdc",
+  "addr": "0x5dacdc",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "_comment": "Input-mode dispatch jumptable indexed by DAT_00991f36. Reached from FUN_005e2225 (per-tick input event handler) \u2014 when a click is dequeued, this routes to the per-mode handler (idle / placement-tool / right-drag-pan / etc).",
+  "name": "FUN_extra_input_5e2b52",
+  "addr": "0x5e2b52",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "name": "FUN_extra_input_5e27de",
+  "addr": "0x5e27de",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "name": "FUN_extra_input_5e2713",
+  "addr": "0x5e2713",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "name": "FUN_extra_input_5e2510",
+  "addr": "0x5e2510",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "name": "FUN_extra_input_5e2388",
+  "addr": "0x5e2388",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "name": "FUN_extra_input_5e226c",
+  "addr": "0x5e226c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_LAB_005e2248",
+  "name": "FUN_extra_input_5e2601",
+  "addr": "0x5e2601",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Toolbar window's widget-event-handler proc (slot+4 callback). CODESEG-stripped from Ghidra; reached from FUN_005e3ace's hit-test indirect call. Dispatcher prologue jumps to 0x42af5a which switches on BP (event type) and DX (widget index). Bridging this unblocked all 20 toolbar widget clicks via the binary's own dispatch path, which retired the per-widget clickToolbar() shortcut that previously lived in runtime/input.js.",
+  "name": "FUN_extra_widget_42a830",
+  "addr": "0x42a830",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Peep/sprite per-state update handlers: targets of jumptable PTR_0062d4ac (indexed by sprite state byte [esi+0x2b], dispatched from FUN_00439822 tail callIndirect), including the pair that re-dispatches through PTR_0062d50c ([esi+0x2c]). Ghidra never recovered these (jumptable-internal); without them gameplay sprite updates silently no-op (callIndirect returned 0). Bridged via interpreter like the painters."
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_439912",
+  "addr": "0x439912",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_439913",
+  "addr": "0x439913",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_439b1e",
+  "addr": "0x439b1e",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_439b86",
+  "addr": "0x439b86",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a284",
+  "addr": "0x43a284",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a3a8",
+  "addr": "0x43a3a8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a424",
+  "addr": "0x43a424",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a482",
+  "addr": "0x43a482",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a5f8",
+  "addr": "0x43a5f8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a73f",
+  "addr": "0x43a73f",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a74a",
+  "addr": "0x43a74a",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_43a74b",
+  "addr": "0x43a74b",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_455eff",
+  "addr": "0x455eff",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_45625a",
+  "addr": "0x45625a",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_456337",
+  "addr": "0x456337",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "tail-call",
+  "name": "FUN_extra_004565dd",
+  "addr": "0x4565dd",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_45761f",
+  "addr": "0x45761f",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "PTR_0062d4ac",
+  "name": "FUN_extra_peepstate_4577c2",
+  "addr": "0x4577c2",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Leaf helpers reached via data-pointer indirect calls during gameplay (callers FUN_00436508 / FUN_00429502 / FUN_00450188); not in the Ghidra corpus. The 4264f6/42682d/449178 trio share a rol/ror coordinate-scramble prologue."
+ },
+ {
+  "_table": "data-pointer",
+  "name": "FUN_extra_gameplay_4264f6",
+  "addr": "0x4264f6",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "data-pointer",
+  "name": "FUN_extra_gameplay_42682d",
+  "addr": "0x42682d",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "data-pointer",
+  "name": "FUN_extra_gameplay_449178",
+  "addr": "0x449178",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "data-pointer",
+  "name": "FUN_extra_gameplay_429560",
+  "addr": "0x429560",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "data-pointer",
+  "name": "FUN_extra_gameplay_4501b0",
+  "addr": "0x4501b0",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Top-toolbar paint proc. This measured hot entry was previously invoked directly through the interpreter even though an approximate hand port existed. The lifted closure is differentially verified before runtime routing changes."
+ },
+ {
+  "_table": "window-paint-proc",
+  "name": "FUN_extra_windowpaint_42afb5",
+  "addr": "0x42afb5",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Internal CODESEG call targets reached by the 0x42afb5 sprite-blit dependency closure."
+ },
+ {
+  "_table": "internal-call",
+  "name": "FUN_extra_sprite_9b482c",
+  "addr": "0x9b482c",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "internal-call",
+  "name": "FUN_extra_sprite_9b628f",
+  "addr": "0x9b628f",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "internal-call",
+  "name": "FUN_extra_sprite_9b6751",
+  "addr": "0x9b6751",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "internal-call",
+  "name": "FUN_extra_sprite_9b897b",
+  "addr": "0x9b897b",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Peep queue-join / ride-entry decision fn. Ghidra mistyped the ride-record byte fields as int arrays (quadruple-scaled u32 accesses) and a goto was lowered as early-return, so the JS module (ported/auto/43e304.js) delegates to this interpreter shim. Hand-port when hot."
+ },
+ {
+  "_table": "delegated-module",
+  "name": "FUN_extra_queuejoin_43e304",
+  "addr": "0x43e304",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Auto-translations with goto LAB_* sites lowered as silent early-returns (mid-function truncation on live paths). Modules delegate to these interpreter shims; see each ported/auto/<addr>.js header."
+ },
+ {
+  "_table": "delegated-module",
+  "name": "FUN_extra_gotofix_5d94b6",
+  "addr": "0x5d94b6",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "delegated-module",
+  "name": "FUN_extra_gotofix_424e0f",
+  "addr": "0x424e0f",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "delegated-module",
+  "name": "FUN_extra_gotofix_4499cc",
+  "addr": "0x4499cc",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Window-event dispatcher jump target (jmp 0x43ed87 thunk) hit via callIndirect during live browser gameplay; not in the Ghidra corpus."
+ },
+ {
+  "_table": "data-pointer",
+  "name": "FUN_extra_gameplay_43e831",
+  "addr": "0x43e831",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "Shared alternate-entry and continuation blocks used by the four water-edge walkers. Their out-of-map branches jump backward into these labels instead of returning directly, so they must be explicit lifted closure members."
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_4210f0",
+  "addr": "0x4210f0",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_42117e",
+  "addr": "0x42117e",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-ret",
+  "name": "FUN_extra_wateredge_421548",
+  "addr": "0x421548",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_42154a",
+  "addr": "0x42154a",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_4215d8",
+  "addr": "0x4215d8",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-ret",
+  "name": "FUN_extra_wateredge_4219aa",
+  "addr": "0x4219aa",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_4219ac",
+  "addr": "0x4219ac",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_421a3a",
+  "addr": "0x421a3a",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-ret",
+  "name": "FUN_extra_wateredge_421b42",
+  "addr": "0x421b42",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_421b6f",
+  "addr": "0x421b6f",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-tail",
+  "name": "FUN_extra_wateredge_421bfd",
+  "addr": "0x421bfd",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "shared-ret",
+  "name": "FUN_extra_wateredge_421d02",
+  "addr": "0x421d02",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "continuation reached by a rotation-jumptable target",
+  "name": "FUN_extra_rot_5e5acf",
+  "addr": "0x5e5acf",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "continuation reached by a rotation-jumptable target",
+  "name": "FUN_extra_rot_5e593b",
+  "addr": "0x5e593b",
+  "section": "CODESEG"
+ },
+ {
+  "_table": "continuation reached by a rotation-jumptable target",
+  "name": "FUN_extra_rot_453990",
+  "addr": "0x453990",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "four-way internal rotation table used by FUN_005cfac7",
+  "_table": "PTR_LAB_005cfb00",
+  "_staticLift": true
+ },
+ {
+  "_comment": "internal vehicle geometry selector used by FUN_005d9220; production heaps do not contain this PE data table",
+  "_table": "PTR_LAB_0065e3c4",
+  "_staticLift": true
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_434a8c",
+  "addr": "0x434a8c",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_444a63",
+  "addr": "0x444a63",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_45312d",
+  "addr": "0x45312d",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_4531af",
+  "addr": "0x4531af",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_5daa04",
+  "addr": "0x5daa04",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_5db338",
+  "addr": "0x5db338",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_5e1816",
+  "addr": "0x5e1816",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_5e3be8",
+  "addr": "0x5e3be8",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_5e3c37",
+  "addr": "0x5e3c37",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_9b380f",
+  "addr": "0x9b380f",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_9b39e4",
+  "addr": "0x9b39e4",
+  "section": "CODESEG"
+ },
+ {
+  "_comment": "reached at runtime from a promoted closure but never declared; found by `npm run port -- batch` verification blockers",
+  "name": "FUN_extra_closure_9b4102",
+  "addr": "0x9b4102",
+  "section": "CODESEG"
+ }
+]

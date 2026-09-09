@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RollerCoaster Tycoon — RCT-js</title>
+<style>
+  body { margin: 0; padding: 12px; background: #111; color: #ddd; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  h1 { font-size: 14px; margin: 0 0 8px; color: #fff; font-weight: normal; }
+  .row { display: flex; gap: 16px; align-items: flex-start; }
+  canvas { background: #000; image-rendering: pixelated; cursor: crosshair; }
+  #log { background: #000; padding: 8px; height: 480px; width: 480px; overflow: auto; white-space: pre-wrap; word-break: break-all; border: 1px solid #333; }
+  .ok { color: #5d5; } .err { color: #f55; } .warn { color: #fa5; } .info { color: #59f; }
+  #status { padding: 4px 0 8px; color: #aaa; }
+</style>
+</head>
+<body>
+<h1>RollerCoaster Tycoon — RCT-js</h1>
+<div id="status">booting…</div>
+<div class="row">
+  <canvas id="main" width="640" height="480"></canvas>
+  <pre id="log"></pre>
+</div>
+<script type="module">
+  // Cache-bust the module graph in dev so edits to main-native.js are picked
+  // up on reload (the browser caches ES modules by URL; a timestamp query
+  // forces a fresh fetch).
+  import(`./main-native.js?v=${Date.now()}`);
+</script>
+</body>
+</html>

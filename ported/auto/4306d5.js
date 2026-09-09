@@ -1,0 +1,13 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/4306d5.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
+
+import { regs } from "../../runtime/regs.js";
+import { FUN_004306ee } from "./4306ee.js";
+export function FUN_004306d5(heap) {
+  heap.setU32(0x005f942c, (0x005f9432) >>> 0);
+  heap.setU32(0x005f9430, (0) >>> 0);
+  return (regs.eax = FUN_004306ee(heap));
+}
