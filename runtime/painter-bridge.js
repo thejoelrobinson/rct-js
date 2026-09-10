@@ -426,13 +426,12 @@ export function installPainterBridge(heap, opts = {}) {
 
   // Install a JS hook for FUN_00452fce (sound-queue / pan helper). Called
   // from the LMB-down handler at 0x5e2b52 (CODESEG, runs in the bridge cpu)
-  // with EAX=event-class, EBX=screen coord or 0x8001. The native body falls
-  // through to a DirectSound vtable call via DAT_005ec05c+0xc — whose slot
-  // contains a synthetic proc address (0x10100xxx range, registered by
-  // runtime/win32/dsound.js). The bridge cpu can't execute synthetic addrs,
-  // so it OOBs with `mem8 OOB: 0x10100098`. The JS port routes the same
-  // call through callIndirect, which looks up the synthetic addr in
-  // state.fnDispatch and dispatches to the real JS DirectSound impl.
+  // with EAX=event-class, EBX=screen coord or 0x8001. This legacy hook routes
+  // through callIndirect to the JS DirectSound implementation. DirectSound
+  // vtable methods now also have stdcall interpreter hooks, so UI
+  // continuations that bypass this wrapper can execute the original sound
+  // routine safely. Retain this wrapper's existing register behavior until
+  // the translated sound-queue body has its own complete parity coverage.
   setEipHook(0x452fce, (cpu) => {
     regs.eax = cpu.regs.eax >>> 0;
     regs.ecx = cpu.regs.ecx >>> 0;

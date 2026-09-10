@@ -425,6 +425,7 @@ export function setShimInvoker(fn) { _shimInvoker = fn; }
 // `regs` object, run the JS port, then pop the return address into eip and
 // decrement callDepth. Registered via setEipHook(eip, fn).
 const _eipHooks = new Map();
+const _stdcallHookCleanup = new WeakMap();
 let _eipHooksSize = 0;
 
 // Histogram-instrumentation cached flag. Callers turn this on via
@@ -433,6 +434,14 @@ let _eipHooksSize = 0;
 let _X86_OP_HIST_ON = false;
 export function enableOpcodeHist(on) { _X86_OP_HIST_ON = !!on; }
 export function setEipHook(eip, fn) { _eipHooks.set(eip >>> 0, fn); _eipHooksSize = _eipHooks.size; }
+// COM/Win32 callees return with RET n. Keep the cleanup attached to the
+// callback so temporarily removing/restoring a hook preserves its ABI.
+export function setStdcallEipHook(eip, fn, argumentCount) {
+  if (!Number.isInteger(argumentCount) || argumentCount < 0 || argumentCount > 16383) throw new Error('Invalid stdcall argument count');
+  const hook = cpu => fn(cpu);
+  _stdcallHookCleanup.set(hook, argumentCount * 4);
+  setEipHook(eip, hook);
+}
 export function clearEipHook(eip) { _eipHooks.delete(eip >>> 0); _eipHooksSize = _eipHooks.size; }
 export function hasEipHook(eip) { return _eipHooks.has(eip >>> 0); }
 // Diagnostic accessor (profiling probes wrap installed hooks to time them).
@@ -484,7 +493,7 @@ export function step(cpu) {
       else hook(cpu);
       // Simulate `ret`: pop return address from stack and resume there.
       const ret = mem32(cpu.memory, cpu.regs.esp) >>> 0;
-      cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
+      cpu.regs.esp = (cpu.regs.esp + 4 + (_stdcallHookCleanup.get(hook) || 0)) >>> 0;
       cpu.regs.eip = ret;
       if (cpu.callDepth > 0) cpu.callDepth--;
       return ret !== RET_SENTINEL;
@@ -3161,7 +3170,7 @@ export function runFunction(cpu, funcAddr, opts) {
       if (decodeObserver) invokeObservedHook(cpu, funcAddr, hook);
       else hook(cpu);
       const ret = mem32(cpu.memory, cpu.regs.esp) >>> 0;
-      cpu.regs.esp = (cpu.regs.esp + 4) >>> 0;
+      cpu.regs.esp = (cpu.regs.esp + 4 + (_stdcallHookCleanup.get(hook) || 0)) >>> 0;
       cpu.regs.eip = ret;
       if (cpu.callDepth > 0) cpu.callDepth--;
       if (ret === RET_SENTINEL) {

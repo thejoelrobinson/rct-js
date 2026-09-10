@@ -37,6 +37,7 @@
 
 import { state, registerProc, callIndirect, getAudioCtx } from "./context.js";
 import { heapAlloc } from "./kernel32.js";
+import { setStdcallEipHook } from "../../harness/x86.js";
 
 const DS_OK = 0;
 const DSERR_GENERIC = 0x80004005 | 0;
@@ -339,7 +340,16 @@ function buildVtable(slots) {
   const addr = heapAlloc(0x100);
   for (let i = 0; i < 0x100; i += 4) _heap.setU32(addr + i, 0);
   for (const [offset, jsFn, name] of slots) {
-    _heap.setU32(addr + offset, registerProc(name, jsFn));
+    const proc = registerProc(name, jsFn);
+    _heap.setU32(addr + offset, proc);
+    // The binary can call these COM methods directly, as well as through
+    // translated callIndirect. Each declared parameter after heap occupies
+    // one DWORD on the stdcall stack (including the interface pointer).
+    const argumentCount = jsFn.length - 1;
+    setStdcallEipHook(proc, cpu => {
+      const args = Array.from({ length: argumentCount }, (_, index) => _heap.u32(cpu.regs.esp + 4 + index * 4));
+      cpu.regs.eax = jsFn(_heap, ...args) >>> 0;
+    }, argumentCount);
   }
   return addr;
 }
