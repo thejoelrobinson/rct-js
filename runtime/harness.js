@@ -1,3 +1,4 @@
+import { invalidateSelectionRect, invalidateSelectionList, invalidateSelectionTile } from "../ported/auto/extra_selection_invalidate.js";
 // runtime/harness.js — native runtime entry point.
 //
 // Loads the binary's data sections into a Heap, wires the VFS, populates
@@ -121,6 +122,7 @@ export function createRuntime(opts) {
     state.fnDispatch.set(0x5e0d3c, FUN_005e0d3c);
     for (const [address, implementation] of [[0x42682d, FUN_0042682d], [0x5e585a, FUN_005e585a_exact],
       [0x42b079, initializeViewportExact],
+      [0x4363f1, invalidateSelectionRect], [0x43642b, invalidateSelectionList], [0x5e5562, invalidateSelectionTile],
       [0x42b076, viewportEventExact],
       [0x5e680e, selectToolExact], [0x5e687d, cancelToolExact], [0x5e3874, hitTestWidgetExact], [0x5e3ace, hitTestWindowExact],
       [0x5e3b2b, FUN_005e3b2b_exact], [0x5e3bbf, FUN_005e3bbf_exact],

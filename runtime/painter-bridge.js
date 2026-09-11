@@ -1,3 +1,4 @@
+import { invalidateSelectionRect, invalidateSelectionList, invalidateSelectionTile } from "../ported/auto/extra_selection_invalidate.js";
 // Bridge that lets state.fnDispatch invoke functions Ghidra couldn't recover
 // (the rotation-painter jumptable targets in CODESEG). For each painter
 // address, registers a shim that:
@@ -1197,6 +1198,9 @@ export function installPainterBridge(heap, opts = {}) {
       () => state.promotedLiftedAddresses?.has(0x9ba943), true);
     installJsFnEipHook(0x42b079, initializeViewportExact, "__forceInterp42b079", "throw", (_heap, cpu) => cpu.regs.edi >>> 0 === 0xffffffff, true);
     installJsFnEipHook(0x42b076, viewportEventExact, "__forceInterp42b076", "throw", undefined, true);
+    installJsFnEipHook(0x4363f1, invalidateSelectionRect, "__forceInterp4363f1", "throw", undefined, true);
+    installJsFnEipHook(0x43642b, invalidateSelectionList, "__forceInterp43642b", "throw", undefined, true);
+    installJsFnEipHook(0x5e5562, invalidateSelectionTile, "__forceInterp5e5562", "throw", undefined, true);
     installJsFnEipHook(0x5e680e, selectToolExact, "__forceInterp5e680e", "throw", undefined, true);
     installJsFnEipHook(0x5e687d, cancelToolExact, "__forceInterp5e687d", "throw", undefined, true);
     installJsFnEipHook(0x5e3874, hitTestWidgetExact, "__forceInterp5e3874", "throw", undefined, true);

@@ -1,3 +1,4 @@
+import { invalidateSelectionRect, invalidateSelectionList } from "./extra_selection_invalidate.js";
 import { regs } from "../../runtime/regs.js";
 import { compare, logic, word, resumeUiNative } from "./extra_ui_state.js";
 import { FUN_005e3b2b_exact } from "./5e3b2b.js";
@@ -44,10 +45,8 @@ function invokeSelection(heap, address) {
   if (address === 0x5e3874) return hitTestWidgetExact(heap);
   if (address === 0x5e5301) return FUN_005e5301_exact(heap);
   if (address === 0x5e3b2b) return FUN_005e3b2b_exact(heap);
-  if (address === 0x4363f1 || address === 0x43642b) {
-    const mask = address === 0x4363f1 ? 1 : 2;
-    if (!(heap.u16(0x99a020) & mask)) { logic(0); return; }
-  }
+  if (address === 0x4363f1) return runSelectionEntry(heap, address, invalidateSelectionRect);
+  if (address === 0x43642b) return runSelectionEntry(heap, address, invalidateSelectionList);
   if (regs.edi >>> 0 === 0xffffffff) {
     if (address === 0x42b079) return initializeViewportExact();
     if (address === 0x5e37e6) { compare(regs.edi >>> 0, 0xffffffff, 32); return; }
