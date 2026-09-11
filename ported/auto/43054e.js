@@ -1,3 +1,4 @@
+// @manual — preserve native mode-flag width on live park loading.
 // Auto-translated from Ghidra C by tools/c-to-js/translate.js.
 // Source: decompiled/c/43054e.c
 // Edit by hand only after diff-test passes — re-running the translator will overwrite.
@@ -75,7 +76,14 @@ export function FUN_0043054e(heap) {
   if ((!_loadFailed) && (in_AX == heap.u16(0x008dbed2))) {
     (regs.eax = FUN_00436558(heap));
     (regs.eax = FUN_00444b4a(heap));
-    heap.setU32(0x0099a500, (heap.u32(0x0099a500) & 0xfffe) >>> 0);
+    // Native AND is a WORD: the next word is lastDay, used by the
+    // clock-jump cash penalty. A dword AND zeroed it on every park load.
+    // Preserve the frozen legacy replay while correcting live startup.
+    if (globalThis.__realStartup) {
+      heap.setU16(0x0099a500, heap.u16(0x0099a500) & 0xfffe);
+    } else {
+      heap.setU32(0x0099a500, (heap.u32(0x0099a500) & 0xfffe) >>> 0);
+    }
     (regs.eax = FUN_005e0d60(heap));
     (regs.esi = 0x5f90c0, regs.eax = FUN_004298a0(heap));
     (regs.eax = FUN_005e68e2(heap));

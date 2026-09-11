@@ -101,7 +101,14 @@ export function FUN_0042f4be(heap) {
     if (heap.u32(0x0087c81c) < 0) {
       heap.setU32(0x0087c81c, 0);
     }
-    heap.setU32(0x0099a500, (heap.u32(0x0099a500) & 0xfffe) >>> 0);
+    // Native AND is a WORD: the next word is lastDay, used by the
+    // clock-jump cash penalty. A dword AND zeroed it on every park load.
+    // Preserve the frozen legacy replay while correcting live startup.
+    if (globalThis.__realStartup) {
+      heap.setU16(0x0099a500, heap.u16(0x0099a500) & 0xfffe);
+    } else {
+      heap.setU32(0x0099a500, (heap.u32(0x0099a500) & 0xfffe) >>> 0);
+    }
     (regs.eax = FUN_005e0d60(heap));
     (regs.eax = FUN_004298a0(heap));
     (regs.eax = FUN_005e68e2(heap));
