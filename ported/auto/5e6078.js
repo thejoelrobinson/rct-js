@@ -1,12 +1,13 @@
-// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// @manual — do not regenerate.
 // Source: decompiled/c/5e6078.c
-// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+// Live cursor fixes: 5e607d stores a WORD; 5e608f tests the ESI returned
+// by the window finder. Preserve the frozen legacy path for replay parity.
 
 /** @typedef {import("../../runtime/heap.js").Heap} Heap */
 
 import { int3 } from "../../runtime/win32.js";
 import { CONCAT31 } from "../../runtime/ghidra-builtins.js";
-import { callIndirect } from "../../runtime/win32/context.js";
+import { callIndirect, state } from "../../runtime/win32/context.js";
 import { regs } from "../../runtime/regs.js";
 import { FUN_00404ba4 } from "./404ba4.js";
 import { FUN_005e3874 } from "./5e3874.js";
@@ -14,6 +15,7 @@ import { FUN_005e3ace } from "./5e3ace.js";
 import { FUN_005e613e } from "./5e613e.js";
 import { FUN_005e65cf } from "./5e65cf.js";
 export function FUN_005e6078(heap) {
+  const liveInput = globalThis.__realStartup || state.executionMode === "pure-js";
   let uVar1 = 0;
   let uVar2 = 0;
   let cVar3 = 0;
@@ -23,12 +25,14 @@ export function FUN_005e6078(heap) {
   let uVar4 = 0;
   let uVar5 = 0;
   let iVar6 = 0;
-  heap.setU32(0x005f54f0, (0xffff) >>> 0);
+  if (liveInput) heap.setU16(0x005f54f0, 0xffff);
+  else heap.setU32(0x005f54f0, 0xffff);
   iVar6 = ((0) >>> 0);
   uVar1 = (((regs.eax = FUN_005e3ace(heap))) >>> 0);
   uVar5 = ((unaff_EBX) >>> 0);
   uVar2 = ((uVar1) >>> 0);
-  if (unaff_ESI != 0) {
+  // The window finder returns ESI. Its caller-entry value may be a viewport.
+  if ((liveInput ? regs.esi : unaff_ESI) != 0) {
     uVar4 = (((regs.eax = FUN_005e3874(heap))) >>> 0);
     uVar1 = ((((uVar4) >>> 0)) >>> 0);
     if (((((uVar4 >>> 0x20)) << 16 >> 16) | 0) == -1) {

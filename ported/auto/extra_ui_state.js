@@ -42,6 +42,7 @@ export function resumeUiNative(heap, address) {
   const hook = getEipHook(address);
   for (const name of names) cpu.regs[name] = regs[name] >>> 0;
   for (const flag of flags) cpu.eflags[flag] = regs[flag.toLowerCase()] | 0;
+  const entryWindow = regs.esi >>> 0;
   const stack = regs.esp === undefined ? saved.esp : regs.esp >>> 0;
   cpu.regs.esp = stack;
   cpu.regs.eip = address;
@@ -50,7 +51,7 @@ export function resumeUiNative(heap, address) {
     let steps = 0;
     while ((cpu.regs.esp >>> 0) <= stack) {
       const running = step(cpu);
-      if (!running && (cpu.regs.esp >>> 0) <= stack) throw new Error(`UI continuation stopped before return at 0x${address.toString(16)}`);
+      if (!running && (cpu.regs.esp >>> 0) <= stack) throw new Error(`UI continuation stopped before return at 0x${address.toString(16)} (entry ESI=0x${entryWindow.toString(16)}, stopped EIP=0x${(cpu.regs.eip >>> 0).toString(16)})`);
       if (++steps > 50_000_000) throw new Error("UI continuation step limit");
     }
     for (const name of names) regs[name] = cpu.regs[name] >>> 0;

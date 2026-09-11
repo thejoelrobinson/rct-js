@@ -327,7 +327,7 @@ async function main() {
         tickErrors++;
         if (tickErrors <= 3) {
           log(`[tick #${frameCount}] (after phase ${_lastPhase}) ${msg}`, "err");
-          if (e && e.stack) log(e.stack.split("\n").slice(0, 6).join("\n"), "err");
+          if (e && e.stack) log(e.stack.split("\n").slice(0, 16).join("\n"), "err");
         }
         if (tickErrors >= MAX_ERRORS) {
           log(`[tick] ${MAX_ERRORS} errors — aborting`, "err");
