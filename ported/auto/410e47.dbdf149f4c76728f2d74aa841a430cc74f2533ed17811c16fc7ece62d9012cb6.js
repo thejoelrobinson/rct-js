@@ -1,0 +1,33 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/410e47.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
+
+import { regs } from "../../runtime/regs.js";
+import { FUN_00413170 } from "./413170.js";
+import { FUN_004133c0 } from "./4133c0.js";
+export function FUN_00410e47(heap, param_1, param_2, param_3) {
+  let puVar1 = 0;
+  let puVar2 = 0;
+  let uVar3 = 0;
+  puVar2 = (((regs.eax = FUN_004133c0(heap, 0x50))) >>> 0);
+  if (puVar2 == 0x0) {
+    uVar3 = ((0) >>> 0);
+  } else {
+    heap.setU32(puVar2, (param_1) & 0xffffffff);
+    (regs.eax = FUN_00413170(heap, puVar2 + ((1) * 4), param_2));
+    (regs.eax = FUN_00413170(heap, puVar2 + ((0xe) * 4), param_3));
+    heap.setU32((puVar2 + (0x13) * 4), (0) & 0xffffffff);
+    heap.setU32(0x005ec148, (heap.u32(0x005ec148) + 1) >>> 0);
+    puVar1 = ((puVar2) >>> 0);
+    if (heap.u32(0x005ec14c) != 0x0) {
+      heap.setU32((heap.u32(0x005ec150) + (0x13) * 4), (puVar2) & 0xffffffff);
+      puVar1 = ((heap.u32(0x005ec14c)) >>> 0);
+    }
+    heap.setU32(0x005ec14c, (puVar1) >>> 0);
+    uVar3 = ((1) >>> 0);
+    heap.setU32(0x005ec150, (puVar2) >>> 0);
+  }
+  return uVar3;
+}

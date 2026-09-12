@@ -1,0 +1,291 @@
+// @manual — do not regenerate.
+// HAND-FIX (Phase R+4, RLE byte-store): translator emitted heap.setU32(ptr, byte & 0xffffffff)
+// for C-source `*pbVar = *src;` where pbVar is a byte-pointer in RLE-decode/blitter loops.
+// Each iteration advances ptr by 1 but the setU32 was writing 4 bytes — corrupting the next
+// 3 bytes in the row with zero, then they get overwritten by subsequent iterations EXCEPT
+// for the last 3 bytes of each run which stayed zero, and the 3 bytes immediately past the
+// run end which also got zeroed. In the RLE-decompress scratchpad at 0x9a2032, downstream
+// back-references then copied that corruption into the visible sprite. Fixed by switching
+// the per-pixel write to heap.setU8(..., ... & 0xff).
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/9b6863.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
+
+import { CONCAT22, LOCK, UNLOCK } from "../../runtime/ghidra-builtins.js";
+import { callNative } from "../../runtime/painter-bridge.js";
+import { callIndirect, state } from "../../runtime/win32/context.js";
+import { regs } from "../../runtime/regs.js";
+function FUN_009b6863_frozen(heap) {
+  let in_AL = regs.eax & 0xff;
+  let uVar1 = 0;
+  let bVar5 = 0;
+  let uVar2 = 0;
+  let uVar3 = 0;
+  let uVar4 = 0;
+  let sVar6 = 0;
+  let sVar7 = 0;
+  let sVar8 = 0;
+  let uVar9 = 0;
+  let uVar10 = 0;
+  let uVar13 = 0;
+  let puVar11 = 0;
+  let puVar12 = 0;
+  let unaff_ESI = regs.esi >>> 0;
+  let puVar14 = 0;
+  let unaff_EDI = regs.edi >>> 0;
+  let puVar15 = 0;
+  uVar13 = ((((heap.u32(0x009a2020) >>> 0x10) & 0xffff)) & 0xffff);
+  if ((heap.u32(0x009a2000) & 0x20000000) != 0) {
+    if ((heap.u32(0x009a2000) & 0x40000000) != 0) {
+      puVar12 = (((CONCAT22(uVar13, heap.u16((unaff_ESI + heap.u32(0x009a2020) * 2))) + unaff_ESI)) >>> 0);
+      do {
+        LAB_009b843f: {
+        sVar6 = ((heap.u32(0x009a202c)) & 0xffff);
+        uVar3 = ((heap.u16(puVar12)) & 0xffff);
+        // asm (CodeSeg 0x9b38ed et al): mov cx, word ptr [ebx] / mov byte ptr [0x9aa032], cl
+        // — 8-bit store (37 such sites in CodeSeg, zero word/dword forms). The u32 store
+        // zeroed 0x9aa033..35, including the live neighbour DAT_009aa034.
+        heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);
+        bVar5 = (((((uVar3 & 0xffffff7f) >>> 8) & 0xff)) & 0xff);
+        uVar2 = ((((uVar3 & 0xffffff7f) & 0xffff)) & 0xffff);
+        uVar9 = ((((bVar5) >>> 0)) >>> 0);
+        puVar12 = (((((puVar12) | 0) + uVar2 + 2)) >>> 0);
+        if ((uVar3 & 0x100) == 0) {
+          LAB_009b7923: sVar7 = (((((uVar9 - heap.u32(0x009a2024))) << 16 >> 16)) & 0xffff);
+          if (uVar9 - heap.u32(0x009a2024) == 0 || ((uVar9) | 0) < heap.u32(0x009a2024)) {
+            uVar2 = ((uVar2 + sVar7) & 0xffff);
+            if ((((uVar2) << 16 >> 16) < 0) || (uVar2 == 0)) {
+              break LAB_009b843f;
+            }
+            sVar7 = ((0) & 0xffff);
+          }
+          sVar8 = (((sVar7 + uVar2) - heap.u32(0x009a2028)) & 0xffff);
+          uVar4 = ((uVar2) & 0xffff);
+          if (((sVar8 == 0 || (((sVar7 + uVar2)) << 16 >> 16) < heap.u32(0x009a2028)) || (uVar4 = ((uVar2 - sVar8) & 0xffff), uVar4 != 0 && sVar8 <= ((uVar2) << 16 >> 16))) && (uVar2 = ((((uVar4 + 1) & 0xffff) >>> 1) & 0xffff), uVar2 != 0)) {
+            LOCK();
+            UNLOCK();
+            heap.setU32(0x009a200c, (puVar12) >>> 0);
+            uVar1 = (((regs.eax = callIndirect(heap, heap.u32((0x009b7978) + (uVar2) * 4)))) & 0xff);
+            return uVar1;
+          }
+        } else {
+          uVar9 = ((((bVar5 + 1) >>> 0)) >>> 0);
+          uVar2 = ((uVar2 - 1) & 0xffff);
+          if (uVar2 != 0) {
+            /* goto LAB_009b7923 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009b6863/LAB_009b7923"); return 0;
+          }
+        }
+        }
+        if ((uVar3 & 0x80) != 0) {
+          heap.setU32(0x009a202c, (heap.u32(0x009a202c) + -1) >>> 0);
+          if (heap.u32(0x009a202c) == 0) {
+            return 0;
+          }
+          do {
+            uVar3 = ((heap.u16(puVar12)) & 0xffff);
+            // asm (CodeSeg 0x9b38ed et al): mov cx, word ptr [ebx] / mov byte ptr [0x9aa032], cl
+        // — 8-bit store (37 such sites in CodeSeg, zero word/dword forms). The u32 store
+        // zeroed 0x9aa033..35, including the live neighbour DAT_009aa034.
+        heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);
+            puVar12 = (((((puVar12) | 0) + (heap.u32(0x009aa032) & 0x7f) + 2)) >>> 0);
+          } while ((uVar3 & 0x80) == 0);
+          heap.setU32(0x009a202c, (sVar6 + -2) >>> 0);
+          if (heap.u32(0x009a202c) == 0) {
+            return 0;
+          }
+        }
+      } while (true);
+    }
+    puVar12 = (((CONCAT22(uVar13, heap.u16((unaff_ESI + heap.u32(0x009a2020) * 2))) + unaff_ESI)) >>> 0);
+    do {
+      LAB_009b7130: {
+      sVar6 = ((heap.u32(0x009a202c)) & 0xffff);
+      uVar3 = ((heap.u16(puVar12)) & 0xffff);
+      heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);  // asm: mov byte ptr [0x9aa032], cl
+      bVar5 = (((((uVar3 & 0xffffff7f) >>> 8) & 0xff)) & 0xff);
+      uVar2 = ((((uVar3 & 0xffffff7f) & 0xffff)) & 0xffff);
+      uVar9 = ((((bVar5) >>> 0)) >>> 0);
+      puVar12 = (((((puVar12) | 0) + uVar2 + 2)) >>> 0);
+      if ((uVar3 & 0x100) == 0) {
+        LAB_009b6991: sVar7 = (((((uVar9 - heap.u32(0x009a2024))) << 16 >> 16)) & 0xffff);
+        if (uVar9 - heap.u32(0x009a2024) == 0 || ((uVar9) | 0) < heap.u32(0x009a2024)) {
+          uVar2 = ((uVar2 + sVar7) & 0xffff);
+          if ((((uVar2) << 16 >> 16) < 0) || (uVar2 == 0)) {
+            break LAB_009b7130;
+          }
+          sVar7 = ((0) & 0xffff);
+        }
+        sVar8 = (((sVar7 + uVar2) - heap.u32(0x009a2028)) & 0xffff);
+        uVar4 = ((uVar2) & 0xffff);
+        if (((sVar8 == 0 || (((sVar7 + uVar2)) << 16 >> 16) < heap.u32(0x009a2028)) || (uVar4 = ((uVar2 - sVar8) & 0xffff), uVar4 != 0 && sVar8 <= ((uVar2) << 16 >> 16))) && (uVar2 = ((((uVar4 + 1) & 0xffff) >>> 1) & 0xffff), uVar2 != 0)) {
+          LOCK();
+          UNLOCK();
+          heap.setU32(0x009a200c, (puVar12) >>> 0);
+          uVar1 = (((regs.eax = callIndirect(heap, heap.u32((0x009b69e8) + (uVar2) * 4)))) & 0xff);
+          return uVar1;
+        }
+      } else {
+        uVar9 = ((((bVar5 + 1) >>> 0)) >>> 0);
+        uVar2 = ((uVar2 - 1) & 0xffff);
+        if (uVar2 != 0) {
+          /* goto LAB_009b6991 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009b6863/LAB_009b6991"); return 0;
+        }
+      }
+      }
+      if ((uVar3 & 0x80) != 0) {
+        heap.setU32(0x009a202c, (heap.u32(0x009a202c) + -1) >>> 0);
+        if (heap.u32(0x009a202c) == 0) {
+          return 0;
+        }
+        do {
+          uVar3 = ((heap.u16(puVar12)) & 0xffff);
+          // asm (CodeSeg 0x9b38ed et al): mov cx, word ptr [ebx] / mov byte ptr [0x9aa032], cl
+        // — 8-bit store (37 such sites in CodeSeg, zero word/dword forms). The u32 store
+        // zeroed 0x9aa033..35, including the live neighbour DAT_009aa034.
+        heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);
+          puVar12 = (((((puVar12) | 0) + (heap.u32(0x009aa032) & 0x7f) + 2)) >>> 0);
+        } while ((uVar3 & 0x80) == 0);
+        heap.setU32(0x009a202c, (sVar6 + -2) >>> 0);
+        if (heap.u32(0x009a202c) == 0) {
+          return 0;
+        }
+      }
+    } while (true);
+  }
+  if ((heap.u32(0x009a2000) & 0x40000000) != 0) {
+    puVar12 = (((CONCAT22(uVar13, heap.u16((unaff_ESI + heap.u32(0x009a2020) * 2))) + unaff_ESI)) >>> 0);
+    do {
+      LAB_009b7898: {
+      sVar6 = ((heap.u32(0x009a202c)) & 0xffff);
+      uVar3 = ((heap.u16(puVar12)) & 0xffff);
+      heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);  // asm: mov byte ptr [0x9aa032], cl
+      bVar5 = (((((uVar3 & 0xffffff7f) >>> 8) & 0xff)) & 0xff);
+      uVar2 = ((((uVar3 & 0xffffff7f) & 0xffff)) & 0xffff);
+      uVar9 = ((((bVar5) >>> 0)) >>> 0);
+      puVar12 = (((((puVar12) | 0) + uVar2 + 2)) >>> 0);
+      if ((uVar3 & 0x100) == 0) {
+        LAB_009b71bb: sVar7 = (((((uVar9 - heap.u32(0x009a2024))) << 16 >> 16)) & 0xffff);
+        if (uVar9 - heap.u32(0x009a2024) == 0 || ((uVar9) | 0) < heap.u32(0x009a2024)) {
+          uVar2 = ((uVar2 + sVar7) & 0xffff);
+          if ((((uVar2) << 16 >> 16) < 0) || (uVar2 == 0)) {
+            break LAB_009b7898;
+          }
+          sVar7 = ((0) & 0xffff);
+        }
+        sVar8 = (((sVar7 + uVar2) - heap.u32(0x009a2028)) & 0xffff);
+        uVar4 = ((uVar2) & 0xffff);
+        if (((sVar8 == 0 || (((sVar7 + uVar2)) << 16 >> 16) < heap.u32(0x009a2028)) || (uVar4 = ((uVar2 - sVar8) & 0xffff), uVar4 != 0 && sVar8 <= ((uVar2) << 16 >> 16))) && (uVar2 = ((((uVar4 + 1) & 0xffff) >>> 1) & 0xffff), uVar2 != 0)) {
+          LOCK();
+          UNLOCK();
+          heap.setU32(0x009a200c, (puVar12) >>> 0);
+          uVar1 = (((regs.eax = callIndirect(heap, heap.u32((0x009b7210) + (uVar2) * 4)))) & 0xff);
+          return uVar1;
+        }
+      } else {
+        uVar9 = ((((bVar5 + 1) >>> 0)) >>> 0);
+        uVar2 = ((uVar2 - 1) & 0xffff);
+        if (uVar2 != 0) {
+          /* goto LAB_009b71bb — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009b6863/LAB_009b71bb"); return 0;
+        }
+      }
+      }
+      if ((uVar3 & 0x80) != 0) {
+        heap.setU32(0x009a202c, (heap.u32(0x009a202c) + -1) >>> 0);
+        if (heap.u32(0x009a202c) == 0) {
+          return 0;
+        }
+        do {
+          uVar3 = ((heap.u16(puVar12)) & 0xffff);
+          // asm (CodeSeg 0x9b38ed et al): mov cx, word ptr [ebx] / mov byte ptr [0x9aa032], cl
+        // — 8-bit store (37 such sites in CodeSeg, zero word/dword forms). The u32 store
+        // zeroed 0x9aa033..35, including the live neighbour DAT_009aa034.
+        heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);
+          puVar12 = (((((puVar12) | 0) + (heap.u32(0x009aa032) & 0x7f) + 2)) >>> 0);
+        } while ((uVar3 & 0x80) == 0);
+        heap.setU32(0x009a202c, (sVar6 + -2) >>> 0);
+        if (heap.u32(0x009a202c) == 0) {
+          return 0;
+        }
+      }
+    } while (true);
+  }
+  puVar12 = (((CONCAT22(uVar13, heap.u16((unaff_ESI + heap.u32(0x009a2020) * 2))) + unaff_ESI)) >>> 0);
+  do {
+    LAB_009b68fa: {
+    uVar3 = ((heap.u16(puVar12)) & 0xffff);
+    heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);  // asm: mov byte ptr [0x9aa032], cl
+    puVar14 = ((puVar12 + ((1) * 2)) >>> 0);
+    bVar5 = (((((uVar3 & 0xffffff7f) >>> 8) & 0xff)) & 0xff);
+    uVar2 = ((((uVar3 & 0xffffff7f) & 0xffff)) & 0xffff);
+    uVar9 = ((((bVar5) >>> 0)) >>> 0);
+    puVar11 = (((((puVar14) | 0) + ((uVar2) >>> 0))) >>> 0);
+    if ((uVar3 & 0x100) == 0) {
+      LAB_009b68b6: uVar10 = ((uVar9 - heap.u32(0x009a2024)) >>> 0);
+      sVar6 = ((((uVar10) << 16 >> 16)) & 0xffff);
+      if (uVar10 == 0 || ((uVar9) | 0) < heap.u32(0x009a2024)) {
+        puVar14 = (((((puVar14) | 0) - uVar10)) >>> 0);
+        uVar2 = ((uVar2 + sVar6) & 0xffff);
+        if ((((uVar2) << 16 >> 16) < 0) || (uVar2 == 0)) {
+          break LAB_009b68fa;
+        }
+        sVar6 = ((0) & 0xffff);
+        puVar15 = ((unaff_EDI) >>> 0);
+      } else {
+        puVar15 = ((unaff_EDI + (uVar10 >>> 1)) >>> 0);
+      }
+      sVar7 = (((sVar6 + uVar2) - heap.u32(0x009a2028)) & 0xffff);
+      uVar3 = ((uVar2) & 0xffff);
+      if ((sVar7 == 0 || (((sVar6 + uVar2)) << 16 >> 16) < heap.u32(0x009a2028)) || (uVar3 = ((uVar2 - sVar7) & 0xffff), uVar3 != 0 && sVar7 <= ((uVar2) << 16 >> 16))) {
+        for (uVar3 = ((((uVar3 + 1) & 0xffff) >>> 1) & 0xffff); uVar3 != 0; uVar3 = (((uVar3 - 1) & 0xffff)) >>> 0) {
+          in_AL = ((heap.u8(puVar14)) & 0xff);
+          heap.setU8(puVar15, (in_AL) & 0xff);
+          puVar14 = ((puVar14 + ((1) * 2)) >>> 0);
+          puVar15 = ((puVar15 + 1) >>> 0);
+        }
+      }
+    } else {
+      uVar9 = ((((bVar5 + 1) >>> 0)) >>> 0);
+      puVar14 = (((((puVar12) | 0) + 3)) >>> 0);
+      uVar2 = ((uVar2 - 1) & 0xffff);
+      if (uVar2 != 0) {
+        /* goto LAB_009b68b6 — unsupported, early-return */ if (typeof globalThis._gotoWarn !== 'undefined') globalThis._gotoWarn("FUN_009b6863/LAB_009b68b6"); return 0;
+      }
+    }
+    }
+    sVar6 = ((heap.u32(0x009a202c)) & 0xffff);
+    puVar12 = ((puVar11) >>> 0);
+    if ((heap.u32(0x009aa032) & 0x80) != 0) {
+      unaff_EDI = ((unaff_EDI + heap.u32(0x009a2030)) >>> 0);
+      heap.setU32(0x009a202c, (heap.u32(0x009a202c) + -1) >>> 0);
+      if (heap.u32(0x009a202c) == 0) {
+        return in_AL;
+      }
+      do {
+        uVar3 = ((heap.u16(puVar11)) & 0xffff);
+        // asm (CodeSeg 0x9b38ed et al): mov cx, word ptr [ebx] / mov byte ptr [0x9aa032], cl
+        // — 8-bit store (37 such sites in CodeSeg, zero word/dword forms). The u32 store
+        // zeroed 0x9aa033..35, including the live neighbour DAT_009aa034.
+        heap.setU8(0x009aa032, (((uVar3) & 0xff)) & 0xff);
+        puVar11 = (((((puVar11) | 0) + (heap.u32(0x009aa032) & 0x7f) + 2)) >>> 0);
+      } while ((uVar3 & 0x80) == 0);
+      heap.setU32(0x009a202c, (sVar6 + -2) >>> 0);
+      puVar12 = ((puVar11) >>> 0);
+      if (heap.u32(0x009a202c) == 0) {
+        return in_AL;
+      }
+    }
+  } while (true);
+}
+
+export function FUN_009b6863(heap) {
+  if (globalThis.__forceInterp9b6863 && state.executionMode !== "pure-js") {
+    return callNative(0x9b6863, []);
+  }
+  if ((globalThis.__realStartup || state.executionMode === "pure-js") &&
+      state.promotedLiftedAddresses?.has(0x9b6863)) {
+    return callIndirect(heap, 0x9b6863);
+  }
+  return FUN_009b6863_frozen(heap);
+}

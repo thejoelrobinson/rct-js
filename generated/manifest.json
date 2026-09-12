@@ -1,13 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatorHash": "d46299778e11fd2b5552a93e18b8f28cc91c38b9f1b6419d72531e7439721fef",
+  "generatorHash": "893fd0a3b2c271028bfe7e49b210d642d1cf00e3d19591b0135d0f07d15b5750",
   "binaryHash": "162b02dcdbd0772fe56ef7cafbe7159b6bdc52f23dd07ede300ea863c75d39f5",
   "counts": {
-    "lifted": 1393,
-    "unsupported": 1,
+    "lifted": 1394,
     "hybrid": 3
   },
-  "totalInstructions": 92891,
+  "totalInstructions": 92919,
   "entries": [
     {
       "name": "FUN_00401000",
@@ -872,9 +871,26 @@
       "source": "decompiled/c",
       "sourceFile": "decompiled/c/402e3d.c",
       "endAddr": 4206235,
-      "status": "unsupported",
-      "promotable": false,
-      "reason": "0f a2 at 0x402e76"
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 28,
+      "byteSize": 94,
+      "directCalls": [],
+      "indirectSites": [
+        4206161
+      ],
+      "liveInFlags": [
+        "ZF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/402e3d.js",
+      "sourceHash": "5d52b1cf461a24f1fd665c663f7ad6f421bfa3027f0cc8201b458192354eadf0"
     },
     {
       "name": "FUN_00402e9b",
