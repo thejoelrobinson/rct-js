@@ -1,0 +1,135 @@
+// @manual — do not regenerate.
+// Source: decompiled/c/5e429d.c (auto-translated body, plus a stepping-stone
+// fallback for the viewport bbox).
+//
+// FUN_005e429d is "ViewportCreate" — it allocates a viewport struct from
+// the pool at 0x009a1168 (stride 0x14), populates it from the caller's
+// EAX (packed view_x|view_y), EBX (packed view_w|view_h), EDX (zoom/
+// flags), and CL (zoom-shift); writes the struct back into the parent
+// window at +8; and updates the parent's +0x16e/+0x170/+0x172.
+//
+// Stepping-stone: in the current harness, FUN_004298a0 reads the screen
+// dims from 0x971ed6/0x971ed8 (which are populated by FUN_009bb9f5 from
+// 0x5f2400/0x5f1ff0, the IDirectDraw display-mode shape). At first init
+// neither has been written, so the dims are zero, the packed EAX/EBX
+// rects are zero, and the viewport gets created with bbox (0,0,0,0). The
+// painter walker FUN_009bc041 culls every paint because the bbox is
+// degenerate. We default vp+0..6 to 640x480 if the source dims would
+// otherwise produce a zero rect, so the title-screen render path can
+// proceed while Team B wires up the proper dim flow.
+//
+// IMPORTANT: this stub MUST NOT alter the parent window's +0x20/+0x24
+// (those drive the cull tests for *occluder* windows in 9bc041; changing
+// them would make occluders behave as if covering the full screen, which
+// is wrong). It only touches the viewport struct's local bbox so that
+// the eventual paint of THIS viewport sees a non-empty clip rect.
+
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
+
+import { regs } from "../../runtime/regs.js";
+import { FUN_005df431 } from "./5df431.js";
+import { FUN_005e4355 } from "./5e4355.js";
+import { FUN_005e6a83 } from "./5e6a83.js";
+export function FUN_005e429d(heap) {
+  let sVar1 = 0;
+  let in_EAX = regs.eax >>> 0;
+  let in_CL = regs.ecx & 0xff;
+  let in_EDX = regs.edx >>> 0;
+  let sVar2 = 0;
+  let unaff_EBX = regs.ebx >>> 0;
+  let unaff_ESI = regs.esi >>> 0;
+  let piVar3 = 0;
+  // Stepping-stone (see header): if the parent window's view rect is
+  // empty (both packed values literally zero), substitute a default
+  // 640x480 rect anchored at (0, 0). We do this on the LOCAL caller
+  // values only — the parent window's +0x20/+0x24 are NOT changed,
+  // so 9bc041's occluder cull tests keep their original semantics.
+  if (in_EAX === 0 && unaff_EBX === 0) {
+    in_EAX = 0;                   // view_y << 16 | view_x = 0
+    unaff_EBX = (480 << 16) | 640;  // view_h << 16 | view_w
+  }
+  piVar3 = ((0x009a1168) >>> 0);
+  do {
+    if (((heap.i32(piVar3)) << 16 >> 16) == 0) {
+      heap.setI32((piVar3 + (1) * 4), (in_EAX) & 0xffffffff);
+      heap.setU32(piVar3, (unaff_EBX) & 0xffffffff);
+      if ((in_EDX >>> 0x1e & 1) == 0) {
+        in_CL = ((0) & 0xff);
+      }
+      heap.setI32((piVar3 + (3) * 4), (unaff_EBX << (in_CL & 0x1f)) & 0xffffffff);
+      heap.setU8((piVar3 + ((4) * 4)), (in_CL) & 0xff);
+      heap.setI16((((piVar3) >>> 0) + 0x12), (0) & 0xffff);
+      if (heap.u8(0x005f8d5c) == 1) {
+        heap.setU16((((piVar3) >>> 0) + 0x12), (heap.u16((((piVar3) >>> 0) + 0x12)) | 0x100) & 0xffff);
+      }
+      heap.setU32((unaff_ESI + 8), (piVar3) & 0xffffffff);
+      // HAND-FIX (Phase N): Ghidra's C decompile dropped the post-call read
+      // of `bx` from FUN_005e4355 — it stored the PRE-call sVar2 at
+      // viewport+0xa / window+0x172 instead. The binary at 0x5e4348..0x5e434f
+      // is `mov [edi+8], ax ; mov [edi+0xa], bx`, both AX and BX are MODIFIED
+      // by the rotation handler called via 5e4355. The handler (e.g.
+      // 0x5e4378 for rot=0) does the iso projection then jumps to a common
+      // epilogue at 0x5e43c5 that subtracts view_w/2 from ax and view_h/2
+      // from bx (so ax = iso_x - view_w/2, bx = iso_y - view_h/2 — i.e. the
+      // "centre the view on this iso coord" math).
+      //
+      // Without this, viewport+0xa got the literal high-half of EDX (e.g.
+      // 0x07ff = 2047 when MainOpen passes EDX = 0x07ff07ff) — a fixed
+      // "world centre" iso-y that doesn't match where any sprite-bbox lives.
+      // The visibility check at 444820.js:76 then rejected every sprite
+      // (clipY=2047 vs bbox.y_bot ≤ ~1758) → no terrain rendered.
+      //
+      // Also need to set up the input registers. Binary 0x5e4318..0x5e432f:
+      //   mov ax, dx     ; ax = low(EDX)
+      //   shr edx, 16    ; edx = high(EDX_in)
+      //   mov cx, dx     ; cx = high(EDX_in)
+      //   mov edx, ecx   ; edx = ECX_in
+      //   shr edx, 16    ; edx = high(ECX_in)
+      //   mov bx, cx     ; bx = high(EDX_in)
+      //   mov cx, dx     ; cx = high(ECX_in)
+      // For the bit-31-set branch (sprite-pool read), the binary loads ax/bx/cx
+      // from sprite[low(edx)].wx/wy/wz at 0x5e430a..0x5e4312, then dx is
+      // also high(ECX_in) via the same pre-call setup at 0x5e4326..0x5e432f.
+      let _saveBxIn;
+      if ((in_EDX & 0x80000000) == 0) {
+        sVar2 = ((((((in_EDX & 0xbfffffff) >>> 0x10)) << 16 >> 16)) & 0xffff);
+        heap.setU16((unaff_ESI + 0x16e), (0xffff) & 0xffff);
+        // 5e4318 path: ax = low(EDX), bx = high(EDX), cx = dx = high(ECX).
+        regs.eax = (in_EDX & 0xffff) >>> 0;
+        regs.ebx = ((in_EDX >>> 16) & 0xffff) >>> 0;
+        regs.ecx = (((regs.ecx >>> 0) >>> 16) & 0xffff) >>> 0;
+        regs.edx = regs.ecx;
+        _saveBxIn = regs.ebx & 0xffff;
+      } else {
+        heap.setI16((unaff_ESI + 0x16e), ((((in_EDX & 0xbfffffff)) << 16 >> 16)) & 0xffff);
+        sVar2 = ((heap.u32((0x00743ba4) + ((in_EDX & 0xffff) * 0x80) * 4)) & 0xffff);
+        // 5e42f7 path: read sprite-pool entry indexed by low(EDX).
+        const _spriteSlot = (0x00743b94 + ((in_EDX & 0xffff) << 8)) >>> 0;
+        regs.eax = heap.u16(_spriteSlot + 0xe) >>> 0;
+        regs.ebx = heap.u16(_spriteSlot + 0x10) >>> 0;
+        regs.ecx = heap.u16(_spriteSlot + 0x12) >>> 0;
+        regs.edx = (((regs.ecx >>> 0) >>> 16) & 0xffff) >>> 0;
+        _saveBxIn = regs.ebx & 0xffff;
+      }
+      // HAND-FIX (Phase O): the painter-bridge interpreter at 0x5e4378's
+      // epilogue (0x5e43c6) does `mov dx, [edi+0xc]; sub ax, dx>>1` to
+      // subtract view_w/2 from iso_x. The binary's prologue at 0x5e429d
+      // sets `edi = piVar3` (the viewport pool slot) and keeps it live
+      // across the call to 0x5e4355. The translated JS uses piVar3 as a
+      // local variable, so we must mirror it into regs.edi for the
+      // interpreter to read [edi+0xc] / [edi+0xe] correctly.
+      regs.edi = piVar3 >>> 0;
+      sVar1 = (((regs.eax = FUN_005e4355(heap))) & 0xffff);
+      // Post-call: 5e4355's rotation handler modifies ax (= iso_x - view_w/2)
+      // and bx (= iso_y - view_h/2). Read regs.ebx for the bx value.
+      const _bxAfter = (regs.ebx & 0xffff);
+      heap.setI16((unaff_ESI + 0x170), (sVar1) & 0xffff);
+      heap.setI16((unaff_ESI + 0x172), _bxAfter & 0xffff);
+      heap.setI16((piVar3 + ((2) * 4)), (sVar1) & 0xffff);
+      heap.setI16((((piVar3) >>> 0) + 10), _bxAfter & 0xffff);
+      return (regs.eax = FUN_005e6a83(heap));
+    }
+    piVar3 = ((piVar3 + ((5) * 4)) >>> 0);
+  } while (piVar3 < 0x009a121c);
+  return (regs.eax = FUN_005df431(heap));
+}

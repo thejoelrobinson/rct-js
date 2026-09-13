@@ -385,25 +385,29 @@
   "_table": "PTR_LAB_0045304c",
   "name": "FUN_extra_paint_45305c",
   "addr": "0x45305c",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true
  },
  {
   "_table": "PTR_LAB_0045304c",
   "name": "FUN_extra_paint_453070",
   "addr": "0x453070",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true
  },
  {
   "_table": "PTR_LAB_0045304c",
   "name": "FUN_extra_paint_453084",
   "addr": "0x453084",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true
  },
  {
   "_table": "PTR_LAB_0045304c",
   "name": "FUN_extra_paint_453098",
   "addr": "0x453098",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true
  },
  {
   "_table": "PTR_LAB_00453930",
@@ -1209,5 +1213,17 @@
   "name": "FUN_extra_closure_9b4102",
   "addr": "0x9b4102",
   "section": "CODESEG"
+ },
+ {
+  "addr": "0x4530ac",
+  "name": "FUN_extra_paint_4530ac",
+  "section": "CODESEG",
+  "_comment": "Shared tail reached by verified rotation table PTR_LAB_0045304c."
+ },
+ {
+  "addr": "0x4531aa",
+  "name": "FUN_extra_paint_4531aa",
+  "section": "CODESEG",
+  "_comment": "Shared tail reached by verified rotation table PTR_LAB_0045304c."
  }
 ]

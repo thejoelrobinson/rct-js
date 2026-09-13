@@ -2,12 +2,12 @@
   "executionMode": "hybrid-development",
   "releaseEligible": false,
   "modules": {
-    "version": "dbdf149f4c76728f2d74aa841a430cc74f2533ed17811c16fc7ece62d9012cb6",
-    "moduleCount": 2755
+    "version": "846d5734d5bf5513efcbdd992db78238e439b74477152ded13d9b5f0c153e995",
+    "moduleCount": 2757
   },
   "sourceRevision": "37818dc553d7203a77c4c7b46edc8a927ebbb336",
   "includesWorkingTree": true,
-  "builtAt": "2026-09-12T00:15:00.383Z",
-  "files": 8385,
-  "bytes": 254269604
+  "builtAt": "2026-09-13T02:14:39.395Z",
+  "files": 11144,
+  "bytes": 278449323
 }

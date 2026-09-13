@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatorHash": "893fd0a3b2c271028bfe7e49b210d642d1cf00e3d19591b0135d0f07d15b5750",
+  "generatorHash": "671cbe328ae5787281f237d29536af20f7b25e66b2bf002b696111f05f2ad383",
   "binaryHash": "162b02dcdbd0772fe56ef7cafbe7159b6bdc52f23dd07ede300ea863c75d39f5",
   "counts": {
-    "lifted": 1394,
+    "lifted": 1396,
     "hybrid": 3
   },
   "totalInstructions": 92919,
@@ -28735,6 +28735,10 @@
       "instCount": 36,
       "byteSize": 126,
       "directCalls": [
+        4534364,
+        4534384,
+        4534404,
+        4534424,
         4534573,
         4534703
       ],
@@ -28754,7 +28758,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/452fce.js",
-      "sourceHash": "758a2757fbe94689121a6a6b239cf06cc8540ea74c2920b3e92c5de5a61da8fe"
+      "sourceHash": "04af81e7cb8d467f4285ea3d7ad09d917fe2bf804d34bb2fd52307740c3ee772"
     },
     {
       "name": "FUN_extra_paint_45305c",
@@ -28840,11 +28844,37 @@
       "section": "CODESEG",
       "source": "extra",
       "table": "PTR_LAB_0045304c",
+      "endAddr": 4534444,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 7,
+      "byteSize": 20,
+      "directCalls": [
+        4534444
+      ],
+      "indirectSites": [],
+      "liveInFlags": [],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/453098.js",
+      "sourceHash": "a6d88e89947944fbea0d130b5e6459bd6b8811c3d4ba0a1b782cf04c9597f422"
+    },
+    {
+      "name": "FUN_extra_paint_4530ac",
+      "addr": 4534444,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": null,
       "endAddr": 4534573,
       "status": "lifted",
       "promotable": true,
-      "instCount": 39,
-      "byteSize": 149,
+      "instCount": 32,
+      "byteSize": 129,
       "directCalls": [
         4534573,
         4534698
@@ -28863,8 +28893,8 @@
         "OF"
       ],
       "usesStepInterp": false,
-      "module": "functions/453098.js",
-      "sourceHash": "dd90d47285d2b5a40fd659b117b5cd6ddd51702e36459c39d6dbe73557e7ef3e"
+      "module": "functions/4530ac.js",
+      "sourceHash": "f106680674fd67bf5fc943980d6aa9a8adaafaa1c0569793cbee5918d5774bd4"
     },
     {
       "name": "FUN_extra_closure_45312d",
@@ -28872,15 +28902,15 @@
       "section": "CODESEG",
       "source": "extra",
       "table": null,
-      "endAddr": 4534703,
+      "endAddr": 4534698,
       "status": "lifted",
       "promotable": true,
-      "instCount": 52,
-      "byteSize": 130,
+      "instCount": 47,
+      "byteSize": 125,
       "directCalls": [
         4224947,
         4226114,
-        4534703
+        4534698
       ],
       "indirectSites": [],
       "liveInFlags": [
@@ -28895,7 +28925,28 @@
       ],
       "usesStepInterp": false,
       "module": "functions/45312d.js",
-      "sourceHash": "192b47d8fed1a1854bef1dd17b31acc44277552edadc0fb132d98dcfdbbb740a"
+      "sourceHash": "f7204a0d0a641719b8ae857fdc7efc0f4b2bf3804a0ed41f686d3b4b9ab33ea1"
+    },
+    {
+      "name": "FUN_extra_paint_4531aa",
+      "addr": 4534698,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": null,
+      "endAddr": 4534703,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 5,
+      "byteSize": 5,
+      "directCalls": [
+        4534703
+      ],
+      "indirectSites": [],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/4531aa.js",
+      "sourceHash": "5b87f8a2ba1893e07264c4eb0e17484bcb3e862d60bd7970a247a78cba52f30c"
     },
     {
       "name": "FUN_extra_closure_4531af",

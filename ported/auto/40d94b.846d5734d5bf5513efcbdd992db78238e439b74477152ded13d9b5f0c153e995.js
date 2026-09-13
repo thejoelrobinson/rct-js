@@ -1,0 +1,15 @@
+// Auto-translated from Ghidra C by tools/c-to-js/translate.js.
+// Source: decompiled/c/40d94b.c
+// Edit by hand only after diff-test passes — re-running the translator will overwrite.
+
+/** @typedef {import("../../runtime/heap.js").Heap} Heap */
+
+export function FUN_0040d94b(heap, param_1) {
+  let uVar1 = 0;
+  if (heap.i32((0x005f0500 + param_1 * 0x16c)) == 0) {
+    uVar1 = ((heap.u32((0x005f03a4 + param_1 * 0x16c))) >>> 0);
+  } else {
+    uVar1 = ((0) >>> 0);
+  }
+  return uVar1;
+}
