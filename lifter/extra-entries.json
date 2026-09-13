@@ -99,25 +99,33 @@
   "_table": "PTR_LAB_00432e90",
   "name": "FUN_extra_paint_432ea0",
   "addr": "0x432ea0",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true,
+  "_tableEntries": 4
  },
  {
   "_table": "PTR_LAB_00432e90",
   "name": "FUN_extra_paint_43300a",
   "addr": "0x43300a",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true,
+  "_tableEntries": 4
  },
  {
   "_table": "PTR_LAB_00432e90",
   "name": "FUN_extra_paint_433180",
   "addr": "0x433180",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true,
+  "_tableEntries": 4
  },
  {
   "_table": "PTR_LAB_00432e90",
   "name": "FUN_extra_paint_4332f8",
   "addr": "0x4332f8",
-  "section": "CODESEG"
+  "section": "CODESEG",
+  "_staticLift": true,
+  "_tableEntries": 4
  },
  {
   "_table": "PTR_LAB_004342c0",
@@ -1225,5 +1233,143 @@
   "name": "FUN_extra_paint_4531aa",
   "section": "CODESEG",
   "_comment": "Shared tail reached by verified rotation table PTR_LAB_0045304c."
+ },
+ {
+  "addr": "0x425584",
+  "name": "FUN_extra_entrance_425584",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425578",
+  "_staticLift": true,
+  "_tableEntries": 3
+ },
+ {
+  "addr": "0x425840",
+  "name": "FUN_extra_entrance_425840",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425578",
+  "_staticLift": true,
+  "_tableEntries": 3
+ },
+ {
+  "addr": "0x425a1c",
+  "name": "FUN_extra_entrance_425a1c",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425578",
+  "_staticLift": true,
+  "_tableEntries": 3
+ },
+ {
+  "addr": "0x425a68",
+  "name": "FUN_extra_entrance_425a68",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425c28",
+  "name": "FUN_extra_entrance_425c28",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425d23",
+  "name": "FUN_extra_entrance_425d23",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425e1e",
+  "name": "FUN_extra_entrance_425e1e",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425bac",
+  "name": "FUN_extra_entrance_425bac",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425ca7",
+  "name": "FUN_extra_entrance_425ca7",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425da2",
+  "name": "FUN_extra_entrance_425da2",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425f5f",
+  "name": "FUN_extra_entrance_425f5f",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425bea",
+  "name": "FUN_extra_entrance_425bea",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425ce5",
+  "name": "FUN_extra_entrance_425ce5",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425de0",
+  "name": "FUN_extra_entrance_425de0",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x425f9a",
+  "name": "FUN_extra_entrance_425f9a",
+  "section": "CODESEG",
+  "_table": "PTR_LAB_00425a38",
+  "_staticLift": true,
+  "_tableEntries": 12
+ },
+ {
+  "addr": "0x4254e0",
+  "name": "FUN_extra_entrance_4254e0",
+  "section": "CODESEG",
+  "_comment": "Entrance painter: original element dispatch pointer at 0x628aa4."
+ },
+ {
+  "addr": "0x425fd3",
+  "name": "FUN_extra_entrance_tail_425fd3",
+  "section": "CODESEG",
+  "_comment": "Shared tail reached by the park entrance rotation cases."
+ },
+ {
+  "addr": "0x43346e",
+  "name": "FUN_extra_paint_tail_43346e",
+  "section": "CODESEG",
+  "_comment": "Shared return tail called by three 432e90-table paint rotations."
  }
 ]

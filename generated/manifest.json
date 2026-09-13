@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatorHash": "671cbe328ae5787281f237d29536af20f7b25e66b2bf002b696111f05f2ad383",
+  "generatorHash": "7eeacb6ded16ede268d039feedaa1c47649ab4d0dd3f3137f84d28989244fbf2",
   "binaryHash": "162b02dcdbd0772fe56ef7cafbe7159b6bdc52f23dd07ede300ea863c75d39f5",
   "counts": {
-    "lifted": 1396,
+    "lifted": 1414,
     "hybrid": 3
   },
-  "totalInstructions": 92919,
+  "totalInstructions": 93523,
   "entries": [
     {
       "name": "FUN_00401000",
@@ -16188,7 +16188,7 @@
       "section": "code",
       "source": "decompiled/c",
       "sourceFile": "decompiled/c/42547b.c",
-      "endAddr": 4350814,
+      "endAddr": 4347104,
       "status": "lifted",
       "promotable": true,
       "instCount": 36,
@@ -16208,6 +16208,557 @@
       "usesStepInterp": false,
       "module": "functions/42547b.js",
       "sourceHash": "bb2cb2d0a8746e34ed6d307c321abc412937896f65d1abfe9569d1ee922be757"
+    },
+    {
+      "name": "FUN_extra_entrance_4254e0",
+      "addr": 4347104,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": null,
+      "endAddr": 4347268,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 38,
+      "byteSize": 152,
+      "directCalls": [
+        4347268,
+        4347968,
+        4348444,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4347235,
+        4347249
+      ],
+      "liveInFlags": [
+        "ZF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/4254e0.js",
+      "sourceHash": "950ae8bae08b5ae8436138304d85c34e4bb82ef14afefff7512232b747d5b03b"
+    },
+    {
+      "name": "FUN_extra_entrance_425584",
+      "addr": 4347268,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425578",
+      "endAddr": 4347968,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 147,
+      "byteSize": 700,
+      "directCalls": [
+        4339892,
+        4399636,
+        4400056,
+        4400493,
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960,
+        4557436,
+        4557775,
+        4565341
+      ],
+      "indirectSites": [
+        4347342,
+        4347398,
+        4347490,
+        4347546,
+        4347803
+      ],
+      "liveInFlags": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/425584.js",
+      "sourceHash": "db240863acddf988dde3d854dd8036e48c0fb3820dc993e69d7c6f5fa3d5c517"
+    },
+    {
+      "name": "FUN_extra_entrance_425840",
+      "addr": 4347968,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425578",
+      "endAddr": 4348444,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 96,
+      "byteSize": 476,
+      "directCalls": [
+        4339892,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4348042,
+        4348098,
+        4348190,
+        4348246
+      ],
+      "liveInFlags": [
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/425840.js",
+      "sourceHash": "9ec3ad8a1780f86277fd429d715b0d18dcd53a192d4f5787fcb25ffc7d5db8ff"
+    },
+    {
+      "name": "FUN_extra_entrance_425a1c",
+      "addr": 4348444,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425578",
+      "endAddr": 4348520,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 8,
+      "byteSize": 27,
+      "directCalls": [
+        4348520,
+        4348844,
+        4348906,
+        4348968,
+        4349095,
+        4349157,
+        4349219,
+        4349346,
+        4349408,
+        4349470,
+        4349791,
+        4349850
+      ],
+      "indirectSites": [
+        4348464
+      ],
+      "liveInFlags": [],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/425a1c.js",
+      "sourceHash": "a313397b581c8827288a01f3870c8b4e1a07dcbd59cb14e75c4d6093e2384feb"
+    },
+    {
+      "name": "FUN_extra_entrance_425a68",
+      "addr": 4348520,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4348844,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 71,
+      "byteSize": 324,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960,
+        4557436,
+        4557775,
+        4565341
+      ],
+      "indirectSites": [
+        4348571,
+        4348636,
+        4348829
+      ],
+      "liveInFlags": [
+        "CF",
+        "ZF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/425a68.js",
+      "sourceHash": "f2e8e269375fc5d7b7f145b8722edf68599cc732dbb82f5e8e42c05f30746fcd"
+    },
+    {
+      "name": "FUN_extra_entrance_425bac",
+      "addr": 4348844,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4348906,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 62,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4348894
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425bac.js",
+      "sourceHash": "a2fc7d0a240d890d43a1782d63ad332943d217ca4cdecdf55a9a1ce610984c0d"
+    },
+    {
+      "name": "FUN_extra_entrance_425bea",
+      "addr": 4348906,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4348968,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 62,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4348956
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425bea.js",
+      "sourceHash": "9fecb8d4df612f78c8f71fb49e6085c5f9cfa9c7081d71361775904377be2233"
+    },
+    {
+      "name": "FUN_extra_entrance_425c28",
+      "addr": 4348968,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349095,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 25,
+      "byteSize": 127,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349026,
+        4349083
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425c28.js",
+      "sourceHash": "6858354a205dd2b428e378d3289415162e3fdb268ba97dcc46fcf97489deaa43"
+    },
+    {
+      "name": "FUN_extra_entrance_425ca7",
+      "addr": 4349095,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349157,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 62,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349145
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425ca7.js",
+      "sourceHash": "7ebc0bb47b832ecc976fd1c368d0dec4dfc1c11c22ddd987a769e720b9892b7c"
+    },
+    {
+      "name": "FUN_extra_entrance_425ce5",
+      "addr": 4349157,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349219,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 62,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349207
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425ce5.js",
+      "sourceHash": "60a04e77b56a0d2ef8c36d052aaa7160f65a801a1f2d93621cf461b6963bd67a"
+    },
+    {
+      "name": "FUN_extra_entrance_425d23",
+      "addr": 4349219,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349346,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 25,
+      "byteSize": 127,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349277,
+        4349334
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425d23.js",
+      "sourceHash": "5c03462bbe9c1c23d2561bde6ed6d5e6e29a88429cfe78916b36a65da03b021c"
+    },
+    {
+      "name": "FUN_extra_entrance_425da2",
+      "addr": 4349346,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349408,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 62,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349396
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425da2.js",
+      "sourceHash": "06aa6272f3976fc4700da89278c368ccdd88115c901a6fede6981f98ed21f0f1"
+    },
+    {
+      "name": "FUN_extra_entrance_425de0",
+      "addr": 4349408,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349470,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 62,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349458
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425de0.js",
+      "sourceHash": "c4a33ca53887740f17c5ff6e37a3ea685c9232e5985b0bab13cfd9f057abe897"
+    },
+    {
+      "name": "FUN_extra_entrance_425e1e",
+      "addr": 4349470,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349791,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 71,
+      "byteSize": 321,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960,
+        4557436,
+        4557775,
+        4565341
+      ],
+      "indirectSites": [
+        4349521,
+        4349586,
+        4349779
+      ],
+      "liveInFlags": [
+        "CF",
+        "ZF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/425e1e.js",
+      "sourceHash": "f83767abb345eafe9e85418e64c2c7bd38226c00b42d7d285d976411a22ca922"
+    },
+    {
+      "name": "FUN_extra_entrance_425f5f",
+      "addr": 4349791,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349850,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 12,
+      "byteSize": 59,
+      "directCalls": [
+        4349907,
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349841
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425f5f.js",
+      "sourceHash": "66f51e9e9c179c3ae67efb9a1f4ca51f6196880f1060426c7a1b0124438038fa"
+    },
+    {
+      "name": "FUN_extra_entrance_425f9a",
+      "addr": 4349850,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": "PTR_LAB_00425a38",
+      "endAddr": 4349907,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 11,
+      "byteSize": 57,
+      "directCalls": [
+        4399636,
+        4400056,
+        4400493,
+        4400935
+      ],
+      "indirectSites": [
+        4349900
+      ],
+      "liveInFlags": [],
+      "flagWrites": [],
+      "usesStepInterp": false,
+      "module": "functions/425f9a.js",
+      "sourceHash": "222b1cc99c6709f8e12ac2f520658c43340da905df718bb5065a38b37ff8f7a2"
+    },
+    {
+      "name": "FUN_extra_entrance_tail_425fd3",
+      "addr": 4349907,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": null,
+      "endAddr": 4350814,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 28,
+      "byteSize": 157,
+      "directCalls": [
+        4339892
+      ],
+      "indirectSites": [],
+      "liveInFlags": [
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "flagWrites": [
+        "CF",
+        "ZF",
+        "SF",
+        "OF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/425fd3.js",
+      "sourceHash": "aa531da2b68823255d104c2deb00e0e08098abd62778de7bd8977d9f5a6b1ae7"
     },
     {
       "name": "FUN_0042635e",
@@ -20872,13 +21423,14 @@
       "section": "CODESEG",
       "source": "extra",
       "table": "PTR_LAB_00432e90",
-      "endAddr": 4406134,
+      "endAddr": 4404334,
       "status": "lifted",
       "promotable": true,
-      "instCount": 83,
-      "byteSize": 376,
+      "instCount": 81,
+      "byteSize": 374,
       "directCalls": [
-        4400935
+        4400935,
+        4404334
       ],
       "indirectSites": [],
       "liveInFlags": [
@@ -20895,7 +21447,28 @@
       ],
       "usesStepInterp": false,
       "module": "functions/4332f8.js",
-      "sourceHash": "78f9b210a8854039059cb59c60293df286fab5ec9d542f12065d4867059a590e"
+      "sourceHash": "fc472d13f1bf72c0a0682ac2741bcb19d770dc4c1504f10d8d15d19175b72c99"
+    },
+    {
+      "name": "FUN_extra_paint_tail_43346e",
+      "addr": 4404334,
+      "section": "CODESEG",
+      "source": "extra",
+      "table": null,
+      "endAddr": 4406134,
+      "status": "lifted",
+      "promotable": true,
+      "instCount": 2,
+      "byteSize": 2,
+      "directCalls": [],
+      "indirectSites": [],
+      "liveInFlags": [],
+      "flagWrites": [
+        "CF"
+      ],
+      "usesStepInterp": false,
+      "module": "functions/43346e.js",
+      "sourceHash": "9ce0f37251ac350d2a5e313e963949e4933e5a989447655a007ccb4ff2be93f5"
     },
     {
       "name": "FUN_00433b76",
@@ -30973,7 +31546,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5492917,
@@ -31001,7 +31578,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/53cfb8.js",
-      "sourceHash": "3e74c939bd8e969c518413a360606283dd579da338b96f3c228140e608ceb949"
+      "sourceHash": "778c4cd88d0add1330928edb5ae45cb77a30472477b9e4ab001c1d30e5cb999f"
     },
     {
       "name": "FUN_0053e318",
@@ -31018,7 +31595,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5497892,
@@ -31039,7 +31620,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/53e318.js",
-      "sourceHash": "0fd393c50c4c49538e2ea0066d990fc1e88d84ee4d3a2d1c5ff74b16812c461f"
+      "sourceHash": "648c2584ada8befc7fc0e929a4666c7258c66cbd08628b9542b3b6fa454a4d29"
     },
     {
       "name": "FUN_0055203e",
@@ -31056,7 +31637,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5579055,
@@ -31081,7 +31666,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/55203e.js",
-      "sourceHash": "0c93d7413430b255bebc2e67740237ee48a1a8c401a6538d684be4e6c43c561a"
+      "sourceHash": "1ccd0da69838bb83882550079367ade9900ec44e63d56b972facf07c9d420288"
     },
     {
       "name": "FUN_00555a50",
@@ -31098,7 +31683,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5593913,
@@ -31118,7 +31707,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/555a50.js",
-      "sourceHash": "2be4c8327cbe8d0241d97412c5451a4ed5c5529640128e74e858a37ce589bbc6"
+      "sourceHash": "5b54ffdad4ca8ad441b9f0d969a118f826c8962d233c4d6332e72282ba3d6dcf"
     },
     {
       "name": "FUN_00557966",
@@ -31135,7 +31724,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5601886,
@@ -31163,7 +31756,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/557966.js",
-      "sourceHash": "f3b37f2f10c2641a6c04e588996e8fa29019947219137bf7f83ea540467ea15f"
+      "sourceHash": "eeb3e237969dbbf718f49c4aa9671696606f0751357576368d56a30043bb6728"
     },
     {
       "name": "FUN_00578e15",
@@ -31213,7 +31806,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5742292,
@@ -31238,7 +31835,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/579dec.js",
-      "sourceHash": "55409da197aaf21f78cd42b8e749f9fe755374e94a9ff8aab6209e8feb95243e"
+      "sourceHash": "9c3f8cc23c35ec21bc4dac12ce23fa4d4aed6c2534a4c8df3d89a1250c5fa85e"
     },
     {
       "name": "FUN_0057b232",
@@ -31255,7 +31852,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5747476,
@@ -31273,7 +31874,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/57b232.js",
-      "sourceHash": "211eb318537d3995a6f8900f8a6ad754743d23e866b666932677da8df67bec0d"
+      "sourceHash": "482dbc5d7707969f5d341cc9a9a49a69ec7a3f481797ccd791ac1347a2fb4a20"
     },
     {
       "name": "FUN_0059e41a",
@@ -31290,7 +31891,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5891347,
@@ -31308,7 +31913,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/59e41a.js",
-      "sourceHash": "f532751962ef83a6749bd39a8e4295ea07232db76296ac0e34404d3d1600f446"
+      "sourceHash": "85cd161f65f3d05551aeb8c3e028dd916133c7c55366bf4aaf99e9acaa3481c3"
     },
     {
       "name": "FUN_0059f4fb",
@@ -31325,7 +31930,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         5895609,
@@ -31347,7 +31956,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/59f4fb.js",
-      "sourceHash": "2688cdbfe5ae2333c9702d20a07badb05a8037b03b9c0984a140cd798a69e612"
+      "sourceHash": "995b3299348de79d2e1974f8c01efdcf85a78029c15131d5f79627bf2281252d"
     },
     {
       "name": "FUN_005ce923",
@@ -32412,7 +33021,11 @@
         4399636,
         4400056,
         4400493,
-        4400935
+        4400935,
+        4402848,
+        4403210,
+        4403584,
+        4403960
       ],
       "indirectSites": [
         6125022,
@@ -32453,7 +33066,7 @@
       ],
       "usesStepInterp": false,
       "module": "functions/5d7503.js",
-      "sourceHash": "d3b52111c09adad5e124621c75276773601fdb1318a3f5eb1f62af003711eee3"
+      "sourceHash": "dcec3f9cf9fb94b5545a935219fa3e5b11df6578819fa707b20addbb0f87a8df"
     },
     {
       "name": "FUN_005d849e",
